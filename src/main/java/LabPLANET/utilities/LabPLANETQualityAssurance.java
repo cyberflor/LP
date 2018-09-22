@@ -100,21 +100,21 @@ public class LabPLANETQualityAssurance {
         }
         
         existsRecord = rdbm.existsRecord(rdbm, schemaName, tableName, new String[]{"exception_level","object_name"}, new Object[]{"package", pack});
-        if ("TRUE".equalsIgnoreCase(existsRecord[3])){
+        if ("LABPLANET_TRUE".equalsIgnoreCase(existsRecord[0])){
             diagn[0] = true;  
             diagn[1] = "Exception at package level for "+pack;            
             return diagn;
         }
 
         existsRecord = rdbm.existsRecord(rdbm, schemaName, tableName, new String[]{"exception_level","object_name"}, new Object[]{"class", clase});
-        if ("TRUE".equalsIgnoreCase(existsRecord[3])){
+        if ("LABPLANET_TRUE".equalsIgnoreCase(existsRecord[0])){
             diagn[0] = true;  
             diagn[1] = "Exception at class level for "+clase;            
             return diagn;
         }
 
         existsRecord = rdbm.existsRecord(rdbm, schemaName, tableName, new String[]{"exception_level","object_name"}, new Object[]{"method", metodo});
-        if ("TRUE".equalsIgnoreCase(existsRecord[3])){
+        if ("LABPLANET_TRUE".equalsIgnoreCase(existsRecord[0])){
             diagn[0] = true;  
             diagn[1] = "Exception at method level for "+metodo;            
             return diagn;
@@ -251,7 +251,7 @@ public class LabPLANETQualityAssurance {
                         keyFieldValues = labArr.addValueToArray1D(keyFieldValues, methodName);
                         String[] existsRecord = rdbm.existsRecord(rdbm, schemaName, tableName, keyFieldNames, keyFieldValues);
                         
-                        if ( "FALSE".equalsIgnoreCase(existsRecord[3])){
+                        if ("LABPLANET_FALSE".equalsIgnoreCase(existsRecord[0])){
                             totalDiagnostic = labArr.addValueToArray1D(totalDiagnostic, "ERROR: Not found any entry in "+tableName+" for this method.Database returned: "+existsRecord[5]);
                             break;
                         }

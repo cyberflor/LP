@@ -32,7 +32,8 @@ public class LabPLANETPlatform {
     
     String errorCode = ""; String errorDetail = "";
     Object[] errorDetailVariables = new Object[0];
-
+    LabPLANETPlatform labPlat = new LabPLANETPlatform();
+    
     public Object[] procActionEnabled(String schemaPrefix, String actionName){
         Object[] diagnoses = new Object[6];
         Rdbms rdbm = new Rdbms();
@@ -209,7 +210,7 @@ public class LabPLANETPlatform {
         
         String[] getFields = new String[] {"id","line","last_update_on","created_on"};
         Object[][] diagnoses = rdbm.getRecordFieldsByFilter(rdbm, schemaName, tableName, getFilterFldName, getFilterFldValue, getFields);
-        if (diagnoses[0][3].toString().equalsIgnoreCase("FALSE")){        
+        if ("LABPLANET_FALSE".equalsIgnoreCase(diagnoses[0][0].toString())){        
             String[] diagnosesInsert = rdbm.insertRecordInTable(rdbm, schemaName, tableName, fldName, fldValue);
             String diag = diagnosesInsert[3];
         }else{
@@ -346,7 +347,7 @@ public class LabPLANETPlatform {
             if (i>=6){diagnoses = labArr.addColumnToArray2D(diagnoses, "");}
             diagnoses[1][i] = fieldNames[i];}
         for (Integer i=0;i<fieldNames.length;i++){diagnoses[2][i] = fieldValues[i];}
-        diagnoses[0][3] = "TRUE";
+        diagnoses[0][0] = "LABPLANET_TRUE";
         
         return diagnoses;
     }
@@ -458,16 +459,14 @@ public class LabPLANETPlatform {
                 
         }       
         String[] diagnosis = rdbm.existsRecord(rdbm, schemaName, configTableName, configTableKeyFieldName, configTableKeyFielValue);
-        if (!diagnosis[3].equalsIgnoreCase("TRUE")){
-            StackTraceElement[] elements = Thread.currentThread().getStackTrace();
-            diagnoses[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
-            diagnoses[1]= classVersion;
-            diagnoses[2]= "Code Line " + String.valueOf(elements[1].getLineNumber());
-            diagnoses[3]="FALSE";
-            diagnoses[4]="ERROR:"+tableName+" Config Code NOT FOUND";
-            String[] configTableFilter = labArr.joinTwo1DArraysInOneOf1DString(configTableKeyFieldName, configTableKeyFielValue, ":");
-            diagnoses[5]="The config object for "+tableName+" does not exist for the parameter "+Arrays.toString(configTableFilter)+" in the schema "+schemaName+". Detail:"+diagnosis[5];
-            return diagnoses;
+        if (!"LABPLANET_TRUE".equalsIgnoreCase(diagnosis[0])){            
+           String[] configTableFilter = labArr.joinTwo1DArraysInOneOf1DString(configTableKeyFieldName, configTableKeyFielValue, ":");
+           errorCode = "LabPLANETPlatform_MissingTableConfigCode";
+           errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, tableName);
+           errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, Arrays.toString(configTableFilter));
+           errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, schemaName);
+           errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, diagnosis[5]);
+           return (String[]) labPlat.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);
         }    
 
         
@@ -516,36 +515,24 @@ public class LabPLANETPlatform {
                         }
                         Object specialFunctionReturn = method.invoke(this, rdbm, fieldNames, fieldValues, schemaName);
                         if (specialFunctionReturn.toString().contains("ERROR")){
-                            StackTraceElement[] elements = Thread.currentThread().getStackTrace();
-                            diagnoses[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
-                            diagnoses[1]= classVersion;
-                            diagnoses[2]= "Code Line " + String.valueOf(elements[1].getLineNumber());
-                            diagnoses[3]="FALSE";
-                            diagnoses[4]=specialFunctionReturn.toString();
-                            diagnoses[5]="The field " + currField + " is considered special and its checker (" + aMethod + ") returned the Error above";
-                            return diagnoses;                
+                            errorCode = "LabPLANETPlatform_SpecialFunctionReturnedERROR";
+                            errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, currField);
+                            errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, aMethod);
+                            errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, specialFunctionReturn.toString());                            
+                            return (String[]) labPlat.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);
                         }
                     } catch (IllegalAccessException|IllegalArgumentException|InvocationTargetException ex) {
-                        Logger.getLogger(LabPLANETPlatform.class.getName()).log(Level.SEVERE, null, ex);
-                        StackTraceElement[] elements = Thread.currentThread().getStackTrace();
-                        diagnoses[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
-                        diagnoses[1]= classVersion;
-                        diagnoses[2]= "Code Line " + String.valueOf(elements[1].getLineNumber());
-                        diagnoses[3]="FALSE";
-                        diagnoses[4]=ex.getMessage();
-                        diagnoses[5]="The field " + currField + " is considered special and its checker fall into the exception "+ ex.getCause();
-                        return diagnoses;                           
+                            errorCode = "LabPLANETPlatform_SpecialFunctionCausedException";
+                            errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, currField);
+                            errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, ex.getCause());
+                            errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, ex.getMessage());                            
+                            return (String[]) labPlat.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);                      
                     }
             }
-        }        
-        StackTraceElement[] elements = Thread.currentThread().getStackTrace();
-        diagnoses[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
-        diagnoses[1]= classVersion;
-        diagnoses[2]= "Code Line " + String.valueOf(elements[1].getLineNumber());
-        diagnoses[3]="TRUE";
-        diagnoses[4]="NO ERRORS FOUND";
-        diagnoses[5]="None of the special fields (" + specialFieldName.replace("\\|", ", ") + ") returned error therefore all is fine to proceed.";
-        return diagnoses;           
+        }         
+        errorCode = "LabPLANETPlatform_SpecialFunctionAllSuccess";
+        errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, specialFieldName.replace("\\|", ", "));
+        return (String[]) labPlat.trapErrorMessage(rdbm, "LABPLANET_TRUE", classVersion, errorCode, errorDetailVariables);                      
     }
 /**
  * Get Class Method Name dynamically for the method that call this method.

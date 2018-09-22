@@ -36,6 +36,10 @@ public class LabPLANETArray {
     String classVersion = "0.1";
     String schemaDataName = "data";
     String schemaConfigName = "config";    
+    String errorCode = "";
+    String[] errorDetailVariables = new String[0];
+    LabPLANETPlatform labPlat = new LabPLANETPlatform();
+    Rdbms rdbm = new Rdbms();           
     
     public boolean duplicates(String[] zipcodelist){
       Set<String> lump = new HashSet<>();
@@ -149,13 +153,11 @@ public class LabPLANETArray {
                     // Create key and cipher
                     Key aesKey = new SecretKeySpec(key.getBytes(), "AES");
                     Cipher cipher = Cipher.getInstance("AES");
-
                     // for decryption
                     byte[] bb = new byte[enc.length()];
                     for (int i=0; i<enc.length(); i++) {
                         bb[i] = (byte) enc.charAt(i);
                     }
-
                     // decrypt the text
                     cipher.init(Cipher.DECRYPT_MODE, aesKey);
                     String decrypted = new String(cipher.doFinal(bb));
@@ -562,14 +564,12 @@ public class LabPLANETArray {
             StackTraceElement[] elements = Thread.currentThread().getStackTrace();
             diagnoses[0]= elements[1].getClassName() + "." + elements[1].getMethodName() + " called from " + elements[2].getMethodName();
         if (arrayA.length!=arrayB.length){
-            diagnoses[1]= classVersion;
-            diagnoses[2]= "Code Line " + String.valueOf(elements[1].getLineNumber());   
-            diagnoses[3]="FALSE";
-            diagnoses[4]="ERROR:Field names and values arrays with different length";
-            diagnoses[5]="The values in FieldName are:"+ Arrays.toString(arrayA)+". and in FieldValue are:"+Arrays.toString(arrayB);
-            return diagnoses;
+           errorCode = "DataSample_FieldArraysDifferentSize";
+           errorDetailVariables = addValueToArray1D(errorDetailVariables, Arrays.toString(arrayA));
+           errorDetailVariables = addValueToArray1D(errorDetailVariables, Arrays.toString(arrayB));
+           return (String[]) labPlat.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);           
         }else{
-            diagnoses[3]="TRUE";
+            diagnoses[0]="LABPLANET_TRUE";
         }    
         return diagnoses;
     }
@@ -580,20 +580,15 @@ public class LabPLANETArray {
  * @param colNum Integer
  * @return Object[]. Position 3 set to FALSE when not possible. 
  */    
-    public Object[] getColumnfromArray2D(Object[][] array, Integer colNum){
+    public Object[] getColumnFromArray2D(Object[][] array, Integer colNum){
         Object[] diagnoses = new Object[0];
      
         if (colNum>array[0].length){
-            StackTraceElement[] elements = Thread.currentThread().getStackTrace();
-            diagnoses[0]= elements[1].getClassName() + "." + elements[1].getMethodName() + " called from " + elements[2].getMethodName();            
-            diagnoses[1]= classVersion;
-            diagnoses[2]= "Code Line " + String.valueOf(elements[1].getLineNumber());   
-            diagnoses[3]="FALSE";
-            diagnoses[4]="ERROR:The column cannot be found";
-            diagnoses[5]="The are "+array[0].length+" column(s) in the array and col to get cannot be "+colNum.toString();
-            return diagnoses;            
-        }
-        
+           errorCode = "LabPLANETArray_getColumnFromArray2D_ColNotFound";
+           errorDetailVariables = (String[]) addValueToArray1D(errorDetailVariables, array[0].length);
+           errorDetailVariables = addValueToArray1D(errorDetailVariables, colNum.toString());
+           return (String[]) labPlat.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);           
+        }       
         for (Integer i=0;i<array.length;i++){
             diagnoses=addValueToArray1D(diagnoses, array[colNum][i]);
         }

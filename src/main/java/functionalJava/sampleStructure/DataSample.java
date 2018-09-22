@@ -124,8 +124,8 @@ String[] logSample(Rdbms rdbm, String schemaPrefix, String sampleTemplate, Integ
     }    
     if (devMode==false){
         diagnoses = labArr.checkTwoArraysSameLength(sampleFieldName, sampleFieldValue);
-        if (sampleFieldName.length!=sampleFieldValue.length){
-            errorCode = "DataSample_FieldArraysDifferentSize";
+        if (!"LABPLANET".equalsIgnoreCase(diagnoses[0])){
+           errorCode = "DataSample_FieldArraysDifferentSize";
            errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, Arrays.toString(sampleFieldName));
            errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, Arrays.toString(sampleFieldValue));
            return (String[]) labPlat.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);
@@ -1696,6 +1696,248 @@ private Map getDefaultValuesTemplate(String schema, String tsample, String templ
         
         myDiagnoses = "SUCCESS"; //: Spec "+specCode+" with version "+specCodeVersion.toString()+" and variation "+specVariationName+" does not exist in schema"+schemaConfigName+". ERROR: "+diagnosis[5];
         return myDiagnoses;}
+    
+    public String[] sampleAnalysisResultCancel(Rdbms rdbm, String schemaPrefix, String userName, Integer sampleId, Integer testId, Integer resultId, String userRole) throws SQLException{
+        
+        tableName = "sample_analysis_result";  
+        
+        LabPLANETPlatform labPlat = new LabPLANETPlatform();
+        schemaDataName = labPlat.buildSchemaName(schemaPrefix, "data");  
+        schemaConfigName = labPlat.buildSchemaName(schemaPrefix, "config"); 
+            
+        ResourceBundle prop = rdbm.getParameterBundle(schemaDataName.replace("\"", ""));
+        String sampleAnalysisResultStatusCanceled = rdbm.getParameterBundle(schemaDataName.replace("\"", ""), "sampleAnalysisResult_statusCanceled");
+        String sampleAnalysisResultStatusReviewed = rdbm.getParameterBundle(schemaDataName.replace("\"", ""), "sampleAnalysisResult_statusReviewed");
+        String sampleAnalysisStatusCanceled = rdbm.getParameterBundle(schemaDataName.replace("\"", ""), "sampleAnalysis_statusCanceled");
+        String sampleAnalysisStatusReviewed = rdbm.getParameterBundle(schemaDataName.replace("\"", ""), "sampleAnalysis_statusReviewed");
+        String sampleStatusCanceled = rdbm.getParameterBundle(schemaDataName.replace("\"", ""), "sample_statusCanceled");
+        String sampleStatusReviewed = rdbm.getParameterBundle(schemaDataName.replace("\"", ""), "sample_statusReviewed");
+        
+        Object[] samplesToCancel = new Object[0];
+        Object[] testsToCancel = new Object[0];
+        Object[] testsSampleToCancel = new Object[0];
+        
+        String cancelScope = ""; Integer cancelScopeId = 0;
+        if (sampleId!=null ){cancelScope = "sample_id"; cancelScopeId=sampleId;}
+        if (testId!=null ){cancelScope = "test_id"; cancelScopeId=testId;}
+        if (resultId!=null){cancelScope = "result_id"; cancelScopeId=resultId;}
+        Object[][] objectInfo = null;
+        objectInfo = rdbm.getRecordFieldsByFilter(rdbm, schemaDataName, tableName, 
+                                                            new String[]{cancelScope},
+                                                            new Object[]{cancelScopeId},
+                                                            new String[]{"status","result_id","test_id", "sample_id"});
+        if (objectInfo.length==0){
+            String[] filter = new String[]{"sample_id:"+sampleId.toString()+" test_id:"+testId.toString()+" result_id:"+resultId.toString()};
+            errorCode = "DataSample_SampleNotFound";
+            errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, Arrays.toString(filter));
+            errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, schemaDataName);
+            return (String[]) labPlat.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);
+        }else{
+            for (Integer iResToCancel=0;iResToCancel<objectInfo.length;iResToCancel++){
+                String currStatus = (String) objectInfo[iResToCancel][0];
+                if (!(sampleAnalysisResultStatusCanceled.equalsIgnoreCase(currStatus))){    
+                resultId = (Integer) objectInfo[iResToCancel][1];
+                testId = (Integer) objectInfo[iResToCancel][2];
+                sampleId = (Integer) objectInfo[iResToCancel][3];  
+                if (!(sampleAnalysisResultStatusReviewed.equalsIgnoreCase(currStatus))){    
+                    diagnoses = rdbm.updateRecordFieldsByFilter(rdbm, schemaDataName, "sample_analysis_result", 
+                                                                        new String[]{"status", "status_previous"}, new Object[]{sampleAnalysisResultStatusCanceled, currStatus}, 
+                                                                        new String[]{"result_id"}, new Object[]{resultId});
+                    if ("LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0])){
+                        String[] fieldsForAudit = new String[0];
+                        fieldsForAudit = labArr.addValueToArray1D(fieldsForAudit, "status:"+sampleAnalysisResultStatusCanceled);
+                        fieldsForAudit = labArr.addValueToArray1D(fieldsForAudit, "status_previous:"+currStatus);
+                        smpAudit.sampleAuditAdd(rdbm, schemaPrefix, "CANCEL_RESULT", "sample_analysis_result", resultId, sampleId, testId, resultId, fieldsForAudit, userName, userRole);        
+                    }                        
+                }else{
+                    errorCode = "DataSample_SampleAnalysisResultCancelation_StatusNotExpected";
+                    errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, resultId.toString());
+                    errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, currStatus);
+                    errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, schemaDataName);
+                    return (String[]) labPlat.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);
+                }    
+                }
+                if ((cancelScope.equalsIgnoreCase("sample_id")) && (!labArr.valueInArray(samplesToCancel, sampleId)))
+                        {samplesToCancel = labArr.addValueToArray1D(samplesToCancel, sampleId);}
+                if ((cancelScope.equalsIgnoreCase("sample_id") || cancelScope.equalsIgnoreCase("test_id")) && (!labArr.valueInArray(testsToCancel, testId)))
+                    {testsToCancel = labArr.addValueToArray1D(testsToCancel, testId);
+                     testsSampleToCancel = labArr.addValueToArray1D(testsSampleToCancel, sampleId);
+                    }
+            }    
+        }    
+        for (Integer iTstToCancel=0;iTstToCancel<testsToCancel.length;iTstToCancel++){
+                Integer currTest = (Integer) testsToCancel[iTstToCancel];                
+                objectInfo = rdbm.getRecordFieldsByFilter(rdbm, schemaDataName, "sample_analysis", 
+                                                                    new String[]{"test_id"},
+                                                                    new Object[]{currTest},
+                                                                    new String[]{"status","status_previous","test_id", "sample_id"});
+                String currStatus = (String) objectInfo[0][0];               
+                if ( (!(sampleAnalysisStatusCanceled.equalsIgnoreCase(currStatus))) && (!(sampleAnalysisStatusReviewed.equalsIgnoreCase(currStatus))) && (currTest!=null) ) {                    
+                    diagnoses = rdbm.updateRecordFieldsByFilter(rdbm, schemaDataName, "sample_analysis", 
+                                                                        new String[]{"status", "status_previous"}, new Object[]{sampleAnalysisStatusCanceled, currStatus}, 
+                                                                        new String[]{"test_id"}, new Object[]{currTest});      
+                    if ("LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0])){
+                        String[] fieldsForAudit = new String[0];
+                        fieldsForAudit = labArr.addValueToArray1D(fieldsForAudit, "status:"+sampleAnalysisStatusCanceled);
+                        fieldsForAudit = labArr.addValueToArray1D(fieldsForAudit, "status_previous:"+currStatus);
+                        smpAudit.sampleAuditAdd(rdbm, schemaPrefix, "CANCEL_RESULT", "sample_analysis", currTest, sampleId, currTest, null, fieldsForAudit, userName, userRole);        
+                    }                        
+                }else{
+                    errorCode = "DataSample_SampleAnalysisCancelation_StatusNotExpected";
+                    errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, currTest.toString());
+                    errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, currStatus);
+                    errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, schemaDataName);
+                    diagnoses = (String[]) labPlat.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);
+                }
+        }
+        
+        for (Integer iSmpToCancel=0;iSmpToCancel<samplesToCancel.length;iSmpToCancel++){
+                Integer currSample = (Integer) samplesToCancel[iSmpToCancel];
+                objectInfo = rdbm.getRecordFieldsByFilter(rdbm, schemaDataName, "sample", 
+                                                                    new String[]{"sample_id"},
+                                                                    new Object[]{currSample},
+                                                                    new String[]{"status","status_previous","sample_id", "sample_id"});
+                String currStatus = (String) objectInfo[0][0];               
+                if ( (!(sampleStatusCanceled.equalsIgnoreCase(currStatus))) && (!(sampleStatusReviewed.equalsIgnoreCase(currStatus))) && (currSample!=null) ){
+                    diagnoses = rdbm.updateRecordFieldsByFilter(rdbm, schemaDataName, "sample", 
+                                                                        new String[]{"status", "status_previous"}, new Object[]{sampleStatusCanceled, currStatus}, 
+                                                                        new String[]{"sample_id"}, new Object[]{currSample});                                                        
+                    if ("LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0])){
+                    String[] fieldsForAudit = new String[0];
+                    fieldsForAudit = labArr.addValueToArray1D(fieldsForAudit, "status:"+sampleStatusCanceled);
+                    fieldsForAudit = labArr.addValueToArray1D(fieldsForAudit, "status_previous:"+currStatus);
+                    smpAudit.sampleAuditAdd(rdbm, schemaPrefix, "CANCEL_RESULT", "sample", currSample, currSample, null, null, fieldsForAudit, userName, userRole);        
+                }                        
+                }else{
+                    errorCode = "DataSample_SampleAnalysisCancelation_StatusNotExpected";
+                    errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, currSample.toString());
+                    errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, currStatus);
+                    errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, schemaDataName);
+                    diagnoses = (String[]) labPlat.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);
+                }
+        }
+        return diagnoses;
+    }
+    
+    public String[] sampleAnalysisResultUnCancel(Rdbms rdbm, String schemaPrefix, String userName, Integer sampleId, Integer testId, Integer resultId, String userRole) throws SQLException{
+        
+        tableName = "sample_analysis_result";  
+       
+        String auditActionName = "SAMPLE_ANALYSIS_RESULT_UNCANCELING";
+        
+        LabPLANETPlatform labPlat = new LabPLANETPlatform();
+        schemaDataName = labPlat.buildSchemaName(schemaPrefix, schemaDataName);  
+        schemaConfigName = labPlat.buildSchemaName(schemaPrefix, schemaConfigName); 
+            
+
+        ResourceBundle prop = rdbm.getParameterBundle(schemaDataName.replace("\"", ""));
+        String sampleAnalysisResultStatusCanceled = rdbm.getParameterBundle(schemaDataName.replace("\"", ""), "sampleAnalysisResult_statusCanceled");
+        String sampleAnalysisResultStatusReviewed = rdbm.getParameterBundle(schemaDataName.replace("\"", ""), "sampleAnalysisResult_statusReviewed");
+        String sampleAnalysisStatusCanceled = rdbm.getParameterBundle(schemaDataName.replace("\"", ""), "sampleAnalysis_statusCanceled");
+        String sampleAnalysisStatusReviewed = rdbm.getParameterBundle(schemaDataName.replace("\"", ""), "sampleAnalysis_statusReviewed");
+        String sampleStatusCanceled = rdbm.getParameterBundle(schemaDataName.replace("\"", ""), "sample_statusCanceled");
+        String sampleStatusReviewed = rdbm.getParameterBundle(schemaDataName.replace("\"", ""), "sample_statusReviewed");
+        
+        String cancelScope = ""; Integer cancelScopeId = 0;
+        if (sampleId!=null ){cancelScope = "sample_id"; cancelScopeId=sampleId;}
+        if (testId!=null ){cancelScope = "test_id"; cancelScopeId=testId;}
+        if (resultId!=null){cancelScope = "result_id"; cancelScopeId=resultId;}
+        Object[][] resultInfo = null;
+        resultInfo = rdbm.getRecordFieldsByFilter(rdbm, schemaDataName, tableName, 
+                                                            new String[]{cancelScope},
+                                                            new Object[]{cancelScopeId},
+                                                            new String[]{"status","status_previous", "result_id","test_id", "sample_id"});
+        if (resultInfo.length==0){
+            String[] filter = new String[]{"sample_id:"+sampleId.toString()+" test_id:"+testId.toString()+" result_id:"+resultId.toString()};
+            errorCode = "DataSample_SampleNotFound";
+            errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, Arrays.toString(filter));
+            errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, schemaDataName);
+            return (String[]) labPlat.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);
+        }
+        Object[] samplesToUnCancel = new Object[0];
+        Object[] testsToUnCancel = new Object[0];       
+        String[] diagPerResult = new String[0];
+        for (Integer iResToCancel=0;iResToCancel<resultInfo.length;iResToCancel++){
+            String currResultStatus = (String) resultInfo[iResToCancel][0];
+            String statusPrevious = (String) resultInfo[iResToCancel][1];
+            resultId = (Integer) resultInfo[iResToCancel][2];
+            testId = (Integer) resultInfo[iResToCancel][3];
+            sampleId = (Integer) resultInfo[iResToCancel][4];
+            if (!(sampleAnalysisResultStatusCanceled.equalsIgnoreCase(currResultStatus))){        
+                String[] filter = new String[]{"sample_id:"+sampleId.toString()+" test_id:"+testId.toString()+" result_id:"+resultId.toString()};
+                errorCode = "DataSample_SampleUnCancel_StatusNotExpected";
+                errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, resultInfo[0][0].toString());
+                errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, sampleAnalysisResultStatusCanceled);
+                errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, schemaDataName);
+                diagnoses = (String[]) labPlat.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);
+                diagPerResult = labArr.addValueToArray1D(diagPerResult, "Result "+ resultId.toString() + " not uncanceled because current status is "+ currResultStatus);
+            }else{    
+            resultId = (Integer) resultInfo[iResToCancel][2];
+            diagnoses = rdbm.updateRecordFieldsByFilter(rdbm, schemaDataName, tableName, 
+                                                                new String[]{"status_previous", "status"}, 
+                                                                new Object[]{sampleAnalysisResultStatusCanceled, statusPrevious}, 
+                                                                new String[]{"result_id"}, new Object[]{resultId});
+            if ("LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0])){
+                String[] fieldsForAudit = new String[0];
+                fieldsForAudit = labArr.addValueToArray1D(fieldsForAudit, "status_previous:"+sampleAnalysisResultStatusCanceled);
+                fieldsForAudit = labArr.addValueToArray1D(fieldsForAudit, "status:"+statusPrevious);
+                smpAudit.sampleAuditAdd(rdbm, schemaPrefix, auditActionName, this.getSampleGrouper()+"_"+"sample_analysis_result", resultId, sampleId, testId, resultId, fieldsForAudit, userName, userRole);
+            }
+            diagPerResult = labArr.addValueToArray1D(diagPerResult, "Result "+ resultId.toString() + " UNCANCELED ");            
+            }
+            if ((cancelScope.equalsIgnoreCase("sample_id")) && (!labArr.valueInArray(samplesToUnCancel, sampleId)))
+                    {samplesToUnCancel = labArr.addValueToArray1D(samplesToUnCancel, sampleId);}
+            if ((cancelScope.equalsIgnoreCase("sample_id") || cancelScope.equalsIgnoreCase("test_id")) && (!labArr.valueInArray(testsToUnCancel, testId)))
+                {testsToUnCancel = labArr.addValueToArray1D(testsToUnCancel, testId);
+                }            
+        }           
+        for (Integer iTstToUnCancel=0;iTstToUnCancel<testsToUnCancel.length;iTstToUnCancel++){
+                Integer currTest = (Integer) testsToUnCancel[iTstToUnCancel];                
+                Object[][] objectInfo = rdbm.getRecordFieldsByFilter(rdbm, schemaDataName, "sample_analysis", 
+                                                                new String[]{"test_id"},
+                                                                new Object[]{currTest},
+                                                                new String[]{"status","status_previous","test_id", "sample_id"});
+                String currStatus = (String) objectInfo[0][0];               
+                String currPrevStatus = (String) objectInfo[0][1];               
+                if ( ((sampleAnalysisStatusCanceled.equalsIgnoreCase(currStatus))) && (currTest!=null) ) {                    
+                    diagnoses = rdbm.updateRecordFieldsByFilter(rdbm, schemaDataName, "sample_analysis", 
+                                                                        new String[]{"status", "status_previous"}, new Object[]{currPrevStatus, sampleAnalysisResultStatusCanceled}, 
+                                                                        new String[]{"test_id"}, new Object[]{currTest});      
+                    if ("LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0])){
+                        String[] fieldsForAudit = new String[0];
+                        fieldsForAudit = labArr.addValueToArray1D(fieldsForAudit, "status_previous:"+sampleAnalysisResultStatusCanceled);
+                        fieldsForAudit = labArr.addValueToArray1D(fieldsForAudit, "status:"+currPrevStatus);
+                        smpAudit.sampleAuditAdd(rdbm, schemaPrefix, "UNCANCEL_RESULT", this.getSampleGrouper()+"_"+"sample_analysis", currTest, sampleId, currTest, null, fieldsForAudit, userName, userRole);        
+                    }                        
+                }else{    
+                    diagnoses[5]="The test "+currTest.toString()+" has status "+currStatus+" then cannot be canceled in schema "+schemaDataName;                    
+                }
+        }        
+        for (Integer iSmpToUnCancel=0;iSmpToUnCancel<samplesToUnCancel.length;iSmpToUnCancel++){
+                Integer currSample = (Integer) samplesToUnCancel[iSmpToUnCancel];
+                Object[][] objectInfo = rdbm.getRecordFieldsByFilter(rdbm, schemaDataName, "sample", 
+                                                                    new String[]{"sample_id"},
+                                                                    new Object[]{currSample},
+                                                                    new String[]{"status","status_previous","sample_id", "sample_id"});
+                String currStatus = (String) objectInfo[0][0];    
+                String currPrevStatus = (String) objectInfo[0][1];  
+                if ( ((sampleStatusCanceled.equalsIgnoreCase(currStatus))) && (currSample!=null) ){
+                    diagnoses = rdbm.updateRecordFieldsByFilter(rdbm, schemaDataName, "sample", 
+                                                                        new String[]{"status", "status_previous"}, new Object[]{currPrevStatus, sampleAnalysisResultStatusCanceled}, 
+                                                                        new String[]{"sample_id"}, new Object[]{currSample});                                                        
+                if ("LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0])){
+                    String[] fieldsForAudit = new String[0];
+                    fieldsForAudit = labArr.addValueToArray1D(fieldsForAudit, "status_previous:"+sampleAnalysisResultStatusCanceled);
+                    fieldsForAudit = labArr.addValueToArray1D(fieldsForAudit, "status:"+currPrevStatus);
+                    smpAudit.sampleAuditAdd(rdbm, schemaPrefix, "UNCANCEL_RESULT", "sample", currSample, currSample, null, null, fieldsForAudit, userName, userRole);        
+                }                        
+                }else{    
+                    diagnoses[5]="The sample "+currSample.toString()+" has status "+currStatus+" then cannot be canceled in schema "+schemaDataName;                    
+                }
+        }        
+        diagnoses[5] = Arrays.toString(diagPerResult);
+        return diagnoses;
+    }    
         
     public String[] sampleAnalysisResultCancelBack(Rdbms rdbm, String schemaPrefix, String userName, Integer sampleId, Integer testId, Integer resultId, String userRole) throws SQLException{
         
@@ -1728,16 +1970,11 @@ private Map getDefaultValuesTemplate(String schema, String tsample, String templ
                                                             new Object[]{cancelScopeId},
                                                             new String[]{"status","result_id","test_id", "sample_id","status_previous"});
         if (objectInfo.length==0){
-            Ç
-            StackTraceElement[] elements = Thread.currentThread().getStackTrace();
-            diagnoses[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
-            diagnoses[1]= classVersion;
-            diagnoses[2]= "Code Line " + String.valueOf(elements[1].getLineNumber());
-            diagnoses[3]="FALSE";
-            diagnoses[4]="ERROR:NO RESULTS FOUND";
             String[] filter = new String[]{"sample_id:"+sampleId.toString()+" test_id:"+testId.toString()+" result_id:"+resultId.toString()};
-            diagnoses[5]="No results can be canceled as nothing was found in schema "+schemaDataName+". The values are:"+(char) 10 + Arrays.toString(filter);
-            return diagnoses;
+            errorCode = "DataSample_SampleAnalysisResultNotFound";
+            errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, Arrays.toString(filter));
+            errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, schemaDataName);
+            return (String[]) labPlat.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);                    
         }else{
             for (Integer iResToCancel=0;iResToCancel<objectInfo.length;iResToCancel++){
                 String currStatus = (String) objectInfo[iResToCancel][0];
@@ -1750,7 +1987,7 @@ private Map getDefaultValuesTemplate(String schema, String tsample, String templ
                         diagnoses = rdbm.updateRecordFieldsByFilter(rdbm, schemaDataName, "sample_analysis_result", 
                                                                             new String[]{"status", "status_previous"}, new Object[]{sampleAnalysisResultStatusCanceled, currStatus}, 
                                                                             new String[]{"result_id"}, new Object[]{resultId});
-                        if ("TRUE".equalsIgnoreCase(diagnoses[3])){
+                        if ("LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0])){
                             String[] fieldsForAudit = new String[0];
                             fieldsForAudit = labArr.addValueToArray1D(fieldsForAudit, "status:"+sampleAnalysisResultStatusCanceled);
                             fieldsForAudit = labArr.addValueToArray1D(fieldsForAudit, "status_previous:"+currStatus);
@@ -1824,268 +2061,5 @@ private Map getDefaultValuesTemplate(String schema, String tsample, String templ
         return diagnoses;
     }
 
-        
-    public String[] sampleAnalysisResultCancel(Rdbms rdbm, String schemaPrefix, String userName, Integer sampleId, Integer testId, Integer resultId, String userRole) throws SQLException{
-        
-        tableName = "sample_analysis_result";  
-        
-        LabPLANETPlatform labPlat = new LabPLANETPlatform();
-        schemaDataName = labPlat.buildSchemaName(schemaPrefix, "data");  
-        schemaConfigName = labPlat.buildSchemaName(schemaPrefix, "config"); 
-            
-        ResourceBundle prop = rdbm.getParameterBundle(schemaDataName.replace("\"", ""));
-        String sampleAnalysisResultStatusCanceled = rdbm.getParameterBundle(schemaDataName.replace("\"", ""), "sampleAnalysisResult_statusCanceled");
-        String sampleAnalysisResultStatusReviewed = rdbm.getParameterBundle(schemaDataName.replace("\"", ""), "sampleAnalysisResult_statusReviewed");
-        String sampleAnalysisStatusCanceled = rdbm.getParameterBundle(schemaDataName.replace("\"", ""), "sampleAnalysis_statusCanceled");
-        String sampleAnalysisStatusReviewed = rdbm.getParameterBundle(schemaDataName.replace("\"", ""), "sampleAnalysis_statusReviewed");
-        String sampleStatusCanceled = rdbm.getParameterBundle(schemaDataName.replace("\"", ""), "sample_statusCanceled");
-        String sampleStatusReviewed = rdbm.getParameterBundle(schemaDataName.replace("\"", ""), "sample_statusReviewed");
-        
-        Object[] samplesToCancel = new Object[0];
-        Object[] testsToCancel = new Object[0];
-        Object[] testsSampleToCancel = new Object[0];
-        
-        String cancelScope = ""; Integer cancelScopeId = 0;
-        if (sampleId!=null ){cancelScope = "sample_id"; cancelScopeId=sampleId;}
-        if (testId!=null ){cancelScope = "test_id"; cancelScopeId=testId;}
-        if (resultId!=null){cancelScope = "result_id"; cancelScopeId=resultId;}
-        Object[][] objectInfo = null;
-        objectInfo = rdbm.getRecordFieldsByFilter(rdbm, schemaDataName, tableName, 
-                                                            new String[]{cancelScope},
-                                                            new Object[]{cancelScopeId},
-                                                            new String[]{"status","result_id","test_id", "sample_id"});
-        if (objectInfo.length==0){
-            StackTraceElement[] elements = Thread.currentThread().getStackTrace();
-            diagnoses[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
-            diagnoses[1]= classVersion;
-            diagnoses[2]= "Code Line " + String.valueOf(elements[1].getLineNumber());
-            diagnoses[3]="FALSE";
-            diagnoses[4]="ERROR:NO RESULTS FOUND";
-            String[] filter = new String[]{"sample_id:"+sampleId.toString()+" test_id:"+testId.toString()+" result_id:"+resultId.toString()};
-            diagnoses[5]="No results can be canceled as nothing was found in schema "+schemaDataName+". The values are:"+(char) 10 + Arrays.toString(filter);
-            return diagnoses;
-        }else{
-            for (Integer iResToCancel=0;iResToCancel<objectInfo.length;iResToCancel++){
-                String currStatus = (String) objectInfo[iResToCancel][0];
-                if (!(sampleAnalysisResultStatusCanceled.equalsIgnoreCase(currStatus))){    
-                resultId = (Integer) objectInfo[iResToCancel][1];
-                testId = (Integer) objectInfo[iResToCancel][2];
-                sampleId = (Integer) objectInfo[iResToCancel][3];  
-                if (!(sampleAnalysisResultStatusReviewed.equalsIgnoreCase(currStatus))){    
-                    diagnoses = rdbm.updateRecordFieldsByFilter(rdbm, schemaDataName, "sample_analysis_result", 
-                                                                        new String[]{"status", "status_previous"}, new Object[]{sampleAnalysisResultStatusCanceled, currStatus}, 
-                                                                        new String[]{"result_id"}, new Object[]{resultId});
-                    if ("TRUE".equalsIgnoreCase(diagnoses[3])){
-                        String[] fieldsForAudit = new String[0];
-                        fieldsForAudit = labArr.addValueToArray1D(fieldsForAudit, "status:"+sampleAnalysisResultStatusCanceled);
-                        fieldsForAudit = labArr.addValueToArray1D(fieldsForAudit, "status_previous:"+currStatus);
-                        smpAudit.sampleAuditAdd(rdbm, schemaPrefix, "CANCEL_RESULT", "sample_analysis_result", resultId, sampleId, testId, resultId, fieldsForAudit, userName, userRole);        
-                    }    
-                    
-                }else{
-                    StackTraceElement[] elements = Thread.currentThread().getStackTrace();
-                    diagnoses[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
-                    diagnoses[1]= classVersion;
-                    diagnoses[2]= "Code Line " + String.valueOf(elements[1].getLineNumber());   
-                    diagnoses[3]="FALSE";
-                    diagnoses[4]="ERROR:OBJECT NOT CANCELABLE";
-                    diagnoses[5]="The result "+resultId.toString()+" has status "+currStatus+" then cannot be canceled in schema "+schemaDataName;                    
-                }    
-                }
-                if ((cancelScope.equalsIgnoreCase("sample_id")) && (!labArr.valueInArray(samplesToCancel, sampleId)))
-                        {samplesToCancel = labArr.addValueToArray1D(samplesToCancel, sampleId);}
-                if ((cancelScope.equalsIgnoreCase("sample_id") || cancelScope.equalsIgnoreCase("test_id")) && (!labArr.valueInArray(testsToCancel, testId)))
-                    {testsToCancel = labArr.addValueToArray1D(testsToCancel, testId);
-                     testsSampleToCancel = labArr.addValueToArray1D(testsSampleToCancel, sampleId);
-                    }
-            }    
-        }    
-        for (Integer iTstToCancel=0;iTstToCancel<testsToCancel.length;iTstToCancel++){
-                Integer currTest = (Integer) testsToCancel[iTstToCancel];                
-                objectInfo = rdbm.getRecordFieldsByFilter(rdbm, schemaDataName, "sample_analysis", 
-                                                                    new String[]{"test_id"},
-                                                                    new Object[]{currTest},
-                                                                    new String[]{"status","status_previous","test_id", "sample_id"});
-                String currStatus = (String) objectInfo[0][0];               
-                if ( (!(sampleAnalysisStatusCanceled.equalsIgnoreCase(currStatus))) && (!(sampleAnalysisStatusReviewed.equalsIgnoreCase(currStatus))) && (currTest!=null) ) {                    
-                    diagnoses = rdbm.updateRecordFieldsByFilter(rdbm, schemaDataName, "sample_analysis", 
-                                                                        new String[]{"status", "status_previous"}, new Object[]{sampleAnalysisStatusCanceled, currStatus}, 
-                                                                        new String[]{"test_id"}, new Object[]{currTest});      
-                    if (diagnoses[3].toString().equalsIgnoreCase("TRUE")){
-                        String[] fieldsForAudit = new String[0];
-                        fieldsForAudit = labArr.addValueToArray1D(fieldsForAudit, "status:"+sampleAnalysisStatusCanceled);
-                        fieldsForAudit = labArr.addValueToArray1D(fieldsForAudit, "status_previous:"+currStatus);
-                        smpAudit.sampleAuditAdd(rdbm, schemaPrefix, "CANCEL_RESULT", "sample_analysis", currTest, sampleId, currTest, null, fieldsForAudit, userName, userRole);        
-                    }                        
-                }else{
-                    StackTraceElement[] elements = Thread.currentThread().getStackTrace();
-                    diagnoses[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
-                    diagnoses[1]= classVersion;
-                    diagnoses[2]= "Code Line " + String.valueOf(elements[1].getLineNumber());   
-                    diagnoses[3]="FALSE";
-                    diagnoses[4]="ERROR:OBJECT NOT CANCELABLE";                    
-                    diagnoses[5]="The test "+currTest.toString()+" has status "+currStatus+" then cannot be canceled in schema "+schemaDataName;                    
-                }
-        }
-        
-        for (Integer iSmpToCancel=0;iSmpToCancel<samplesToCancel.length;iSmpToCancel++){
-                Integer currSample = (Integer) samplesToCancel[iSmpToCancel];
-                objectInfo = rdbm.getRecordFieldsByFilter(rdbm, schemaDataName, "sample", 
-                                                                    new String[]{"sample_id"},
-                                                                    new Object[]{currSample},
-                                                                    new String[]{"status","status_previous","sample_id", "sample_id"});
-                String currStatus = (String) objectInfo[0][0];               
-                if ( (!(sampleStatusCanceled.equalsIgnoreCase(currStatus))) && (!(sampleStatusReviewed.equalsIgnoreCase(currStatus))) && (currSample!=null) ){
-                    diagnoses = rdbm.updateRecordFieldsByFilter(rdbm, schemaDataName, "sample", 
-                                                                        new String[]{"status", "status_previous"}, new Object[]{sampleStatusCanceled, currStatus}, 
-                                                                        new String[]{"sample_id"}, new Object[]{currSample});                                                        
-                if ("TRUE".equalsIgnoreCase(diagnoses[3])){
-                    String[] fieldsForAudit = new String[0];
-                    fieldsForAudit = labArr.addValueToArray1D(fieldsForAudit, "status:"+sampleStatusCanceled);
-                    fieldsForAudit = labArr.addValueToArray1D(fieldsForAudit, "status_previous:"+currStatus);
-                    smpAudit.sampleAuditAdd(rdbm, schemaPrefix, "CANCEL_RESULT", "sample", currSample, currSample, null, null, fieldsForAudit, userName, userRole);        
-                }                        
-                }else{
-                    StackTraceElement[] elements = Thread.currentThread().getStackTrace();
-                    diagnoses[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
-                    diagnoses[1]= classVersion;
-                    diagnoses[2]= "Code Line " + String.valueOf(elements[1].getLineNumber());   
-                    diagnoses[3]="FALSE";
-                    diagnoses[4]="ERROR:OBJECT NOT CANCELABLE";                    
-                    diagnoses[5]="The sample "+currSample.toString()+" has status "+currStatus+" then cannot be canceled in schema "+schemaDataName;                    
-                }
-        }
-        return diagnoses;
-    }
-    
-    public String[] sampleAnalysisResultUnCancel(Rdbms rdbm, String schemaPrefix, String userName, Integer sampleId, Integer testId, Integer resultId, String userRole) throws SQLException{
-        
-        tableName = "sample_analysis_result";  
-       
-        String auditActionName = "SAMPLE_ANALYSIS_RESULT_UNCANCELING";
-        
-        LabPLANETPlatform labPlat = new LabPLANETPlatform();
-        schemaDataName = labPlat.buildSchemaName(schemaPrefix, schemaDataName);  
-        schemaConfigName = labPlat.buildSchemaName(schemaPrefix, schemaConfigName); 
-            
-
-        ResourceBundle prop = rdbm.getParameterBundle(schemaDataName.replace("\"", ""));
-        String sampleAnalysisResultStatusCanceled = rdbm.getParameterBundle(schemaDataName.replace("\"", ""), "sampleAnalysisResult_statusCanceled");
-        String sampleAnalysisResultStatusReviewed = rdbm.getParameterBundle(schemaDataName.replace("\"", ""), "sampleAnalysisResult_statusReviewed");
-        String sampleAnalysisStatusCanceled = rdbm.getParameterBundle(schemaDataName.replace("\"", ""), "sampleAnalysis_statusCanceled");
-        String sampleAnalysisStatusReviewed = rdbm.getParameterBundle(schemaDataName.replace("\"", ""), "sampleAnalysis_statusReviewed");
-        String sampleStatusCanceled = rdbm.getParameterBundle(schemaDataName.replace("\"", ""), "sample_statusCanceled");
-        String sampleStatusReviewed = rdbm.getParameterBundle(schemaDataName.replace("\"", ""), "sample_statusReviewed");
-        
-        String cancelScope = ""; Integer cancelScopeId = 0;
-        if (sampleId!=null ){cancelScope = "sample_id"; cancelScopeId=sampleId;}
-        if (testId!=null ){cancelScope = "test_id"; cancelScopeId=testId;}
-        if (resultId!=null){cancelScope = "result_id"; cancelScopeId=resultId;}
-        Object[][] resultInfo = null;
-        resultInfo = rdbm.getRecordFieldsByFilter(rdbm, schemaDataName, tableName, 
-                                                            new String[]{cancelScope},
-                                                            new Object[]{cancelScopeId},
-                                                            new String[]{"status","status_previous", "result_id","test_id", "sample_id"});
-        if (resultInfo.length==0){
-            StackTraceElement[] elements = Thread.currentThread().getStackTrace();
-            diagnoses[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
-            diagnoses[1]= classVersion;
-            diagnoses[2]= "Code Line " + String.valueOf(elements[1].getLineNumber());
-            diagnoses[3]="FALSE";
-            diagnoses[4]="ERROR:NO RESULTS FOUND";
-            String[] filter = new String[]{"sample_id:"+sampleId.toString()+" test_id:"+testId.toString()+" result_id:"+resultId.toString()};
-            diagnoses[5]="No results can be canceled as nothing was found in schema "+schemaDataName+". The values are:"+(char) 10 + Arrays.toString(filter);
-            return diagnoses;
-        }
-        Object[] samplesToUnCancel = new Object[0];
-        Object[] testsToUnCancel = new Object[0];       
-        String[] diagPerResult = new String[0];
-        for (Integer iResToCancel=0;iResToCancel<resultInfo.length;iResToCancel++){
-            String currResultStatus = (String) resultInfo[iResToCancel][0];
-            String statusPrevious = (String) resultInfo[iResToCancel][1];
-            resultId = (Integer) resultInfo[iResToCancel][2];
-            testId = (Integer) resultInfo[iResToCancel][3];
-            sampleId = (Integer) resultInfo[iResToCancel][4];
-            if (!(sampleAnalysisResultStatusCanceled.equalsIgnoreCase(currResultStatus))){        
-                StackTraceElement[] elements = Thread.currentThread().getStackTrace();
-                diagnoses[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
-                diagnoses[1]= classVersion;
-                diagnoses[2]= "Code Line " + String.valueOf(elements[1].getLineNumber());
-                diagnoses[3]="FALSE";
-                diagnoses[4]="ERROR:"+cancelScope+" IS NOT CANCELED";
-                //String[] filter = new String[]{"sample_id:"+sampleId.toString()+" test_id:"+testId.toString()+" result_id:"+resultId.toString()};
-                diagnoses[5]="The current status is " + resultInfo[0][0].toString() + " and just " + sampleAnalysisResultStatusCanceled + " can be uncanceled. Actions applied in schema "+schemaDataName+". The values are:";//+Arrays.toString(filter);
-            //    return diagnoses;   
-                diagPerResult = labArr.addValueToArray1D(diagPerResult, "Result "+ resultId.toString() + " not uncanceled because current status is "+ currResultStatus);
-            }else{    
-            resultId = (Integer) resultInfo[iResToCancel][2];
-            diagnoses = rdbm.updateRecordFieldsByFilter(rdbm, schemaDataName, tableName, 
-                                                                new String[]{"status_previous", "status"}, 
-                                                                new Object[]{sampleAnalysisResultStatusCanceled, statusPrevious}, 
-                                                                new String[]{"result_id"}, new Object[]{resultId});
-            if ("TRUE".equalsIgnoreCase(diagnoses[3])){
-                String[] fieldsForAudit = new String[0];
-                fieldsForAudit = labArr.addValueToArray1D(fieldsForAudit, "status_previous:"+sampleAnalysisResultStatusCanceled);
-                fieldsForAudit = labArr.addValueToArray1D(fieldsForAudit, "status:"+statusPrevious);
-                smpAudit.sampleAuditAdd(rdbm, schemaPrefix, auditActionName, this.getSampleGrouper()+"_"+"sample_analysis_result", resultId, sampleId, testId, resultId, fieldsForAudit, userName, userRole);
-            }
-            diagPerResult = labArr.addValueToArray1D(diagPerResult, "Result "+ resultId.toString() + " UNCANCELED ");            
-            }
-            if ((cancelScope.equalsIgnoreCase("sample_id")) && (!labArr.valueInArray(samplesToUnCancel, sampleId)))
-                    {samplesToUnCancel = labArr.addValueToArray1D(samplesToUnCancel, sampleId);}
-            if ((cancelScope.equalsIgnoreCase("sample_id") || cancelScope.equalsIgnoreCase("test_id")) && (!labArr.valueInArray(testsToUnCancel, testId)))
-                {testsToUnCancel = labArr.addValueToArray1D(testsToUnCancel, testId);
-                }
-            
-        }   
-        
-        for (Integer iTstToUnCancel=0;iTstToUnCancel<testsToUnCancel.length;iTstToUnCancel++){
-                Integer currTest = (Integer) testsToUnCancel[iTstToUnCancel];                
-                Object[][] objectInfo = rdbm.getRecordFieldsByFilter(rdbm, schemaDataName, "sample_analysis", 
-                                                                new String[]{"test_id"},
-                                                                new Object[]{currTest},
-                                                                new String[]{"status","status_previous","test_id", "sample_id"});
-                String currStatus = (String) objectInfo[0][0];               
-                String currPrevStatus = (String) objectInfo[0][1];               
-                if ( ((sampleAnalysisStatusCanceled.equalsIgnoreCase(currStatus))) && (currTest!=null) ) {                    
-                    diagnoses = rdbm.updateRecordFieldsByFilter(rdbm, schemaDataName, "sample_analysis", 
-                                                                        new String[]{"status", "status_previous"}, new Object[]{currPrevStatus, sampleAnalysisResultStatusCanceled}, 
-                                                                        new String[]{"test_id"}, new Object[]{currTest});      
-                    if ("TRUE".equalsIgnoreCase(diagnoses[3])){
-                        String[] fieldsForAudit = new String[0];
-                        fieldsForAudit = labArr.addValueToArray1D(fieldsForAudit, "status_previous:"+sampleAnalysisResultStatusCanceled);
-                        fieldsForAudit = labArr.addValueToArray1D(fieldsForAudit, "status:"+currPrevStatus);
-                        smpAudit.sampleAuditAdd(rdbm, schemaPrefix, "UNCANCEL_RESULT", this.getSampleGrouper()+"_"+"sample_analysis", currTest, sampleId, currTest, null, fieldsForAudit, userName, userRole);        
-                    }                        
-                }else{    
-                    diagnoses[5]="The test "+currTest.toString()+" has status "+currStatus+" then cannot be canceled in schema "+schemaDataName;                    
-                }
-        }
-        
-        for (Integer iSmpToUnCancel=0;iSmpToUnCancel<samplesToUnCancel.length;iSmpToUnCancel++){
-                Integer currSample = (Integer) samplesToUnCancel[iSmpToUnCancel];
-                Object[][] objectInfo = rdbm.getRecordFieldsByFilter(rdbm, schemaDataName, "sample", 
-                                                                    new String[]{"sample_id"},
-                                                                    new Object[]{currSample},
-                                                                    new String[]{"status","status_previous","sample_id", "sample_id"});
-                String currStatus = (String) objectInfo[0][0];    
-                String currPrevStatus = (String) objectInfo[0][1];  
-                if ( ((sampleStatusCanceled.equalsIgnoreCase(currStatus))) && (currSample!=null) ){
-                    diagnoses = rdbm.updateRecordFieldsByFilter(rdbm, schemaDataName, "sample", 
-                                                                        new String[]{"status", "status_previous"}, new Object[]{currPrevStatus, sampleAnalysisResultStatusCanceled}, 
-                                                                        new String[]{"sample_id"}, new Object[]{currSample});                                                        
-                if ("TRUE".equalsIgnoreCase(diagnoses[3])){
-                    String[] fieldsForAudit = new String[0];
-                    fieldsForAudit = labArr.addValueToArray1D(fieldsForAudit, "status_previous:"+sampleAnalysisResultStatusCanceled);
-                    fieldsForAudit = labArr.addValueToArray1D(fieldsForAudit, "status:"+currPrevStatus);
-                    smpAudit.sampleAuditAdd(rdbm, schemaPrefix, "UNCANCEL_RESULT", "sample", currSample, currSample, null, null, fieldsForAudit, userName, userRole);        
-                }                        
-                }else{    
-                    diagnoses[5]="The sample "+currSample.toString()+" has status "+currStatus+" then cannot be canceled in schema "+schemaDataName;                    
-                }
-        }        
-        diagnoses[5] = Arrays.toString(diagPerResult);
-        return diagnoses;
-    }    
 
 }
