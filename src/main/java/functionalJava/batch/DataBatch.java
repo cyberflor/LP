@@ -30,7 +30,7 @@ public class DataBatch {
     String schemaConfigName = "config";
     String tableName = "user_method"; 
     
-    String[] diagnoses = new String[7];    
+    Object[] diagnoses = new Object[7];    
     
     public String dbCreateBatchArray(Rdbms rdbm, String schemaName, String transac, BatchArray batchArray)
     {
@@ -46,7 +46,7 @@ public class DataBatch {
         }       
         String[] sd = singleDArray.toArray(new String[singleDArray.size()]);       
 
-        String[] insertRecordInTable = rdbm.insertRecordInTable(rdbm, schemaName, tableName, 
+        Object[] insertRecordInTable = rdbm.insertRecordInTable(rdbm, schemaName, tableName, 
                                                 new String[]{"name, template, template_version, array_num_rows,"
                                                     + "array_num_cols, array_total_positions, array_total_objects"},
                                                 new Object [] {batchArray.getBatchName(), batchArray.getBatchTemplate(), batchArray.getBatchTemplateVersion(), batchArray.numRows,
@@ -70,7 +70,7 @@ public class DataBatch {
         }       
         String[] sd = singleDArray.toArray(new String[singleDArray.size()]);       
         
-        String[] insertRecordInTable = rdbm.insertRecordInTable(rdbm, schemaName, tableName, 
+        Object[] insertRecordInTable = rdbm.insertRecordInTable(rdbm, schemaName, tableName, 
                                                 new String[]{"name, template, template_version, array_num_rows,"
                                                     + "array_num_cols, array_total_positions, array_total_objects"},
                                                 new Object [] {batchArray.getBatchName(), batchArray.getBatchTemplate(), batchArray.getBatchTemplateVersion(), batchArray.numRows,
@@ -85,10 +85,10 @@ public class DataBatch {
         String tableName = "batch_java";
         Integer pk = 0;
        
-        String[] diagnoses = rdbm.updateRecordFieldsByFilter(rdbm, schemaName, tableName, 
+        Object[] diagnoses = rdbm.updateRecordFieldsByFilter(rdbm, schemaName, tableName, 
                 new String[]{fieldName}, new Object[]{fieldValue}, 
                 new String[]{"name"}, new Object[]{batchName});
-        pk = Integer.parseInt(diagnoses[6]);
+        pk = Integer.parseInt(diagnoses[6].toString());
         return pk; 
     }    
 }

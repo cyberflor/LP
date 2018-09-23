@@ -24,7 +24,7 @@ import java.util.logging.Logger;
  */
 public class ConfigSpecStructure {
 
-    String[] diagnoses = new String[6];
+    Object[] diagnoses = new Object[6];
     String classVersion = "Class Version=0.1";
     
     String[] mandatoryFields = new String[1];
@@ -226,12 +226,12 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
         fieldNames[2]="method_version";        
         fieldValues[2]=methodVersion;                            
         
-        String[] diagnosis = rdbm.existsRecord(rdbm, schemaName, "analysis_method", fieldNames, fieldValues);        
-        if (diagnosis[3].equalsIgnoreCase("TRUE")){
+        Object[] diagnosis = rdbm.existsRecord(rdbm, schemaName, "analysis_method", fieldNames, fieldValues);        
+        if ("LABPLANET_TRUE".equalsIgnoreCase(diagnosis[0].toString())){
             myDiagnoses = "SUCCESS";        }
         else{    
-            diagnosis = rdbm.existsRecord(rdbm, schemaName, "analysis", "code", analysis);
-            if (diagnosis[3].equalsIgnoreCase("TRUE")){
+            diagnosis = rdbm.existsRecord(rdbm, schemaName, "analysis", new String[]{"code"}, analysis);
+            if ("LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){
                 myDiagnoses = "ERROR: The analysis " + analysis + " exists but the method " + methodName +" with version "+ methodVersion+ " was not found in the schema "+schemaPrefix;            
             }
             else{
@@ -296,20 +296,20 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
         return myDiagnoses;                    
     }
     
-    public String[] specRemove(Rdbms rdbm, String schemaPrefix, String code){
+    public Object[] specRemove(Rdbms rdbm, String schemaPrefix, String code){
         return diagnoses;
     }
         
-    public String[] specUpdate(Rdbms rdbm, String schemaPrefix, String specCode, Integer specCodeVersion, String[] specFieldName, Object[] specFieldValue) throws SQLException{
+    public Object[] specUpdate(Rdbms rdbm, String schemaPrefix, String specCode, Integer specCodeVersion, String[] specFieldName, Object[] specFieldValue) throws SQLException{
         
         String schemaName = "config";        
-        String[] diagnoses = new String[6];
+        Object[] diagnoses = new Object[6];
          
         LabPLANETPlatform labPlat = new LabPLANETPlatform();
         schemaName = labPlat.buildSchemaName(schemaPrefix, schemaName);
             
         diagnoses = rdbm.existsRecord(rdbm, schemaName, "spec", new String[]{"code", "config_version"}, new Object[] {specCode, specCodeVersion});        
-        if (diagnoses[3].equalsIgnoreCase("FALSE")){return diagnoses;}
+        if ("LABPLANET_FALSE".equalsIgnoreCase(diagnoses[0].toString())){return diagnoses;}
         
         String[] specialFields = getSpecialFields();
         String[] specialFieldsFunction = getSpecialFieldsFunction();
@@ -396,7 +396,7 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
         return diagnoses;
     }
 
-    public String[] specNew(Rdbms rdbm, String schemaPrefix, String[] specFieldName, Object[] specFieldValue ) throws SQLException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{                          
+    public Object[] specNew(Rdbms rdbm, String schemaPrefix, String[] specFieldName, Object[] specFieldValue ) throws SQLException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{                          
         String newCode = "";
         String schemaName = "config";
         String query = "";
@@ -494,7 +494,7 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
             }
         }
         diagnoses = rdbm.existsRecord(rdbm, schemaName, "spec", new String[]{"code", "config_version"}, new Object[] {newCode, newCodeVersion});        
-        if (diagnoses[3].equalsIgnoreCase("TRUE")){
+        if ("LABPLANET_FALSE".equalsIgnoreCase(diagnoses[0].toString())){
             StackTraceElement[] elements = Thread.currentThread().getStackTrace();
             diagnoses[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
             diagnoses[1]= classVersion;
@@ -510,7 +510,7 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
             diagnoses = rdbm.insertRecordInTable(rdbm, schemaName, "spec_rules", 
                     new String[]{"code", "config_version", "allow_other_analysis", "allow_multi_spec"}, 
                     new Object[]{newCode, newCodeVersion, false, false});       
-            if (diagnoses[3].equalsIgnoreCase("TRUE")){
+            if ("LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){
                 StackTraceElement[] elements = Thread.currentThread().getStackTrace();
                 diagnoses[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
                 diagnoses[1]= classVersion;
@@ -591,7 +591,7 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
         }             
     }
     
-    public String[] specLimitNew(Rdbms rdbm, String schemaPrefix, String[] specFieldName, Object[] specFieldValue ) throws SQLException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
+    public Object[] specLimitNew(Rdbms rdbm, String schemaPrefix, String[] specFieldName, Object[] specFieldValue ) throws SQLException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
                           
         String code = "";
         String schemaName = "config";
@@ -643,7 +643,7 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
         Integer codeVersion = (Integer) specFieldValue[fieldIndex];
 
         diagnoses = rdbm.existsRecord(rdbm, schemaName, "spec", new String[]{"code", "config_version"}, new Object[] {code, codeVersion});        
-        if (!diagnoses[3].equalsIgnoreCase("TRUE")){
+        if (!"LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){
             StackTraceElement[] elements = Thread.currentThread().getStackTrace();
             diagnoses[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
             diagnoses[1]= classVersion;
@@ -718,7 +718,7 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
         diagnoses = rdbm.existsRecord(rdbm, schemaName, "analysis_method", 
                 new String[]{"analysis", "method_name", "method_version"}, 
                 new Object[] {analysis, methodName, methodVersion});        
-        if (!diagnoses[3].equalsIgnoreCase("TRUE")){
+        if (!"LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){
             StackTraceElement[] elements = Thread.currentThread().getStackTrace();
             diagnoses[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
             diagnoses[1]= classVersion;
@@ -733,7 +733,7 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
             diagnoses = rdbm.existsRecord(rdbm, schemaName, "analysis_method_params", 
                     new String[]{"analysis", "method_name", "method_version", "param_name"}, 
                     new Object[] {analysis, methodName, methodVersion, parameter});        
-            if (!diagnoses[3].equalsIgnoreCase("TRUE")){
+            if (!"LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){
                 StackTraceElement[] elements = Thread.currentThread().getStackTrace();
                 diagnoses[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
                 diagnoses[1]= classVersion;

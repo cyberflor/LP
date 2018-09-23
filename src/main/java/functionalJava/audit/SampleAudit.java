@@ -102,8 +102,8 @@ public class SampleAudit {
         
 //        fieldNames = labArr.addValueToArray1D(fieldNames, "user");
 //        fieldValues = labArr.addValueToArray1D(fieldValues, userName);        
-        String[] diagnoses = rdbm.insertRecordInTable(rdbm, schemaName, auditTableName, fieldNames, fieldValues);
-        String veredict= diagnoses[3];
+        Object[] diagnoses = rdbm.insertRecordInTable(rdbm, schemaName, auditTableName, fieldNames, fieldValues);
+        String veredict= diagnoses[0].toString();
     }
 
  /**
@@ -137,8 +137,8 @@ public class SampleAudit {
         fieldValues = labArr.addValueToArray1D(fieldValues, tableId);        
 //        fieldNames = labArr.addValueToArray1D(fieldNames, "user");
 //        fieldValues = labArr.addValueToArray1D(fieldValues, userName);        
-        String[] diagnoses = rdbm.insertRecordInTable(rdbm, schemaName, auditTableName, fieldNames, fieldValues);
-        String veredict= diagnoses[3];
+        Object[] diagnoses = rdbm.insertRecordInTable(rdbm, schemaName, auditTableName, fieldNames, fieldValues);
+        String veredict= (String) diagnoses[0];
     }
 
 /**

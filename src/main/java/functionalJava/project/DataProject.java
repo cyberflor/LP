@@ -28,7 +28,7 @@ public class DataProject extends DataSample{
 
     Rdbms rdbms;
     String lastError;
-    String[] diagnoses = new String[7];
+    Object[] diagnoses = new Object[7];
 
     String[] mandatoryFields = null;
     Object[] mandatoryFieldsValue = null;
@@ -51,16 +51,16 @@ public class DataProject extends DataSample{
         super(grouperName);
     }
 
-public String[] createProjectDev(Rdbms rdbm, String schemaPrefix, String sampleTemplate, Integer sampleTemplateVersion, String[] sampleFieldName, Object[] sampleFieldValue, String userName, String userRole) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException{
-    String[] diag = createProject(rdbm, schemaPrefix, sampleTemplate, sampleTemplateVersion, sampleFieldName, sampleFieldValue, userName, userRole, true);
+public Object[] createProjectDev(Rdbms rdbm, String schemaPrefix, String sampleTemplate, Integer sampleTemplateVersion, String[] sampleFieldName, Object[] sampleFieldValue, String userName, String userRole) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException{
+    Object[] diag = createProject(rdbm, schemaPrefix, sampleTemplate, sampleTemplateVersion, sampleFieldName, sampleFieldValue, userName, userRole, true);
     return diag;
 }
-public String[] createProject(Rdbms rdbm, String schemaPrefix, String sampleTemplate, Integer sampleTemplateVersion, String[] sampleFieldName, Object[] sampleFieldValue, String userName, String userRole) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException{
-    String[] diag = createProject(rdbm, schemaPrefix, sampleTemplate, sampleTemplateVersion, sampleFieldName, sampleFieldValue, userName, userRole, false);
+public Object[] createProject(Rdbms rdbm, String schemaPrefix, String sampleTemplate, Integer sampleTemplateVersion, String[] sampleFieldName, Object[] sampleFieldValue, String userName, String userRole) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException{
+    Object[] diag = createProject(rdbm, schemaPrefix, sampleTemplate, sampleTemplateVersion, sampleFieldName, sampleFieldValue, userName, userRole, false);
     return diag;
 }
 
-String[] createProject(Rdbms rdbm, String schemaPrefix, String projectTemplate, Integer projectTemplateVersion, String[] sampleFieldName, Object[] sampleFieldValue, String userName, String userRole, Boolean devMode) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException{
+Object[] createProject(Rdbms rdbm, String schemaPrefix, String projectTemplate, Integer projectTemplateVersion, String[] sampleFieldName, Object[] sampleFieldValue, String userName, String userRole, Boolean devMode) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException{
 
     if (devMode==true){
         try {
@@ -177,8 +177,8 @@ String[] createProject(Rdbms rdbm, String schemaPrefix, String projectTemplate, 
             diagnoses[5]="Mandatory fields not found: "+mandatoryFieldsMissing;
             return diagnoses;
         }        
-        String[] diagnosis = rdbm.existsRecord(rdbm, schemaConfigName, tableName, new String[]{"config","config_version"}, new Object[]{projectTemplate, projectTemplateVersion});
-        if (!diagnosis[3].equalsIgnoreCase("TRUE")){
+        Object[] diagnosis = rdbm.existsRecord(rdbm, schemaConfigName, tableName, new String[]{"config","config_version"}, new Object[]{projectTemplate, projectTemplateVersion});
+        if (!"LABPLANET_TRUE".equalsIgnoreCase(diagnosis[0].toString())){	
             StackTraceElement[] elements = Thread.currentThread().getStackTrace();
             diagnoses[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
             diagnoses[1]= classVersion;
@@ -247,9 +247,9 @@ String[] createProject(Rdbms rdbm, String schemaPrefix, String projectTemplate, 
     return diagnoses; 
 }    
 
-public String[] logProjectSample(Rdbms rdbm, String schemaPrefix, String projectTemplate, Integer projectTemplateVersion, String[] fieldName, Object[] fieldValue, String userName, String userRole, String projectName){
+public Object[] logProjectSample(Rdbms rdbm, String schemaPrefix, String projectTemplate, Integer projectTemplateVersion, String[] fieldName, Object[] fieldValue, String userName, String userRole, String projectName){
     
-    String[] newProjSample = new String[0];
+    Object[] newProjSample = new Object[0];
         try {
             DataSample ds = new DataSample("project");
             fieldName = labArr.addValueToArray1D(fieldName, "project");

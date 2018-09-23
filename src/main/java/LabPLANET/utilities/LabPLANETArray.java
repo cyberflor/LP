@@ -38,7 +38,7 @@ public class LabPLANETArray {
     String schemaConfigName = "config";    
     String errorCode = "";
     String[] errorDetailVariables = new String[0];
-    LabPLANETPlatform labPlat = new LabPLANETPlatform();
+//    LabPLANETPlatform labPlat = new LabPLANETPlatform();
     Rdbms rdbm = new Rdbms();           
     
     public boolean duplicates(String[] zipcodelist){
@@ -341,6 +341,21 @@ public class LabPLANETArray {
         }                
        return array2d;
     }
+    public Object[][] array1dTo2d(Object[] array1d, Integer numColumns){
+        
+        Integer numLines = array1d.length/numColumns;
+        Object[][] array2d = new Object[numLines][numColumns];        
+        int inumLines = 0;    
+        int iTotal = 0;
+        while ( iTotal < array1d.length) {
+            for (int inumColumns=0; inumColumns<numColumns;inumColumns++){
+                array2d[inumLines][inumColumns]=array1d[iTotal];
+                if (inumColumns+1==numColumns){inumLines++;}
+                iTotal++;
+            }                        
+        }                
+       return array2d;
+    }    
 /**
  * Determines is the given value is present in the array.
  * @param array Object[]
@@ -560,6 +575,7 @@ public class LabPLANETArray {
  * @return String[6]. Position 3 FALSE/TRUE is the diagnostic.
  */    
     public String[] checkTwoArraysSameLength(Object[] arrayA, Object[] arrayB){
+        LabPLANETPlatform labPlat = new LabPLANETPlatform();
         String[] diagnoses = new String[6];
             StackTraceElement[] elements = Thread.currentThread().getStackTrace();
             diagnoses[0]= elements[1].getClassName() + "." + elements[1].getMethodName() + " called from " + elements[2].getMethodName();
@@ -581,8 +597,9 @@ public class LabPLANETArray {
  * @return Object[]. Position 3 set to FALSE when not possible. 
  */    
     public Object[] getColumnFromArray2D(Object[][] array, Integer colNum){
+        LabPLANETPlatform labPlat = new LabPLANETPlatform();
         Object[] diagnoses = new Object[0];
-     
+        
         if (colNum>array[0].length){
            errorCode = "LabPLANETArray_getColumnFromArray2D_ColNotFound";
            errorDetailVariables = (String[]) addValueToArray1D(errorDetailVariables, array[0].length);

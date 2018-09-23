@@ -67,7 +67,7 @@ public class SopList {
     
     public String[] getSopListSopAssigned(){ return this.sopListSopAssigned;}
     
-    public String[] dbInsertSopList(Rdbms rdbm, String schemaPrefix, String userInfoId){
+    public Object[] dbInsertSopList(Rdbms rdbm, String schemaPrefix, String userInfoId){
     
         schemaDataName = labPlat.buildSchemaName(schemaPrefix, schemaDataName);
 //        schemaPrefix = "\""+schemaPrefix+"\"";
@@ -87,16 +87,16 @@ public class SopList {
         fieldValues = labArr.addValueToArray1D(fieldValues, userInfoId);
         
         //requires added_on        
-        String[] diagnoses = rdbm.insertRecordInTable(rdbm, schemaPrefix, tableName, fieldNames, fieldValues);
+        Object[] diagnoses = rdbm.insertRecordInTable(rdbm, schemaPrefix, tableName, fieldNames, fieldValues);
         
         return diagnoses;
         
     }
     
-    public String[] dbUpdateSopListSopAssigned(Rdbms rdbm, String schemaPrefix, String[] sopAssigned) throws SQLException{
+    public Object[] dbUpdateSopListSopAssigned(Rdbms rdbm, String schemaPrefix, String[] sopAssigned) throws SQLException{
     
         schemaDataName = labPlat.buildSchemaName(schemaPrefix, schemaDataName);
-        String[] diagnoses = rdbm.updateRecordFieldsByFilter(rdbm, schemaDataName, tableName, 
+        Object[] diagnoses = rdbm.updateRecordFieldsByFilter(rdbm, schemaDataName, tableName, 
                                         new String[]{"sop_assigned"}, new Object[]{this.sopListId}, 
                                         new String[]{"sop_list_id"}, new Object[]{sopAssigned});        
         return diagnoses;

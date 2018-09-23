@@ -24,6 +24,10 @@
         <servlet-name>UT_moduleSample</servlet-name>
         <servlet-class>com.labplanet.servicios.UT_moduleSample</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>DBQueries</servlet-name>
+        <servlet-class>com.labplanet.servicios.testing.Platform.DBQueries</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>Authenticate</servlet-name>
         <url-pattern>/Authenticate</url-pattern>
@@ -47,6 +51,10 @@
     <servlet-mapping>
         <servlet-name>UT_moduleSample</servlet-name>
         <url-pattern>/UT_moduleSample</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DBQueries</servlet-name>
+        <url-pattern>/DBQueries</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

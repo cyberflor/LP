@@ -18,7 +18,7 @@ import java.util.Arrays;
  */
 public class ConfigSamplingPlanForSpec {
     
-    String[] diagnoses = new String[6];
+    Object[] diagnoses = new Object[6];
     String classVersion = "Class Version=0.1";
     String javaDocLineName = "";
     String[] javaDocFields = new String[0];
@@ -33,17 +33,17 @@ public class ConfigSamplingPlanForSpec {
     LabPLANETPlatform labPlat = new LabPLANETPlatform();
     LabPLANETArray labArr = new LabPLANETArray();
 
-    public String[] newSamplingPlanDetailRecord(Rdbms rdbm, String schemaPrefix, String userName, String userRole, String[] fieldsName, Object[] fieldsValue) throws SQLException{
+    public Object[] newSamplingPlanDetailRecord(Rdbms rdbm, String schemaPrefix, String userName, String userRole, String[] fieldsName, Object[] fieldsValue) throws SQLException{
         diagnoses = newSamplingPlanDetailRecordDev(rdbm, schemaPrefix, userName, userRole, fieldsName, fieldsValue, false);
         return diagnoses;
     }
 
-    public String[] newSamplingPlanDetailRecord(Rdbms rdbm, String schemaPrefix, String userName, String userRole, String[] fieldsName, Object[] fieldsValue, Boolean devMode) throws SQLException{
+    public Object[] newSamplingPlanDetailRecord(Rdbms rdbm, String schemaPrefix, String userName, String userRole, String[] fieldsName, Object[] fieldsValue, Boolean devMode) throws SQLException{
         diagnoses = newSamplingPlanDetailRecordDev(rdbm, schemaPrefix, userName, userRole, fieldsName, fieldsValue, devMode);
         return diagnoses;
     }
         
-    public String[] newSamplingPlanDetailRecordDev(Rdbms rdbm, String schemaPrefix, String userName, String userRole, String[] fieldsName, Object[] fieldsValue, Boolean devMode) throws SQLException{
+    public Object[] newSamplingPlanDetailRecordDev(Rdbms rdbm, String schemaPrefix, String userName, String userRole, String[] fieldsName, Object[] fieldsValue, Boolean devMode) throws SQLException{
     if (devMode==true){
         StackTraceElement[] elementsDev = Thread.currentThread().getStackTrace();
         javaDocLineName = "BEGIN";
@@ -111,7 +111,7 @@ public class ConfigSamplingPlanForSpec {
     }  
     if (devMode==false){
         diagnoses = labPlat.configObjectExists(rdbm, schemaConfigName, fieldsName, fieldsValue, tableName);
-        if ("FALSE".equalsIgnoreCase(diagnoses[3])){return diagnoses;}
+        if ("LABPLANET_FALSE".equalsIgnoreCase(diagnoses[0].toString())){return diagnoses;}
     }
     if (devMode==true){
         StackTraceElement[] elementsDev = Thread.currentThread().getStackTrace();
@@ -122,7 +122,7 @@ public class ConfigSamplingPlanForSpec {
     }  
     if (devMode==false){
         diagnoses = labPlat.specialFieldsCheck(rdbm, schemaDataName, fieldsName, fieldsValue, tableName, actionName);
-        if ("FALSE".equalsIgnoreCase(diagnoses[3])){return diagnoses;}
+        if ("LABPLANET_FALSE".equalsIgnoreCase(diagnoses[0].toString())){return diagnoses;}
     }
     if (devMode==true){
         StackTraceElement[] elementsDev = Thread.currentThread().getStackTrace();
@@ -133,7 +133,7 @@ public class ConfigSamplingPlanForSpec {
     }  
     if (devMode==false){
         diagnoses = rdbm.insertRecordInTable(rdbm, schemaDataName, tableName, fieldsName, fieldsValue);    
-        if ("FALSE".equalsIgnoreCase(diagnoses[3])){return diagnoses;}
+        if ("LABPLANET_FALSE".equalsIgnoreCase(diagnoses[0].toString())){return diagnoses;}
     }    
     if (devMode==true){
         StackTraceElement[] elementsDev = Thread.currentThread().getStackTrace();

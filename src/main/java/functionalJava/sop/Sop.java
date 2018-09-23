@@ -47,7 +47,7 @@ public class Sop {
         this.mandatoryLevel = mandatoryLevel;               
     }
 
-    public String[] dbInsertSopId(Rdbms rdbm, String schemaPrefix, String userInfoId) throws SQLException{
+    public Object[] dbInsertSopId(Rdbms rdbm, String schemaPrefix, String userInfoId) throws SQLException{
     
         schemaDataName = labPlat.buildSchemaName(schemaPrefix, schemaDataName);
 //        schemaPrefix = "\""+schemaPrefix+"\"";
@@ -66,7 +66,7 @@ public class Sop {
         fieldNames = labArr.addValueToArray1D(fieldNames, "added_by");
         fieldValues = labArr.addValueToArray1D(fieldValues, userInfoId);
         
-        String[] diagnoses = rdbm.insertRecordInTable(rdbm, schemaPrefix, tableName, fieldNames, fieldValues);
+        Object[] diagnoses = rdbm.insertRecordInTable(rdbm, schemaPrefix, tableName, fieldNames, fieldValues);
         
         return diagnoses;
     }
@@ -98,10 +98,10 @@ public class Sop {
         return sopInfo;
     }
 
-    public String[] createSop(Rdbms rdbm, String schemaPrefix, String sopName) throws SQLException {
+    public Object[] createSop(Rdbms rdbm, String schemaPrefix, String sopName) throws SQLException {
         
         schemaDataName = labPlat.buildSchemaName(schemaPrefix, schemaDataName);
-        String[] diagnoses = rdbm.insertRecordInTable(rdbm, schemaDataName, "sop_meta_data", 
+        Object[] diagnoses = rdbm.insertRecordInTable(rdbm, schemaDataName, "sop_meta_data", 
                             new String[]{"sop_name", "sop_version", "sop_revision"},
                             new Object[]{sopName, 1, 1});
         if ("FALSE".equals(diagnoses[3])){
@@ -125,11 +125,11 @@ public class Sop {
         }
     }   
         
-    public String[] updateSop(Rdbms rdbm, String schemaName, String schemaPrefix, String fieldName, String fieldValue, String fieldType) throws SQLException {
+    public Object[] updateSop(Rdbms rdbm, String schemaName, String schemaPrefix, String fieldName, String fieldValue, String fieldType) throws SQLException {
         schemaDataName = labPlat.buildSchemaName(schemaPrefix, schemaDataName);
-        String[] diagnoses = rdbm.updateRecordFieldsByFilter(rdbm, schemaDataName, "sop_meta_data", 
+        Object[] diagnoses = rdbm.updateRecordFieldsByFilter(rdbm, schemaDataName, "sop_meta_data", 
                                         new String[]{fieldName}, new Object[]{fieldValue}, new String[]{"sop_name"}, new Object[]{sopName});
-        if ("FALSE".equals(diagnoses[3])){
+        if ("LABPLANET_FALSE".equalsIgnoreCase(diagnoses[0].toString())){
             StackTraceElement[] elements = Thread.currentThread().getStackTrace();
             diagnoses[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
             diagnoses[1]= classVersion;

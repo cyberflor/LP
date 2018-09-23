@@ -39,9 +39,9 @@ public class UserSecurity {
                 diagnoses[1] = "Invalid password for the user "+user;   
             }
 
-            String[] userExists = rdbm.existsRecord(rdbm, schemaName, tableName, new String[]{"user_info_name"}, new String[]{user});
-            String diagn = userExists[3];
-            if (diagn.equalsIgnoreCase("FALSE")) {
+            Object[] userExists = rdbm.existsRecord(rdbm, schemaName, tableName, new String[]{"user_info_name"}, new String[]{user});
+            String diagn = userExists[0].toString();
+            if ("LABPLANET_FALSE".equalsIgnoreCase(diagn)){
                 diagnoses[1] = userExists[5];           
                 return diagnoses;
             }
@@ -50,10 +50,10 @@ public class UserSecurity {
                 diagnoses[1] = encrypted[1];           
                 return diagnoses;                
             }
-            String[] updateRecordFieldsByFilter = rdbm.updateRecordFieldsByFilter(rdbm, schemaName, tableName, 
+            Object[] updateRecordFieldsByFilter = rdbm.updateRecordFieldsByFilter(rdbm, schemaName, tableName, 
                     new String[]{"esign_value"}, new Object[]{encrypted[1]}, 
                     new String[]{"user_info_name"}, new String[]{user});
-            if (updateRecordFieldsByFilter[3].equalsIgnoreCase("FALSE")) {
+            if ("LABPLANET_FALSE".equalsIgnoreCase(updateRecordFieldsByFilter[0].toString())){            
                 diagnoses[1] = updateRecordFieldsByFilter[5];           
                 return diagnoses;
             }

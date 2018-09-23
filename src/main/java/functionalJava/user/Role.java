@@ -28,9 +28,9 @@ public class Role {
     String schemaConfigName = "config";
     String tableName = "role";  
     
-    String[] diagnoses = new String[7];
+    Object[] diagnoses = new Object[7];
     
-    public String[] createRole(Rdbms rdbm, String roleId) throws SQLException {        
+    public Object[] createRole(Rdbms rdbm, String roleId) throws SQLException {        
                 
         if (roleId.toUpperCase().contains("ALL")){            
             StackTraceElement[] elements = Thread.currentThread().getStackTrace();
@@ -43,7 +43,7 @@ public class Role {
             return diagnoses;
         }                
         diagnoses = rdbm.insertRecordInTable(rdbm, "config", "role", new String[]{"role_id", "active"}, new Object[]{roleId, true });
-            if ("TRUE".equalsIgnoreCase(diagnoses[3])){
+           if ("LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){	
             String newEntry = " for role " + roleId + ". Success, The record is created.";
             StackTraceElement[] elements = Thread.currentThread().getStackTrace();
             diagnoses[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
@@ -66,7 +66,7 @@ public class Role {
         }
     }    
     
-    public String[] addPrivilegeToRole(Rdbms rdbm, String privilegeId, String roleId, String procName) throws SQLException {
+    public Object[] addPrivilegeToRole(Rdbms rdbm, String privilegeId, String roleId, String procName) throws SQLException {
         String methodName = "addPrivilegeToRole";
         Integer id;      
         Integer numRecords = 0;
@@ -90,10 +90,11 @@ public class Role {
         }
         for (Integer inumRecords=0; inumRecords<numRecords; inumRecords++){
             if (roleId.toUpperCase().contains("ALL")){newRoleId = resRole.getString("role_id");}
-            String[] diagnoses = rdbm.existsRecord(rdbm, schemaConfigName, "role_privilege", "privilege_id", privilegeId + "," + roleId );
-            if (!diagnoses[3].equalsIgnoreCase("TRUE")){                
+            Object[] diagnoses = rdbm.existsRecord(rdbm, schemaConfigName, "role_privilege", 
+                    new String[]{"privilege_id"}, privilegeId + "," + roleId );
+            if ("LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){      
                 diagnoses = rdbm.insertRecordInTable(rdbm, "config", "role_privilege", new String[]{"role_id", "privilege_id"}, new Object[]{newRoleId, privilegeId });
-                if ("TRUE".equalsIgnoreCase(diagnoses[3])){
+                if ("LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){
                     StackTraceElement[] elements = Thread.currentThread().getStackTrace();
                     diagnoses[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
                     diagnoses[1]= classVersion;
@@ -118,12 +119,12 @@ public class Role {
     return diagnoses;
     }         
 
-    public String[] createPrivilege(Rdbms rdbm, String privilegeId) throws SQLException {
+    public Object[] createPrivilege(Rdbms rdbm, String privilegeId) throws SQLException {
 /*        String methodName = "createPrivilege";
         Integer id;                
 */        
         diagnoses = rdbm.insertRecordInTable(rdbm, "config", "privilege", new String[]{"privilege_id"}, new Object[]{privilegeId});
-        if ("TRUE".equalsIgnoreCase(diagnoses[3])){
+        if ("LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){
             StackTraceElement[] elements = Thread.currentThread().getStackTrace();
             diagnoses[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
             diagnoses[1]= classVersion;
