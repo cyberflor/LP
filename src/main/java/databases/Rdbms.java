@@ -187,7 +187,7 @@ public class Rdbms {
         
         return query;
     }
-
+    
     public Object[] existsRecord(Rdbms rdbm, String schemaName, String tableName, String[] keyFieldName, Object keyFieldValue){
         
         String[] diagnoses = new String[6];
@@ -195,11 +195,7 @@ public class Rdbms {
         LabPLANETPlatform labPlat = new LabPLANETPlatform();        
         
         String query = buildSqlStatement("SELECT", schemaName, tableName,
-                keyFieldName, new String[]{"="}, null, keyFieldName,  null, null);
-/*        String query = "";
-        query = "select " + keyFieldName + " from " + schemaName + "." + tableName
-                + "   where " + keyFieldName + "=? ";
-*/               
+                keyFieldName, new String[]{"="}, null, keyFieldName,  null, null);          
         try{
             ResultSet res;
             res = rdbm.prepRdQuery(query, new Object[] {keyFieldValue});
@@ -255,7 +251,7 @@ public class Rdbms {
             Boolean addToFilter = true;
             if (keyFieldValues[iFv].toString().equalsIgnoreCase("IN()")){addToFilter=false;}
             if (keyFieldValues[iFv].toString().equalsIgnoreCase("IS NULL")){addToFilter=false;}
-            if (keyFieldValues[iFv].toString().equalsIgnoreCase("IS NOE NULL")){addToFilter=false;}
+            if (keyFieldValues[iFv].toString().equalsIgnoreCase("IS NOT NULL")){addToFilter=false;}
             if (addToFilter){
                 filteredValues = labArr.addValueToArray1D(filteredValues, keyFieldValues[iFv]);
                 query = query + "=?";

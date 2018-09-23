@@ -55,9 +55,29 @@ public class DBQueries extends HttpServlet {
         LabPLANETArray labArr = new LabPLANETArray();
         Integer numTesting = 20;
         Integer inumTesting = 0;
-        Object[][] configSpecTestingArray = new Object[numTesting][6];
+        Object[][] configSpecTestingArray = new Object[numTesting][7];
         
         if (inumTesting<numTesting){
+            String[] fieldName= new String[0];
+            Object[] fieldValue=new Object[0];
+            String[] fieldToRetrieve= new String[0];
+            String schemaPrefix="config";
+            String tableName="analysis_method";
+            fieldToRetrieve = labArr.addValueToArray1D(fieldToRetrieve, "analysis");
+            fieldToRetrieve = labArr.addValueToArray1D(fieldToRetrieve, "analysis");
+            fieldToRetrieve = labArr.addValueToArray1D(fieldToRetrieve, "analysis");
+            fieldToRetrieve = labArr.addValueToArray1D(fieldToRetrieve, "analysis");
+            fieldName = labArr.addValueToArray1D(fieldName, "analysis");
+            fieldValue = labArr.addValueToArray1D(fieldValue, "pH");            
+            configSpecTestingArray[inumTesting][0]=schemaPrefix;
+            configSpecTestingArray[inumTesting][1]=tableName;
+            configSpecTestingArray[inumTesting][2]=userName;
+            configSpecTestingArray[inumTesting][3]=fieldName;
+            configSpecTestingArray[inumTesting][4]=fieldValue;
+            configSpecTestingArray[inumTesting][5]=fieldToRetrieve;
+            configSpecTestingArray[inumTesting][6]="EXISTSRECORD";
+            inumTesting++;
+        }        if (inumTesting<numTesting){
             String[] fieldName= new String[0];
             Object[] fieldValue=new Object[0];
             String[] fieldToRetrieve= new String[0];
@@ -382,7 +402,7 @@ public class DBQueries extends HttpServlet {
         out.println("</body>");
         out.println("</html>");                
         out.println("<table>");
-        out.println("<th>Test#</th><th>Schema Prefix</th><th>Function Being Tested</th><th>Field Name</th><th>Field Value</th><th>Evaluation</th>");        
+        out.println("<th>Test#</th><th>Function Being Tested</th><th>Schema Prefix</th><th>Function Being Tested</th><th>Field Name</th><th>Field Value</th><th>Evaluation</th>");        
         
         for (Integer i=0;i<configSpecTestingArray.length;i++){
             //if (configSpecTestingArray[i][2]==null && configSpecTestingArray[i][3]==null){
@@ -404,13 +424,19 @@ public class DBQueries extends HttpServlet {
             if (configSpecTestingArray[i][3]!=null){fieldName = (String[]) configSpecTestingArray[i][3];}
             if (configSpecTestingArray[i][4]!=null){fieldValue = (Object[]) configSpecTestingArray[i][4];}
             if (configSpecTestingArray[i][5]!=null){fieldsToRetrieve = (String[]) configSpecTestingArray[i][5];}
-            //if (configSpecTestingArray[i][6]!=null){functionBeingTested = (String[]) configSpecTestingArray[i][6];}
+            if (configSpecTestingArray[i][6]!=null){functionBeingTested = (String) configSpecTestingArray[i][6];}
 
-            out.println("<td>"+i+"</td><td>"+schemaPrefix+"</td><td>"+tableName+"</td><td>"+Arrays.toString(fieldName)+"</td><td><b>"+Arrays.toString(fieldValue)+"</b></td>");
-
+            out.println("<td>"+i+"</td><td>"+functionBeingTested+"</td><td>"+schemaPrefix+"</td><td>"+tableName+"</td><td>"+Arrays.toString(fieldName)+"</td><td><b>"+Arrays.toString(fieldValue)+"</b></td>");
             
-            dataSample2D = rdbm.getRecordFieldsByFilter(rdbm, schemaPrefix, tableName, fieldName, fieldValue, fieldsToRetrieve);
-            
+            switch (functionBeingTested.toUpperCase()){
+                case "EXISTSRECORD":   
+                    Object[] exRec =  rdbm.existsRecord(rdbm, schemaPrefix, tableName, fieldName, fieldValue);
+                    dataSample2D = labArr.array1dTo2d(exRec, 7);
+                    break;
+                default:
+                    dataSample2D = rdbm.getRecordFieldsByFilter(rdbm, schemaPrefix, tableName, fieldName, fieldValue, fieldsToRetrieve);
+                    break;
+            }        
             if (("LABPLANET_FALSE".equalsIgnoreCase(dataSample2D[0][0].toString()))){
                 fileContent = fileContent + "<td>"+dataSample2D[0][0].toString();
                 fileContent = fileContent + ". "+LabPLANETNullValue.replaceNull((String) dataSample2D[0][1]);
