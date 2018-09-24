@@ -28,6 +28,10 @@
         <servlet-name>DBQueries</servlet-name>
         <servlet-class>com.labplanet.servicios.testing.Platform.DBQueries</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>DBActions</servlet-name>
+        <servlet-class>com.labplanet.servicios.testing.Platform.DBActions</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>Authenticate</servlet-name>
         <url-pattern>/Authenticate</url-pattern>
@@ -55,6 +59,10 @@
     <servlet-mapping>
         <servlet-name>DBQueries</servlet-name>
         <url-pattern>/DBQueries</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DBActions</servlet-name>
+        <url-pattern>/DBActions</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

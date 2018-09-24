@@ -503,7 +503,7 @@ public class Rdbms_NotUse {
             }
             query = query + ") ";
                         
-            int numr = rdbm.prepUpQueryK(query, fieldValues, 1);
+            String numr = rdbm.prepUpQueryK(query, fieldValues, 1);
             
             //ResultSet res = rdbm.prepRdQuery(query, fieldValues);
             //res.last();

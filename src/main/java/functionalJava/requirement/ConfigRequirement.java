@@ -22,7 +22,7 @@ public class ConfigRequirement {
         try {
             String methodName = "RequirementConfigObjects-ProcessRequest";
             
-            Integer id =0;           
+            String id ="";           
             Requirement req = new Requirement();
             
             String query = "SELECT schema_name, table_name, object_name, field_name_1, field_value_1, field_name_2, field_value_2 "
@@ -60,7 +60,8 @@ public class ConfigRequirement {
                     Logger.getLogger(RequirementConfigObjects.class.getName()).log(Level.SEVERE, null, ex);}
 */                
                 String foreignTableName = "user_info";
-                Object[] diagnoses = rdbm.existsRecord(rdbm, "config", foreignTableName, new String[]{fieldName1}, fieldValue1);
+                Object[] diagnoses = rdbm.existsRecord(rdbm, "config", foreignTableName, 
+                        new String[]{fieldName1}, new Object[]{fieldValue1});
                 if (!"LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){
                     schemaName = "\"" + schemaName + "\"";
                     query = "Insert into " + schemaName + "."+foreignTableName+" (user_info_id) values (?)";
@@ -81,7 +82,8 @@ public class ConfigRequirement {
                 }
 */
                 foreignTableName = "role";
-                diagnoses = rdbm.existsRecord(rdbm, "config", foreignTableName, new String[]{fieldName2}, fieldValue2);
+                diagnoses = rdbm.existsRecord(rdbm, "config", foreignTableName, 
+                        new String[]{fieldName2}, new Object[]{fieldValue2});
                 if (!"LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){
                     schemaName = "\"" + schemaName + "\"";
                     query = "Insert into " + schemaName + "."+foreignTableName+" (user_info_id) values (?)";

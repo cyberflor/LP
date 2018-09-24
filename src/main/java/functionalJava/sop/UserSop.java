@@ -366,8 +366,8 @@ public class UserSop {
                 + " VALUES (?, ?);";
             
         try{
-            Integer idValue = rdbm.prepUpQueryK(qw, new Object[]{userInfoId, sopId}, 3);
-            if (idValue==0) return "Error on adding the sop " + sopId + " to the user " + userInfoId + " in the schema " + schemaName;
+            String idValue = rdbm.prepUpQueryK(qw, new Object[]{userInfoId, sopId}, 3);
+            if (Integer.getInteger(idValue)==0) return "Error on adding the sop " + sopId + " to the user " + userInfoId + " in the schema " + schemaName;
         }
         catch (SQLException sqlErr){       
             return "Error " + sqlErr.getMessage();
@@ -390,8 +390,8 @@ public class UserSop {
                     + " VALUES (?, ?, ?);";
 
             try{
-                Integer idValue = rdbm.prepUpQueryK(qw, new Object[]{userInfoId, sopId,sopName}, 3);
-                if (idValue==0) return "Error on adding the sop " + sopId + " to the user " + userInfoId + " in the schema " + schemaName;
+                String idValue = rdbm.prepUpQueryK(qw, new Object[]{userInfoId, sopId,sopName}, 3);
+                if (Integer.getInteger(idValue)==0) return "Error on adding the sop " + sopId + " to the user " + userInfoId + " in the schema " + schemaName;
             }
             catch (SQLException sqlErr){       
                 return "Error " + sqlErr.getMessage();

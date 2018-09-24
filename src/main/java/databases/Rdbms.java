@@ -34,7 +34,7 @@ public class Rdbms {
 
     String classVersion = "0.1";
     String errorCode = "";
-    String[] errorDetailVariables = new String[0];
+
 //    LabPLANETArray labArr = new LabPLANETArray();
 //    LabPLANETPlatform labPlat = new LabPLANETPlatform();
     String[] javaDocFields = new String[0];
@@ -126,76 +126,108 @@ public class Rdbms {
     
     private void setIsStarted(Boolean isStart) { this.isStarted = isStart;}
     
-    public String buildSqlStatement (String operation, String schemaName, String tableName, String[] whereFieldNames, String[] whereOperation, Object[] whereFieldValues, String[] fieldsToRetrieve, String[] fieldsToOrder, String[] fieldsToGroup){
+    public String buildSqlStatement (String operation, String schemaName, String tableName, String[] whereFieldNames, 
+            Object[] whereFieldValues, String[] fieldsToRetrieve, String[] setFieldNames, Object[] setFieldValues, 
+            String[] fieldsToOrder, String[] fieldsToGroup){
+        
         LabPLANETArray labArr = new LabPLANETArray();
+        String queryWhere = "";
+        schemaName = schemaName.replace("\"", "");
+        schemaName = "\""+schemaName+"\"";   
+        
+        tableName = tableName.replace("\"", "");
+        tableName = "\""+tableName+"\"";   
+
+        Integer i=1;
+        Boolean containsInClause = false;
+        Object[] whereFieldValuesNew = new Object[0];   
+        if (whereFieldNames!=null){
+            for (String fn: whereFieldNames){
+                    if ( i >1){queryWhere = queryWhere + " and ";}
+
+                    if ( fn.toUpperCase().contains("NULL")){ queryWhere = queryWhere + fn;}
+                    else if (fn.toUpperCase().contains(" LIKE")){ queryWhere = queryWhere + fn + " ? ";} 
+                    else if (fn.toUpperCase().contains(" IN")){ 
+                        Integer posicINClause = fn.toUpperCase().indexOf("IN");
+                        String separator = fn;
+                        separator = separator.substring(posicINClause+2, posicINClause+3);
+                        separator = separator.trim();
+                        separator = separator.replace(" IN", "");  
+                        containsInClause = true;
+                        String textSpecs = (String) whereFieldValues[i-1];
+                        String[] textSpecArray = textSpecs.split("\\"+separator);
+                        queryWhere = queryWhere + fn.replace(separator, "") + "(" ;
+                        for (Integer iNew=0;iNew<i-1;iNew++){
+                            whereFieldValuesNew[iNew] = whereFieldValues[i];                        
+                        }
+                        for (String f: textSpecArray){
+                            queryWhere = queryWhere + "?,";
+                            whereFieldValuesNew = labArr.addValueToArray1D(whereFieldValuesNew, textSpecArray);                        
+                            i++;
+                        }
+                        for (Integer j=i;j<=whereFieldValues.length;j++){
+                            whereFieldValuesNew = labArr.addValueToArray1D(whereFieldValuesNew, whereFieldValues[j]);  
+                        }
+                        queryWhere = queryWhere.substring(0, queryWhere.length()-1);
+                        queryWhere = queryWhere + ")" ;
+                        whereFieldValues = whereFieldValuesNew;
+                    }                 
+                    else {queryWhere = queryWhere + fn + "=? ";}
+
+                    i++;
+                }    
+            }
         String query = "";
+        String fieldsToRetrieveStr = ""; String fieldsToRetrieveArgStr = "";
+        String setFieldNamesStr = ""; String setFieldNamesArgStr = "";
+        if (fieldsToRetrieve!=null){            
+            for (String fn: fieldsToRetrieve){
+                fieldsToRetrieveStr = fieldsToRetrieveStr + fn + ", ";}
+                fieldsToRetrieveStr = fieldsToRetrieveStr.substring(0, fieldsToRetrieveStr.length()-2);     
+        }   
+        if (setFieldNames!=null){                   
+            for (int iFields=0; iFields<setFieldNames.length;iFields++){
+                setFieldNamesStr = setFieldNamesStr + setFieldNames[iFields] + ", ";
+                setFieldNamesArgStr = setFieldNamesArgStr + "?, ";
+            }
+            setFieldNamesStr = setFieldNamesStr.substring(0, setFieldNamesStr.length()-2);     
+            setFieldNamesArgStr = setFieldNamesArgStr.substring(0, setFieldNamesArgStr.length()-2);     
+        }
+                
         switch (operation.toUpperCase()){            
             case "SELECT":
-                Integer i=1;
-                Boolean containsInClause = false;
-                Object[] whereFieldValuesNew = new Object[0];
-
-                String fieldsToRetrieveStr = "";
-                for (String fn: fieldsToRetrieve){fieldsToRetrieveStr = fieldsToRetrieveStr + fn + ", ";}
+/*                for (String fn: fieldsToRetrieve){
+                    fieldsToRetrieveStr = fieldsToRetrieveStr + fn + ", ";
+                    fieldsToRetrieveArgStr = fieldsToRetrieveArgStr + "?, ";
+                }
                 fieldsToRetrieveStr = fieldsToRetrieveStr.substring(0, fieldsToRetrieveStr.length()-2);
+                fieldsToRetrieveArgStr = fieldsToRetrieveArgStr.substring(0, fieldsToRetrieveArgStr.length()-2);
+*/                
                 query = "select " + fieldsToRetrieveStr + " from " + schemaName + "." + tableName
-                        + "   where " ;
-
-                for (String fn: whereFieldNames){
-                        if ( i >1){query = query + " and ";}
-
-                        if ( fn.toUpperCase().contains("NULL")){ query = query + fn;}
-                        else if (fn.toUpperCase().contains(" LIKE")){ query = query + fn + " ? ";} 
-                        else if (fn.toUpperCase().contains(" IN")){ 
-                            Integer posicINClause = fn.toUpperCase().indexOf("IN");
-                            String separator = fn;
-                            separator = separator.substring(posicINClause+2, posicINClause+3);
-                            separator = separator.trim();
-                            separator = separator.replace(" IN", "");  
-                            containsInClause = true;
-                            String textSpecs = (String) whereFieldValues[i-1];
-                            String[] textSpecArray = textSpecs.split("\\"+separator);
-                            query = query + fn.replace(separator, "") + "(" ;
-                            for (Integer iNew=0;iNew<i-1;iNew++){
-                                whereFieldValuesNew[iNew] = whereFieldValues[i];                        
-                            }
-                            for (String f: textSpecArray){
-                                query = query + "?,";
-                                whereFieldValuesNew = labArr.addValueToArray1D(whereFieldValuesNew, textSpecArray);                        
-                                i++;
-                            }
-                            for (Integer j=i;j<=whereFieldValues.length;j++){
-                                whereFieldValuesNew = labArr.addValueToArray1D(whereFieldValuesNew, whereFieldValues[j]);  
-                            }
-                            query = query.substring(0, query.length()-1);
-                            query = query + ")" ;
-                            whereFieldValues = whereFieldValuesNew;
-                        }                 
-                        else {query = query + fn + "=? ";}
-
-                        i++;
-                    }    
-        
+                        + "   where " + queryWhere ;
+                break;
+            case "INSERT":
+                query = "insert into " + schemaName + "." + tableName
+                        + " (" + setFieldNamesStr + ") values ( " + setFieldNamesArgStr + ") " ;            
+            default:
+                break;
+        }        
 //                String query = "";
 //                query = "select " + fieldsToRetrieve[0] + " from " + schemaName + "." + tableName
 //                        + "   where " + whereFieldName + "=? ";                
-                return query;
-                //break;
-            default:
-                break;
-        }
         
-        return query;
+            return query;
     }
     
-    public Object[] existsRecord(Rdbms rdbm, String schemaName, String tableName, String[] keyFieldName, Object keyFieldValue){
+    public Object[] zzzexistsRecord(Rdbms rdbm, String schemaName, String tableName, String[] keyFieldName, Object keyFieldValue){
         
         String[] diagnoses = new String[6];
         LabPLANETArray labArr = new LabPLANETArray();        
         LabPLANETPlatform labPlat = new LabPLANETPlatform();        
+        String[] errorDetailVariables = new String[0];
         
         String query = buildSqlStatement("SELECT", schemaName, tableName,
-                keyFieldName, new String[]{"="}, null, keyFieldName,  null, null);          
+                keyFieldName, null, keyFieldName,  null, null,  null, null);          
         try{
             ResultSet res;
             res = rdbm.prepRdQuery(query, new Object[] {keyFieldValue});
@@ -227,9 +259,9 @@ public class Rdbms {
     public Object[] existsRecord(Rdbms rdbm, String schemaName, String tableName, String[] keyFieldNames, Object[] keyFieldValues){
         
         String[] diagnoses = new String[6];
-        LabPLANETArray labArr = new LabPLANETArray();
-       
+        LabPLANETArray labArr = new LabPLANETArray();       
         LabPLANETPlatform labPlat = new LabPLANETPlatform();   
+        String[] errorDetailVariables = new String[0];
         
         Object[] filteredValues = new Object[0];
         
@@ -240,7 +272,7 @@ public class Rdbms {
            return (Object[]) labPlat.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);                         
         }
         
-        String query = "";
+ /*       String query = "";
         query = "select " + keyFieldNames[0] + " from " + schemaName + "." + tableName
                 + "   where " ;
         
@@ -257,8 +289,12 @@ public class Rdbms {
                 query = query + "=?";
             }
         }        
+        ResultSet res = rdbm.prepRdQuery(query, filteredValues);
+        */
+        String query = buildSqlStatement("SELECT", schemaName, tableName,
+                keyFieldNames, keyFieldValues, keyFieldNames,  null, null,  null, null);             
         try{
-            ResultSet res = rdbm.prepRdQuery(query, filteredValues);
+            ResultSet res = rdbm.prepRdQuery(query, keyFieldValues);
             res.last();
 
             if (res.getRow()>0){
@@ -266,13 +302,13 @@ public class Rdbms {
                 errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, Arrays.toString(filteredValues));
                 errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, tableName);
                 errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, schemaName);
-                return (String[]) labPlat.trapErrorMessage(rdbm, "LABPLANET_TRUE", classVersion, errorCode, errorDetailVariables);                
+                return labPlat.trapErrorMessage(rdbm, "LABPLANET_TRUE", classVersion, errorCode, errorDetailVariables);                
             }else{
                 errorCode = "Rbdms_existsRecord_RecordNotFound";
                 errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, Arrays.toString(filteredValues));
                 errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, tableName);
                 errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, schemaName);
-                return (String[]) labPlat.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);                
+                return labPlat.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);                
             }
         }catch (SQLException er) {
             String ermessage=er.getLocalizedMessage()+er.getCause();
@@ -289,7 +325,7 @@ public class Rdbms {
         Object[][] diagnoses = new Object[1][6];                
         LabPLANETArray labArr = new LabPLANETArray();       
         LabPLANETPlatform labPlat = new LabPLANETPlatform();   
-        
+        String[] errorDetailVariables = new String[0];        
         schemaName = labPlat.buildSchemaName(schemaName, "");
         
         if (whereFieldNames.length==0){
@@ -300,8 +336,8 @@ public class Rdbms {
            return labArr.array1dTo2d(diagnosesError, 6);
         }
         String query = buildSqlStatement("SELECT", schemaName, tableName,
-                whereFieldNames, null, whereFieldValues,
-                fieldsToRetrieve, null, null);        
+                whereFieldNames, whereFieldValues,
+                fieldsToRetrieve,  null, null, null, null);        
             try{
                 Boolean containsInClause = false;
                 ResultSet res = null;
@@ -354,6 +390,7 @@ public class Rdbms {
         Object[][] diagnoses = new Object[1][6];        
         LabPLANETArray labArr = new LabPLANETArray();       
         LabPLANETPlatform labPlat = new LabPLANETPlatform();   
+        String[] errorDetailVariables = new String[0];        
         
         if (whereFieldNames.length==0){
            errorCode = "Rdbms_NotFilterSpecified";
@@ -429,6 +466,7 @@ public class Rdbms {
         Object[][] diagnoses = new Object[1][6];        
         LabPLANETArray labArr = new LabPLANETArray();       
         LabPLANETPlatform labPlat = new LabPLANETPlatform();   
+        String[] errorDetailVariables = new String[0];        
         
         if (whereFieldNames.length==0){
            errorCode = "Rdbms_NotFilterSpecified";
@@ -506,6 +544,7 @@ public class Rdbms {
         LabPLANETArray labArr = new LabPLANETArray();       
         LabPLANETPlatform labPlat = new LabPLANETPlatform();
         LabPLANETArray labArray = new LabPLANETArray();
+        String[] errorDetailVariables = new String[0];        
 
         if (fieldNames.length==0){
            errorCode = "Rdbms_NotFilterSpecified";
@@ -519,7 +558,10 @@ public class Rdbms {
            errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, Arrays.toString(fieldValues));
            return (String[]) labPlat.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);
         }
-        String query = "";
+        String query = buildSqlStatement("INSERT", schemaName, tableName,
+                null, null, null, fieldNames, fieldValues,
+                null, null);    
+ /*       String query = "";
         String fieldNamesStr = "";
         for (String fn: fieldNames){fieldNamesStr = fieldNamesStr + fn + ", ";}
         fieldNamesStr = fieldNamesStr.substring(0, fieldNamesStr.length()-2);
@@ -531,15 +573,16 @@ public class Rdbms {
             i++;
         }
         query = query + ") ";
+*/        
         try {                        
             fieldValues = labArr.encryptTableFieldArray(schemaName, tableName, fieldNames, (Object[]) fieldValues); 
-            int numr = rdbm.prepUpQueryK(query, fieldValues, 1);
+            String keyValueNewRecord = rdbm.prepUpQueryK(query, fieldValues, 1);
             fieldValues = labArr.decryptTableFieldArray(schemaName, tableName, fieldNames, (Object[]) fieldValues); 
             //ResultSet res = rdbm.prepRdQuery(query, fieldValues);
             //res.last();
             //if (numr>0){
             errorCode = "Rdbms_RecordCreated";
-            errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, String.valueOf(numr));
+            errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, String.valueOf(keyValueNewRecord));
             errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, query);
             errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, Arrays.toString(fieldValues));            
             errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, schemaName);                
@@ -560,7 +603,8 @@ public class Rdbms {
         LabPLANETArray labArr = new LabPLANETArray();       
         LabPLANETPlatform labPlat = new LabPLANETPlatform();  
         updateFieldValues = labArr.decryptTableFieldArray(schemaName, tableName, updateFieldNames, (Object[]) updateFieldValues);        
-        
+        String[] errorDetailVariables = new String[0];        
+       
         if (whereFieldNames.length==0){
            errorCode = "Rdbms_NotFilterSpecified";
            errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, tableName);
@@ -660,23 +704,29 @@ public class Rdbms {
         }
     }
     
-    public Integer prepUpQueryK(String consultaconinterrogaciones, Object [] valoresinterrogaciones, Integer indexposition) throws SQLException{
-        Integer pk = 0;
+    public String prepUpQueryK(String consultaconinterrogaciones, Object [] valoresinterrogaciones, Integer indexposition) throws SQLException{
+        String pkValue = "";
         PreparedStatement prep=getConnection().prepareStatement(consultaconinterrogaciones, Statement.RETURN_GENERATED_KEYS);
 
         setTimeout(getTimeout());
 
         buildPreparedStatement(valoresinterrogaciones, prep, null); 
+        
         Integer res = prep.executeUpdate();
+        
+        // When the table has no numeric field as single query then no key is generated so nothing to return
+        //if (prep.NO_GENERATED_KEYS==2){return 0;}
+        try{
+            ResultSet rs = prep.getGeneratedKeys();
 
-        ResultSet rs = prep.getGeneratedKeys();
-
-        if (rs.next()) {
-          int newId = rs.getInt(indexposition);
-          pk = newId;
+            if (rs.next()) {
+              int newId = rs.getInt(indexposition);
+              pkValue = String.valueOf(newId);              
+            }
+        }catch (SQLException er){
+            pkValue = "TABLE WITH NO KEY";
         }
-
-        return pk; 
+        return pkValue; 
     }
     
     public String [] getTableFieldsArrayEj(String schema, String table) throws SQLException{

@@ -230,7 +230,8 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
         if ("LABPLANET_TRUE".equalsIgnoreCase(diagnosis[0].toString())){
             myDiagnoses = "SUCCESS";        }
         else{    
-            diagnosis = rdbm.existsRecord(rdbm, schemaName, "analysis", new String[]{"code"}, analysis);
+            diagnosis = rdbm.existsRecord(rdbm, schemaName, "analysis", 
+                    new String[]{"code"}, new Object[]{analysis});
             if ("LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){
                 myDiagnoses = "ERROR: The analysis " + analysis + " exists but the method " + methodName +" with version "+ methodVersion+ " was not found in the schema "+schemaPrefix;            
             }

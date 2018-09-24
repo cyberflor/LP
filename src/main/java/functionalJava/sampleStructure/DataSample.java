@@ -1607,7 +1607,7 @@ private Map getDefaultValuesTemplate(String schema, String tsample, String templ
         if ("LABPLANET_TRUE".equalsIgnoreCase(diagnosis[0].toString())){
             myDiagnoses = "SUCCESS";        }
         else{    
-            diagnosis = rdbm.existsRecord(rdbm, schemaConfigName, "analysis", new String[]{"code"}, analysis);
+            diagnosis = rdbm.existsRecord(rdbm, schemaConfigName, "analysis", new String[]{"code"},  new Object[]{analysis});
             if ("LABPLANET_TRUE".equalsIgnoreCase(diagnosis[0].toString())){
                 myDiagnoses = "ERROR: The analysis " + analysis + " exists but the method " + methodName +" with version "+ methodVersion+ " was not found in the schema "+schemaPrefix;            
             }

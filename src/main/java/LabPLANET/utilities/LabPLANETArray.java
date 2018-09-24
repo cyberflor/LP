@@ -7,8 +7,11 @@ package LabPLANET.utilities;
 
 import databases.Rdbms;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -62,12 +65,47 @@ public class LabPLANETArray {
       return false;
     }    
 
+    public Object[] arrayToFile (String[][] arrayHeader, Object[][] array, String filename, String fieldsSeparator) throws IOException{
+        Object[] diagnosis = new Object[0];
+        BufferedWriter outputWriter = null;
+        
+        if (arrayHeader!=null){
+          for (int i = 0; i < arrayHeader[0].length; i++) {  
+              outputWriter.write(arrayHeader[0][i]+fieldsSeparator);
+              outputWriter.newLine();            
+          }
+        }
+        //String[][] strings = Arrays.stream(array).toArray(String[][]::new);
+        outputWriter = new BufferedWriter(new FileWriter(filename));
+        for (int i = 0; i < array.length; i++) {
+            for (int j = 0; j < array[0].length; j++) {
+                Object currVal = array[i][j];
+                if (currVal==null){                
+                    currVal = LabPLANETNullValue.replaceNull(currVal.toString());
+                }
+                
+                //if (currVal.toString()!=null){
+                    outputWriter.write(array[i][j].toString()+fieldsSeparator);
+                //}else{
+                //    outputWriter.write(""+fieldsSeparator);                    
+                //}
+                outputWriter.newLine();
+            }
+        }
+        outputWriter.flush();  
+        outputWriter.close();          
+        return diagnosis;
+    }
+    
     public Object[] encryptTableFieldArray(String schemaName, String tableName, String[] fieldName, Object[] fieldValue){
-        String key = "Bar12345Bar12345"; // 128 bit key
+         Rdbms rdbm = new Rdbms();
+         String key = "Bar12345Bar12345"; // 128 bit key
         LabPLANETPlatform labPlat = new LabPLANETPlatform();
-        schemaDataName = labPlat.buildSchemaName(schemaName, schemaDataName);  
-        Rdbms rdbm = new Rdbms();
-        String fieldsEncrypted = rdbm.getParameterBundle(schemaDataName.replace("\"", ""), "encrypted_"+tableName);
+        //? Should be by schemaPrefix? config or data???
+        //schemaDataName = labPlat.buildSchemaName(schemaName, schemaDataName);  
+        //String fieldsEncrypted = rdbm.getParameterBundle(schemaDataName.replace("\"", ""), "encrypted_"+tableName);
+        schemaDataName = labPlat.buildSchemaName(schemaName, schemaName);  
+        String fieldsEncrypted = rdbm.getParameterBundle(schemaName.replace("\"", ""), "encrypted_"+tableName);        
         String[] fieldsEncryptedArr = fieldsEncrypted.split("\\|");
         for (int iFields=0;iFields<fieldName.length;iFields++){
             if (fieldsEncrypted.contains(fieldName[iFields])){

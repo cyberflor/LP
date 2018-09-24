@@ -334,7 +334,8 @@ public class RequirementDeployment {
         Role rol = new Role();
 
         if (privilege_id.equalsIgnoreCase(procedure+"_null")){
-            Object[] diagnoses = rdbm.existsRecord(rdbm, schemaConfigName, "privilege", new String[]{"privilege_id"}, procedure);
+            Object[] diagnoses = rdbm.existsRecord(rdbm, schemaConfigName, "privilege", 
+                    new String[]{"privilege_id"}, new Object[]{procedure});
             if ( !"LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){
                 diagnoses = rol.createPrivilege(rdbm, procedure);
                 try {
@@ -581,7 +582,7 @@ public class RequirementDeployment {
                     r = r.replace(" ", "").replace("\n", "");
 
                     Object[] diagnoses = rdbm.existsRecord(rdbm, schemaConfigName, "role", 
-                            new String[]{"role_id"}, r);
+                            new String[]{"role_id"}, new Object[]{r});
                     if ("LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){                  
                         diagnoses = rol.createRole(rdbm, r);
                         try {
@@ -596,7 +597,8 @@ public class RequirementDeployment {
                 for (String pr: priv){
                     pr = procName + "_" + pr;
                     pr = pr.replace(" ", "").replace("\n", "");
-                    Object[] diagnoses = rdbm.existsRecord(rdbm, "config", "privilege", new String[]{"privilege_id"}, pr);
+                    Object[] diagnoses = rdbm.existsRecord(rdbm, "config", "privilege", 
+                            new String[]{"privilege_id"}, new Object[]{pr});
                     if ("LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){
                         diagnoses = rol.createPrivilege(rdbm, pr);
                         try {
@@ -614,7 +616,8 @@ public class RequirementDeployment {
                             if (r.toUpperCase().contains("ALL")){
                                 //r = r;
                             }
-                            diagnoses = rdbm.existsRecord(rdbm, "config", "role_privilege", new String[]{"privilege_id"}, pr + "," + r );
+                            diagnoses = rdbm.existsRecord(rdbm, "config", "role_privilege", 
+                                    new String[]{"privilege_id"}, new Object[]{pr + "," + r} );
                             if ("LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){                      
 
                                 diagnoses = rol.addPrivilegeToRole(rdbm, pr, r, procName);
@@ -667,7 +670,7 @@ public class RequirementDeployment {
                 for (String sp: sopNames){
                     if (!sopList.contains(sp)){
                         Object[] diagnoses = rdbm.existsRecord(rdbm, schemaName, "sop_meta_data", 
-                                new String[]{"sop_name"}, sp);
+                                new String[]{"sop_name"}, new Object[]{sp});
                         if ("LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){
                             diagnoses = sop.createSop(rdbm, schemaName, sp);
                             sopList = sopList + sp + "|";                             
@@ -723,7 +726,7 @@ public class RequirementDeployment {
                 for (String sp: sopNames){
                     if (sopSectionName!=null){sp = sp+"-"+sopSectionName;}  
                     Object[] diagnoses = rdbm.existsRecord(rdbm, schemaName+"-config", "sop_meta_data", 
-                            new String[]{"sop_name"}, sp);
+                            new String[]{"sop_name"}, new Object[]{sp});
                     if ("LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){                  
                         if (role!=null){
                             String[] roles = role.split(",");
@@ -889,7 +892,7 @@ public class RequirementDeployment {
             String foreignTableName = "user_info";
 
             Object[] diagnoses = rdbm.existsRecord(rdbm, "config", foreignTableName, 
-                    new String[]{fieldName1}, fieldValue1);
+                    new String[]{fieldName1}, new Object[]{fieldValue1});
             if ("LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){
                 schemaName = labPlat.buildSchemaName(schemaName, schemaName);
                 diagnoses = rdbm.insertRecordInTable(rdbm, schemaName, foreignTableName, new String[]{"user_info_id"}, new Object[]{fieldValue1});
@@ -901,7 +904,7 @@ public class RequirementDeployment {
 
             foreignTableName = "role";
             diagnoses = rdbm.existsRecord(rdbm, "config", foreignTableName, 
-                    new String[]{fieldName2}, fieldValue2);
+                    new String[]{fieldName2}, new Object[]{fieldValue2});
             if ("LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){         
                 schemaName = labPlat.buildSchemaName(schemaName, schemaName);
                 diagnoses = rdbm.insertRecordInTable(rdbm, schemaName, foreignTableName, new String[]{"user_info_id"}, new Object[]{fieldValue1});

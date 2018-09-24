@@ -9,6 +9,8 @@ import LabPLANET.utilities.LabPLANETArray;
 import LabPLANET.utilities.LabPLANETNullValue;
 import databases.Rdbms;
 import functionalJava.materialSpec.ConfigSpecStructure;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
@@ -53,31 +55,99 @@ public class DBQueries extends HttpServlet {
 
 
         LabPLANETArray labArr = new LabPLANETArray();
-        Integer numTesting = 20;
+        Integer numTesting = 50;
         Integer inumTesting = 0;
         Object[][] configSpecTestingArray = new Object[numTesting][7];
         
         if (inumTesting<numTesting){
-            String[] fieldName= new String[0];
-            Object[] fieldValue=new Object[0];
-            String[] fieldToRetrieve= new String[0];
-            String schemaPrefix="config";
-            String tableName="analysis_method";
+            String[] fieldName= new String[0];             Object[] fieldValue=new Object[0];            String[] fieldToRetrieve= new String[0];
+            String schemaPrefix="sample-A-data";            String tableName="sample";
+            //fieldToRetrieve = labArr.addValueToArray1D(fieldToRetrieve, "analysis");
+            fieldName = labArr.addValueToArray1D(fieldName, "sampling_comment");
+            fieldValue = labArr.addValueToArray1D(fieldValue, "pHname comment");            
+            configSpecTestingArray[inumTesting][0]=schemaPrefix;            configSpecTestingArray[inumTesting][1]=tableName;            configSpecTestingArray[inumTesting][2]=userName;
+            configSpecTestingArray[inumTesting][3]=fieldName;                 configSpecTestingArray[inumTesting][4]=fieldValue;              configSpecTestingArray[inumTesting][5]=fieldToRetrieve;
+            configSpecTestingArray[inumTesting][6]="INSERT";
+            inumTesting++;
+        }     
+        if (inumTesting<numTesting){
+            String[] fieldName= new String[0];             Object[] fieldValue=new Object[0];            String[] fieldToRetrieve= new String[0];
+            String schemaPrefix="config";            String tableName="0db_queries_testing";
+            //fieldToRetrieve = labArr.addValueToArray1D(fieldToRetrieve, "analysis");
+            fieldName = labArr.addValueToArray1D(fieldName, "name");
+            fieldValue = labArr.addValueToArray1D(fieldValue, "pHname");            
+            configSpecTestingArray[inumTesting][0]=schemaPrefix;            configSpecTestingArray[inumTesting][1]=tableName;            configSpecTestingArray[inumTesting][2]=userName;
+            configSpecTestingArray[inumTesting][3]=fieldName;                 configSpecTestingArray[inumTesting][4]=fieldValue;              configSpecTestingArray[inumTesting][5]=fieldToRetrieve;
+            configSpecTestingArray[inumTesting][6]="INSERT";
+            inumTesting++;
+        }                     
+        if (inumTesting<numTesting){
+            String[] fieldName= new String[0];             Object[] fieldValue=new Object[0];            String[] fieldToRetrieve= new String[0];
+            String schemaPrefix="config";            String tableName="0db_queries_testing";
+            //fieldToRetrieve = labArr.addValueToArray1D(fieldToRetrieve, "analysis");
+            fieldName = labArr.addValueToArray1D(fieldName, "analysi1s");
+            fieldValue = labArr.addValueToArray1D(fieldValue, "pH");            
+            configSpecTestingArray[inumTesting][0]=schemaPrefix;            configSpecTestingArray[inumTesting][1]=tableName;            configSpecTestingArray[inumTesting][2]=userName;
+            configSpecTestingArray[inumTesting][3]=fieldName;                 configSpecTestingArray[inumTesting][4]=fieldValue;              configSpecTestingArray[inumTesting][5]=fieldToRetrieve;
+            configSpecTestingArray[inumTesting][6]="INSERT";
+            inumTesting++;
+        }                
+        if (inumTesting<numTesting){
+            String[] fieldName= new String[0];             Object[] fieldValue=new Object[0];            String[] fieldToRetrieve= new String[0];
+            String schemaPrefix="config";            String tableName="0db_queries_testing";
+            //fieldToRetrieve = labArr.addValueToArray1D(fieldToRetrieve, "analysis");
+            fieldName = labArr.addValueToArray1D(fieldName, "number");
+            fieldValue = labArr.addValueToArray1D(fieldValue, "pH");            
+            configSpecTestingArray[inumTesting][0]=schemaPrefix;            configSpecTestingArray[inumTesting][1]=tableName;            configSpecTestingArray[inumTesting][2]=userName;
+            configSpecTestingArray[inumTesting][3]=fieldName;                 configSpecTestingArray[inumTesting][4]=fieldValue;              configSpecTestingArray[inumTesting][5]=fieldToRetrieve;
+            configSpecTestingArray[inumTesting][6]="INSERT";
+            inumTesting++;
+        }         
+        if (inumTesting<numTesting){
+            String[] fieldName= new String[0];             Object[] fieldValue=new Object[0];            String[] fieldToRetrieve= new String[0];
+            String schemaPrefix="config";            String tableName="0db_queries_testing";
+            //fieldToRetrieve = labArr.addValueToArray1D(fieldToRetrieve, "analysis");
+            fieldName = labArr.addValueToArray1D(fieldName, "number");
+            fieldValue = labArr.addValueToArray1D(fieldValue, "10");            
+            configSpecTestingArray[inumTesting][0]=schemaPrefix;            configSpecTestingArray[inumTesting][1]=tableName;            configSpecTestingArray[inumTesting][2]=userName;
+            configSpecTestingArray[inumTesting][3]=fieldName;                 configSpecTestingArray[inumTesting][4]=fieldValue;              configSpecTestingArray[inumTesting][5]=fieldToRetrieve;
+            configSpecTestingArray[inumTesting][6]="INSERT";
+            inumTesting++;
+        }                 
+        if (inumTesting<numTesting){
+            String[] fieldName= new String[0];             Object[] fieldValue=new Object[0];            String[] fieldToRetrieve= new String[0];
+            String schemaPrefix="config";            String tableName="analysis_method";
             fieldToRetrieve = labArr.addValueToArray1D(fieldToRetrieve, "analysis");
-            fieldToRetrieve = labArr.addValueToArray1D(fieldToRetrieve, "analysis");
-            fieldToRetrieve = labArr.addValueToArray1D(fieldToRetrieve, "analysis");
+            fieldName = labArr.addValueToArray1D(fieldName, "analysi1s");
+            fieldValue = labArr.addValueToArray1D(fieldValue, "pH");            
+            configSpecTestingArray[inumTesting][0]=schemaPrefix;            configSpecTestingArray[inumTesting][1]=tableName;            configSpecTestingArray[inumTesting][2]=userName;
+            configSpecTestingArray[inumTesting][3]=fieldName;                 configSpecTestingArray[inumTesting][4]=fieldValue;              configSpecTestingArray[inumTesting][5]=fieldToRetrieve;
+            configSpecTestingArray[inumTesting][6]="EXISTSRECORD";
+            inumTesting++;
+        }        
+        if (inumTesting<numTesting){
+            String[] fieldName= new String[0];             Object[] fieldValue=new Object[0];            String[] fieldToRetrieve= new String[0];
+            String schemaPrefix="config";            String tableName="analysis_method";
             fieldToRetrieve = labArr.addValueToArray1D(fieldToRetrieve, "analysis");
             fieldName = labArr.addValueToArray1D(fieldName, "analysis");
             fieldValue = labArr.addValueToArray1D(fieldValue, "pH");            
-            configSpecTestingArray[inumTesting][0]=schemaPrefix;
-            configSpecTestingArray[inumTesting][1]=tableName;
-            configSpecTestingArray[inumTesting][2]=userName;
-            configSpecTestingArray[inumTesting][3]=fieldName;
-            configSpecTestingArray[inumTesting][4]=fieldValue;
-            configSpecTestingArray[inumTesting][5]=fieldToRetrieve;
+            configSpecTestingArray[inumTesting][0]=schemaPrefix;            configSpecTestingArray[inumTesting][1]=tableName;            configSpecTestingArray[inumTesting][2]=userName;
+            configSpecTestingArray[inumTesting][3]=fieldName;                 configSpecTestingArray[inumTesting][4]=fieldValue;              configSpecTestingArray[inumTesting][5]=fieldToRetrieve;
             configSpecTestingArray[inumTesting][6]="EXISTSRECORD";
             inumTesting++;
-        }        if (inumTesting<numTesting){
+        }     
+        if (inumTesting<numTesting){
+            String[] fieldName= new String[0];             Object[] fieldValue=new Object[0];            String[] fieldToRetrieve= new String[0];
+            String schemaPrefix="config";            String tableName="analysis_method_params";
+            fieldToRetrieve = labArr.addValueToArray1D(fieldToRetrieve, "param_name");
+            fieldName = labArr.addValueToArray1D(fieldName, "analysis");
+            fieldValue = labArr.addValueToArray1D(fieldValue, "pH");            
+            configSpecTestingArray[inumTesting][0]=schemaPrefix;            configSpecTestingArray[inumTesting][1]=tableName;            configSpecTestingArray[inumTesting][2]=userName;
+            configSpecTestingArray[inumTesting][3]=fieldName;                 configSpecTestingArray[inumTesting][4]=fieldValue;              configSpecTestingArray[inumTesting][5]=fieldToRetrieve;
+            configSpecTestingArray[inumTesting][6]="EXISTSRECORD";
+            inumTesting++;
+        }          
+        if (inumTesting<numTesting){
             String[] fieldName= new String[0];
             Object[] fieldValue=new Object[0];
             String[] fieldToRetrieve= new String[0];
@@ -390,7 +460,12 @@ public class DBQueries extends HttpServlet {
             configSpecTestingArray[inumTesting][5]=fieldToRetrieve;
             inumTesting++;
         }        
-            
+
+            String fileName = "C:\\home\\judas\\dbqueries.txt";            
+            labArr.arrayToFile(null, configSpecTestingArray, fileName, ";");
+    
+    if (1==1){return;}
+    
         /* TODO output your page here. You may use following sample code. */
         out.println("<!DOCTYPE html>");
         out.println("<html>");
@@ -414,30 +489,35 @@ public class DBQueries extends HttpServlet {
             String[] fieldName=null;    
             Object[] fieldValue=null;
             String[] fieldsToRetrieve=null;   
-            String functionBeingTested=null;
+            String functionBeingTested="";
             String fileContent = "";
             Object[][] dataSample2D = null;
 
             if (configSpecTestingArray[i][0]!=null){schemaPrefix = (String) configSpecTestingArray[i][0];}
             if (configSpecTestingArray[i][1]!=null){tableName = (String) configSpecTestingArray[i][1];}
             if (configSpecTestingArray[i][2]!=null){userName = (String) configSpecTestingArray[i][2];}
-            if (configSpecTestingArray[i][3]!=null){fieldName = (String[]) configSpecTestingArray[i][3];}
-            if (configSpecTestingArray[i][4]!=null){fieldValue = (Object[]) configSpecTestingArray[i][4];}
-            if (configSpecTestingArray[i][5]!=null){fieldsToRetrieve = (String[]) configSpecTestingArray[i][5];}
+            if (configSpecTestingArray[i][3]!=null){fieldName = (String[]) configSpecTestingArray[i][3];}else{fieldName = new String[0];}
+            if (configSpecTestingArray[i][4]!=null){fieldValue = (Object[]) configSpecTestingArray[i][4];}else{fieldValue = new Object[0];}
+            if (configSpecTestingArray[i][5]!=null){fieldsToRetrieve = (String[]) configSpecTestingArray[i][5];}else{fieldsToRetrieve = new String[0];}
             if (configSpecTestingArray[i][6]!=null){functionBeingTested = (String) configSpecTestingArray[i][6];}
+            
 
             out.println("<td>"+i+"</td><td>"+functionBeingTested+"</td><td>"+schemaPrefix+"</td><td>"+tableName+"</td><td>"+Arrays.toString(fieldName)+"</td><td><b>"+Arrays.toString(fieldValue)+"</b></td>");
             
             switch (functionBeingTested.toUpperCase()){
                 case "EXISTSRECORD":   
                     Object[] exRec =  rdbm.existsRecord(rdbm, schemaPrefix, tableName, fieldName, fieldValue);
-                    dataSample2D = labArr.array1dTo2d(exRec, 7);
+                    dataSample2D = labArr.array1dTo2d(exRec, 6);
+                    break;
+                case "INSERT":                    
+                    Object[] insRec = rdbm.insertRecordInTable(rdbm, schemaPrefix, tableName, fieldName, fieldValue);  
+                    dataSample2D = labArr.array1dTo2d(insRec, 6);
                     break;
                 default:
                     dataSample2D = rdbm.getRecordFieldsByFilter(rdbm, schemaPrefix, tableName, fieldName, fieldValue, fieldsToRetrieve);
                     break;
             }        
-            if (("LABPLANET_FALSE".equalsIgnoreCase(dataSample2D[0][0].toString()))){
+            //if (("LABPLANET_FALSE".equalsIgnoreCase(dataSample2D[0][0].toString()))){
                 fileContent = fileContent + "<td>"+dataSample2D[0][0].toString();
                 fileContent = fileContent + ". "+LabPLANETNullValue.replaceNull((String) dataSample2D[0][1]);
                 if (dataSample2D[0].length>2){
@@ -449,10 +529,9 @@ public class DBQueries extends HttpServlet {
                 if (dataSample2D[0].length>5){
                     fileContent = fileContent + ". "+LabPLANETNullValue.replaceNull((String) dataSample2D[0][5])+"</td>";}                     
                  out.println(fileContent);                
-            }else{
-                 
-                 out.println("<td>"+"Records returned: " + dataSample2D.length+"</td>");  
-            }        
+            //}else{                 
+            //     out.println("<td>"+"Records returned: " + dataSample2D.length+"</td>");  
+            //}        
             
             //out.println("<td>"+dataSample[0].toString()+". "+dataSample[1].toString()+". "+dataSample[2].toString()+". "+dataSample[3].toString()+". "+dataSample[4].toString()+". "+dataSample[5].toString()+"</td>");
             out.println("</tr>");

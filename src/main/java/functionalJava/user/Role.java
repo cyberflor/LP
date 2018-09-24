@@ -91,7 +91,7 @@ public class Role {
         for (Integer inumRecords=0; inumRecords<numRecords; inumRecords++){
             if (roleId.toUpperCase().contains("ALL")){newRoleId = resRole.getString("role_id");}
             Object[] diagnoses = rdbm.existsRecord(rdbm, schemaConfigName, "role_privilege", 
-                    new String[]{"privilege_id"}, privilegeId + "," + roleId );
+                    new String[]{"privilege_id"}, new Object[]{privilegeId + "," + roleId} );
             if ("LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){      
                 diagnoses = rdbm.insertRecordInTable(rdbm, "config", "role_privilege", new String[]{"role_id", "privilege_id"}, new Object[]{newRoleId, privilegeId });
                 if ("LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){
