@@ -6,7 +6,6 @@
 package functionalJava.audit;
 
 import databases.Rdbms;
-import functionalJava.requirement.Requirement;
 import LabPLANET.utilities.LabPLANETArray;
 import LabPLANET.utilities.LabPLANETPlatform;
 import java.io.FileWriter;
@@ -16,6 +15,7 @@ import java.util.Arrays;
 import javax.json.Json;
 import javax.json.JsonException;
 import javax.json.stream.JsonGenerator;
+import functionalJava.requirement.Requirement;
 
 /**
  * 
@@ -25,8 +25,8 @@ import javax.json.stream.JsonGenerator;
 public class SampleAudit {
 
     String classVersion = "0.1";
-    LabPLANETArray labArr = new LabPLANETArray();
-    LabPLANETPlatform labPlat = new LabPLANETPlatform();
+//    LabPLANETArray labArr = new LabPLANETArray();
+//    LabPLANETPlatform labPlat = new LabPLANETPlatform();
     String[] javaDocFields = new String[0];
     Object[] javaDocValues = new Object[0];
     String javaDocLineName = "";
@@ -54,6 +54,8 @@ public class SampleAudit {
         
         String auditTableName = "sample";
         String schemaName = "data-audit";                
+    LabPLANETArray labArr = new LabPLANETArray();
+    LabPLANETPlatform labPlat = new LabPLANETPlatform();
         
         schemaName = labPlat.buildSchemaName(schemaPrefix, schemaName);                
         
@@ -120,7 +122,8 @@ public class SampleAudit {
         
         String auditTableName = "sample";
         String schemaName = "data-audit";
-        
+    LabPLANETArray labArr = new LabPLANETArray();
+    LabPLANETPlatform labPlat = new LabPLANETPlatform();    
         
         schemaName = labPlat.buildSchemaName(schemaPrefix, schemaName);                
         
@@ -153,6 +156,8 @@ public class SampleAudit {
         String jsonStructure = null;
         String query = "";
         String schemaName = "data";                
+    LabPLANETArray labArr = new LabPLANETArray();
+    LabPLANETPlatform labPlat = new LabPLANETPlatform();
                 
         schemaName = labPlat.buildSchemaName(schemaPrefix, schemaName);  
         

@@ -6,8 +6,6 @@
 package functionalJava.user;
 
 import databases.Rdbms;
-import LabPLANET.utilities.LabPLANETArray;
-import LabPLANET.utilities.LabPLANETPlatform;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Arrays;
@@ -18,9 +16,6 @@ import java.util.Arrays;
  */
 public class UserProfile {
 
-    String classVersion = "0.1";
-    LabPLANETArray labArr = new LabPLANETArray();
-    LabPLANETPlatform labPlat = new LabPLANETPlatform();
     String[] javaDocFields = new String[0];
     Object[] javaDocValues = new Object[0];
     String javaDocLineName = "";

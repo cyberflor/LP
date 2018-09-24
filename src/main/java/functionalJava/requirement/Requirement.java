@@ -6,8 +6,6 @@
 package functionalJava.requirement;
 
 import databases.Rdbms;
-import LabPLANET.utilities.LabPLANETArray;
-import LabPLANET.utilities.LabPLANETPlatform;
 
 /**
  *
@@ -16,8 +14,7 @@ import LabPLANET.utilities.LabPLANETPlatform;
 public class Requirement {
 
     String classVersion = "0.1";
-    LabPLANETArray labArr = new LabPLANETArray();
-    LabPLANETPlatform labPlat = new LabPLANETPlatform();
+
     String[] javaDocFields = new String[0];
     Object[] javaDocValues = new Object[0];
     String javaDocLineName = "";

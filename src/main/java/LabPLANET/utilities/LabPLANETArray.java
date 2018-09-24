@@ -85,7 +85,7 @@ public class LabPLANETArray {
                 }
                 
                 //if (currVal.toString()!=null){
-                    outputWriter.write(array[i][j].toString()+fieldsSeparator);
+                    outputWriter.write(currVal+fieldsSeparator);
                 //}else{
                 //    outputWriter.write(""+fieldsSeparator);                    
                 //}
