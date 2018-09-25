@@ -65,32 +65,20 @@ public class LabPLANETArray {
       return false;
     }    
 
-    public Object[] arrayToFile (String[][] arrayHeader, Object[][] array, String filename, String fieldsSeparator) throws IOException{
+    public Object[] arrayToFile (String[] arrayHeader, String[] array, String filename, String fieldsSeparator) throws IOException{
         Object[] diagnosis = new Object[0];
         BufferedWriter outputWriter = null;
         
         if (arrayHeader!=null){
-          for (int i = 0; i < arrayHeader[0].length; i++) {  
-              outputWriter.write(arrayHeader[0][i]+fieldsSeparator);
+          for (int i = 0; i < arrayHeader.length; i++) {  
+              outputWriter.write(arrayHeader[i]+fieldsSeparator);
               outputWriter.newLine();            
           }
         }
-        //String[][] strings = Arrays.stream(array).toArray(String[][]::new);
         outputWriter = new BufferedWriter(new FileWriter(filename));
         for (int i = 0; i < array.length; i++) {
-            for (int j = 0; j < array[0].length; j++) {
-                Object currVal = array[i][j];
-                if (currVal==null){                
-                    currVal = LabPLANETNullValue.replaceNull(currVal.toString());
-                }
-                
-                //if (currVal.toString()!=null){
-                    outputWriter.write(currVal+fieldsSeparator);
-                //}else{
-                //    outputWriter.write(""+fieldsSeparator);                    
-                //}
-                outputWriter.newLine();
-            }
+            outputWriter.write(array[i]);
+            outputWriter.newLine();
         }
         outputWriter.flush();  
         outputWriter.close();          

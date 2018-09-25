@@ -10,7 +10,6 @@ import LabPLANET.utilities.LabPLANETNullValue;
 import LabPLANET.utilities.LabPLANETPlatform;
 import databases.Rdbms;
 import functionalJava.analysis.UserMethod;
-import functionalJava.sampleStructure.DataSample;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -65,7 +64,7 @@ public class DBActions extends HttpServlet {
         
             Integer numTesting = 1;
             Integer inumTesting = 0;
-            Object[][] configSpecTestingArray = new Object[numTesting][6];
+            Object[][] configSpecTestingArray = new Object[numTesting][8];
             LabPLANETArray labArr = new LabPLANETArray();
             
             configSpecTestingArray = labArr.convertCSVinArray(csvPathName, csvFileSeparator);                        
@@ -83,8 +82,8 @@ public class DBActions extends HttpServlet {
                 String userName=null;                
                 String schemaPrefix=null;
                 String tableName=null;
-                String[] fieldName=null;    
-                Object[] fieldValue=null;
+                String[] fieldName=null;                    String[] fieldValue=null;
+                String[] setFieldName=null;                    String[] setFieldValue=null;
                 String[] fieldsToRetrieve=null;   
                 String functionBeingTested="";                     
                 LabPLANETPlatform LabPlat = new LabPLANETPlatform();
@@ -93,23 +92,35 @@ public class DBActions extends HttpServlet {
                 if (configSpecTestingArray[i][2]!=null){schemaPrefix = (String) configSpecTestingArray[i][2];}
                 if (configSpecTestingArray[i][3]!=null){tableName = (String) configSpecTestingArray[i][3];}
                 if (configSpecTestingArray[i][4]!=null){fieldName = (String[]) configSpecTestingArray[i][4].toString().split("\\|");}else{fieldName = new String[0];}              
-                if (configSpecTestingArray[i][5]!=null){fieldValue = (Object[]) configSpecTestingArray[i][5].toString().split("\\|");}else{fieldValue = new Object[0];}
+                if (configSpecTestingArray[i][5]!=null){fieldValue = (String[]) configSpecTestingArray[i][5].toString().split("\\|");}else{fieldValue = new String[0];}
                 if (configSpecTestingArray[i][6]!=null){fieldsToRetrieve = (String[]) configSpecTestingArray[i][6].toString().split("\\|");}else{fieldsToRetrieve = new String[0];}                  
+                if (configSpecTestingArray[i][7]!=null){setFieldName = (String[]) configSpecTestingArray[i][7].toString().split("\\|");}else{setFieldName = new String[0];}              
+                if (configSpecTestingArray[i][8]!=null){setFieldValue = (String[]) configSpecTestingArray[i][8].toString().split("\\|");}else{setFieldValue = new String[0];}
 
+                Object[] fieldValues = labArr.convertStringWithDataTypeToObjectArray(fieldValue);
+                Object[] setFieldValues = labArr.convertStringWithDataTypeToObjectArray(setFieldValue);
+                
                 fileContent = fileContent + "<td>"+i+"</td><td>"+functionBeingTested+"</td><td>"+schemaPrefix+"</td><td>"+tableName
                         +"</td><td>"+Arrays.toString(fieldName)+"</td><td><b>"+Arrays.toString(fieldValue)+"</b></td><td>"+Arrays.toString(fieldsToRetrieve)+"</td>";
 
                 switch (functionBeingTested.toUpperCase()){
                     case "EXISTSRECORD":   
-                        Object[] exRec =  rdbm.existsRecord(rdbm, schemaPrefix, tableName, fieldName, fieldValue);
+                        Object[] exRec =  rdbm.existsRecord(rdbm, schemaPrefix, tableName, fieldName, fieldValues);
                         dataSample2D = labArr.array1dTo2d(exRec, 6);
                         break;
                     case "INSERT":                    
-                        Object[] insRec = rdbm.insertRecordInTable(rdbm, schemaPrefix, tableName, fieldName, fieldValue);  
+                        Object[] insRec = rdbm.insertRecordInTable(rdbm, schemaPrefix, tableName, fieldName, fieldValues);  
                         dataSample2D = labArr.array1dTo2d(insRec, 6);
                         break;
+                    case "GETRECORDFIELDSBYFILTER":                           
+                        dataSample2D = rdbm.getRecordFieldsByFilter(rdbm, schemaPrefix, tableName, fieldName, fieldValues, fieldsToRetrieve);
+                        break;
+                    case "UPDATE":                    
+                        Object[] updRec = rdbm.updateRecordFieldsByFilter(rdbm, schemaPrefix, tableName, setFieldName, setFieldValues, fieldName, fieldValues);  
+                        dataSample2D = labArr.array1dTo2d(updRec, 6);
+                        break;                        
                     default:
-                        dataSample2D = rdbm.getRecordFieldsByFilter(rdbm, schemaPrefix, tableName, fieldName, fieldValue, fieldsToRetrieve);
+                        dataSample2D[0][0]="ERROR";dataSample2D[0][1]="FUNCTION NOT RECOGNIZED";
                         break;
                 }                        
                 LabPLANETNullValue labNull = new LabPLANETNullValue();

@@ -195,20 +195,24 @@ public class Rdbms {
         }
                 
         switch (operation.toUpperCase()){            
-            case "SELECT":
-/*                for (String fn: fieldsToRetrieve){
-                    fieldsToRetrieveStr = fieldsToRetrieveStr + fn + ", ";
-                    fieldsToRetrieveArgStr = fieldsToRetrieveArgStr + "?, ";
-                }
-                fieldsToRetrieveStr = fieldsToRetrieveStr.substring(0, fieldsToRetrieveStr.length()-2);
-                fieldsToRetrieveArgStr = fieldsToRetrieveArgStr.substring(0, fieldsToRetrieveArgStr.length()-2);
-*/                
+            case "SELECT":              
                 query = "select " + fieldsToRetrieveStr + " from " + schemaName + "." + tableName
                         + "   where " + queryWhere ;
                 break;
             case "INSERT":
                 query = "insert into " + schemaName + "." + tableName
-                        + " (" + setFieldNamesStr + ") values ( " + setFieldNamesArgStr + ") " ;            
+                        + " (" + setFieldNamesStr + ") values ( " + setFieldNamesArgStr + ") " ;        
+                break;
+            case "UPDATE":
+                String updateSetSectionStr = "";
+                //String[] updateSetSection = labArr.joinTwo1DArraysInOneOf1DString(setFieldNames, setFieldValues, "=");
+                for (int iFields=0; iFields<setFieldNames.length;iFields++){
+                    updateSetSectionStr = updateSetSectionStr + setFieldNames[iFields] + "=?, ";                    
+                }
+                updateSetSectionStr = updateSetSectionStr.substring(0, updateSetSectionStr.length()-2);     
+                query = "update " + schemaName + "." + tableName
+                        + " set (" + setFieldNamesStr + ") where " + queryWhere;        
+                break;
             default:
                 break;
         }        
@@ -611,8 +615,10 @@ public class Rdbms {
            errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, schemaName);          
            return (Object[]) labPlat.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);                         
         }
-        
-        String query = "";
+        String query = buildSqlStatement("UPDATE", schemaName, tableName,
+                whereFieldNames, whereFieldValues, null, updateFieldNames, updateFieldValues,
+                null, null);   
+/*        String query = "";
         String updateFieldNamesStr = " set ";
         for (String fn: updateFieldNames){updateFieldNamesStr = updateFieldNamesStr + fn + "=?, ";}
         updateFieldNamesStr = updateFieldNamesStr.substring(0, updateFieldNamesStr.length()-2);
@@ -625,6 +631,7 @@ public class Rdbms {
                 if (i==1){query = query + fn + comparator+"? ";i++;}
                 else{query = query + " and "+ fn + comparator+"? ";}
         }       i++;
+*/        
         for (Object fn: whereFieldValues){
             updateFieldValues = labArr.addValueToArray1D(updateFieldValues, fn);}
 
@@ -721,7 +728,11 @@ public class Rdbms {
 
             if (rs.next()) {
               int newId = rs.getInt(indexposition);
-              pkValue = String.valueOf(newId);              
+              if (newId==0){
+                  pkValue = "PRIMARY KEY NOT FIRST FIELD IN TABLE";
+              }else{
+                  pkValue = String.valueOf(newId);              
+              }
             }
         }catch (SQLException er){
             pkValue = "TABLE WITH NO KEY";
@@ -847,7 +858,7 @@ public class Rdbms {
      * @param configFile
      * @param parameterName
      * @return
-     */
+     **/
     public String getParameterBundle(String packageName, String configFile, String parameterName, String language){
         ResourceBundle prop = null;
         FileWriter fw = null;
@@ -869,7 +880,7 @@ public class Rdbms {
             return "";
         }    
     }        
-    
+   
     public Date getLocalDate(){
         Date de = new java.sql.Date(System.currentTimeMillis());        
         return de;}

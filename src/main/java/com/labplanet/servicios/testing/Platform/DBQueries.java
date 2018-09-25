@@ -55,7 +55,7 @@ public class DBQueries extends HttpServlet {
 
 
         LabPLANETArray labArr = new LabPLANETArray();
-        Integer numTesting = 50;
+        Integer numTesting = 22;
         Integer inumTesting = 0;
         Object[][] configSpecTestingArray = new Object[numTesting][7];
         
@@ -460,9 +460,25 @@ public class DBQueries extends HttpServlet {
             configSpecTestingArray[inumTesting][5]=fieldToRetrieve;
             inumTesting++;
         }        
-
+        String[] testsToStringArray = new String[0];
+        for (Integer i=0;i<configSpecTestingArray.length;i++){
+            String longValue = ";"; String value = "";
+            if (configSpecTestingArray[i][6]!=null){value = (String) configSpecTestingArray[i][6];}else{value="";}            
+            longValue = longValue+";"+value;
+            if (configSpecTestingArray[i][0]!=null){value = (String) configSpecTestingArray[i][0];}else{value="";}
+            longValue = longValue+";"+value;
+            if (configSpecTestingArray[i][1]!=null){value = (String) configSpecTestingArray[i][1];}else{value="";}
+            longValue = longValue+";"+value;
+            if (configSpecTestingArray[i][3]!=null){value = (String) Arrays.toString((Object[]) configSpecTestingArray[i][3]);}else{value="";}
+            longValue = longValue+";"+value;
+            if (configSpecTestingArray[i][4]!=null){value = (String) Arrays.toString((Object[]) configSpecTestingArray[i][4]);}else{value="";}
+            longValue = longValue+";"+value;
+            if (configSpecTestingArray[i][5]!=null){value = (String) Arrays.toString((Object[])configSpecTestingArray[i][5]);}else{value="";}
+            longValue = longValue+";"+value;
+            testsToStringArray = labArr.addValueToArray1D(testsToStringArray, longValue);
+        }
             String fileName = "C:\\home\\judas\\dbqueries.txt";            
-            labArr.arrayToFile(null, configSpecTestingArray, fileName, ";");
+            labArr.arrayToFile(null, testsToStringArray, fileName, ";");
     
     if (1==1){return;}
     
