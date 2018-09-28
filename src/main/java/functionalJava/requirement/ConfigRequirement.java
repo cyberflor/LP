@@ -18,7 +18,10 @@ import java.util.logging.Logger;
  */
 public class ConfigRequirement {
     
-    public void getConfigObject2(Rdbms rdbm, String procedure, Integer pVersion){
+    public void _getConfigObject2(Rdbms rdbm, String procedure, Integer pVersion){
+        return;
+    }
+   /*
         try {
             String methodName = "RequirementConfigObjects-ProcessRequest";
             
@@ -37,10 +40,10 @@ public class ConfigRequirement {
             i = res.getRow();
             
             String newEntry = " query returns " + i+1 + " records.";
-/*            try {req.requirementsLogEntry(methodName, newEntry,1);
-            } catch (IOException ex) {
-                Logger.getLogger(RequirementConfigObjects.class.getName()).log(Level.SEVERE, null, ex);}
-*/            
+//            try {req.requirementsLogEntry(methodName, newEntry,1);
+//            } catch (IOException ex) {
+//                Logger.getLogger(RequirementConfigObjects.class.getName()).log(Level.SEVERE, null, ex);}
+//            
             
             out.println(i.toString());
             // Create the root node for the procedure being deployed.
@@ -55,10 +58,10 @@ public class ConfigRequirement {
                 String fieldValue2 = res.getString("field_value_2");                                
                 
                 newEntry = j.toString()+"/"+i.toString()+ " get object "+objectName;
-/*                try {req.requirementsLogEntry(methodName, newEntry,2);
-                } catch (IOException ex) {
-                    Logger.getLogger(RequirementConfigObjects.class.getName()).log(Level.SEVERE, null, ex);}
-*/                
+//                try {req.requirementsLogEntry(methodName, newEntry,2);
+//                } catch (IOException ex) {
+//                    Logger.getLogger(RequirementConfigObjects.class.getName()).log(Level.SEVERE, null, ex);}
+//                
                 String foreignTableName = "user_info";
                 Object[] diagnoses = rdbm.existsRecord(rdbm, "config", foreignTableName, 
                         new String[]{fieldName1}, new Object[]{fieldValue1});
@@ -75,12 +78,12 @@ public class ConfigRequirement {
                     }    
                 }
                 else{newEntry = " The "+foreignTableName+" " + fieldValue1 + " already exist";}   
-/*                try {
-                    req.requirementsLogEntry(methodName, newEntry,3);
-                } catch (IOException ex1) {
-                    Logger.getLogger(Requirement.class.getName()).log(Level.SEVERE, null, ex1);
-                }
-*/
+//                try {
+//                    req.requirementsLogEntry(methodName, newEntry,3);
+//                } catch (IOException ex1) {
+//                    Logger.getLogger(Requirement.class.getName()).log(Level.SEVERE, null, ex1);
+//                }
+//
                 foreignTableName = "role";
                 diagnoses = rdbm.existsRecord(rdbm, "config", foreignTableName, 
                         new String[]{fieldName2}, new Object[]{fieldValue2});
@@ -97,12 +100,12 @@ public class ConfigRequirement {
                     }    
                 }
                 else{newEntry = " The "+foreignTableName+" " + fieldValue2 + " already exist";}   
-/*                try {
-                    req.requirementsLogEntry(methodName, newEntry,3);
-                } catch (IOException ex1) {
-                    Logger.getLogger(Requirement.class.getName()).log(Level.SEVERE, null, ex1);
-                }
-*/                
+//                try {
+//                    req.requirementsLogEntry(methodName, newEntry,3);
+//                } catch (IOException ex1) {
+//                    Logger.getLogger(Requirement.class.getName()).log(Level.SEVERE, null, ex1);
+//                }
+//                
                 //user role    
                 Integer userRoleCount = 0;
                 diagnoses = rdbm.existsRecord(rdbm, "config", tableName, new String[]{fieldName1, fieldName2}, new Object[]{fieldValue1, fieldValue2});
@@ -133,6 +136,6 @@ public class ConfigRequirement {
         }
         
     }
-            
+      */      
     
 }

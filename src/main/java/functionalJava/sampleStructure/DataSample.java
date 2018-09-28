@@ -1230,7 +1230,7 @@ public Object[] sampleAnalysisResultEntry(Rdbms rdbm, String schemaPrefix, Strin
             if (QualitSpecTestingArray.length==3){specSeparator = QualitSpecTestingArray[2];}
             String specListName = null;
             
-            resSpecEvaluation = resChkSpec.resultCheck((String) resultValue, specRuleType, specValues, specSeparator, specListName);
+            resSpecEvaluation = resChkSpec.resultCheck(schemaDataName, (String) resultValue, specRuleType, specValues, specSeparator, specListName);
             if ("LABPLANET_FALSE".equalsIgnoreCase(resSpecEvaluation[0].toString())){
                errorCode = "DataSample_SampleAnalysisResult_QualitativeSpecNotRecognized";
                 errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, resultId.toString());

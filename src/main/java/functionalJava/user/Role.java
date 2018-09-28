@@ -70,18 +70,24 @@ public class Role {
         String methodName = "addPrivilegeToRole";
         Integer id;      
         Integer numRecords = 0;
-        ResultSet resRole = null;
+//        ResultSet resRole = null;
         String newRoleId = "";
+        Object[][] resRole = new Object[0][0];
         
         // ALL means assign the privilege to all the sopName present in this procedure.
-        if (roleId.toUpperCase().contains("ALL")){            
+        if (roleId.toUpperCase().contains("ALL")){   
             String tableName = "role";
-            String queryRoles = "SELECT " + tableName + "_id from config." + tableName + " where " + tableName + "_id like ?";  
+            
+            resRole = rdbm.getRecordFieldsByFilter(rdbm, procName, tableName, 
+                    new String[]{tableName+"_id like %"}, new Object[]{procName}, new String[]{tableName+"_id"});
+            numRecords = resRole.length;
+/*            String queryRoles = "SELECT " + tableName + "_id from config." + tableName + " where " + tableName + "_id like ?";  
             procName = procName + "%";
             resRole = rdbm.prepRdQuery(queryRoles, new Object [] {procName});
             resRole.last();
             numRecords = resRole.getRow();
             resRole.first();
+*/            
 //            newRoleId = resRole.getString("role_id");
         }
         else{
@@ -89,7 +95,7 @@ public class Role {
             newRoleId = roleId;
         }
         for (Integer inumRecords=0; inumRecords<numRecords; inumRecords++){
-            if (roleId.toUpperCase().contains("ALL")){newRoleId = resRole.getString("role_id");}
+            if (roleId.toUpperCase().contains("ALL")){newRoleId = resRole[inumRecords][0].toString();}
             Object[] diagnoses = rdbm.existsRecord(rdbm, schemaConfigName, "role_privilege", 
                     new String[]{"privilege_id"}, new Object[]{privilegeId + "," + roleId} );
             if ("LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){      
@@ -114,7 +120,7 @@ public class Role {
                     //return diagnoses;                
                 }                        
             }               
-            if (roleId.toUpperCase().contains("ALL")){resRole.next();}            
+//            if (roleId.toUpperCase().contains("ALL")){resRole.next();}            
         }    
     return diagnoses;
     }         

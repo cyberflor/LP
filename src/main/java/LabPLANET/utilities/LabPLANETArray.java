@@ -601,6 +601,7 @@ public class LabPLANETArray {
  * @return String[6]. Position 3 FALSE/TRUE is the diagnostic.
  */    
     public String[] checkTwoArraysSameLength(Object[] arrayA, Object[] arrayB){
+
         LabPLANETPlatform labPlat = new LabPLANETPlatform();
         String[] diagnoses = new String[6];
             StackTraceElement[] elements = Thread.currentThread().getStackTrace();

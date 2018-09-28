@@ -33,12 +33,16 @@ public class LabPLANETJson {
  * @return - String[] - Contains the data in a json structure way.
  * @throws SQLException -
  */   
-    public String [] getJsonArrayFields(Rdbms rdbm, String table, String[] fields,String fieldPrefix) throws SQLException {
+    public String [] _getJsonArrayFields(Rdbms rdbm, String table, String[] fields,String fieldPrefix) throws SQLException {
         String [] itt = table.split("\\.");
         String tbl = itt[1];
 
        String tableColumns = ""; //" and column_name = 'description' ";
-
+       
+//Convert this method by using the official Rdbms for queries
+return itt;       
+    }
+/*       
        if (fields!=null)
        {   
            tableColumns = " and column_name in ( ";
@@ -110,5 +114,7 @@ public class LabPLANETJson {
 
        return obj;
     }
+*/
+
     
 }

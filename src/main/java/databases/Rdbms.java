@@ -25,18 +25,14 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
-
 /**
  *
  * @author Administrator
  */
 public class Rdbms {
-
     String classVersion = "0.1";
     String errorCode = "";
 
-//    LabPLANETArray labArr = new LabPLANETArray();
-//    LabPLANETPlatform labPlat = new LabPLANETPlatform();
     String[] javaDocFields = new String[0];
     Object[] javaDocValues = new Object[0];
     String javaDocLineName = "";
@@ -126,7 +122,7 @@ public class Rdbms {
     
     private void setIsStarted(Boolean isStart) { this.isStarted = isStart;}
     
-    public String buildSqlStatement (String operation, String schemaName, String tableName, String[] whereFieldNames, 
+    private String buildSqlStatement (String operation, String schemaName, String tableName, String[] whereFieldNames, 
             Object[] whereFieldValues, String[] fieldsToRetrieve, String[] setFieldNames, Object[] setFieldValues, 
             String[] fieldsToOrder, String[] fieldsToGroup){
         
@@ -177,14 +173,28 @@ public class Rdbms {
                     i++;
                 }    
             }
-        String query = "";
         String fieldsToRetrieveStr = ""; String fieldsToRetrieveArgStr = "";
         String setFieldNamesStr = ""; String setFieldNamesArgStr = "";
         if (fieldsToRetrieve!=null){            
-            for (String fn: fieldsToRetrieve){
-                fieldsToRetrieveStr = fieldsToRetrieveStr + fn + ", ";}
-                fieldsToRetrieveStr = fieldsToRetrieveStr.substring(0, fieldsToRetrieveStr.length()-2);     
-        }   
+            for (String fn: fieldsToRetrieve){       fieldsToRetrieveStr = fieldsToRetrieveStr + fn + ", ";}
+            fieldsToRetrieveStr = fieldsToRetrieveStr.substring(0, fieldsToRetrieveStr.length()-2);  
+        }              
+        String fieldsToOrderStr = "";
+        if (fieldsToOrder!=null){            
+            for (String fn: fieldsToOrder){         fieldsToOrderStr = fieldsToOrderStr + fn + ", ";}  
+            if (fieldsToOrderStr.length()> 0) {
+                fieldsToOrderStr = fieldsToOrderStr.substring(0, fieldsToOrderStr.length()-2);   
+                fieldsToOrderStr = "Order By " + fieldsToOrderStr;
+            }
+        }                                   
+        String fieldsToGroupStr = "";
+        if (fieldsToGroup!=null){            
+            for (String fn: fieldsToGroup){        fieldsToGroupStr = fieldsToGroupStr + fn + ", ";} 
+            if (fieldsToGroupStr.length()> 0) {
+                fieldsToGroupStr = fieldsToGroupStr.substring(0, fieldsToGroupStr.length()-2);            
+                fieldsToGroupStr = "Group By " + fieldsToGroupStr;
+            }
+        }             
         if (setFieldNames!=null){                   
             for (int iFields=0; iFields<setFieldNames.length;iFields++){
                 setFieldNamesStr = setFieldNamesStr + setFieldNames[iFields] + ", ";
@@ -193,11 +203,12 @@ public class Rdbms {
             setFieldNamesStr = setFieldNamesStr.substring(0, setFieldNamesStr.length()-2);     
             setFieldNamesArgStr = setFieldNamesArgStr.substring(0, setFieldNamesArgStr.length()-2);     
         }
-                
+        
+        String query = "";                
         switch (operation.toUpperCase()){            
             case "SELECT":              
                 query = "select " + fieldsToRetrieveStr + " from " + schemaName + "." + tableName
-                        + "   where " + queryWhere ;
+                        + "   where " + queryWhere + " " + fieldsToGroupStr + " " + fieldsToOrderStr;
                 break;
             case "INSERT":
                 query = "insert into " + schemaName + "." + tableName
@@ -211,23 +222,18 @@ public class Rdbms {
                 }
                 updateSetSectionStr = updateSetSectionStr.substring(0, updateSetSectionStr.length()-2);     
                 query = "update " + schemaName + "." + tableName
-                        + " set (" + setFieldNamesStr + ") where " + queryWhere;        
+                        + " set " + updateSetSectionStr + " where " + queryWhere;        
                 break;
             default:
                 break;
         }        
-//                String query = "";
-//                query = "select " + fieldsToRetrieve[0] + " from " + schemaName + "." + tableName
-//                        + "   where " + whereFieldName + "=? ";                
-        
-            return query;
+        return query;
     }
     
     public Object[] zzzexistsRecord(Rdbms rdbm, String schemaName, String tableName, String[] keyFieldName, Object keyFieldValue){
         
         String[] diagnoses = new String[6];
         LabPLANETArray labArr = new LabPLANETArray();        
-        LabPLANETPlatform labPlat = new LabPLANETPlatform();        
         String[] errorDetailVariables = new String[0];
         
         String query = buildSqlStatement("SELECT", schemaName, tableName,
@@ -242,13 +248,13 @@ public class Rdbms {
                 errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, keyFieldValue.toString());
                 errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, tableName);
                 errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, schemaName);
-                return (String[]) labPlat.trapErrorMessage(rdbm, "LABPLANET_TRUE", classVersion, errorCode, errorDetailVariables);                
+                return (String[]) LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_TRUE", classVersion, errorCode, errorDetailVariables);                
             }else{
                 errorCode = "Rbdms_existsRecord_RecordNotFound";
                 errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, keyFieldValue.toString());
                 errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, tableName);
                 errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, schemaName);
-                return (String[]) labPlat.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);                
+                return (String[]) LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);                
             }
         }catch (SQLException er) {
             String ermessage=er.getLocalizedMessage()+er.getCause();
@@ -256,7 +262,7 @@ public class Rdbms {
             errorCode = "Rdbms_dtSQLException";
             errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, ermessage);
             errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, query);
-            return (Object[]) labPlat.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);                                       
+            return (Object[]) LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);                                       
         }                    
     }
 
@@ -264,7 +270,6 @@ public class Rdbms {
         
         String[] diagnoses = new String[6];
         LabPLANETArray labArr = new LabPLANETArray();       
-        LabPLANETPlatform labPlat = new LabPLANETPlatform();   
         String[] errorDetailVariables = new String[0];
         
         Object[] filteredValues = new Object[0];
@@ -273,28 +278,8 @@ public class Rdbms {
            errorCode = "Rdbms_NotFilterSpecified";
            errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, tableName);
            errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, schemaName);          
-           return (Object[]) labPlat.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);                         
+           return (Object[]) LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);                         
         }
-        
- /*       String query = "";
-        query = "select " + keyFieldNames[0] + " from " + schemaName + "." + tableName
-                + "   where " ;
-        
-        for (Integer iFv=0;iFv<keyFieldValues.length;iFv++){
-            if (iFv>0){query = query + " and ";}
-            query = query + keyFieldNames[iFv];
-
-            Boolean addToFilter = true;
-            if (keyFieldValues[iFv].toString().equalsIgnoreCase("IN()")){addToFilter=false;}
-            if (keyFieldValues[iFv].toString().equalsIgnoreCase("IS NULL")){addToFilter=false;}
-            if (keyFieldValues[iFv].toString().equalsIgnoreCase("IS NOT NULL")){addToFilter=false;}
-            if (addToFilter){
-                filteredValues = labArr.addValueToArray1D(filteredValues, keyFieldValues[iFv]);
-                query = query + "=?";
-            }
-        }        
-        ResultSet res = rdbm.prepRdQuery(query, filteredValues);
-        */
         String query = buildSqlStatement("SELECT", schemaName, tableName,
                 keyFieldNames, keyFieldValues, keyFieldNames,  null, null,  null, null);             
         try{
@@ -306,13 +291,13 @@ public class Rdbms {
                 errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, Arrays.toString(filteredValues));
                 errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, tableName);
                 errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, schemaName);
-                return labPlat.trapErrorMessage(rdbm, "LABPLANET_TRUE", classVersion, errorCode, errorDetailVariables);                
+                return LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_TRUE", classVersion, errorCode, errorDetailVariables);                
             }else{
                 errorCode = "Rbdms_existsRecord_RecordNotFound";
                 errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, Arrays.toString(filteredValues));
                 errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, tableName);
                 errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, schemaName);
-                return labPlat.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);                
+                return LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);                
             }
         }catch (SQLException er) {
             String ermessage=er.getLocalizedMessage()+er.getCause();
@@ -320,23 +305,22 @@ public class Rdbms {
             errorCode = "Rdbms_dtSQLException";
             errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, ermessage);
             errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, query);
-            return (Object[]) labPlat.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);                         
+            return (Object[]) LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);                         
         }                    
     }
 
     public Object[][] getRecordFieldsByFilter(Rdbms rdbm, String schemaName, String tableName, String[] whereFieldNames, Object[] whereFieldValues, String[] fieldsToRetrieve){
         
         Object[][] diagnoses = new Object[1][6];                
-        LabPLANETArray labArr = new LabPLANETArray();       
-        LabPLANETPlatform labPlat = new LabPLANETPlatform();   
+        LabPLANETArray labArr = new LabPLANETArray();                 
         String[] errorDetailVariables = new String[0];        
-        schemaName = labPlat.buildSchemaName(schemaName, "");
+        schemaName = LabPLANETPlatform.buildSchemaName(schemaName, "");
         
         if (whereFieldNames.length==0){
            errorCode = "Rdbms_NotFilterSpecified";
            errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, tableName);
            errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, schemaName);          
-           Object[] diagnosesError = (Object[]) labPlat.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);                         
+           Object[] diagnosesError = (Object[]) LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);                         
            return labArr.array1dTo2d(diagnosesError, 6);
         }
         String query = buildSqlStatement("SELECT", schemaName, tableName,
@@ -375,7 +359,7 @@ public class Rdbms {
                 errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, tableName);
                 errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, Arrays.toString(whereFieldValues) );
                 errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, schemaName);
-                Object[] diagnosesError = (Object[]) labPlat.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);                         
+                Object[] diagnosesError = (Object[]) LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);                         
                 return labArr.array1dTo2d(diagnosesError, 6);
             }
         }catch (SQLException er) {
@@ -384,7 +368,7 @@ public class Rdbms {
             errorCode = "Rdbms_dtSQLException";
             errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, ermessage);
             errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, query);
-            Object[] diagnosesError = (Object[]) labPlat.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);                         
+            Object[] diagnosesError = (Object[]) LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);                         
             return labArr.array1dTo2d(diagnosesError, 6);
         }                    
     }
@@ -479,7 +463,10 @@ public class Rdbms {
            Object[] diagnosesError = (Object[]) labPlat.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);                         
            return labArr.array1dTo2d(diagnosesError, 6);               
         }
-        
+        String query = buildSqlStatement("SELECT", schemaName, tableName,
+                whereFieldNames, whereFieldValues,
+                fieldsToRetrieve,  orderBy, null, null, null);   
+/*        
         String query = "";
         String fieldsToRetrieveStr = "";
         for (String fn: fieldsToRetrieve){fieldsToRetrieveStr = fieldsToRetrieveStr + fn + ", ";}
@@ -502,7 +489,8 @@ public class Rdbms {
                 if (i>1){query = query + ", ";}                
                 query = query + sortFld;               
                 i++;
-        }         
+        }       
+*/        
         try{
             ResultSet res = rdbm.prepRdQuery(query, whereFieldValues);
             res.last();
@@ -590,7 +578,9 @@ public class Rdbms {
             errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, query);
             errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, Arrays.toString(fieldValues));            
             errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, schemaName);                
-            return (Object[]) labPlat.trapErrorMessage(rdbm, "LABPLANET_TRUE", classVersion, errorCode, errorDetailVariables);                         
+            Object[] diagnosis =  LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_TRUE", classVersion, errorCode, errorDetailVariables);                         
+            diagnosis = labArr.addValueToArray1D(diagnosis, keyValueNewRecord);
+            return diagnosis;
         } catch (SQLException er) {
             String ermessage=er.getLocalizedMessage()+er.getCause();
             Logger.getLogger(query).log(Level.SEVERE, null, er);     
@@ -618,20 +608,7 @@ public class Rdbms {
         String query = buildSqlStatement("UPDATE", schemaName, tableName,
                 whereFieldNames, whereFieldValues, null, updateFieldNames, updateFieldValues,
                 null, null);   
-/*        String query = "";
-        String updateFieldNamesStr = " set ";
-        for (String fn: updateFieldNames){updateFieldNamesStr = updateFieldNamesStr + fn + "=?, ";}
-        updateFieldNamesStr = updateFieldNamesStr.substring(0, updateFieldNamesStr.length()-2);
-        query = "update " + schemaName + "." + tableName + updateFieldNamesStr
-                + "   where " ;
-        Integer i=1;
-        for (String fn: whereFieldNames){
-                String comparator = "=";
-                if (fn.contains("<>")){comparator="<>"; fn=fn.replace("<>", "");}
-                if (i==1){query = query + fn + comparator+"? ";i++;}
-                else{query = query + " and "+ fn + comparator+"? ";}
-        }       i++;
-*/        
+       
         for (Object fn: whereFieldValues){
             updateFieldValues = labArr.addValueToArray1D(updateFieldValues, fn);}
 
@@ -659,7 +636,7 @@ public class Rdbms {
         }
     }    
 
-    public CachedRowSetImpl prepRdQuery(String consultaconinterrogaciones, Object [] valoresinterrogaciones) throws SQLException{
+    public  CachedRowSetImpl prepRdQuery(String consultaconinterrogaciones, Object [] valoresinterrogaciones) throws SQLException{
     //prepare statement para evitar sql injection
     LabPLANETArray labArr = new LabPLANETArray();        
     Object[] filteredValoresConInterrogaciones = new Object[0];     
@@ -690,12 +667,12 @@ public class Rdbms {
     }
     
 
-    public Integer prepUpQuery(String consultaconinterrogaciones, Object [] valoresinterrogaciones) throws SQLException{
+    private Integer prepUpQuery(String consultaconinterrogaciones, Object [] valoresinterrogaciones) throws SQLException{
         Integer reg =  prepUpQuery(consultaconinterrogaciones, valoresinterrogaciones, null);    
         return reg;
     }
     
-    public Integer prepUpQuery(String consultaconinterrogaciones, Object [] valoresinterrogaciones, Integer [] fieldtypes) throws SQLException{
+    private Integer prepUpQuery(String consultaconinterrogaciones, Object [] valoresinterrogaciones, Integer [] fieldtypes) throws SQLException{
         PreparedStatement prep=getConnection().prepareStatement(consultaconinterrogaciones);
 
         setTimeout(getTimeout());
@@ -711,7 +688,7 @@ public class Rdbms {
         }
     }
     
-    public String prepUpQueryK(String consultaconinterrogaciones, Object [] valoresinterrogaciones, Integer indexposition) throws SQLException{
+    private String prepUpQueryK(String consultaconinterrogaciones, Object [] valoresinterrogaciones, Integer indexposition) throws SQLException{
         String pkValue = "";
         PreparedStatement prep=getConnection().prepareStatement(consultaconinterrogaciones, Statement.RETURN_GENERATED_KEYS);
 
@@ -749,6 +726,7 @@ public class Rdbms {
         return items;
     }
     
+
     public String getTableFieldsArrayEj(String schema, String table, String separator, Boolean addTableName) throws SQLException{
         String sq = "select array(SELECT column_name || ''  FROM information_schema.columns WHERE table_schema = ? AND table_name   = ?) fields";
         CachedRowSetImpl res = prepRdQuery(sq, new Object[]{schema, table});
@@ -815,12 +793,12 @@ public class Rdbms {
         }     
     }
 
-    public ResourceBundle getParameterBundle(String configFile){
+    public static ResourceBundle getParameterBundle(String configFile){
         ResourceBundle prop = ResourceBundle.getBundle("parameter.config."+configFile);
         return prop;
     }
     
-    public String getParameterBundle(String configFile, String parameterName, String language){
+    public static String getParameterBundle(String configFile, String parameterName, String language){
         
         FileWriter fw = null;
         String newEntry = "";
@@ -834,7 +812,7 @@ public class Rdbms {
         }    
     }        
 
-    public String getParameterBundle(String configFile, String parameterName){
+    public static String getParameterBundle(String configFile, String parameterName){
         
         FileWriter fw = null;
         String newEntry = "";
@@ -859,7 +837,7 @@ public class Rdbms {
      * @param parameterName
      * @return
      **/
-    public String getParameterBundle(String packageName, String configFile, String parameterName, String language){
+    public static String getParameterBundle(String packageName, String configFile, String parameterName, String language){
         ResourceBundle prop = null;
         FileWriter fw = null;
         String newEntry = "";
@@ -889,7 +867,7 @@ public class Rdbms {
         Date de = new java.sql.Date(System.currentTimeMillis());        
         return de;}    
     
-    public CachedRowSetImpl readQuery(String consulta) throws SQLException{
+    private CachedRowSetImpl readQuery(String consulta) throws SQLException{
     Statement sta=getConnection().createStatement();
     sta.setQueryTimeout(getTimeout());
     

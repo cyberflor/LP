@@ -15,8 +15,6 @@ import LabPLANET.utilities.LabPLANETPlatform;
 public class DataSpec {
 
     String classVersion = "0.1";
-    LabPLANETArray labArr = new LabPLANETArray();
-    LabPLANETPlatform labPlat = new LabPLANETPlatform();
     String[] javaDocFields = new String[0];
     Object[] javaDocValues = new Object[0];
     String javaDocLineName = "";
@@ -75,8 +73,9 @@ public class DataSpec {
         diagnoses[0]="IN";diagnoses[1]="";return diagnoses;       
     }
 
-    public Object[] resultCheck(String result, String specRule, String values, String separator, String listName){
-        
+    public Object[] resultCheck(String schemaName, String result, String specRule, String values, String separator, String listName){
+        LabPLANETArray labArr = new LabPLANETArray();
+        LabPLANETPlatform labPlat = new LabPLANETPlatform();        
         Object[] isCorrectTheSpec = new Object[2];
         Object[] diagnoses = new Object[2];
         ConfigSpecRule matQualit = new ConfigSpecRule();
@@ -85,7 +84,7 @@ public class DataSpec {
         if (specRule==null || "".equals(specRule)){diagnoses[0]="ERROR";diagnoses[1]="specRule cannot be null";return diagnoses;}
         if (values==null || "".equals(values)){diagnoses[0]="ERROR";diagnoses[1]="values cannot be null";return diagnoses;}
         
-        isCorrectTheSpec = matQualit.specLimitIsCorrectQualitative(specRule, values, separator);
+        isCorrectTheSpec = matQualit.specLimitIsCorrectQualitative(schemaName, specRule, values, separator);
         if ((Boolean) isCorrectTheSpec[0]==false){
             return isCorrectTheSpec;}
         

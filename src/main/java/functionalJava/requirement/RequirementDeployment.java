@@ -47,7 +47,7 @@ public class RequirementDeployment {
     // Originally 1196 lines
                                                                     //, String functionalArea, String values
     @SuppressWarnings("ConvertToTryWithResources")
-    public String newRequirement (Rdbms rdbm, String procedure, Integer procVersion) throws SQLException, IOException {    
+    public String _newRequirement (Rdbms rdbm, String procedure, Integer procVersion) throws SQLException, IOException {    
         String methodName = "newRequirement";
         
         Integer queryInsertNum=0;
@@ -55,7 +55,9 @@ public class RequirementDeployment {
         Writer wr = null;
         Date  d = new Date();
         Role rol = new Role();
-                                  
+return "";
+    }
+/*    
         String newEntry = d+" Starting requirements deployment..."+d;
         try {
             requirementsLogEntry(methodName, newEntry,null);
@@ -152,8 +154,8 @@ public class RequirementDeployment {
         String ermessage = "Done!";
         return ermessage;
     }
-    
-    public void deploymentNavigatorNavId (Rdbms rdbm, String procName, Integer procVersion){                       
+   */ 
+    public void _deploymentNavigatorNavId (Rdbms rdbm, String procName, Integer procVersion){                       
         String methodName = "deploymentNavigatorNavId";
         Integer queryInsertNum=0;
         Integer rootNode = 0;
@@ -161,8 +163,9 @@ public class RequirementDeployment {
         String navCode = "";
         String procCode = "";
         String privId = "";
-        
-        String codeName = "OIL-PL1";
+        return;
+    }
+/*        String codeName = "OIL-PL1";
 
         Object[][] procUserReqBranchesInfo = rdbm.getRecordFieldsByFilter(rdbm, schemaRequirements, "procedure_user_requirements", 
                                                 new String[]{"procedure", "version", "branch_need", "code is not null", "active", "in_scope", "in_system"}, 
@@ -219,8 +222,8 @@ public class RequirementDeployment {
         }catch(SQLException er){ermessage = er.getErrorCode()+er.getLocalizedMessage()+er.getCause();
         }catch(Exception ex)   {Logger.getLogger(Requirement.class.getName()).log(Level.SEVERE, null, ex);}
     }
-
-    public void deploymentNavigatorNavTabId (Rdbms rdbm, String procName, Integer procVersion, Integer navId, String procCode){            
+*/
+    public void _deploymentNavigatorNavTabId (Rdbms rdbm, String procName, Integer procVersion, Integer navId, String procCode){            
         Integer queryInsertNum=0;
         String navCode = "";
         Integer navTabId = 0;
@@ -235,6 +238,9 @@ public class RequirementDeployment {
         String prurs_widget_desc = "";
         String prurs_schema_name = "";
         String prurs_table_name = "";
+        return;
+    }    
+ /*       
         try{
             String query = "SELECT catw.module_id catw_module_id, catw.module_version catw_module_version, catw.module_revision catw_module_revision, "
                         + "        catw.widget_name catw_widget_name, prurs.parent_code prurs_parent_code, prurs.widget_fields prurs_widget_fields, "
@@ -251,6 +257,7 @@ public class RequirementDeployment {
                         + "    and (prurs.parent_code = ? or prurs.code = ?) "
                         + "    and catw.widget_name = prurs.widget || '-BASE' "
                         + "  order by prurs.widget ";            
+
             ResultSet res = rdbm.prepRdQuery(query, new Object [] {procName, procVersion, true, true, true, procCode, procCode}); //Ahora no toma los hijos.
             res.last();
             Integer i;
@@ -321,8 +328,9 @@ public class RequirementDeployment {
         }catch(SQLException er){String ermessage = er.getErrorCode()+er.getLocalizedMessage()+er.getCause();
         } catch (Exception ex) {            
                 Logger.getLogger(Requirement.class.getName()).log(Level.SEVERE, null, ex);
-            }            
-    } 
+            }  
+        
+    } */
 
     public Integer createNav(String nodename, Rdbms rdbm, String privilege_id, Integer fathernode, Boolean haschildren, String procedure, Integer version, String code, String sopName, String sopSection) throws SQLException   {            
         StackTraceElement[] elements = Thread.currentThread().getStackTrace();
@@ -411,7 +419,7 @@ public class RequirementDeployment {
         return numr;
     }
     
-    private Boolean createNavTabComp(Rdbms rdbm, Integer navId, Integer navTabId, String procName, Integer procVersion, String procCode, String catw_widget_name, String catw_widget_nameBase, Integer catw_module_id, Integer catw_module_version, Integer catw_module_revision, String prurs_widget_fields, String prurs_schema_name, String prurs_table_name, String sopName, String sopSection ) throws SQLException    {   
+    private Boolean _createNavTabComp(Rdbms rdbm, Integer navId, Integer navTabId, String procName, Integer procVersion, String procCode, String catw_widget_name, String catw_widget_nameBase, Integer catw_module_id, Integer catw_module_version, Integer catw_module_revision, String prurs_widget_fields, String prurs_schema_name, String prurs_table_name, String sopName, String sopSection ) throws SQLException    {   
         StackTraceElement[] elements = Thread.currentThread().getStackTrace();
         String methodName = elements[1].getMethodName();
 
@@ -420,7 +428,9 @@ public class RequirementDeployment {
         Integer pk=0;
         String ButtonsAdhoc = "";
         String currCatwTbar = "";
-    
+        return false;
+    }        
+/*    
         Object[][] resComp = rdbm.getRecordFieldsByFilter(rdbm, schemaRequirements, "module_catalog_widget", 
                 new String[]{"module_id", "module_version", "module_revision", "widget_name"}, 
                 new Object [] {catw_module_id, catw_module_version, catw_module_revision, catw_widget_nameBase}, 
@@ -493,12 +503,12 @@ public class RequirementDeployment {
                     resButAdhoc.absolute(j+1);  
                     currCatwTbar = resButAdhoc.getString("catw_tbar");
                     ButtonsAdhoc = ButtonsAdhoc + currCatwTbar;    
-        /*           query = "select * "
-                       + = "  from requirements.module_catalog_widget" 
-                       + = " where module_id =? and module_version=? and module_revision=?" 
-                       + = "   and widget_name = ?" 
-                       + = "   and widget_action is not null" 
-                       + = "   and widget_action = 'new'" */
+        //           query = "select * "
+        //               + = "  from requirements.module_catalog_widget" 
+        //               + = " where module_id =? and module_version=? and module_revision=?" 
+       //                + = "   and widget_name = ?" 
+        //               + = "   and widget_action is not null" 
+        //               + = "   and widget_action = 'new'" 
                 }        
 
                 ButtonsAdhoc = "";
@@ -518,7 +528,7 @@ public class RequirementDeployment {
             }     
         return created;
     }
-
+*/
     void requirementsLogEntry(String FunctionName, String entryValue, Integer numTabs) throws IOException{
 
         String newLogFileName = "Requirements.txt";        
@@ -746,9 +756,9 @@ public class RequirementDeployment {
                                     UserSop usSop=new UserSop();
                                     String userInfoId = (String) userProfileInfo[icontUser][0];
 
-                                    newEntry = usSop.addSopToUser(rdbm, schemaName+"-data", userInfoId, sopName);
-
-                                    newEntry = icontUser+"/"+contUser+"  "+newEntry;
+                                    Object[] newSopUser = usSop.addSopToUser(rdbm, schemaName+"-data", userInfoId, sopName);
+                                    
+                                    newEntry = icontUser+"/"+contUser+"  "+newSopUser[newSopUser.length-1].toString();
                                     try {requirementsLogEntry(methodName, newEntry,4);
                                     } catch (IOException ex) {
                                         Logger.getLogger(Requirement.class.getName()).log(Level.SEVERE, null, ex);}
@@ -763,8 +773,10 @@ public class RequirementDeployment {
         }
     }         
 
-    private void createDataBaseSchemas(Rdbms rdbm, String schemaNamePrefix){
-        
+    private void _createDataBaseSchemas(Rdbms rdbm, String schemaNamePrefix){
+   return;
+    }
+/*
         String methodName = "createDataBaseSchemas";
         String newEntry = "";
         String[] schemaNames = new String[0];
@@ -791,9 +803,11 @@ public class RequirementDeployment {
         }
 
     }
-    
-    private void createDataBaseSchemaTable(Rdbms rdbm, String schemaNamePrefix, String procedure, Integer procVersion){
-        
+*/
+    private void _createDataBaseSchemaTable(Rdbms rdbm, String schemaNamePrefix, String procedure, Integer procVersion){
+     return;   
+    }
+/*    
         String methodName = "createDataBaseSchemaTable";
         String newEntry = "";
         tableName = "procedure_db_structure_table";   
@@ -857,8 +871,11 @@ public class RequirementDeployment {
         schemaName = "";    
         }
     }
-
-    public void getConfigObject(Rdbms rdbm, String procedure, Integer pVersion){
+*/
+    public void _getConfigObject(Rdbms rdbm, String procedure, Integer pVersion){
+        return;
+    }
+/*
         String methodName = "RequirementConfigObjects-ProcessRequest";
 
         Integer id =0;           
@@ -936,5 +953,6 @@ public class RequirementDeployment {
                 id = Integer.parseInt(diagnoses[6].toString());
             }    
         }        
-    }    
+    } 
+    */
 }

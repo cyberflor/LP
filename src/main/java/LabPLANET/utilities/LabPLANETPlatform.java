@@ -28,7 +28,7 @@ public class LabPLANETPlatform {
 //    LabPLANETArray labArr = new LabPLANETArray();
     String classVersion = "0.1";
     
-    String errorCode = ""; String errorDetail = "";
+    String errorCode = ""; static String errorDetail = "";
     Object[] errorDetailVariables = new Object[0];
     
     public Object[] procActionEnabled(String schemaPrefix, String actionName){
@@ -232,7 +232,7 @@ public class LabPLANETPlatform {
  * @param schemaName String - Which is the nature of the data (config/data/requirements)
  * @return String
  */    
-    public String buildSchemaName(String schemaPrefix, String schemaName){
+    public static String buildSchemaName(String schemaPrefix, String schemaName){
         if (schemaPrefix.length()>0){
             //Remove this to re-create the schemaName when not called for the first time.
             schemaPrefix = schemaPrefix.replace("\"", "");
@@ -569,7 +569,7 @@ public class LabPLANETPlatform {
      * @param errorVariables
      * @return Object[]
  */
-    public Object[] trapErrorMessage(Rdbms rdbm, String evaluation, String classVersion, String errorCode, Object[] errorVariables) {
+    public static Object[] trapErrorMessage(Rdbms rdbm, String evaluation, String classVersion, String errorCode, Object[] errorVariables) {
                 
         Object[] fldValue = new Object[6];
 
@@ -579,10 +579,10 @@ public class LabPLANETPlatform {
         Integer lineNumber = Thread.currentThread().getStackTrace()[CLIENT_CODE_STACK_INDEX].getLineNumber(); 
         className = className.replace(".java", "");
         
-        String errorCodeText = rdbm.getParameterBundle("LabPLANET", "errorTraping", className+"_"+errorCode, null);
+        String errorCodeText = Rdbms.getParameterBundle("LabPLANET", "errorTraping", className+"_"+errorCode, null);
         if (errorCodeText.length()==0){errorCodeText = rdbm.getParameterBundle("LabPLANET", "errorTraping", errorCode, null);}
-        errorDetail = rdbm.getParameterBundle("LabPLANET", "errorTraping", className+"_"+errorCode+"_detail", null);
-        if (errorDetail.length()==0){errorDetail = rdbm.getParameterBundle("LabPLANET", "errorTraping", errorCode+"_detail", null);}
+        errorDetail = Rdbms.getParameterBundle("LabPLANET", "errorTraping", className+"_"+errorCode+"_detail", null);
+        if (errorDetail.length()==0){errorDetail = Rdbms.getParameterBundle("LabPLANET", "errorTraping", errorCode+"_detail", null);}
         for (int iVarValue=1; iVarValue<=errorVariables.length; iVarValue++){
             errorDetail = errorDetail.replace("<*"+String.valueOf(iVarValue)+"*>", errorVariables[iVarValue-1].toString());
         }

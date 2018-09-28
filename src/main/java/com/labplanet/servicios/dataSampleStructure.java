@@ -74,23 +74,9 @@ public class dataSampleStructure extends HttpServlet {
             Integer inumTesting = 0;
             Object[][] configSpecTestingArray = new Object[numTesting][6];
             LabPLANETArray labArr = new LabPLANETArray();
-
             
             configSpecTestingArray = labArr.convertCSVinArray(csvPathName, csvFileSeparator);            
             
-            /* TODO output your page here. You may use following sample code. */
- /*           out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet dataSampleStructure</title>");            
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet dataSampleStructure at " + request.getContextPath() + "</h1>");
-            out.println("<h1>Connected to the db? " + isConnected + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
-*/            
-        //String fileContent="";
         fileContent = testingFileContentSections.getHtmlStyleHeader(this.getServletName());
             
         DataSample smp = new DataSample("");
@@ -100,8 +86,7 @@ public class dataSampleStructure extends HttpServlet {
         }            
 
         for (Integer i=1;i<configSpecTestingArray.length;i++){
-            //if (configSpecTestingArray[i][2]==null && configSpecTestingArray[i][3]==null){
-                                                
+            //if (configSpecTestingArray[i][2]==null && configSpecTestingArray[i][3]==null){                                              
             fileContent = fileContent + "<tr>";
             String[] fieldName=null;    
             Object[] fieldValue=null;

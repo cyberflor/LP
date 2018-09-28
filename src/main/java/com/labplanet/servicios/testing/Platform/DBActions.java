@@ -45,6 +45,7 @@ public class DBActions extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         
         String fileContent = "";        
+        
         try (PrintWriter out = response.getWriter()) {
             
             response.setContentType("text/html;charset=UTF-8");
@@ -64,7 +65,7 @@ public class DBActions extends HttpServlet {
         
             Integer numTesting = 1;
             Integer inumTesting = 0;
-            Object[][] configSpecTestingArray = new Object[numTesting][8];
+            Object[][] configSpecTestingArray = new Object[numTesting][9];
             LabPLANETArray labArr = new LabPLANETArray();
             
             configSpecTestingArray = labArr.convertCSVinArray(csvPathName, csvFileSeparator);                        
@@ -84,9 +85,11 @@ public class DBActions extends HttpServlet {
                 String tableName=null;
                 String[] fieldName=null;                    String[] fieldValue=null;
                 String[] setFieldName=null;                    String[] setFieldValue=null;
+                String[] orderBy=null;                    String[] groupBy=null;
                 String[] fieldsToRetrieve=null;   
                 String functionBeingTested="";                     
                 LabPLANETPlatform LabPlat = new LabPLANETPlatform();
+                Object[] dataSample2Din1D = new Object[0];
 
                 if (configSpecTestingArray[i][1]!=null){functionBeingTested = (String) configSpecTestingArray[i][1];}
                 if (configSpecTestingArray[i][2]!=null){schemaPrefix = (String) configSpecTestingArray[i][2];}
@@ -96,12 +99,16 @@ public class DBActions extends HttpServlet {
                 if (configSpecTestingArray[i][6]!=null){fieldsToRetrieve = (String[]) configSpecTestingArray[i][6].toString().split("\\|");}else{fieldsToRetrieve = new String[0];}                  
                 if (configSpecTestingArray[i][7]!=null){setFieldName = (String[]) configSpecTestingArray[i][7].toString().split("\\|");}else{setFieldName = new String[0];}              
                 if (configSpecTestingArray[i][8]!=null){setFieldValue = (String[]) configSpecTestingArray[i][8].toString().split("\\|");}else{setFieldValue = new String[0];}
-
+                if (configSpecTestingArray[i][9]!=null){orderBy = (String[]) configSpecTestingArray[i][9].toString().split("\\|");}else{orderBy = new String[0];}
+                if (configSpecTestingArray[i][10]!=null){groupBy = (String[]) configSpecTestingArray[i][10].toString().split("\\|");}else{groupBy = new String[0];}
+                
                 Object[] fieldValues = labArr.convertStringWithDataTypeToObjectArray(fieldValue);
                 Object[] setFieldValues = labArr.convertStringWithDataTypeToObjectArray(setFieldValue);
                 
                 fileContent = fileContent + "<td>"+i+"</td><td>"+functionBeingTested+"</td><td>"+schemaPrefix+"</td><td>"+tableName
-                        +"</td><td>"+Arrays.toString(fieldName)+"</td><td><b>"+Arrays.toString(fieldValue)+"</b></td><td>"+Arrays.toString(fieldsToRetrieve)+"</td>";
+                        +"</td><td>"+Arrays.toString(fieldName)+"</td><td><b>"+Arrays.toString(fieldValue)+"</b></td><td>"+Arrays.toString(fieldsToRetrieve)
+                        +"</td><td>"+Arrays.toString(setFieldName)+"</td><td><b>"+Arrays.toString(setFieldValue)+"</b></td>"
+                        +"</td><td>"+Arrays.toString(orderBy)+"</td><td><b>"+Arrays.toString(groupBy)+"</b></td>";
 
                 switch (functionBeingTested.toUpperCase()){
                     case "EXISTSRECORD":   
@@ -112,8 +119,15 @@ public class DBActions extends HttpServlet {
                         Object[] insRec = rdbm.insertRecordInTable(rdbm, schemaPrefix, tableName, fieldName, fieldValues);  
                         dataSample2D = labArr.array1dTo2d(insRec, 6);
                         break;
-                    case "GETRECORDFIELDSBYFILTER":                           
-                        dataSample2D = rdbm.getRecordFieldsByFilter(rdbm, schemaPrefix, tableName, fieldName, fieldValues, fieldsToRetrieve);
+                    case "GETRECORDFIELDSBYFILTER":              
+                        if (orderBy.length>0){
+                            dataSample2D = rdbm.getRecordFieldsByFilter(rdbm, schemaPrefix, tableName, fieldName, fieldValues, fieldsToRetrieve, orderBy);
+                        }else{
+                            dataSample2D = rdbm.getRecordFieldsByFilter(rdbm, schemaPrefix, tableName, fieldName, fieldValues, fieldsToRetrieve);
+                        }
+                        if (!"LABPLANET_FALSE".equalsIgnoreCase(dataSample2D[0][0].toString())){
+                            dataSample2Din1D = (String[]) labArr.array2dTo1d(dataSample2D);
+                        }    
                         break;
                     case "UPDATE":                    
                         Object[] updRec = rdbm.updateRecordFieldsByFilter(rdbm, schemaPrefix, tableName, setFieldName, setFieldValues, fieldName, fieldValues);  
@@ -124,17 +138,18 @@ public class DBActions extends HttpServlet {
                         break;
                 }                        
                 LabPLANETNullValue labNull = new LabPLANETNullValue();
-                fileContent = fileContent + "<td>"+dataSample2D[0][0].toString();
-                fileContent = fileContent + ". "+LabPLANETNullValue.replaceNull((String) dataSample2D[0][1]);
-                if (dataSample2D[0].length>2){
-                    fileContent = fileContent + ". "+LabPLANETNullValue.replaceNull((String) dataSample2D[0][2]);}
-                if (dataSample2D[0].length>3){
-                    fileContent = fileContent + ". "+LabPLANETNullValue.replaceNull((String) dataSample2D[0][3]);}
-                if (dataSample2D[0].length>4){
-                    fileContent = fileContent + ". "+LabPLANETNullValue.replaceNull((String) dataSample2D[0][4]);}                
-                if (dataSample2D[0].length>5){
-                    fileContent = fileContent + ". "+LabPLANETNullValue.replaceNull((String) dataSample2D[0][5])+"</td>";}
+                if (dataSample2D[0].length==0){fileContent = fileContent + "<td>No content in the array dataSample2D returned for function "+functionBeingTested;}
+                if (dataSample2D[0].length>0){fileContent = fileContent + "<td>"+dataSample2D[0][0].toString();}
+                if (dataSample2D[0].length>1){fileContent = fileContent + ". "+LabPLANETNullValue.replaceNull((String) dataSample2D[0][1]);}
+                if (dataSample2D[0].length>2){fileContent = fileContent + ". "+LabPLANETNullValue.replaceNull((String) dataSample2D[0][2]);}
+                if (dataSample2D[0].length>3){fileContent = fileContent + ". "+LabPLANETNullValue.replaceNull((String) dataSample2D[0][3]);}
+                if (dataSample2D[0].length>4){fileContent = fileContent + ". "+LabPLANETNullValue.replaceNull((String) dataSample2D[0][4]);}                
+                if (dataSample2D[0].length>5){fileContent = fileContent + ". "+LabPLANETNullValue.replaceNull((String) dataSample2D[0][5]);}
+                if ( ("GETRECORDFIELDSBYFILTER".equalsIgnoreCase(functionBeingTested)) && (!"LABPLANET_FALSE".equalsIgnoreCase(dataSample2D[0][0].toString())) ){
+                    fileContent = fileContent + "</td><td>"+Arrays.toString(dataSample2Din1D);
+                }
 
+                fileContent = fileContent + "</td>";
                 fileContent = fileContent + "</tr>";
             }
             fileContent = fileContent + "</table>";        

@@ -8,6 +8,7 @@ package functionalJava.materialSpec;
 import databases.Rdbms;
 import LabPLANET.utilities.LabPLANETArray;
 import LabPLANET.utilities.LabPLANETPlatform;
+import static LabPLANET.utilities.LabPLANETPlatform.trapErrorMessage;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.ResultSet;
@@ -265,8 +266,8 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
                 }
                 ConfigSpecRule qualSpec = new ConfigSpecRule();
                 Object[] isCorrect = null;
-                if (ruleVariablesArr.length==2){isCorrect = qualSpec.specLimitIsCorrectQualitative(ruleVariablesArr[0], ruleVariablesArr[1], null);}                
-                else{isCorrect = qualSpec.specLimitIsCorrectQualitative(ruleVariablesArr[0], ruleVariablesArr[1], ruleVariablesArr[2]);}
+                if (ruleVariablesArr.length==2){isCorrect = qualSpec.specLimitIsCorrectQualitative(schemaName, ruleVariablesArr[0], ruleVariablesArr[1], null);}                
+                else{isCorrect = qualSpec.specLimitIsCorrectQualitative(schemaName, ruleVariablesArr[0], ruleVariablesArr[1], ruleVariablesArr[2]);}
                 if ((Boolean) isCorrect[0]==true){myDiagnoses="SUCCESS";}
                 else{myDiagnoses="ERROR: "+isCorrect[1];}
                 break;
@@ -297,7 +298,7 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
         return myDiagnoses;                    
     }
     
-    public Object[] specRemove(Rdbms rdbm, String schemaPrefix, String code){
+    public Object[] _specRemove(Rdbms rdbm, String schemaPrefix, String code){
         return diagnoses;
     }
         
@@ -305,6 +306,9 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
         
         String schemaName = "config";        
         Object[] diagnoses = new Object[6];
+        
+        String errorCode = "DataSample_SpecialFunctionReturnedERROR";
+        Object[] errorDetailVariables = new Object[0];
          
         LabPLANETPlatform labPlat = new LabPLANETPlatform();
         schemaName = labPlat.buildSchemaName(schemaPrefix, schemaName);
@@ -340,25 +344,37 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
                 } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
                     Logger.getLogger(ConfigSpecStructure.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                if (specialFunctionReturn.toString().contains("ERROR")){
-                    StackTraceElement[] elements = Thread.currentThread().getStackTrace();
-                    diagnoses[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
-                    diagnoses[1]= classVersion;
-                    diagnoses[2]= "Code Line " + String.valueOf(elements[1].getLineNumber());
-                    diagnoses[3]="FALSE";
-                    diagnoses[4]=specialFunctionReturn.toString();
-                    diagnoses[5]="The field " + currField + " is considered special and its checker (" + aMethod + ") returned the Error above";
-                    return diagnoses;                            
+                if ("ERROR".equalsIgnoreCase(specialFunctionReturn.toString())){
+                    errorCode = "DataSample_SpecialFunctionReturnedERROR";
+                    errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, currField);
+                    errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, aMethod);
+                    errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, specialFunctionReturn.toString());
+                    return (String[]) labPlat.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);                                                
                 }
                 //String specialFunctionReturnStatus = String.valueOf(specialFunctionReturn);
             }
         }      
         try{
-           String query = "update "+ schemaName + ".spec set ";
+            String[] whereFieldNames = new String[0];
+            whereFieldNames = labArr.addValueToArray1D(whereFieldNames, "code");
+            whereFieldNames = labArr.addValueToArray1D(whereFieldNames, "config_version");
+            Object[] whereFieldValues = new Object[0];
+            whereFieldValues = labArr.addValueToArray1D(whereFieldValues, specCode);
+            whereFieldValues = labArr.addValueToArray1D(whereFieldValues, specCodeVersion);            
+            diagnoses = rdbm.updateRecordFieldsByFilter(rdbm, schemaName, "spec", specFieldName, specFieldValue, whereFieldNames, whereFieldValues);
+
+           if ("LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){
+               diagnoses = rdbm.insertRecordInTable(rdbm, schemaName, "spec_rules", new String[]{"code", "config_version", "allow_other_analysis", "allow_multi_spec"}, new Object[] {specCode, 1, false, false});
+               return diagnoses;
+           }else{
+               return diagnoses;
+           }
+           
+/*           String query = "update "+ schemaName + ".spec set ";
            for (String fieldName: specFieldName){
                query=query+fieldName+"=? ";
            }
-           query=query+ " where code=? and config_version=? ";
+           query=query+ " where code=? and =? ";
 
            Object[] fieldValues = new Object[specFieldName.length+2];
            
@@ -383,50 +399,37 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
                diagnoses[5]="The Spec "+specCode+" was updated successfully";
                return diagnoses;
            }
+*/
        } catch (IllegalArgumentException ex) {
            Logger.getLogger(ConfigSpecStructure.class.getName()).log(Level.SEVERE, null, ex);
        }  
-
-        StackTraceElement[] elements = Thread.currentThread().getStackTrace();
-        diagnoses[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
-        diagnoses[1]= classVersion;
-        diagnoses[2]= "Code Line " + String.valueOf(elements[1].getLineNumber());
-        diagnoses[3]="TRUE";
-        diagnoses[4]="Continue...";
-        diagnoses[5]="Continue...";
-        return diagnoses;
+        errorCode = "UnhandledExceptionInCode";
+        String Params = "SchemaPrefix: "+schemaPrefix+"specCode"+specCode+"specCodeVersion"+specCodeVersion.toString()
+                +"specFieldName"+Arrays.toString(specFieldName)+"specFieldValue"+Arrays.toString(specFieldValue);
+        errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, Params);        
+        return trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);
     }
 
     public Object[] specNew(Rdbms rdbm, String schemaPrefix, String[] specFieldName, Object[] specFieldValue ) throws SQLException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{                          
         String newCode = "";
         String schemaName = "config";
         String query = "";
-
+        String errorCode = "";
+        String[] errorDetailVariables = new String[0];
         
         schemaName = labPlat.buildSchemaName(schemaPrefix, schemaName);
 
         mandatoryFields = getSpecMandatoryFields();
-
-        if (specFieldName.length!=specFieldValue.length){
-            StackTraceElement[] elements = Thread.currentThread().getStackTrace();
-            diagnoses[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
-            diagnoses[1]= classVersion;
-            diagnoses[2]= "Code Line " + String.valueOf(elements[1].getLineNumber());   
-            diagnoses[3]="FALSE";
-            diagnoses[4]="ERROR:Field names and values arrays with different length";
-            diagnoses[5]="The values in FieldName are:"+ Arrays.toString(specFieldName)+". and in FieldValue are:"+Arrays.toString(specFieldValue);
-            return diagnoses;
-        }
+        
         LabPLANETArray lpa = new LabPLANETArray();
+
+        String[] checkTwoArraysSameLength = lpa.checkTwoArraysSameLength(specFieldName, specFieldValue);
+        if ("LABPLANET_FALSE".equalsIgnoreCase(checkTwoArraysSameLength[0].toString())){return checkTwoArraysSameLength;}
+
         if (lpa.duplicates(specFieldName)){
-            StackTraceElement[] elements = Thread.currentThread().getStackTrace();
-            diagnoses[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
-            diagnoses[1]= classVersion;
-            diagnoses[2]= "Code Line " + String.valueOf(elements[1].getLineNumber());
-            diagnoses[3]="FALSE";
-            diagnoses[4]="ERROR:Fields duplicated";
-            diagnoses[5]="Detected any field duplicated in FieldName, the values are:"+(char) 10 + Arrays.toString(specFieldName);
-            return diagnoses;
+           errorCode = "DataSample_FieldsDuplicated";
+           errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, Arrays.toString(specFieldName));
+           return (String[]) labPlat.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);                      
         }
 
         mandatoryFieldsMissing = "";
@@ -444,14 +447,9 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
             
         }            
         if (mandatoryFieldsMissing.length()>0){
-            StackTraceElement[] elements = Thread.currentThread().getStackTrace();
-            diagnoses[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
-            diagnoses[1]= classVersion;
-            diagnoses[2]= "Code Line " + String.valueOf(elements[1].getLineNumber());
-            diagnoses[3]="FALSE";
-            diagnoses[4]="ERROR:Missing Mandatory Fields";
-            diagnoses[5]="Mandatory fields not found: "+mandatoryFieldsMissing;
-            return diagnoses;
+           errorCode = "DataSample_MissingMandatoryFields";
+           errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, mandatoryFieldsMissing);
+           return (String[]) labPlat.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);                
         }
 
         Integer fieldIndex = Arrays.asList(specFieldName).indexOf("code");
@@ -482,28 +480,22 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
                     parameters[2]=newCode;
                     Object specialFunctionReturn = method.invoke(this, rdbm, parameters);      
                     if (specialFunctionReturn.toString().contains("ERROR")){
-                        StackTraceElement[] elements = Thread.currentThread().getStackTrace();
-                        diagnoses[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
-                        diagnoses[1]= classVersion;
-                        diagnoses[2]= "Code Line " + String.valueOf(elements[1].getLineNumber());
-                        diagnoses[3]="FALSE";
-                        diagnoses[4]=specialFunctionReturn.toString();
-                        diagnoses[5]="The field " + currField + " is considered special and its checker (" + aMethod + ") returned the Error above";
-                        return diagnoses;                            
+                        errorCode = "DataSample_SpecialFunctionReturnedERROR";
+                        errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, currField);
+                        errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, aMethod);
+                        errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, specialFunctionReturn.toString());
+                        return (String[]) labPlat.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);                            
                     }
                     //String specialFunctionReturnStatus = String.valueOf(specialFunctionReturn);
             }
         }
         diagnoses = rdbm.existsRecord(rdbm, schemaName, "spec", new String[]{"code", "config_version"}, new Object[] {newCode, newCodeVersion});        
         if ("LABPLANET_FALSE".equalsIgnoreCase(diagnoses[0].toString())){
-            StackTraceElement[] elements = Thread.currentThread().getStackTrace();
-            diagnoses[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
-            diagnoses[1]= classVersion;
-            diagnoses[2]= "Code Line " + String.valueOf(elements[1].getLineNumber());
-            diagnoses[3]="FALSE";
-            diagnoses[4]="ERROR: SPEC ALREADY EXIST";
-            diagnoses[5]="The spec " + newCode + " sit its version "+newCodeVersion.toString()+ " already exists in schema " + schemaName + " and cannot be duplicated";
-            return diagnoses;                            
+            errorCode = "specRecord_AlreadyExists";
+            errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, newCode);
+            errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, newCodeVersion.toString());
+            errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, schemaName);
+            return (String[]) labPlat.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);           
         }
         try{
             diagnoses = rdbm.insertRecordInTable(rdbm, schemaName, "spec", specFieldName, specFieldValue);            
@@ -512,26 +504,18 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
                     new String[]{"code", "config_version", "allow_other_analysis", "allow_multi_spec"}, 
                     new Object[]{newCode, newCodeVersion, false, false});       
             if ("LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){
-                StackTraceElement[] elements = Thread.currentThread().getStackTrace();
-                diagnoses[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
-                diagnoses[1]= classVersion;
-                diagnoses[2]= "Code Line " + String.valueOf(elements[1].getLineNumber());
-                diagnoses[3]="TRUE";
-                diagnoses[4]="SUCCESS: SPEC CREATED";
-                diagnoses[5]="The Spec "+newCode+" was created successfully";
-                return diagnoses;
+                errorCode = "specRecord_createdSuccessfully";
+                errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, newCode);
+                errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, schemaName);
+                return (String[]) labPlat.trapErrorMessage(rdbm, "LABPLANET_TRUE", classVersion, errorCode, errorDetailVariables);                   
             }    
         } catch (IllegalArgumentException ex) {
             Logger.getLogger(ConfigSpecStructure.class.getName()).log(Level.SEVERE, null, ex);
-        }            
-        StackTraceElement[] elements = Thread.currentThread().getStackTrace();
-        diagnoses[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
-        diagnoses[1]= classVersion;
-        diagnoses[2]= "Code Line " + String.valueOf(elements[1].getLineNumber());   
-        diagnoses[3]="FALSE";
-        diagnoses[4]="ERROR:LOGIC NOT HANDLED";
-        diagnoses[5]="This function had no logic to manage the values you passed";
-        return diagnoses;        
+        }                    
+        errorCode = "UnhandledExceptionInCode";
+        String params = "schemaPrefix: " + schemaPrefix+"specFieldName: "+Arrays.toString(specFieldName)+"specFieldValue: "+Arrays.toString(specFieldValue);
+        errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, params);
+        return (String[]) labPlat.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);                  
     }
     
     public Object[] specVariationGetNamesList(Rdbms rdbm, String schemaPrefix, String specCode){
@@ -539,12 +523,23 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
         String schemaName = "config";
         Object[] diagnosis = new Object[6];
         String variationList = "";
+        String errorCode ="";
         
-
         LabPLANETPlatform labPlat = new LabPLANETPlatform();
         schemaName = labPlat.buildSchemaName(schemaPrefix, schemaName);
         
-        String query = ""; //distinct on (name)
+        Object[][] variationListArray = rdbm.getRecordFieldsByFilter(rdbm, schemaName, "spec_limits", new String[]{"code"}, new Object[]{specCode}, new String[]{"name"});
+        if ("LABPLANET_FALSE".equalsIgnoreCase(variationListArray[0][0].toString())){            
+            return labArr.array2dTo1d(variationListArray);
+        }else{
+            for (int i=0;i<=variationListArray.length;i++){
+                 if (variationList.length()>0){variationList=variationList+"|";}
+                 variationList=variationList+variationListArray[i][0].toString();
+             }
+            errorCode = "specVariationGetNamesList_successfully";
+            return LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_TRUE", classVersion, errorCode, new String[]{variationList});            
+        }
+/*        String query = ""; //distinct on (name)
         query = "select name from " + schemaName + ".spec_limits "
                 + "   where code=? ";               
         try{
@@ -578,6 +573,7 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
                 diagnosis[5]="No records found, Query: "+query;
                 return diagnosis;         
             }
+
         }catch (SQLException er) {
             String ermessage=er.getLocalizedMessage()+er.getCause();
             Logger.getLogger(query).log(Level.SEVERE, null, er);     
@@ -589,7 +585,8 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
             diagnosis[4]="ERROR:DB RETURNED ERROR";
             diagnosis[5]="The database returned error: "+ermessage+ " Query: "+query;
             return diagnosis;                
-        }             
+        }   
+*/
     }
     
     public Object[] specLimitNew(Rdbms rdbm, String schemaPrefix, String[] specFieldName, Object[] specFieldValue ) throws SQLException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
@@ -597,34 +594,24 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
         String code = "";
         String schemaName = "config";
         String query = "";
+        String errorCode="";
+        Object[]  errorDetailVariables= new Object[0];
 
         LabPLANETPlatform labPlat = new LabPLANETPlatform();
+        LabPLANETArray labArr = new LabPLANETArray();
         schemaName = labPlat.buildSchemaName(schemaPrefix, schemaName);
 
         mandatoryFields = getSpecLimitsMandatoryFields();
 
-        if (specFieldName.length!=specFieldValue.length){
-            StackTraceElement[] elements = Thread.currentThread().getStackTrace();
-            diagnoses[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
-            diagnoses[1]= classVersion;
-            diagnoses[2]= "Code Line " + String.valueOf(elements[1].getLineNumber());   
-            diagnoses[3]="FALSE";
-            diagnoses[4]="ERROR:Field names and values arrays with different length";
-            diagnoses[5]="The values in FieldName are:"+ Arrays.toString(specFieldName)+". and in FieldValue are:"+Arrays.toString(specFieldValue);
-            return diagnoses;
-        }
-        LabPLANETArray lpa = new LabPLANETArray();
-        if (lpa.duplicates(specFieldName)){
-            StackTraceElement[] elements = Thread.currentThread().getStackTrace();
-            diagnoses[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
-            diagnoses[1]= classVersion;
-            diagnoses[2]= "Code Line " + String.valueOf(elements[1].getLineNumber());
-            diagnoses[3]="FALSE";
-            diagnoses[4]="ERROR:Fields duplicated";
-            diagnoses[5]="Detected any field duplicated in FieldName, the values are:"+(char) 10 + Arrays.toString(specFieldName);
-            return diagnoses;
-        }
+        String[] checkTwoArraysSameLength = labArr.checkTwoArraysSameLength(specFieldName, specFieldValue);
+        if ("LABPLANET_FALSE".equalsIgnoreCase(checkTwoArraysSameLength[0].toString())){return checkTwoArraysSameLength;}
 
+        if (labArr.duplicates(specFieldName)){
+           errorCode = "DataSample_FieldsDuplicated";
+           errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, Arrays.toString(specFieldName));
+           return (String[]) labPlat.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);                      
+        }
+        
         mandatoryFieldsMissing = "";
         for (Integer inumLines=0;inumLines<mandatoryFields.length;inumLines++){
             String currField = mandatoryFields[inumLines];
@@ -644,26 +631,14 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
         Integer codeVersion = (Integer) specFieldValue[fieldIndex];
 
         diagnoses = rdbm.existsRecord(rdbm, schemaName, "spec", new String[]{"code", "config_version"}, new Object[] {code, codeVersion});        
-        if (!"LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){
-            StackTraceElement[] elements = Thread.currentThread().getStackTrace();
-            diagnoses[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
-            diagnoses[1]= classVersion;
-            diagnoses[2]= "Code Line " + String.valueOf(elements[1].getLineNumber());
-            diagnoses[3]="FALSE";
-            diagnoses[4]="ERROR SPEC NOT FOUND";
-            diagnoses[5]="The spec " + code + " was not found in the schema "+schemaName;                            
+        if (!"LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){                       
             return diagnoses;
         }
         
         if (mandatoryFieldsMissing.length()>0){
-            StackTraceElement[] elements = Thread.currentThread().getStackTrace();
-            diagnoses[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
-            diagnoses[1]= classVersion;
-            diagnoses[2]= "Code Line " + String.valueOf(elements[1].getLineNumber());
-            diagnoses[3]="FALSE";
-            diagnoses[4]="ERROR:Missing Mandatory Fields";
-            diagnoses[5]="Mandatory fields not found: "+mandatoryFieldsMissing;
-            return diagnoses;
+           errorCode = "DataSample_MissingMandatoryFields";
+           errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, mandatoryFieldsMissing);
+           return (String[]) labPlat.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);    
         }
         
         String[] specialFields = getSpecialFields();
@@ -674,38 +649,33 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
             String currFieldValue = specFieldValue[inumLines].toString();
             boolean contains = Arrays.asList(specialFields).contains(currField);
             if (contains){                    
-                    Integer specialFieldIndex = Arrays.asList(specialFields).indexOf(currField);
-                    String aMethod = specialFieldsFunction[specialFieldIndex];
-                    Method method = null;
-                    try {
-                        Class<?>[] paramTypes = {Rdbms.class, String.class};
-                        method = getClass().getDeclaredMethod(aMethod, paramTypes);
-                    } catch (NoSuchMethodException | SecurityException ex) {
-                        Logger.getLogger(ConfigSpecStructure.class.getName()).log(Level.SEVERE, null, ex);
-                    }                        
-                    try {
-                        Object specialFunctionReturn = method.invoke(this, rdbm, schemaName);      
-                        if (specialFunctionReturn.toString().contains("ERROR")){
-                            StackTraceElement[] elements = Thread.currentThread().getStackTrace();
-                            diagnoses[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
-                            diagnoses[1]= classVersion;
-                            diagnoses[2]= "Code Line " + String.valueOf(elements[1].getLineNumber());
-                            diagnoses[3]="FALSE";
-                            diagnoses[4]=specialFunctionReturn.toString();
-                            diagnoses[5]="The field " + currField + " is considered special and its checker (" + aMethod + ") returned the Error above";
-                            return diagnoses;                            
-                        }
+                Integer specialFieldIndex = Arrays.asList(specialFields).indexOf(currField);
+                String aMethod = specialFieldsFunction[specialFieldIndex];
+                Method method = null;
+                try {
+                    Class<?>[] paramTypes = {Rdbms.class, String.class};
+                    method = getClass().getDeclaredMethod(aMethod, paramTypes);
+                } catch (NoSuchMethodException | SecurityException ex) {
+                    Logger.getLogger(ConfigSpecStructure.class.getName()).log(Level.SEVERE, null, ex);
+                }                        
+                try {
+                    Object specialFunctionReturn = method.invoke(this, rdbm, schemaName);      
+                    if (specialFunctionReturn.toString().contains("ERROR")){
+                        errorCode = "DataSample_SpecialFunctionReturnedERROR";
+                        errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, currField);
+                        errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, aMethod);
+                        errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, specialFunctionReturn.toString());
+                        return (String[]) labPlat.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);                            
                     }
-                    catch(InvocationTargetException ite){
-                        StackTraceElement[] elements = Thread.currentThread().getStackTrace();
-                        diagnoses[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
-                        diagnoses[1]= classVersion;
-                        diagnoses[2]= "Code Line " + String.valueOf(elements[1].getLineNumber());
-                        diagnoses[3]="FALSE";
-                        diagnoses[4]="ERROR INVOKING SPECIAL CHECK FOR SPEC LIMITS";
-                        diagnoses[5]="Error on invoking " + aMethod + ": "+ite.getMessage();                            
-                        return diagnoses;
-                    }
+                }
+                catch(InvocationTargetException ite){
+                    errorCode = "LabPLANETPlatform_SpecialFunctionCausedException";
+                    errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, aMethod);
+                    errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, ite.getMessage());                        
+                    errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, "Spec Limits");
+                    errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, schemaName);
+                    return (String[]) labPlat.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);                         
+                }
             }
         }                        
 
@@ -714,34 +684,33 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
         fieldIndex = Arrays.asList(specFieldName).indexOf("method_name");
         String methodName = (String) specFieldValue[fieldIndex];
         fieldIndex = Arrays.asList(specFieldName).indexOf("method_version");
-        Integer methodVersion = (Integer) specFieldValue[fieldIndex];        
-        
-        diagnoses = rdbm.existsRecord(rdbm, schemaName, "analysis_method", 
-                new String[]{"analysis", "method_name", "method_version"}, 
-                new Object[] {analysis, methodName, methodVersion});        
+        Integer methodVersion = (Integer) specFieldValue[fieldIndex]; 
+        String tableName = "analysis_method";
+        String[] whereFields = new String[]{"analysis", "method_name", "method_version"};
+        Object[] whereFieldsValue = new Object[] {analysis, methodName, methodVersion};
+        diagnoses = rdbm.existsRecord(rdbm, schemaName, tableName, whereFields, whereFieldsValue);                
         if (!"LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){
-            StackTraceElement[] elements = Thread.currentThread().getStackTrace();
-            diagnoses[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
-            diagnoses[1]= classVersion;
-            diagnoses[2]= "Code Line " + String.valueOf(elements[1].getLineNumber());
-            diagnoses[3]="FALSE";
-            diagnoses[4]="ERROR ANALYSIS METHOD NOT FOUND";
-            diagnoses[5]="The method "+ methodName+" in its version " + methodVersion.toString()+" in the analysis " + analysis + " was not found in the schema "+schemaName;                            
-            return diagnoses;}       
-        else{
+            Object[] whereFieldsAndValues = labArr.joinTwo1DArraysInOneOf1DString(diagnoses, whereFieldsValue, ":");
+            errorCode = "Rdbms_NoRecordsFound";
+            errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, tableName);
+            errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, Arrays.toString(whereFieldsAndValues));                                   
+            errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, schemaName);
+            return (String[]) labPlat.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);                                            
+        }else{
             fieldIndex = Arrays.asList(specFieldName).indexOf("parameter");
             String parameter = (String) specFieldValue[fieldIndex];
-            diagnoses = rdbm.existsRecord(rdbm, schemaName, "analysis_method_params", 
-                    new String[]{"analysis", "method_name", "method_version", "param_name"}, 
-                    new Object[] {analysis, methodName, methodVersion, parameter});        
+            tableName = "analysis_method_params";
+            whereFields = new String[]{"analysis", "method_name", "method_version", "param_name"};
+            whereFieldsValue = new Object[] {analysis, methodName, methodVersion, parameter};            
+            diagnoses = rdbm.existsRecord(rdbm, schemaName, tableName, whereFields, whereFieldsValue);      
             if (!"LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){
-                StackTraceElement[] elements = Thread.currentThread().getStackTrace();
-                diagnoses[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
-                diagnoses[1]= classVersion;
-                diagnoses[2]= "Code Line " + String.valueOf(elements[1].getLineNumber());
-                diagnoses[3]="FALSE";
-                diagnoses[4]="ERROR PARAMETER IN ANALYSIS METHOD NOT FOUND";
-                diagnoses[5]="The parameter " + parameter + " was not found even though the method "+ methodName+" in its version " + methodVersion.toString()+" in the analysis " + analysis + " exists in the schema "+schemaName;                             
+                Object[] whereFieldsAndValues = labArr.joinTwo1DArraysInOneOf1DString(diagnoses, whereFieldsValue, ":");
+                errorCode = "Rdbms_NoRecordsFound";
+                errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, tableName);
+                errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, Arrays.toString(whereFieldsAndValues));                                   
+                errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, schemaName);
+                diagnoses =  (String[]) labPlat.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);                    
+                diagnoses[5]="The parameter " + parameter + " was not found even though the method "+ methodName+" in its version " + methodVersion.toString()+" in the analysis " + analysis + " exists in the schema "+schemaName + "......... " + diagnoses[5].toString();                                             
                 return diagnoses;}                   
         }
         try{
@@ -749,15 +718,12 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
             return diagnoses;
         } catch (IllegalArgumentException ex) {
             Logger.getLogger(ConfigSpecStructure.class.getName()).log(Level.SEVERE, null, ex);
-        }            
-        StackTraceElement[] elements = Thread.currentThread().getStackTrace();
-        diagnoses[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
-        diagnoses[1]= classVersion;
-        diagnoses[2]= "Code Line " + String.valueOf(elements[1].getLineNumber());   
-        diagnoses[3]="FALSE";
-        diagnoses[4]="ERROR:LOGIC NOT HANDLED";
-        diagnoses[5]="This function had no logic to manage the values you passed";
-        return diagnoses;        
+        }                    
+        errorCode = "UnhandledExceptionInCode";
+        String params = "schemaPrefix: " + schemaPrefix+"specFieldName: "+Arrays.toString(specFieldName)+"specFieldValue: "+Arrays.toString(specFieldValue);
+        errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, params);
+        diagnoses =  (String[]) labPlat.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);                    
+        return diagnoses;
     }
     
 }

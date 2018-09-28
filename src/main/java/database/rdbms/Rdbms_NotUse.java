@@ -461,67 +461,36 @@ public class Rdbms_NotUse {
         }                    
     }
 
-    public String[] insertRecordInTable(Rdbms rdbm, String schemaName, String tableName, String[] fieldNames, Object[] fieldValues){
+    public Object[] insertRecordInTable(Rdbms rdbm, String schemaName, String tableName, String[] fieldNames, Object[] fieldValues){
         
-        try {
-            String[] diagnoses = new String[7];
-            
-            LabPLANETPlatform labPlat = new LabPLANETPlatform();
-            LabPLANETArray labArray = new LabPLANETArray();
-            
-            if (fieldNames.length==0){
-                StackTraceElement[] elements = Thread.currentThread().getStackTrace();
-                diagnoses[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
-                diagnoses[1]= classVersion;
-                diagnoses[2]= "Code Line " + String.valueOf(elements[1].getLineNumber());
-                diagnoses[3]="FALSE";
-                diagnoses[4]="ERROR: NO FILTER SPECIFIED";
-                diagnoses[5]="Any filter is mandatory to run the query on " + tableName +" in schema "+schemaName;
-                return diagnoses;
-            }
-            
-            if (fieldNames.length!=fieldValues.length){
-                StackTraceElement[] elements = Thread.currentThread().getStackTrace();
-                diagnoses[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
-                diagnoses[1]= classVersion;
-                diagnoses[2]= "Code Line " + String.valueOf(elements[1].getLineNumber());
-                diagnoses[3]="FALSE";
-                diagnoses[4]="ERROR:Field names and values arrays with different length";
-                diagnoses[5]="The values in FieldName are:"+ Arrays.toString(fieldNames)+". and in FieldValue are:"+Arrays.toString(fieldValues);
-                return diagnoses;
-            }
-            String query = "";
-            String fieldNamesStr = "";
-            for (String fn: fieldNames){fieldNamesStr = fieldNamesStr + fn + ", ";}
-            fieldNamesStr = fieldNamesStr.substring(0, fieldNamesStr.length()-2);
-            query = "Insert into " + schemaName + "." + tableName + " (" + fieldNamesStr + ") values ( " ;
-            Integer i=1;
-            for (String fn: fieldNames){
-                if (i==1){query = query + "? ";i++;}
-                else{query = query + ", ? ";}
-                i++;
-            }
-            query = query + ") ";
-                        
-            String numr = rdbm.prepUpQueryK(query, fieldValues, 1);
-            
-            //ResultSet res = rdbm.prepRdQuery(query, fieldValues);
-            //res.last();
-            //if (numr>0){
+        Object[] diagnoses = new Object[7];
+
+        LabPLANETPlatform labPlat = new LabPLANETPlatform();
+        LabPLANETArray labArray = new LabPLANETArray();
+
+        if (fieldNames.length==0){
             StackTraceElement[] elements = Thread.currentThread().getStackTrace();
             diagnoses[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
             diagnoses[1]= classVersion;
             diagnoses[2]= "Code Line " + String.valueOf(elements[1].getLineNumber());
-            diagnoses[3]="TRUE";
-            diagnoses[4]="SUCCESS: RECORD CREATED";
-            diagnoses[5]="New record created using the query "+ query+" for values "+Arrays.toString(fieldValues) + " in schema " + schemaName ;
-            diagnoses[6]=String.valueOf(numr);
+            diagnoses[3]="FALSE";
+            diagnoses[4]="ERROR: NO FILTER SPECIFIED";
+            diagnoses[5]="Any filter is mandatory to run the query on " + tableName +" in schema "+schemaName;
             return diagnoses;
-
-        } catch (SQLException ex) {
-            Logger.getLogger(Rdbms.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return null;
+
+        if (fieldNames.length!=fieldValues.length){
+            StackTraceElement[] elements = Thread.currentThread().getStackTrace();
+            diagnoses[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
+            diagnoses[1]= classVersion;
+            diagnoses[2]= "Code Line " + String.valueOf(elements[1].getLineNumber());
+            diagnoses[3]="FALSE";
+            diagnoses[4]="ERROR:Field names and values arrays with different length";
+            diagnoses[5]="The values in FieldName are:"+ Arrays.toString(fieldNames)+". and in FieldValue are:"+Arrays.toString(fieldValues);
+            return diagnoses;
+        }
+            
+        return diagnoses = rdbm.insertRecordInTable(rdbm, schemaName, tableName, fieldNames, fieldValues);            
     }
     
     public String[] updateRecordFieldsByFilter(Rdbms rdbm, String schemaName, String tableName, String[] updateFieldNames, Object[] updateFieldValues, String[] whereFieldNames, Object[] whereFieldValues) throws SQLException{
@@ -541,8 +510,8 @@ public class Rdbms_NotUse {
             diagnoses[5]="Any filter is mandatory to run the query on " + tableName +" in schema "+schemaName;
             return diagnoses;     
         }
-        
-        String query = "";
+        return diagnoses;
+/*        String query = "";
         String updateFieldNamesStr = " set ";
         for (String fn: updateFieldNames){updateFieldNamesStr = updateFieldNamesStr + fn + "=?, ";}
         updateFieldNamesStr = updateFieldNamesStr.substring(0, updateFieldNamesStr.length()-2);
@@ -574,7 +543,7 @@ public class Rdbms_NotUse {
             diagnoses[5]="No records founds in " + tableName + " by the filter "+ Arrays.toString(whereFieldValues) + " already exists in schema "+schemaName+". Query="+query;
         }
         return diagnoses;                    
-        
+*/        
         /*
         res.last();
         

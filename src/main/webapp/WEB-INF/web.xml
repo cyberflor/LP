@@ -32,6 +32,14 @@
         <servlet-name>DBActions</servlet-name>
         <servlet-class>com.labplanet.servicios.testing.Platform.DBActions</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>specQualitative</servlet-name>
+        <servlet-class>com.labplanet.servicios.testing.config.specQualitative</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>config_specQuantitativeRuleFormat</servlet-name>
+        <servlet-class>com.labplanet.servicios.testing.config.config_specQuantitativeRuleFormat</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>Authenticate</servlet-name>
         <url-pattern>/Authenticate</url-pattern>
@@ -63,6 +71,14 @@
     <servlet-mapping>
         <servlet-name>DBActions</servlet-name>
         <url-pattern>/DBActions</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>specQualitative</servlet-name>
+        <url-pattern>/testing/config/specQualitative</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>config_specQuantitativeRuleFormat</servlet-name>
+        <url-pattern>/config_specQuantitativeRuleFormat</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

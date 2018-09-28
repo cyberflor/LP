@@ -64,16 +64,7 @@ public class ConfigSamplingPlanForSpec {
     }    
     if (devMode==false){
         diagnoses = labArr.checkTwoArraysSameLength(fieldsName, fieldsValue);
-        if (fieldsName.length!=fieldsValue.length){
-            StackTraceElement[] elements = Thread.currentThread().getStackTrace();
-            diagnoses[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
-            diagnoses[1]= classVersion;
-            diagnoses[2]= "Code Line " + String.valueOf(elements[1].getLineNumber());   
-            diagnoses[3]="FALSE";
-            diagnoses[4]="ERROR:Field names and values arrays with different length";
-            diagnoses[5]="The values in FieldName are:"+ Arrays.toString(fieldsName)+". and in FieldValue are:"+Arrays.toString(fieldsValue);
-            return diagnoses;
-        }
+        if ("LABPLANET_FALSE".equalsIgnoreCase(diagnoses[0].toString())){ return diagnoses;}
     } 
     if (devMode==true){
         StackTraceElement[] elementsDev = Thread.currentThread().getStackTrace();
@@ -85,9 +76,7 @@ public class ConfigSamplingPlanForSpec {
     if (devMode==false){
         schemaDataName = labPlat.buildSchemaName(schemaPrefix, schemaDataName);         
         Object[][] mandatoryFieldsCheck = (Object[][]) labPlat.mandatoryFieldsCheck(schemaDataName, fieldsName, fieldsValue, tableName, actionName);                
-        if (mandatoryFieldsCheck[0][3].toString().equalsIgnoreCase("FALSE")){
-            return diagnoses;
-        }
+        if ("LABPLANET_FALSE".equalsIgnoreCase(mandatoryFieldsCheck[0][0].toString())){ return mandatoryFieldsCheck;}
         for (Integer i=0;i<mandatoryFieldsCheck[1].length;i++){
             if (mandatoryFieldsCheck[1][i]!=null){
                 String value = (String) mandatoryFieldsCheck[1][i];

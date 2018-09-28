@@ -353,51 +353,69 @@ public class UserSop {
             
     }
 
-    public String addSopToUser(Rdbms rdbm, String schemaName, String userInfoId, Integer sopId) throws SQLException{
+    public Object[] addSopToUser(Rdbms rdbm, String schemaName, String userInfoId, Integer sopId) throws SQLException{
         String diagnoses = "";
         Sop s = null;
         //Integer exists = s.dbGetSopIdById(rdbm, schemaName, sopId);        
         //if (exists==null) return "ZSop " + sopId + " not found.";
-        
+                
         Integer exists = dbGetUserSopBySopId(rdbm, schemaName, userInfoId, sopId);
-        if (exists!=null) return "Sop " + sopId + " already assigned, cannot be assigned twice.";
-        
-        String qw = "insert into " + schemaName + ".user_sop (user_id, sop_id)"
-                + " VALUES (?, ?);";
-            
-        try{
-            String idValue = rdbm.prepUpQueryK(qw, new Object[]{userInfoId, sopId}, 3);
-            if (Integer.getInteger(idValue)==0) return "Error on adding the sop " + sopId + " to the user " + userInfoId + " in the schema " + schemaName;
+        if (exists!=null){
+            String messageCode = "UserSop_sopAlreadyAssignToUser";
+            Object[] errorDetailVariables = new Object[0] ;
+            errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, sopId);          
+            errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, userInfoId);          
+            errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, schemaName);          
+            return LabPLANETPlatform.trapErrorMessage(rdbm, classVersion, classVersion, diagnoses, javaDocValues);
         }
-        catch (SQLException sqlErr){       
-            return "Error " + sqlErr.getMessage();
-        }        
         
-        return "SOP "+sopId+ "added to the user "+userInfoId;
+        Object[] diagnosis = rdbm.insertRecordInTable(rdbm, schemaName, "user_sop", new String[]{"user_id", "sop_id"}, new Object[]{userInfoId, sopId});
+        if ("LABPLANET_FALSE".equalsIgnoreCase(diagnosis[0].toString())){
+            return diagnosis;
+        }else{
+            String messageCode = "UserSop_sopAddedToUser";
+            Object[] errorDetailVariables = new Object[0] ;
+            errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, sopId);          
+            errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, userInfoId);          
+            errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, schemaName);          
+            return LabPLANETPlatform.trapErrorMessage(rdbm, classVersion, classVersion, diagnoses, javaDocValues);
+        }
     }
     
-    public String addSopToUser(Rdbms rdbm, String schemaName, String userInfoId, String sopName) throws SQLException{
+    public Object[] addSopToUser(Rdbms rdbm, String schemaName, String userInfoId, String sopName) throws SQLException{
         String diagnoses = "";
         Sop s = new Sop(sopName);
         
         Integer sopId = s.dbGetSopIdByName(rdbm, schemaName, sopName);        
-        if (sopId!=null) {
-        
+        if (sopId!=null) {        
             Integer exists = dbGetUserSopBySopId(rdbm, schemaName, userInfoId, sopId);
-            if (exists!=null) return "Sop " + sopId + " already assigned, cannot be assigned twice.";
-            schemaName = "\""+schemaName+"\"";
-            String qw = "insert into " + schemaName + ".user_sop (user_id, sop_id,sop_name)"
-                    + " VALUES (?, ?, ?);";
-
-            try{
-                String idValue = rdbm.prepUpQueryK(qw, new Object[]{userInfoId, sopId,sopName}, 3);
-                if (Integer.getInteger(idValue)==0) return "Error on adding the sop " + sopId + " to the user " + userInfoId + " in the schema " + schemaName;
+            if (exists!=null){
+                String messageCode = "UserSop_sopAlreadyAssignToUser";
+                Object[] errorDetailVariables = new Object[0] ;
+                errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, sopId);          
+                errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, userInfoId);          
+                errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, schemaName);          
+                return LabPLANETPlatform.trapErrorMessage(rdbm, classVersion, classVersion, diagnoses, javaDocValues);
             }
-            catch (SQLException sqlErr){       
-                return "Error " + sqlErr.getMessage();
-            }        
-        }    
-        return "SOP "+sopName+ "added to the user "+userInfoId;
+            Object[] diagnosis = rdbm.insertRecordInTable(rdbm, schemaName, "user_sop", new String[]{"user_id", "sop_id", "sop_name"}, new Object[]{userInfoId, sopId, sopName});
+            if ("LABPLANET_FALSE".equalsIgnoreCase(diagnosis[0].toString())){
+                return diagnosis;
+            }else{
+                String messageCode = "UserSop_sopAddedToUser";
+                Object[] errorDetailVariables = new Object[0] ;
+                errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, sopName);          
+                errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, userInfoId);          
+                errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, schemaName);          
+                return LabPLANETPlatform.trapErrorMessage(rdbm, classVersion, classVersion, diagnoses, javaDocValues);
+            }            
+        }else{
+            String messageCode = "Rdbms_NoRecordsFound";
+            Object[] errorDetailVariables = new Object[0] ;
+            errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, "user_sop");          
+            errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, "schemaName: "+schemaName+", sopName: "+sopName);          
+            errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, schemaName);          
+            return LabPLANETPlatform.trapErrorMessage(rdbm, classVersion, classVersion, diagnoses, javaDocValues);            
+        }            
     }
 
     

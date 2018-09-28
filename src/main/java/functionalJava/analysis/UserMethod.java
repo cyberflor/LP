@@ -33,6 +33,8 @@ public class UserMethod {
  *  It is considered: "Not assigned" when no records in table user_method found. // Inactive when found but expired // Certified when found and not expired.
  *  The specific values for all 3 values are configured in the parameter field for the procedure, the entries names are: 
  *  userMethodCertificate_notAssigned, userMethodCertificate_inactive, userMethodCertificate_certified.
+ * Parameter Bundle: 
+ *      config-userMethodCertificate_notAssigned, userMethodCertificate_inactive, userMethodCertificate_certified
  * @param rdbm Rdbms - Database Communication channel
  * @param schemaPrefix String - Procedure name
  * @param analysis String - Analysis name
@@ -72,7 +74,7 @@ public class UserMethod {
         getFieldName = labArr.addValueToArray1D(getFieldName, "last_analysis_on");
         
         Object[][] userMethodData = rdbm.getRecordFieldsByFilter(rdbm, schemaDataName, tableName, whereFieldName, whereFieldValue, getFieldName);
-        if ("FALSE".equals(userMethodData[0][3].toString())){return userMethodNotAssigned;}    
+        if ("LABPLANET_FALSE".equals(userMethodData[0][0].toString())){return userMethodNotAssigned;}    
         
         Boolean userMethodActive = (Boolean) userMethodData[0][0];
         if (!userMethodActive){return userMethodInactive;}
