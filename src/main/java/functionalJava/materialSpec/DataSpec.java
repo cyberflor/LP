@@ -64,14 +64,14 @@ public class DataSpec {
             return diagnoses;
         }
         if (values==null || "".equals(values)){
-            errorVariables = labArr.addValueToArray1D(errorVariables, diagnoses[1].toString());            
+            errorVariables = labArr.addValueToArray1D(errorVariables, "values");            
             diagnoses =  LabPLANETPlatform.trapErrorMessage(null, "LABPLANET_FALSE", classVersion, errorCode, errorVariables);
             diagnoses = labArr.addValueToArray1D(diagnoses, "OUT_WRONG_RULE");
             return diagnoses;
         }
         
         isCorrectTheSpec = matQualit.specLimitIsCorrectQualitative(schemaName, specRule, values, separator);
-        if ((Boolean) isCorrectTheSpec[0]==false){
+        if ("LABPLANET_FALSE".equalsIgnoreCase(isCorrectTheSpec[0].toString())){
             return isCorrectTheSpec;}
         
         switch (specRule.toUpperCase()){
@@ -213,7 +213,7 @@ public class DataSpec {
             return diagnoses;
         }
         isCorrectMinMaxSpec = matQuant.specLimitIsCorrectQuantitative(minSpec, maxSpec);
-        if ((Boolean) isCorrectMinMaxSpec[0]==false){
+        if ("LABPLANET_FALSE".equalsIgnoreCase(isCorrectMinMaxSpec[0].toString())){
             return isCorrectMinMaxSpec;}
                 
         if (minStrict==null){minStrict=true;}
@@ -221,16 +221,18 @@ public class DataSpec {
         //&& (maxSpec!=null)){
         if (minSpec!=null){  
             if (minStrict){
-                String errorCode = "DataSpec_resultCheck_quantitativeOutMinStrict";
-                errorVariables = labArr.addValueToArray1D(errorVariables, diagnoses[1].toString());
-                errorVariables = labArr.addValueToArray1D(errorVariables, minSpec.toString());
-                diagnoses = LabPLANETPlatform.trapErrorMessage(null, "LABPLANET_TRUE", classVersion, errorCode, errorVariables);
-                diagnoses = labArr.addValueToArray1D(diagnoses, "OUT_MIN");
-                return diagnoses;
+                if (result<=minSpec){                
+                    String errorCode = "DataSpec_resultCheck_quantitativeOutMinStrict";
+                    errorVariables = labArr.addValueToArray1D(errorVariables, result.toString());
+                    errorVariables = labArr.addValueToArray1D(errorVariables, minSpec.toString());
+                    diagnoses = LabPLANETPlatform.trapErrorMessage(null, "LABPLANET_TRUE", classVersion, errorCode, errorVariables);
+                    diagnoses = labArr.addValueToArray1D(diagnoses, "OUT_MIN");
+                    return diagnoses;
+                }
             }else{
-                if (result<=minSpec){
+                if (result<minSpec){
                     String errorCode = "DataSpec_resultCheck_quantitativeOutMin";
-                    errorVariables = labArr.addValueToArray1D(errorVariables, diagnoses[1].toString());
+                    errorVariables = labArr.addValueToArray1D(errorVariables, result.toString());
                     errorVariables = labArr.addValueToArray1D(errorVariables, minSpec.toString());
                     diagnoses = LabPLANETPlatform.trapErrorMessage(null, "LABPLANET_TRUE", classVersion, errorCode, errorVariables);
                     diagnoses = labArr.addValueToArray1D(diagnoses, "OUT_MIN");
@@ -240,18 +242,18 @@ public class DataSpec {
         }                    
         if (maxSpec!=null){  
             if (maxStrict){
-                if (result>maxSpec){
+                if (result>=maxSpec){
                     String errorCode = "DataSpec_resultCheck_quantitativeOutMaxStrict";
-                    errorVariables = labArr.addValueToArray1D(errorVariables, diagnoses[1].toString());
+                    errorVariables = labArr.addValueToArray1D(errorVariables, result.toString());
                     errorVariables = labArr.addValueToArray1D(errorVariables, maxSpec.toString());
                     diagnoses = LabPLANETPlatform.trapErrorMessage(null, "LABPLANET_TRUE", classVersion, errorCode, errorVariables);
                     diagnoses = labArr.addValueToArray1D(diagnoses, "OUT_MAX");
                     return diagnoses;
                 }
             }else{
-                if (result>=maxSpec){
+                if (result>maxSpec){
                     String errorCode = "DataSpec_resultCheck_quantitativeOutMax";
-                    errorVariables = labArr.addValueToArray1D(errorVariables, diagnoses[1].toString());
+                    errorVariables = labArr.addValueToArray1D(errorVariables, result.toString());
                     errorVariables = labArr.addValueToArray1D(errorVariables, maxSpec.toString());
                     diagnoses = LabPLANETPlatform.trapErrorMessage(null, "LABPLANET_TRUE", classVersion, errorCode, errorVariables);
                     diagnoses = labArr.addValueToArray1D(diagnoses, "OUT_MAX");

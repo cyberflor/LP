@@ -8,9 +8,9 @@ package com.labplanet.servicios;
 import databases.Rdbms;
 import functionalJava.analysis.UserMethod;
 import functionalJava.sampleStructure.DataSample;
-import labPLANET.utilities.LabPLANETArray;
-import labPLANET.utilities.LabPLANETNullValue;
-import labPLANET.utilities.LabPLANETPlatform;
+import LabPLANET.utilities.LabPLANETArray;
+import LabPLANET.utilities.LabPLANETNullValue;
+import LabPLANET.utilities.LabPLANETPlatform;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -55,11 +55,8 @@ public class SampleStructure extends HttpServlet {
 
             Rdbms rdbm = new Rdbms();            
             boolean isConnected = false;
-            try {
-                 isConnected = rdbm.startRdbms("labplanet", "LabPlanet");
-            } catch (ClassNotFoundException|IllegalAccessException|InstantiationException|SQLException|NamingException ex) {
-                Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
-            }
+            isConnected = rdbm.startRdbms("labplanet", "LabPlanet");
+            
             String csvFileName = "dataSampleStructure.txt"; String csvFileSeparator=";";
             String csvPathName = "\\\\FRANCLOUD\\fran\\LabPlanet\\testingRepository\\"+csvFileName; 
  

@@ -53,7 +53,7 @@ public class Rdbms {
         this.timeout = 5;        
     }    
 
-    public Boolean startRdbms(Rdbms rdbm, String user, String pass) throws SQLException{
+    public Boolean startRdbms(Rdbms rdbm, String user, String pass) {
         try {
             ResourceBundle prop = ResourceBundle.getBundle("parameter.config.config");
             String datasrc = prop.getString("datasource");            
@@ -62,48 +62,60 @@ public class Rdbms {
             ds.setLoginTimeout(getTimeout());
             Connection connection = ds.getConnection(user, pass);
             return connection != null;
-                
-        } catch (NamingException ex) {
+        } catch (NamingException|SQLException ex) {
             Logger.getLogger(Rdbms.class.getName()).log(Level.SEVERE, null, ex);
             return false;
         }
     }
     
-    public Boolean startRdbms(String user, String pass) throws ClassNotFoundException, IllegalAccessException, InstantiationException, SQLException, NamingException{
-        ResourceBundle prop = ResourceBundle.getBundle("parameter.config.config");
-        String datasrc = prop.getString("datasource");
-        Integer to = Integer.valueOf(prop.getString("dbtimeout"));
-        setTimeout(to);
-                
-              Context ctx = new InitialContext();
-              DataSource ds = (DataSource)ctx.lookup(datasrc);
-          
-              ds.setLoginTimeout(getTimeout());
-              setConnection(ds.getConnection(user, pass));
-              
-//              String url = prop.getString("dburl");
-//              Properties props = new Properties();
-//              
-//                props.setProperty("user",user);
-//                props.setProperty("password",pass);
-//                props.setProperty("ssl","true");
-//                Connection conn = DriverManager.getConnection(url, props);
-              
-          if(getConnection()!=null){
-            setIsStarted(Boolean.TRUE);
-            return true;
-          }else{
-            setIsStarted(Boolean.FALSE);
+    public Boolean startRdbms(String user, String pass) {
+        try {        
+            ResourceBundle prop = ResourceBundle.getBundle("parameter.config.config");
+            String datasrc = prop.getString("datasource");
+            Integer to = Integer.valueOf(prop.getString("dbtimeout"));
+            setTimeout(to);
+
+                  Context ctx = new InitialContext();
+                  DataSource ds = (DataSource)ctx.lookup(datasrc);
+
+                    try {
+                        ds.setLoginTimeout(getTimeout());
+                        setConnection(ds.getConnection(user, pass));
+                    } catch (SQLException ex) {
+                        Logger.getLogger(Rdbms.class.getName()).log(Level.SEVERE, null, ex);                        
+                    }
+
+    //              String url = prop.getString("dburl");
+    //              Properties props = new Properties();
+    //              
+    //                props.setProperty("user",user);
+    //                props.setProperty("password",pass);
+    //                props.setProperty("ssl","true");
+    //                Connection conn = DriverManager.getConnection(url, props);
+
+              if(getConnection()!=null){
+                setIsStarted(Boolean.TRUE);
+                return true;
+              }else{
+                setIsStarted(Boolean.FALSE);
+                return false;
+              } 
+        } catch (NamingException ex) {
+            Logger.getLogger(Rdbms.class.getName()).log(Level.SEVERE, null, ex);
             return false;
-          }  
+        }
     //return getIsStarted();
     }
 
-    public void closeRdbms() throws SQLException{
+    public void closeRdbms(){       
         if(getConnection()!=null){
-            conn.close();
-            setIsStarted(Boolean.FALSE);
+            try{                
+                conn.close();
+                setIsStarted(Boolean.FALSE);
+            } catch (SQLException ex) {
+                Logger.getLogger(Rdbms.class.getName()).log(Level.SEVERE, null, ex);                
             }
+        }
     }  
     
     public Integer getTimeout() { return timeout;}

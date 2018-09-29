@@ -7,7 +7,7 @@ package testing.platform;
 
 import databases.Rdbms;
 import functionalJava.materialSpec.ConfigSpecStructure;
-import labPLANET.utilities.LabPLANETArray;
+import LabPLANET.utilities.LabPLANETArray;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
@@ -45,11 +45,9 @@ public class DbQueries extends HttpServlet {
         String userName=null;
 
         boolean isConnected = false;
-        try {
-            isConnected = rdbm.startRdbms("labplanet", "LabPlanet");           
-        } catch (ClassNotFoundException|IllegalAccessException|InstantiationException|SQLException|NamingException ex) {
-            Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);}
-
+        
+        isConnected = rdbm.startRdbms("labplanet", "LabPlanet");           
+        if (!isConnected){out.println("Connection to the database not established");return;}
 
         LabPLANETArray labArr = new LabPLANETArray();
         Integer numTesting = 20;
@@ -423,9 +421,6 @@ public class DbQueries extends HttpServlet {
         rdbm.closeRdbms();       
 
     }   
-    catch (SQLException|IOException ex) {
-        Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);                           
-    }       
 }
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**

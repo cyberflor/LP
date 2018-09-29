@@ -5,7 +5,7 @@
  */
 package frontEnd.sampleAudit;
 
-import labPLANET.utilities.LabPLANETArray;
+import LabPLANET.utilities.LabPLANETArray;
 import databases.Rdbms;
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -124,11 +124,7 @@ public class treantTimeLine extends HttpServlet {
             
             Rdbms rdbm = new Rdbms();            
             boolean isConnected = false;
-            try {
-                 isConnected = rdbm.startRdbms("labplanet", "LabPlanet");
-            } catch (ClassNotFoundException|IllegalAccessException|InstantiationException|SQLException|NamingException ex) {
-                Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
-            }
+            isConnected = rdbm.startRdbms("labplanet", "LabPlanet");
             
             String schemaName = "\"oil-pl1-data-audit\"";
             String tableName = "sample";
@@ -147,11 +143,8 @@ public class treantTimeLine extends HttpServlet {
             }
             out.println(fileContent);
             
-            try {
-                rdbm.closeRdbms();
-            } catch (SQLException ex) {
-                Logger.getLogger(treantTimeLine.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            rdbm.closeRdbms();
+
         }     
     }
      

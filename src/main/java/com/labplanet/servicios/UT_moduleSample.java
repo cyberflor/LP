@@ -6,7 +6,7 @@ package com.labplanet.servicios;
  * and open the template in the editor.
  */
 
-import labPLANET.utilities.LabPLANETArray;
+import LabPLANET.utilities.LabPLANETArray;
 import databases.Rdbms;
 import functionalJava.analysis.UserMethod;
 import functionalJava.sampleStructure.DataSample;
@@ -52,11 +52,7 @@ public class UT_moduleSample extends HttpServlet {
             UserMethod um = new UserMethod();
            
             boolean isConnected = false;
-            try {
-                 isConnected = rdbm.startRdbms("labplanet", "LabPlanet");
-            } catch (ClassNotFoundException|IllegalAccessException|InstantiationException|SQLException|NamingException ex) {
-                Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
-            }
+            isConnected = rdbm.startRdbms("labplanet", "LabPlanet");
 
  
             Object[][] dataSample2D = new Object[0][0];
@@ -102,11 +98,7 @@ public class UT_moduleSample extends HttpServlet {
                 fileWriter.flush();
             } 
 
-        try {   
-            rdbm.closeRdbms();
-        } catch (SQLException ex) {
-            Logger.getLogger(UT_moduleSample.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        rdbm.closeRdbms();
         
     }
 

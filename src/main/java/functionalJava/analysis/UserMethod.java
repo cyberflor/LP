@@ -6,8 +6,8 @@
 package functionalJava.analysis;
 
 import databases.Rdbms;
-import labPLANET.utilities.LabPLANETArray;
-import labPLANET.utilities.LabPLANETPlatform;
+import LabPLANET.utilities.LabPLANETArray;
+import LabPLANET.utilities.LabPLANETPlatform;
 
 /**
  * Class for anything related to analysis user method

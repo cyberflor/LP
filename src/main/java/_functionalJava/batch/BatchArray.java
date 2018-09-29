@@ -6,8 +6,8 @@
 package _functionalJava.batch;
 
 import databases.Rdbms;
-import labPLANET.utilities.LabPLANETArray;
-import labPLANET.utilities.LabPLANETPlatform;
+import LabPLANET.utilities.LabPLANETArray;
+import LabPLANET.utilities.LabPLANETPlatform;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;

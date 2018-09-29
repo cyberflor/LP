@@ -5,7 +5,7 @@
  */
 package databases;
 
-import labPLANET.utilities.LabPLANETPlatform;
+import LabPLANET.utilities.LabPLANETPlatform;
 
 /**
  *

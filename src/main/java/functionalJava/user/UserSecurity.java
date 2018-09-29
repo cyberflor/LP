@@ -5,7 +5,7 @@
  */
 package functionalJava.user;
 
-import labPLANET.utilities.LabPLANETPlatform;
+import LabPLANET.utilities.LabPLANETPlatform;
 import databases.Rdbms;
 import java.sql.Connection;
 import java.sql.SQLException;

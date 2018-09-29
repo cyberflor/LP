@@ -12,7 +12,7 @@ import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import labPLANET.utilities.LabPLANETArray;
+import LabPLANET.utilities.LabPLANETArray;
 import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -44,11 +44,7 @@ public class _TestingConfigSamplingPlanStructure extends HttpServlet {
             Rdbms rdbm = new Rdbms();            
             _ConfigSamplingPlanForSpec smpPlan = new _ConfigSamplingPlanForSpec();
             boolean isConnected = false;
-            try {
-                 isConnected = rdbm.startRdbms("labplanet", "LabPlanet");
-            } catch (ClassNotFoundException|IllegalAccessException|InstantiationException|SQLException|NamingException ex) {
-                Logger.getLogger(_ConfigSamplingPlanForSpec.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            isConnected = rdbm.startRdbms("labplanet", "LabPlanet");
                 
             Integer numTesting = 1;
             Integer inumTesting = 0;

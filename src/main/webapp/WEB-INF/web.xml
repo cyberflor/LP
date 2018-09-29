@@ -9,10 +9,6 @@
         <servlet-class>com.labplanet.servicios.AuthenticateServlet</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>FirstServlet</servlet-name>
-        <servlet-class>com.labplanet.servicios.FirstServlet</servlet-class>
-    </servlet>
-    <servlet>
         <servlet-name>SecondServlet</servlet-name>
         <servlet-class>com.labplanet.servicios.SecondServlet</servlet-class>
     </servlet>
@@ -48,6 +44,10 @@
         <servlet-name>TestingResultCheckSpecQualitative</servlet-name>
         <servlet-class>com.labplanet.servicios.testing.config.TestingResultCheckSpecQualitative</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>TestingResultCheckSpecQuantitative</servlet-name>
+        <servlet-class>com.labplanet.servicios.testing.config.TestingResultCheckSpecQuantitative</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>Authenticate</servlet-name>
         <url-pattern>/Authenticate</url-pattern>
@@ -55,10 +55,6 @@
     <servlet-mapping>
         <servlet-name>AuthenticateServlet</servlet-name>
         <url-pattern>/AuthenticateServlet</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>FirstServlet</servlet-name>
-        <url-pattern>/FirstServlet</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>SecondServlet</servlet-name>
@@ -95,6 +91,10 @@
     <servlet-mapping>
         <servlet-name>TestingResultCheckSpecQualitative</servlet-name>
         <url-pattern>/testing/config/ResultCheckSpecQualitative</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>TestingResultCheckSpecQuantitative</servlet-name>
+        <url-pattern>/Testing/config/ResultCheckSpecQuantitative</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

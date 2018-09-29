@@ -8,9 +8,9 @@ package testing.functionalData;
 import databases.Rdbms;
 import functionalJava.analysis.UserMethod;
 import _functionalJava.project.DataProject;
-import labPLANET.utilities.LabPLANETArray;
-import labPLANET.utilities.LabPLANETNullValue;
-import labPLANET.utilities.LabPLANETPlatform;
+import LabPLANET.utilities.LabPLANETArray;
+import LabPLANET.utilities.LabPLANETNullValue;
+import LabPLANET.utilities.LabPLANETPlatform;
 import _functionalJava.project.DataProjectScheduleAdhoc;
 import java.io.File;
 import java.io.FileWriter;
@@ -55,11 +55,9 @@ public class projectScheduleAdhocStructure extends HttpServlet {
 
             Rdbms rdbm = new Rdbms();            
             boolean isConnected = false;
-            try {
-                 isConnected = rdbm.startRdbms("labplanet", "LabPlanet");
-            } catch (ClassNotFoundException|IllegalAccessException|InstantiationException|SQLException|NamingException ex) {
-                Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
-            }
+            isConnected = rdbm.startRdbms("labplanet", "LabPlanet");
+            if (!isConnected){out.println("Connection to the database not established");return;}
+            
             String csvFileName = "dataProjectScheduleAdhocStructure.txt"; String csvFileSeparator=";";
             String csvPathName = "\\\\FRANCLOUD\\fran\\LabPlanet\\testingRepository\\"+csvFileName; 
             //String csvPathName = "c:\\testingRepository\\"+csvFileName; 

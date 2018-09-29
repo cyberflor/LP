@@ -50,11 +50,7 @@ public class Deployment extends HttpServlet {
         
             Rdbms rdbm = new Rdbms();            
             boolean isConnected = false;
-            try {
-                 isConnected = rdbm.startRdbms("labplanet", "LabPlanet");
-            } catch (ClassNotFoundException|IllegalAccessException|InstantiationException|SQLException|NamingException ex) {
-                Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
-            }
+            isConnected = rdbm.startRdbms("labplanet", "LabPlanet");
 
             RequirementDeployment reqDep = new RequirementDeployment();
             String procedure = "sampleA"; 
@@ -65,12 +61,7 @@ public class Deployment extends HttpServlet {
             } catch (SQLException ex) {
                 Logger.getLogger(Deployment.class.getName()).log(Level.SEVERE, null, ex);
             }
-
-            try {
-                rdbm.closeRdbms();
-            } catch (SQLException ex) {
-                Logger.getLogger(Deployment.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            rdbm.closeRdbms();
         }    
     }
 

@@ -51,20 +51,17 @@ public class dataSampleStructure extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        
+        Rdbms rdbm = new Rdbms();           
+        boolean isConnected = false;
+
         String fileContent = "";        
         try (PrintWriter out = response.getWriter()) {
             
             response.setContentType("text/html;charset=UTF-8");
             UserMethod um = new UserMethod();
 
-            Rdbms rdbm = new Rdbms();            
-            boolean isConnected = false;
-            try {
-                 isConnected = rdbm.startRdbms("labplanet", "LabPlanet");
-            } catch (ClassNotFoundException|IllegalAccessException|InstantiationException|SQLException|NamingException ex) {
-                Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
-            }
+            isConnected = rdbm.startRdbms("labplanet", "LabPlanet");
+
             String csvFileName = "dataSampleStructure.txt"; String csvFileSeparator=";";
             String csvPathName = "\\\\FRANCLOUD\\fran\\LabPlanet\\testingRepository\\"+csvFileName; 
  
@@ -97,6 +94,8 @@ public class dataSampleStructure extends HttpServlet {
             String userName=null; 
             String userRole=null;
             LabPLANETPlatform LabPlat = new LabPLANETPlatform();
+            
+            out.println("Line "+i.toString());
 
             if (configSpecTestingArray[i][1]!=null){schemaPrefix = (String) configSpecTestingArray[i][1];}
             if (configSpecTestingArray[i][2]!=null){userName = (String) configSpecTestingArray[i][2];}
@@ -364,6 +363,7 @@ public class dataSampleStructure extends HttpServlet {
         rdbm.closeRdbms();
 
         }   catch (SQLException|IOException ex) {
+            if (isConnected){rdbm.closeRdbms();}            
                 Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);   
                 fileContent = fileContent + "</table>";        
                 out.println(fileContent);                     

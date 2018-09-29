@@ -6,9 +6,9 @@
 package functionalJava.materialSpec;
 
 import databases.Rdbms;
-import labPLANET.utilities.LabPLANETArray;
-import static labPLANET.utilities.LabPLANETMath.nthroot;
-import labPLANET.utilities.LabPLANETPlatform;
+import LabPLANET.utilities.LabPLANETArray;
+import static LabPLANET.utilities.LabPLANETMath.nthroot;
+import LabPLANET.utilities.LabPLANETPlatform;
 import java.sql.SQLException;
 import java.util.Arrays;
 

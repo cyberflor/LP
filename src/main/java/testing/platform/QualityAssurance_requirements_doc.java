@@ -5,8 +5,8 @@
  */
 package testing.platform;
 
-import labPLANET.utilities.LabPLANETPlatform;
-import labPLANET.utilities.LabPLANETQualityAssurance;
+import LabPLANET.utilities.LabPLANETPlatform;
+import LabPLANET.utilities.LabPLANETQualityAssurance;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;

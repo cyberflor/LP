@@ -52,11 +52,8 @@ public class DBActions extends HttpServlet {
             UserMethod um = new UserMethod();
       
             boolean isConnected = false;
-            try {
-                 isConnected = rdbm.startRdbms("labplanet", "LabPlanet");
-            } catch (ClassNotFoundException|IllegalAccessException|InstantiationException|SQLException|NamingException ex) {
-                Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
-            }
+            isConnected = rdbm.startRdbms("labplanet", "LabPlanet");
+
             String csvFileName = "dbActions.txt"; String csvFileSeparator=";";
             String csvPathName = "\\\\FRANCLOUD\\fran\\LabPlanet\\testingRepository\\"+csvFileName; 
  
@@ -180,11 +177,7 @@ public class DBActions extends HttpServlet {
                 Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);   
                 fileContent = fileContent + "</table>";        
                 out.println(fileContent);        
-            try {                    
                 rdbm.closeRdbms();
-            } catch (SQLException ex1) {
-                Logger.getLogger(DBActions.class.getName()).log(Level.SEVERE, null, ex1);
-            }
             }
     }
 

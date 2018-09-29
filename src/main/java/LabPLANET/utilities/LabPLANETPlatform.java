@@ -591,15 +591,19 @@ public class LabPLANETPlatform {
         
         if (!errorCodeFromBundle){
             if ( errorVariables.length>0){errorDetail = (String) errorVariables[0];
-                for (int iVarValue=1; iVarValue<errorVariables.length; iVarValue++){
-                    errorDetail = errorDetail.replace("<*"+String.valueOf(iVarValue)+"*>", errorVariables[iVarValue].toString());
+                if (errorVariables!=null){
+                    for (int iVarValue=1; iVarValue<errorVariables.length; iVarValue++){
+                        errorDetail = errorDetail.replace("<*"+String.valueOf(iVarValue)+"*>", errorVariables[iVarValue].toString());
+                    }
                 }
             }            
         }else{
             errorDetail = Rdbms.getParameterBundle("LabPLANET", "errorTraping", className+"_"+errorCode+"_detail", null);
             if (errorDetail.length()==0){errorDetail = Rdbms.getParameterBundle("LabPLANET", "errorTraping", errorCode+"_detail", null);}
-            for (int iVarValue=1; iVarValue<=errorVariables.length; iVarValue++){
-                errorDetail = errorDetail.replace("<*"+String.valueOf(iVarValue)+"*>", errorVariables[iVarValue-1].toString());
+            if (errorVariables!=null){
+                for (int iVarValue=1; iVarValue<=errorVariables.length; iVarValue++){
+                    errorDetail = errorDetail.replace("<*"+String.valueOf(iVarValue)+"*>", errorVariables[iVarValue-1].toString());
+                }
             }
         }
         fldValue[0] = evaluation; 

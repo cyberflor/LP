@@ -43,22 +43,16 @@ public class Authentication {
         Rdbms rdbm = new Rdbms();        
         
         if (usr.length()==0){return Response.status(Response.Status.NOT_ACCEPTABLE).build();}
-
         boolean isConnected = false;
-        try {
-            isConnected = rdbm.startRdbms(usr, pw);           
-            //isConnected = rdbm.startRdbms(us, pw);           
-            if (isConnected){                    
+        isConnected = rdbm.startRdbms(usr, pw);           
+        if (isConnected){                    
 //                HttpSession mySession = request.getSession(true);
 //                request.setAttribute("m_respuestaUsuarioValido", true);
 //                mySession.setAttribute("dhue8y7d8ue8", true);
-                return Response.ok().build();
-            }
-            else return Response.status(Response.Status.NOT_FOUND).build();
-        } catch (ClassNotFoundException|IllegalAccessException|InstantiationException|SQLException|NamingException ex) {
-            
-        return Response.status(Response.Status.NOT_FOUND).build();}                
-    }  
+            return Response.ok().build();
+        } else return Response.status(Response.Status.NOT_FOUND).build();} 
+        
+      
 
 /*    @GET    
     //@Path("{userName}")   

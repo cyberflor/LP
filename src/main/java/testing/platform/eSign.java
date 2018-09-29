@@ -5,7 +5,7 @@
  */
 package testing.platform;
 
-import labPLANET.utilities.LabPLANETArray;
+import LabPLANET.utilities.LabPLANETArray;
 import databases.Rdbms;
 import functionalJava.materialSpec.ConfigSpecStructure;
 import functionalJava.user.UserSecurity;
@@ -58,10 +58,8 @@ public class eSign extends HttpServlet {
         configSpecTestingArray = labArr.convertCSVinArray(csvPathName, csvFileSeparator);
 
         boolean isConnected = false;
-        try {
-            isConnected = rdbm.startRdbms("labplanet", "LabPlanet");           
-        } catch (ClassNotFoundException|IllegalAccessException|InstantiationException|SQLException|NamingException ex) {
-            Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);}
+        isConnected = rdbm.startRdbms("labplanet", "LabPlanet");           
+        if (!isConnected){out.println("Connection to the database not established");return;}
                
         String fileContent = "";
         fileContent = fileContent + "<!DOCTYPE html>" + "";
@@ -163,10 +161,6 @@ public class eSign extends HttpServlet {
         fileWriter.close();   
 
         rdbm.closeRdbms();
-
-        }   catch (SQLException|IOException ex) {
-                Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);   
-
         }           
     }
         

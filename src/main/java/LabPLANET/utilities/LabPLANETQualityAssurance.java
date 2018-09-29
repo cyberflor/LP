@@ -179,12 +179,7 @@ public class LabPLANETQualityAssurance {
 
         Rdbms rdbm = new Rdbms();            
         boolean isConnected = false;
-        try {
-             isConnected = rdbm.startRdbms("labplanet", "LabPlanet");
-        } catch (ClassNotFoundException|IllegalAccessException|InstantiationException|SQLException|NamingException ex) {
-            //Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
-            return null;
-        }
+        isConnected = rdbm.startRdbms("labplanet", "LabPlanet");
 
 /*        totalDiagnosticHeader = labArr.addValueToArray1D(totalDiagnosticHeader, "project_name");
         totalDiagnosticHeader = labArr.addValueToArray1D(totalDiagnosticHeader, "package_name");

@@ -30,17 +30,11 @@ public class userRole {
         if (usr.length()==0){return Response.status(Response.Status.NOT_ACCEPTABLE).build();}
 
         boolean isConnected = false;
-        try {
-            isConnected = rdbm.startRdbms(usr, pw);           
-            //isConnected = rdbm.startRdbms(us, pw);           
-            if (isConnected){return Response.ok().build();}
-            else return Response.status(Response.Status.NOT_FOUND).build();
-        } catch (ClassNotFoundException|IllegalAccessException|InstantiationException|SQLException|NamingException ex) {
-
-        Object[][] recordFieldsByFilter = rdbm.getRecordFieldsByFilter(rdbm, "", "config", new String[]{"user_info_id"}, new Object[]{}, new String[]{"role_id"});
-        
-        
-        return Response.status(Response.Status.NOT_FOUND).build();}                
-    }     
-    
+        isConnected = rdbm.startRdbms(usr, pw);           
+        if (isConnected){
+            Response.ok().build();
+            Object[][] recordFieldsByFilter = rdbm.getRecordFieldsByFilter(rdbm, "", "config", new String[]{"user_info_id"}, new Object[]{}, new String[]{"role_id"});
+        }else{return Response.status(Response.Status.NOT_FOUND).build();}
+       return null;
+    }
 }

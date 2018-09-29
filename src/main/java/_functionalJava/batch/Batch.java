@@ -5,8 +5,8 @@
  */
 package _functionalJava.batch;
 
-import labPLANET.utilities.LabPLANETArray;
-import labPLANET.utilities.LabPLANETPlatform;
+import LabPLANET.utilities.LabPLANETArray;
+import LabPLANET.utilities.LabPLANETPlatform;
 import java.util.Date;
 
 /**
