@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package labPLANET.utilities;
+package LabPLANET.utilities;
 
 /**
  * LabPLANETMath is a library for adding extra maths to the standard ones.

@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package labPLANET.utilities;
+package LabPLANET.utilities;
 
 import databases.Rdbms;
 import java.lang.reflect.InvocationTargetException;
@@ -25,18 +25,13 @@ import javax.crypto.spec.SecretKeySpec;
  */
 public class LabPLANETPlatform {
 
-//    LabPLANETArray labArr = new LabPLANETArray();
     String classVersion = "0.1";
     
-    String errorCode = ""; static String errorDetail = "";
-    Object[] errorDetailVariables = new Object[0];
-
-    public LabPLANETPlatform() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-    
     public Object[] procActionEnabled(String schemaPrefix, String actionName){
+        
         Object[] diagnoses = new Object[6];
+        String errorCode = ""; String errorDetail = "";
+        Object[] errorDetailVariables = new Object[0];
         Rdbms rdbm = new Rdbms();
         LabPLANETArray labArr = new LabPLANETArray();
         String[] procedureActions = rdbm.getParameterBundle(schemaPrefix.replace("\"", "")+"-procedure", "procedureActions").split("\\|");
@@ -68,6 +63,8 @@ public class LabPLANETPlatform {
     public Object[] procUserRoleActionEnabled(String schemaPrefix, String userRole, String actionName){
         Object[] diagnoses = new Object[6];
             LabPLANETArray labArr = new LabPLANETArray();
+        String errorCode = ""; String errorDetail = "";
+        Object[] errorDetailVariables = new Object[0];            
         Rdbms rdbm = new Rdbms();        
         String[] procedureActionsUserRoles = rdbm.getParameterBundle(schemaPrefix.replace("\"", "")+"-procedure", "actionEnabled"+actionName).split("\\|");
         
@@ -424,6 +421,8 @@ public class LabPLANETPlatform {
  */   
     public Object[] configObjectExists(Rdbms rdbm, String schemaName, String[] fieldNames, Object[] fieldValues, String tableName){
         LabPLANETArray labArr = new LabPLANETArray();
+        String errorCode = ""; String errorDetail = "";
+        Object[] errorDetailVariables = new Object[0];        
         String[] diagnoses = new String[6];
         String configTableNamePropertyName = tableName+"_configTableName";
         String configTableKeyFieldsPropertyName = tableName+"_configTableKeyFields";        
@@ -492,6 +491,8 @@ public class LabPLANETPlatform {
  */    
     public String[] specialFieldsCheck(Rdbms rdbm, String schemaName, String[] fieldNames, Object[] fieldValues, String tableName, String actionName){
         LabPLANETArray labArr = new LabPLANETArray();
+        String errorCode = ""; String errorDetail = "";
+        Object[] errorDetailVariables = new Object[0];        
         String[] diagnoses = new String[6];
         String specialFieldNamePropertyName = tableName+"_specialFieldsCheck";
         String specialFieldMethodNamePropertyName = tableName+"_specialFieldsCheck_methodName";        
@@ -576,7 +577,8 @@ public class LabPLANETPlatform {
     public static Object[] trapErrorMessage(Rdbms rdbm, String evaluation, String classVersion, String errorCode, Object[] errorVariables) {
                 
         Object[] fldValue = new Object[6];
-
+        String errorDetail = "";
+        Object[] errorDetailVariables = new Object[0];
         String className = Thread.currentThread().getStackTrace()[CLIENT_CODE_STACK_INDEX].getFileName(); 
         String classFullName = Thread.currentThread().getStackTrace()[CLIENT_CODE_STACK_INDEX].getClassName(); 
         String methodName = Thread.currentThread().getStackTrace()[CLIENT_CODE_STACK_INDEX].getMethodName(); 

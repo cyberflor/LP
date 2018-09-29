@@ -6,8 +6,8 @@
 package functionalJava.user;
 
 import databases.Rdbms;
-import labPLANET.utilities.LabPLANETArray;
-import labPLANET.utilities.LabPLANETPlatform;
+import LabPLANET.utilities.LabPLANETArray;
+import LabPLANET.utilities.LabPLANETPlatform;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -18,8 +18,7 @@ import java.sql.SQLException;
 public class Role {
 
     String classVersion = "0.1";
-    LabPLANETArray labArr = new LabPLANETArray();
-    LabPLANETPlatform labPlat = new LabPLANETPlatform();
+
     String[] javaDocFields = new String[0];
     Object[] javaDocValues = new Object[0];
     String javaDocLineName = "";

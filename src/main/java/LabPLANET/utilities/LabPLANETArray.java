@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package labPLANET.utilities;
+package LabPLANET.utilities;
 
 import databases.Rdbms;
 import java.io.BufferedReader;
@@ -39,15 +39,8 @@ public class LabPLANETArray {
     String classVersion = "0.1";
     String schemaDataName = "data";
     String schemaConfigName = "config";    
-    String errorCode = "";
-    String[] errorDetailVariables = new String[0];
-//    LabPLANETPlatform labPlat = new LabPLANETPlatform();
     Rdbms rdbm = new Rdbms();           
-
-    public LabPLANETArray() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-    
+   
     public boolean duplicates(String[] zipcodelist){
       Set<String> lump = new HashSet<>();
       for (String i : zipcodelist)
@@ -605,6 +598,8 @@ public class LabPLANETArray {
  * @return String[6]. Position 3 FALSE/TRUE is the diagnostic.
  */    
     public String[] checkTwoArraysSameLength(Object[] arrayA, Object[] arrayB){
+    String errorCode = "";
+    String[] errorDetailVariables = new String[0];
 
         LabPLANETPlatform labPlat = new LabPLANETPlatform();
         String[] diagnoses = new String[6];
@@ -630,6 +625,8 @@ public class LabPLANETArray {
     public Object[] getColumnFromArray2D(Object[][] array, Integer colNum){
         LabPLANETPlatform labPlat = new LabPLANETPlatform();
         Object[] diagnoses = new Object[0];
+    String errorCode = "";
+    String[] errorDetailVariables = new String[0];
         
         if (colNum>array[0].length){
            errorCode = "LabPLANETArray_getColumnFromArray2D_ColNotFound";

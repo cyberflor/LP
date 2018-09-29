@@ -5,8 +5,8 @@
  */
 package functionalJava.materialSpec;
 
-import labPLANET.utilities.LabPLANETArray;
-import labPLANET.utilities.LabPLANETPlatform;
+import LabPLANET.utilities.LabPLANETArray;
+import LabPLANET.utilities.LabPLANETPlatform;
 import java.util.Arrays;
 
 /**
@@ -16,8 +16,6 @@ import java.util.Arrays;
 public class ConfigSpecRule {
 
     String classVersion = "0.1";
-    //LabPLANETArray labArr = new LabPLANETArray();
-    //LabPLANETPlatform labPlat = new LabPLANETPlatform();
     String[] javaDocFields = new String[0];
     Object[] javaDocValues = new Object[0];
     String javaDocLineName = "";
@@ -25,24 +23,7 @@ public class ConfigSpecRule {
     String schemaDataName = "data";
     String schemaConfigName = "config";
     String tableName = ""; 
-/**
- * This method verify that the parameters provided to build one qualitative spec limit are coherent accordingly to the different options:<br>
- * EqualTo - The value should match strictly this wording.(Separator not required)<br>
- * NotEqualTo - Any value except the wording.(Separator not required)<br>
- * Contains - The value is contained. (Separator not required)<br>
- * NotContains - The opposite to Contains. (Separator not required)<br>
- * IsOneOf - The value will be one of the those. (Separator is mandatory)<br>
- * IsNotOneOf - The value cannot be one of those. (Separator is mandatory)<br> 
- * Bundle parameters:
- *          config-specLimits_ruleMandatoryArgumentNull, specLimits_textSpecMandatoryArgumentNull, specLimits_separatorMandatoryArgumentNull<br>
- *          specLimits_equalTo_Successfully, specLimits_notEqualTo_Successfully, specLimits_contains_Successfully, specLimits_notContains_Successfully<br>
- *          specLimits_isOneOf_Successfully, specLimits_isNotOneOf_Successfully<br>
- *          specLimits_qualitativeRuleNotRecognized
- * @param rule String - Rule Type
- * @param textSpec String - The value for building the spec
- * @param separator String - For those that requires separator for the many option that should be part of the range.
- * @return Object[] position 0 is a boolean to determine if the arguments are correct, when set to false then position 1 provides detail about the deficiency 
- */    
+
     public Object[] specLimitIsCorrectQualitative(String schemaPrefix, String rule, String textSpec, String separator){
                 
         String schemaConfigName = "config";

@@ -10,9 +10,9 @@ import functionalJava.parameter.Parameter;
 import functionalJava.sop.Sop;
 import functionalJava.sop.UserSop;
 import functionalJava.user.Role;
-import labPLANET.utilities.LabPLANETArray;
-import labPLANET.utilities.LabPLANETJson;
-import labPLANET.utilities.LabPLANETPlatform;
+import LabPLANET.utilities.LabPLANETArray;
+import LabPLANET.utilities.LabPLANETJson;
+import LabPLANET.utilities.LabPLANETPlatform;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
@@ -30,8 +30,7 @@ import java.util.logging.Logger;
 public class RequirementDeployment {
 
     String classVersion = "0.1";
-    LabPLANETArray labArr = new LabPLANETArray();
-    LabPLANETPlatform labPlat = new LabPLANETPlatform();
+
     String[] javaDocFields = new String[0];
     Object[] javaDocValues = new Object[0];
     String javaDocLineName = "";

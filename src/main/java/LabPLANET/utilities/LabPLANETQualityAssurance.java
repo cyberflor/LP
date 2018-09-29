@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package labPLANET.utilities;
+package LabPLANET.utilities;
 
 import java.lang.reflect.Method;
 import java.sql.SQLException;

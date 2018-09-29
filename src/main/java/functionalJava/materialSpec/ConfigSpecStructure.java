@@ -6,9 +6,9 @@
 package functionalJava.materialSpec;
 
 import databases.Rdbms;
-import labPLANET.utilities.LabPLANETArray;
-import labPLANET.utilities.LabPLANETPlatform;
-import static labPLANET.utilities.LabPLANETPlatform.trapErrorMessage;
+import LabPLANET.utilities.LabPLANETArray;
+import LabPLANET.utilities.LabPLANETPlatform;
+import static LabPLANET.utilities.LabPLANETPlatform.trapErrorMessage;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.ResultSet;

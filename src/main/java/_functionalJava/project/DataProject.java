@@ -5,8 +5,8 @@
  */
 package _functionalJava.project;
 
-import labPLANET.utilities.LabPLANETArray;
-import labPLANET.utilities.LabPLANETPlatform;
+import LabPLANET.utilities.LabPLANETArray;
+import LabPLANET.utilities.LabPLANETPlatform;
 import databases.DataDataIntegrity;
 import databases.Rdbms;
 import functionalJava.audit.SampleAudit;

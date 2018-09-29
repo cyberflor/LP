@@ -5,8 +5,8 @@
  */
 package functionalJava.materialSpec;
 
-import labPLANET.utilities.LabPLANETArray;
-import labPLANET.utilities.LabPLANETPlatform;
+import LabPLANET.utilities.LabPLANETArray;
+import LabPLANET.utilities.LabPLANETPlatform;
 
 /**
  *

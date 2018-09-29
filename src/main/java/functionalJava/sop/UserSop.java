@@ -7,8 +7,8 @@ package functionalJava.sop;
 
 import databases.Rdbms;
 import functionalJava.user.UserProfile;
-import labPLANET.utilities.LabPLANETArray;
-import labPLANET.utilities.LabPLANETPlatform;
+import LabPLANET.utilities.LabPLANETArray;
+import LabPLANET.utilities.LabPLANETPlatform;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Arrays;
