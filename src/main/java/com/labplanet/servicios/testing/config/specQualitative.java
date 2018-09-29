@@ -8,6 +8,7 @@ package com.labplanet.servicios.testing.config;
 import functionalJava.materialSpec.ConfigSpecRule;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Arrays;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -228,7 +229,7 @@ public class specQualitative extends HttpServlet {
                     String schemaName = "config";
                     Object[] isCorrect = mSpec.specLimitIsCorrectQualitative(schemaName, rule, specText, separator);
                     //Object[] isCorrect = mSpec.specLimitIsCorrectQualitative(QualitSpecTestingArray[i][0], QualitSpecTestingArray[i][1], QualitSpecTestingArray[i][2]);
-                    out.println("<td>"+isCorrect[0].toString()+". "+isCorrect[5].toString()+"</td>");
+                    out.println("<td>"+Arrays.toString(isCorrect)+"</td>");
                     out.println("</tr>");
             }                
             out.println("</table>");

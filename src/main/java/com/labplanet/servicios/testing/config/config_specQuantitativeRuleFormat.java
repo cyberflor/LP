@@ -5,6 +5,7 @@
  */
 package com.labplanet.servicios.testing.config;
 
+import labPLANET.utilities.LabPLANETArray;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
@@ -12,6 +13,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import functionalJava.materialSpec.ConfigSpecRule;
+import java.util.Arrays;
 /**
  *
  * @author Administrator
@@ -238,7 +240,14 @@ public class config_specQuantitativeRuleFormat extends HttpServlet {
                 QuantitSpecTestingArray[inumTesting][2]=null;
                 QuantitSpecTestingArray[inumTesting][3]=null;
                 inumTesting++;}
+//            String fileName = "C:\\home\\judas\\"+this.getServletName()+".txt";             
+//            LabPLANETArray labArr = new LabPLANETArray();
             
+//            String[] QuantitSpecTestingArrayStr = Arrays.copyOf(QuantitSpecTestingArray, QuantitSpecTestingArray.length, String[].class);            
+//            labArr.arrayToFile(null, QuantitSpecTestingArrayStr, fileName, ";");
+    
+//    if (1==1){return;}
+    
             /* TODO output your page here. You may use following sample code. */
             out.println("<!DOCTYPE html>");
             out.println("<html>");
@@ -259,7 +268,7 @@ public class config_specQuantitativeRuleFormat extends HttpServlet {
                 
                     out.println("<td>"+minSpecText+"</td><td>"+maxSpecText+"</td>");
                     Object[] isCorrect = mSpec.specLimitIsCorrectQuantitative(QuantitSpecTestingArray[i][0], QuantitSpecTestingArray[i][1]);
-                    out.println("<td>"+isCorrect[0].toString()+". "+isCorrect[5].toString()+"</td>");
+                    out.println("<td>"+Arrays.toString(isCorrect)+"</td>");
                     out.println("</tr>");
                 }
             }                
@@ -282,7 +291,7 @@ public class config_specQuantitativeRuleFormat extends HttpServlet {
                 out.println("<td>"+minSpecText+"</td><td>"+minControlText+"</td>");
                 out.println("<td>"+maxControlText+"</td><td>"+maxSpecText+"</td>");
                 Object[] isCorrect = mSpec.specLimitIsCorrectQuantitative(QuantitSpecTestingArray[i][0], QuantitSpecTestingArray[i][1],QuantitSpecTestingArray[i][2],QuantitSpecTestingArray[i][3]);
-                out.println("<td>"+isCorrect[0].toString()+". "+isCorrect[5].toString()+"</td>");
+                out.println("<td>"+Arrays.toString(isCorrect)+"</td>");
                 out.println("</tr>");
             }                
             out.println("</table>");

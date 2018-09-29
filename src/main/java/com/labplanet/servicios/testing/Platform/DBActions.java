@@ -5,9 +5,9 @@
  */
 package com.labplanet.servicios.testing.Platform;
 
-import LabPLANET.utilities.LabPLANETArray;
-import LabPLANET.utilities.LabPLANETNullValue;
-import LabPLANET.utilities.LabPLANETPlatform;
+import labPLANET.utilities.LabPLANETArray;
+import labPLANET.utilities.LabPLANETNullValue;
+import labPLANET.utilities.LabPLANETPlatform;
 import databases.Rdbms;
 import functionalJava.analysis.UserMethod;
 import java.io.File;
@@ -31,7 +31,7 @@ import testing.functionalData.testingFileContentSections;
  * @author Administrator
  */
 public class DBActions extends HttpServlet {
-
+    String classVersion = "0.1";
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      *
@@ -45,13 +45,12 @@ public class DBActions extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         
         String fileContent = "";        
-        
+        Rdbms rdbm = new Rdbms();              
         try (PrintWriter out = response.getWriter()) {
             
             response.setContentType("text/html;charset=UTF-8");
             UserMethod um = new UserMethod();
-
-            Rdbms rdbm = new Rdbms();            
+      
             boolean isConnected = false;
             try {
                  isConnected = rdbm.startRdbms("labplanet", "LabPlanet");
@@ -78,6 +77,8 @@ public class DBActions extends HttpServlet {
 
             for (Integer i=1;i<configSpecTestingArray.length;i++){
                 //if (configSpecTestingArray[i][2]==null && configSpecTestingArray[i][3]==null){
+                
+                out.println("Line "+i.toString());
 
                 fileContent = fileContent + "<tr>";                
                 String userName=null;                
@@ -109,15 +110,21 @@ public class DBActions extends HttpServlet {
                         +"</td><td>"+Arrays.toString(fieldName)+"</td><td><b>"+Arrays.toString(fieldValue)+"</b></td><td>"+Arrays.toString(fieldsToRetrieve)
                         +"</td><td>"+Arrays.toString(setFieldName)+"</td><td><b>"+Arrays.toString(setFieldValue)+"</b></td>"
                         +"</td><td>"+Arrays.toString(orderBy)+"</td><td><b>"+Arrays.toString(groupBy)+"</b></td>";
-
+                
+                Object[] allFunctionsBeingTested = new Object[0];                
+                allFunctionsBeingTested = labArr.addValueToArray1D(allFunctionsBeingTested, "EXISTSRECORD");
+                allFunctionsBeingTested = labArr.addValueToArray1D(allFunctionsBeingTested, "INSERT");
+                allFunctionsBeingTested = labArr.addValueToArray1D(allFunctionsBeingTested, "GETRECORDFIELDSBYFILTER");
+                allFunctionsBeingTested = labArr.addValueToArray1D(allFunctionsBeingTested, "UPDATE");
+                
                 switch (functionBeingTested.toUpperCase()){
                     case "EXISTSRECORD":   
                         Object[] exRec =  rdbm.existsRecord(rdbm, schemaPrefix, tableName, fieldName, fieldValues);
-                        dataSample2D = labArr.array1dTo2d(exRec, 6);
+                        dataSample2D = labArr.array1dTo2d(exRec, exRec.length);
                         break;
                     case "INSERT":                    
                         Object[] insRec = rdbm.insertRecordInTable(rdbm, schemaPrefix, tableName, fieldName, fieldValues);  
-                        dataSample2D = labArr.array1dTo2d(insRec, 6);
+                        dataSample2D = labArr.array1dTo2d(insRec, insRec.length);
                         break;
                     case "GETRECORDFIELDSBYFILTER":              
                         if (orderBy.length>0){
@@ -131,12 +138,18 @@ public class DBActions extends HttpServlet {
                         break;
                     case "UPDATE":                    
                         Object[] updRec = rdbm.updateRecordFieldsByFilter(rdbm, schemaPrefix, tableName, setFieldName, setFieldValues, fieldName, fieldValues);  
-                        dataSample2D = labArr.array1dTo2d(updRec, 6);
+                        dataSample2D = labArr.array1dTo2d(updRec, updRec.length);
                         break;                        
                     default:
-                        dataSample2D[0][0]="ERROR";dataSample2D[0][1]="FUNCTION NOT RECOGNIZED";
+                        String errorCode = "ERROR: FUNCTION NOT RECOGNIZED";
+                        Object[] errorDetail = new Object [1];
+                        errorDetail[0]="The function <*1*> is not one of the declared ones therefore nothing can be performed for it. Functions are: <*2*>";
+                        errorDetail = labArr.addValueToArray1D(errorDetail, functionBeingTested);
+                        errorDetail = labArr.addValueToArray1D(errorDetail, Arrays.toString(allFunctionsBeingTested));
+                        Object[] trapErrorMessage = LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetail);            
+                        dataSample2D = labArr.array1dTo2d(trapErrorMessage, trapErrorMessage.length);
                         break;
-                }                        
+                }        
                 LabPLANETNullValue labNull = new LabPLANETNullValue();
                 if (dataSample2D[0].length==0){fileContent = fileContent + "<td>No content in the array dataSample2D returned for function "+functionBeingTested;}
                 if (dataSample2D[0].length>0){fileContent = fileContent + "<td>"+dataSample2D[0][0].toString();}
@@ -164,9 +177,14 @@ public class DBActions extends HttpServlet {
                 } 
             rdbm.closeRdbms();
             }   catch (SQLException|IOException ex) {
-                    Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);   
-                    fileContent = fileContent + "</table>";        
-                    out.println(fileContent);                     
+                Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);   
+                fileContent = fileContent + "</table>";        
+                out.println(fileContent);        
+            try {                    
+                rdbm.closeRdbms();
+            } catch (SQLException ex1) {
+                Logger.getLogger(DBActions.class.getName()).log(Level.SEVERE, null, ex1);
+            }
             }
     }
 

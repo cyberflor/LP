@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package LabPLANET.utilities;
+package labPLANET.utilities;
 
 import databases.Rdbms;
 import java.io.BufferedReader;
@@ -43,6 +43,10 @@ public class LabPLANETArray {
     String[] errorDetailVariables = new String[0];
 //    LabPLANETPlatform labPlat = new LabPLANETPlatform();
     Rdbms rdbm = new Rdbms();           
+
+    public LabPLANETArray() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
     
     public boolean duplicates(String[] zipcodelist){
       Set<String> lump = new HashSet<>();

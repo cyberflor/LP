@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package LabPLANET.utilities;
+package labPLANET.utilities;
 
 import databases.Rdbms;
 import java.lang.reflect.InvocationTargetException;
@@ -30,6 +30,10 @@ public class LabPLANETPlatform {
     
     String errorCode = ""; static String errorDetail = "";
     Object[] errorDetailVariables = new Object[0];
+
+    public LabPLANETPlatform() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
     
     public Object[] procActionEnabled(String schemaPrefix, String actionName){
         Object[] diagnoses = new Object[6];
@@ -578,15 +582,24 @@ public class LabPLANETPlatform {
         String methodName = Thread.currentThread().getStackTrace()[CLIENT_CODE_STACK_INDEX].getMethodName(); 
         Integer lineNumber = Thread.currentThread().getStackTrace()[CLIENT_CODE_STACK_INDEX].getLineNumber(); 
         className = className.replace(".java", "");
-        
+        Boolean errorCodeFromBundle = true;
         String errorCodeText = Rdbms.getParameterBundle("LabPLANET", "errorTraping", className+"_"+errorCode, null);
         if (errorCodeText.length()==0){errorCodeText = rdbm.getParameterBundle("LabPLANET", "errorTraping", errorCode, null);}
-        errorDetail = Rdbms.getParameterBundle("LabPLANET", "errorTraping", className+"_"+errorCode+"_detail", null);
-        if (errorDetail.length()==0){errorDetail = Rdbms.getParameterBundle("LabPLANET", "errorTraping", errorCode+"_detail", null);}
-        for (int iVarValue=1; iVarValue<=errorVariables.length; iVarValue++){
-            errorDetail = errorDetail.replace("<*"+String.valueOf(iVarValue)+"*>", errorVariables[iVarValue-1].toString());
-        }
+        if (errorCodeText.length()==0){errorCodeText = errorCode; errorCodeFromBundle=false;}
         
+        if (!errorCodeFromBundle){
+            if ( errorVariables.length>0){errorDetail = (String) errorVariables[0];
+                for (int iVarValue=1; iVarValue<errorVariables.length; iVarValue++){
+                    errorDetail = errorDetail.replace("<*"+String.valueOf(iVarValue)+"*>", errorVariables[iVarValue].toString());
+                }
+            }            
+        }else{
+            errorDetail = Rdbms.getParameterBundle("LabPLANET", "errorTraping", className+"_"+errorCode+"_detail", null);
+            if (errorDetail.length()==0){errorDetail = Rdbms.getParameterBundle("LabPLANET", "errorTraping", errorCode+"_detail", null);}
+            for (int iVarValue=1; iVarValue<=errorVariables.length; iVarValue++){
+                errorDetail = errorDetail.replace("<*"+String.valueOf(iVarValue)+"*>", errorVariables[iVarValue-1].toString());
+            }
+        }
         fldValue[0] = evaluation; 
         fldValue[1] = classFullName + "." + methodName;
         fldValue[2] = classVersion;

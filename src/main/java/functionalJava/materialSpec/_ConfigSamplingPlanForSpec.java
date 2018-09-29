@@ -6,9 +6,9 @@
 package functionalJava.materialSpec;
 
 import databases.Rdbms;
-import LabPLANET.utilities.LabPLANETArray;
-import static LabPLANET.utilities.LabPLANETMath.nthroot;
-import LabPLANET.utilities.LabPLANETPlatform;
+import labPLANET.utilities.LabPLANETArray;
+import static labPLANET.utilities.LabPLANETMath.nthroot;
+import labPLANET.utilities.LabPLANETPlatform;
 import java.sql.SQLException;
 import java.util.Arrays;
 
@@ -16,7 +16,7 @@ import java.util.Arrays;
  *
  * @author Administrator
  */
-public class ConfigSamplingPlanForSpec {
+public class _ConfigSamplingPlanForSpec {
     
     Object[] diagnoses = new Object[6];
     String classVersion = "Class Version=0.1";
@@ -97,7 +97,7 @@ public class ConfigSamplingPlanForSpec {
         javaDocFields = labArr.addValueToArray1D(javaDocFields, "line_name");         javaDocValues = labArr.addValueToArray1D(javaDocValues, javaDocLineName);         
         javaDocFields = labArr.addValueToArray1D(javaDocFields, "class_version");         javaDocValues = labArr.addValueToArray1D(javaDocValues, classVersion);         
         labPlat.addJavaClassDoc(rdbm, javaDocFields, javaDocValues, elementsDev);
-    }  
+    } 
     if (devMode==false){
         diagnoses = labPlat.configObjectExists(rdbm, schemaConfigName, fieldsName, fieldsValue, tableName);
         if ("LABPLANET_FALSE".equalsIgnoreCase(diagnoses[0].toString())){return diagnoses;}

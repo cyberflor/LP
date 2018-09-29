@@ -6,8 +6,8 @@
 package functionalJava.audit;
 
 import databases.Rdbms;
-import LabPLANET.utilities.LabPLANETArray;
-import LabPLANET.utilities.LabPLANETPlatform;
+import labPLANET.utilities.LabPLANETArray;
+import labPLANET.utilities.LabPLANETPlatform;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.SQLException;

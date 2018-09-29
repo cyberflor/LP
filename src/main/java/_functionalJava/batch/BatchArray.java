@@ -3,11 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package functionalJava.batch;
+package _functionalJava.batch;
 
 import databases.Rdbms;
-import LabPLANET.utilities.LabPLANETArray;
-import LabPLANET.utilities.LabPLANETPlatform;
+import labPLANET.utilities.LabPLANETArray;
+import labPLANET.utilities.LabPLANETPlatform;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;

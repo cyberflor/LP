@@ -3,11 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package databases;
+package _database.rdbms;
 
+import databases.Rdbms;
 import com.sun.rowset.CachedRowSetImpl;
-import LabPLANET.utilities.LabPLANETArray;
-import LabPLANET.utilities.LabPLANETPlatform;
+import labPLANET.utilities.LabPLANETArray;
+import labPLANET.utilities.LabPLANETPlatform;
+import java.io.FileWriter;
 import java.sql.Array;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -22,16 +24,14 @@ import java.util.logging.Logger;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.naming.directory.InitialDirContext;
 import javax.sql.DataSource;
-
 
 /**
  *
  * @author Administrator
  */
-public class RdbmsNEW {
-
+public class Rdbms_NotUse {
+    
     String classVersion = "0.1";
     LabPLANETArray labArr = new LabPLANETArray();
     LabPLANETPlatform labPlat = new LabPLANETPlatform();
@@ -39,32 +39,23 @@ public class RdbmsNEW {
     Object[] javaDocValues = new Object[0];
     String javaDocLineName = "";
 
-    String schemaDataName = "data";
-    String schemaConfigName = "config";
-    String tableName = "user_method"; 
-    
-    String[] diagnoses = new String[7];    
-
     private Connection conn = null;
+    Integer timeout = 0;
+    String lastError = "";
     private Boolean isStarted = false;
-    private Integer timeout;
-    private String lastError = "";
-
-    public RdbmsNEW() {
+    
+    public Rdbms_NotUse() {
         //default query timeout
         this.timeout = 5;        
-    }    
+    }       
 
-
-    
     public Boolean startRdbms(String user, String pass) throws ClassNotFoundException, IllegalAccessException, InstantiationException, SQLException, NamingException{
-        ResourceBundle prop = ResourceBundle.getBundle("parameter.config.config");
+        ResourceBundle prop = ResourceBundle.getBundle("parameter.config.conf");
         String datasrc = prop.getString("datasource");
         Integer to = Integer.valueOf(prop.getString("dbtimeout"));
         setTimeout(to);
                 
               Context ctx = new InitialContext();
-              ctx = new InitialDirContext();
               DataSource ds = (DataSource)ctx.lookup(datasrc);
           
               ds.setLoginTimeout(getTimeout());
@@ -91,13 +82,15 @@ public class RdbmsNEW {
             setIsStarted(Boolean.FALSE);
             }
     }  
-    
+
     public Integer getTimeout() { return timeout;}
 
     public void setTimeout(Integer timeout) { this.timeout = timeout;}
 
+    private void setLastError(String txterror){ lastError = txterror;}
+    
     public String getLastError(){return lastError;}
-
+    
     private void setConnection(Connection con){ conn=con; }
     
     public Connection getConnection(){ return conn; }
@@ -106,9 +99,11 @@ public class RdbmsNEW {
     
     private void setIsStarted(Boolean isStart) { this.isStarted = isStart;}
 
-    public String[] existsRecord(RdbmsNEW rdbm, String schemaName, String tableName, String keyFieldName, Object keyFieldValue){
+    public String[] existsRecord(Rdbms rdbm, String schemaName, String tableName, String keyFieldName, Object keyFieldValue){
         
         String[] diagnoses = new String[6];
+        
+        LabPLANETPlatform labPlat = new LabPLANETPlatform();        
         
         String query = "";
         query = "select " + keyFieldName + " from " + schemaName + "." + tableName
@@ -152,9 +147,11 @@ public class RdbmsNEW {
         }                    
     }
 
-    public String[] existsRecord(RdbmsNEW rdbm, String schemaName, String tableName, String[] keyFieldNames, Object[] keyFieldValues){
+    public String[] existsRecord(Rdbms_NotUse rdbm, String schemaName, String tableName, String[] keyFieldNames, Object[] keyFieldValues){
         
         String[] diagnoses = new String[6];
+        
+        LabPLANETPlatform labPlat = new LabPLANETPlatform();   
         
         Object[] filteredValues = new Object[0];
         
@@ -223,13 +220,11 @@ public class RdbmsNEW {
         }                    
     }
 
-    public Object[][] getRecordFieldsByFilter(RdbmsNEW rdbm, String schemaName, String tableName, String[] whereFieldNames, Object[] whereFieldValues, String[] fieldsToRetrieve){
+    public Object[][] getRecordFieldsByFilter(Rdbms rdbm, String schemaName, String tableName, String[] whereFieldNames, Object[] whereFieldValues, String[] fieldsToRetrieve){
         
         Object[][] diagnoses = new Object[1][6];        
         
         LabPLANETPlatform labPlat = new LabPLANETPlatform();   
-        
-        schemaName = labPlat.buildSchemaName(schemaName, "");
         
         if (whereFieldNames.length==0){
             StackTraceElement[] elements = Thread.currentThread().getStackTrace();
@@ -249,53 +244,18 @@ public class RdbmsNEW {
         query = "select " + fieldsToRetrieveStr + " from " + schemaName + "." + tableName
                 + "   where " ;
         Integer i=1;
-        Boolean containsInClause = false;
-        Object[] whereFieldValuesNew = new Object[0];
-        
         for (String fn: whereFieldNames){
                 if (i>1){query = query + " and ";}
                 
-                if ( fn.toUpperCase().contains("NULL")){ query = query + fn;}
-                else if (fn.toUpperCase().contains("LIKE")){ query = query + fn + " ? ";} 
-                else if (fn.toUpperCase().contains("IN")){ 
-                    Integer posicINClause = fn.toUpperCase().indexOf("IN");
-                    String separator = fn;
-                    separator = separator.substring(posicINClause+2, posicINClause+3);
-                    separator = separator.trim();
-                    separator = separator.replace("IN", "");  
-                    containsInClause = true;
-                    String textSpecs = (String) whereFieldValues[i-1];
-                    String[] textSpecArray = textSpecs.toString().split(separator);
-                    query = query + fn.replace(separator, "") + "(" ;
-                    for (Integer iNew=0;iNew<i-1;iNew++){
-                        whereFieldValuesNew[iNew] = whereFieldValues[i];                        
-                    }
-                    for (int j = 0; j < textSpecArray.length; j++) {
-						query = query + "?,";
-                        whereFieldValuesNew = labArr.addValueToArray1D(whereFieldValuesNew, textSpecArray);                        
-                        i++;
-					}
-                    for (Integer j=i;j<=whereFieldValues.length;j++){
-                        whereFieldValuesNew = labArr.addValueToArray1D(whereFieldValuesNew, whereFieldValues[j]);  
-                    }
-                    query = query.substring(0, query.length()-1);
-                    query = query + ")" ;
-                    whereFieldValues = whereFieldValuesNew;
-                }                 
-                else {query = query + fn + "=? ";}
+                if ( (fn.toUpperCase().contains("NULL")) || (fn.toUpperCase().contains("LIKE")) ){
+                    query = query + fn;
+                }else {query = query + fn + "=? ";}
                 
                 i++;
         }        
         try{
-            ResultSet res = null;
-            if ( containsInClause ){
-                res = rdbm.prepRdQuery(query, whereFieldValues);
-                res.last();
-            }else{
-                res = rdbm.prepRdQuery(query, whereFieldValues);
-                res.last();
-            }
-            
+            ResultSet res = rdbm.prepRdQuery(query, whereFieldValues);
+            res.last();
 
             if (res.getRow()>0){
              Integer totalLines = res.getRow();
@@ -304,15 +264,13 @@ public class RdbmsNEW {
              
              Object[][] diagnoses2 = new Object[totalLines][fieldsToRetrieve.length];
              while(icurrLine<=totalLines-1) {
-                //fieldValues = labArr.encryptTableFieldArray(schemaName, tableName, fieldNames, fieldValues);                 
                 for (Integer icurrCol=0;icurrCol<fieldsToRetrieve.length;icurrCol++){
                     Object currValue = res.getObject(icurrCol+1);
                     diagnoses2[icurrLine][icurrCol] =  currValue;
                 }        
                 res.next();
                 icurrLine++;
-             }              
-                diagnoses2 = labArr.decryptTableFieldArray(schemaName, tableName, fieldsToRetrieve, diagnoses2);
+             }                
                 return diagnoses2;
             }else{
                 StackTraceElement[] elements = Thread.currentThread().getStackTrace();
@@ -338,9 +296,11 @@ public class RdbmsNEW {
         }                    
     }
 
-    public Object[][] getRecordFieldsByFilter(RdbmsNEW rdbm, String schemaName, String[] tableName, String[] whereFieldNames, Object[] whereFieldValues, String[] fieldsToRetrieve){
+    public Object[][] getRecordFieldsByFilter(Rdbms rdbm, String schemaName, String[] tableName, String[] whereFieldNames, Object[] whereFieldValues, String[] fieldsToRetrieve){
         
         Object[][] diagnoses = new Object[1][6];        
+        
+        LabPLANETPlatform labPlat = new LabPLANETPlatform();   
         
         if (whereFieldNames.length==0){
             StackTraceElement[] elements = Thread.currentThread().getStackTrace();
@@ -349,7 +309,7 @@ public class RdbmsNEW {
             diagnoses[0][2]= "Code Line " + String.valueOf(elements[1].getLineNumber());   
             diagnoses[0][3]="FALSE";
             diagnoses[0][4]="ERROR: NO FILTER SPECIFIED";
-            diagnoses[0][5]="Any filter is mandatory to run the query on " + tableName +" in schema "+schemaName;
+            diagnoses[0][5]="Any filter is mandatory to run the query on " + Arrays.toString(tableName) +" in schema "+schemaName;
             return diagnoses;     
         }
         
@@ -392,8 +352,7 @@ public class RdbmsNEW {
                 }        
                 res.next();
                 icurrLine++;
-             }
-                diagnoses2 = labArr.decryptTableFieldArray(schemaName, tableName[0], fieldsToRetrieve, diagnoses2);
+             }                
                 return diagnoses2;
             }else{
                 StackTraceElement[] elements = Thread.currentThread().getStackTrace();
@@ -401,8 +360,8 @@ public class RdbmsNEW {
                 diagnoses[0][1]= classVersion;
                 diagnoses[0][2]= "Code Line " + String.valueOf(elements[1].getLineNumber());   
                 diagnoses[0][3]="FALSE";
-                diagnoses[0][4]="ERROR: " + tableName + " NOT FOUND";
-                diagnoses[0][5]="No records founds in " + tableName + " by the filter "+ Arrays.toString(whereFieldValues) + " in schema "+schemaName;
+                diagnoses[0][4]="ERROR: " + Arrays.toString(tableName) + " NOT FOUND";
+                diagnoses[0][5]="No records founds in " + Arrays.toString(tableName) + " by the filter "+ Arrays.toString(whereFieldValues) + " in schema "+schemaName;
                 return diagnoses;
             }
         }catch (SQLException er) {
@@ -419,9 +378,11 @@ public class RdbmsNEW {
         }                    
     }
 
-    public Object[][] getRecordFieldsByFilter(RdbmsNEW rdbm, String schemaName, String tableName, String[] whereFieldNames, Object[] whereFieldValues, String[] fieldsToRetrieve, String[] orderBy){
+    public Object[][] getRecordFieldsByFilter(Rdbms rdbm, String schemaName, String tableName, String[] whereFieldNames, Object[] whereFieldValues, String[] fieldsToRetrieve, String[] orderBy){
         
         Object[][] diagnoses = new Object[1][6];        
+        
+        LabPLANETPlatform labPlat = new LabPLANETPlatform();   
         
         if (whereFieldNames.length==0){
             StackTraceElement[] elements = Thread.currentThread().getStackTrace();
@@ -474,8 +435,7 @@ public class RdbmsNEW {
                 }        
                 res.next();
                 icurrLine++;
-             }
-                diagnoses2 = labArr.decryptTableFieldArray(schemaName, tableName, fieldsToRetrieve, diagnoses2);
+             }                
                 return diagnoses2;
             }else{
                 StackTraceElement[] elements = Thread.currentThread().getStackTrace();
@@ -501,80 +461,44 @@ public class RdbmsNEW {
         }                    
     }
 
-    public String[] insertRecordInTable(RdbmsNEW rdbm, String schemaName, String tableName, String[] fieldNames, Object[] fieldValues){
-        try {
-            
-            // fieldValues = labArr.encryptTableFieldArray(schemaName, tableName, fieldNames, fieldValues);
-            
-            String[] diagnoses = new String[7];
-            
-            if (fieldNames.length==0){
-                StackTraceElement[] elements = Thread.currentThread().getStackTrace();
-                diagnoses[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
-                diagnoses[1]= classVersion;
-                diagnoses[2]= "Code Line " + String.valueOf(elements[1].getLineNumber());
-                diagnoses[3]="FALSE";
-                diagnoses[4]="ERROR: NO FILTER SPECIFIED";
-                diagnoses[5]="Any filter is mandatory to run the query on " + tableName +" in schema "+schemaName;
-                return diagnoses;
-            }
-            
-            if (fieldNames.length!=fieldValues.length){
-                StackTraceElement[] elements = Thread.currentThread().getStackTrace();
-                diagnoses[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
-                diagnoses[1]= classVersion;
-                diagnoses[2]= "Code Line " + String.valueOf(elements[1].getLineNumber());
-                diagnoses[3]="FALSE";
-                diagnoses[4]="ERROR:Field names and values arrays with different length";
-                diagnoses[5]="The values in FieldName are:"+ Arrays.toString(fieldNames)+". and in FieldValue are:"+Arrays.toString(fieldValues);
-                return diagnoses;
-            }
-            String query = "";
-            String fieldNamesStr = "";
-            for (String fn: fieldNames){fieldNamesStr = fieldNamesStr + fn + ", ";}
-            fieldNamesStr = fieldNamesStr.substring(0, fieldNamesStr.length()-2);
-            query = "Insert into " + schemaName + "." + tableName + " (" + fieldNamesStr + ") values ( " ;
-            Integer i=1;
-            for (int j = 0; j < fieldNames.length; j++) {
-				if (i==1){query = query + "? ";i++;}
-                else{query = query + ", ? ";}
-                i++;
-			}
-            query = query + ") ";
-                        
-            int numr = rdbm.prepUpQueryK(query, fieldValues, 1);
-            
-            //ResultSet res = rdbm.prepRdQuery(query, fieldValues);
-            //res.last();
-            //if (numr>0){
-            StackTraceElement[] elements = Thread.currentThread().getStackTrace();
-            diagnoses[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
-            diagnoses[1]= classVersion;
-            diagnoses[2]= "Code Line " + String.valueOf(elements[1].getLineNumber());
-            diagnoses[3]="TRUE";
-            diagnoses[4]="SUCCESS: RECORD CREATED";
-            diagnoses[5]="New record created using the query "+ query+" for values "+Arrays.toString(fieldValues) + " in schema " + schemaName ;
-            diagnoses[6]=String.valueOf(numr);
-            return diagnoses;
+    public Object[] insertRecordInTable(Rdbms rdbm, String schemaName, String tableName, String[] fieldNames, Object[] fieldValues){
+        
+        Object[] diagnoses = new Object[7];
 
-        } catch (SQLException ex) {
-            Logger.getLogger(RdbmsNEW.class.getName()).log(Level.SEVERE, null, ex);
+        LabPLANETPlatform labPlat = new LabPLANETPlatform();
+        LabPLANETArray labArray = new LabPLANETArray();
+
+        if (fieldNames.length==0){
             StackTraceElement[] elements = Thread.currentThread().getStackTrace();
             diagnoses[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
             diagnoses[1]= classVersion;
             diagnoses[2]= "Code Line " + String.valueOf(elements[1].getLineNumber());
             diagnoses[3]="FALSE";
-            diagnoses[4]="ERROR:DATABASE RETURNS ERROR";
-            diagnoses[5]="The database returned this error on execute the SQL statement:"+ex.getMessage()+" The query is "+ex.getSQLState()+". and in FieldValue are:"+Arrays.toString(fieldValues);
-            return diagnoses;            
+            diagnoses[4]="ERROR: NO FILTER SPECIFIED";
+            diagnoses[5]="Any filter is mandatory to run the query on " + tableName +" in schema "+schemaName;
+            return diagnoses;
         }
+
+        if (fieldNames.length!=fieldValues.length){
+            StackTraceElement[] elements = Thread.currentThread().getStackTrace();
+            diagnoses[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
+            diagnoses[1]= classVersion;
+            diagnoses[2]= "Code Line " + String.valueOf(elements[1].getLineNumber());
+            diagnoses[3]="FALSE";
+            diagnoses[4]="ERROR:Field names and values arrays with different length";
+            diagnoses[5]="The values in FieldName are:"+ Arrays.toString(fieldNames)+". and in FieldValue are:"+Arrays.toString(fieldValues);
+            return diagnoses;
+        }
+            
+        return diagnoses = rdbm.insertRecordInTable(rdbm, schemaName, tableName, fieldNames, fieldValues);            
     }
     
-    public String[] updateRecordFieldsByFilter(RdbmsNEW rdbm, String schemaName, String tableName, String[] updateFieldNames, Object[] updateFieldValues, String[] whereFieldNames, Object[] whereFieldValues) throws SQLException{
+    public String[] updateRecordFieldsByFilter(Rdbms rdbm, String schemaName, String tableName, String[] updateFieldNames, Object[] updateFieldValues, String[] whereFieldNames, Object[] whereFieldValues) throws SQLException{
         
         String[] diagnoses = new String[6];        
         
-        updateFieldValues = labArr.decryptTableFieldArray(schemaName, tableName, updateFieldNames, (Object[]) updateFieldValues);        
+        LabPLANETPlatform labPlat = new LabPLANETPlatform();  
+        
         
         if (whereFieldNames.length==0){
             StackTraceElement[] elements = Thread.currentThread().getStackTrace();
@@ -586,8 +510,8 @@ public class RdbmsNEW {
             diagnoses[5]="Any filter is mandatory to run the query on " + tableName +" in schema "+schemaName;
             return diagnoses;     
         }
-        
-        String query = "";
+        return diagnoses;
+/*        String query = "";
         String updateFieldNamesStr = " set ";
         for (String fn: updateFieldNames){updateFieldNamesStr = updateFieldNamesStr + fn + "=?, ";}
         updateFieldNamesStr = updateFieldNamesStr.substring(0, updateFieldNamesStr.length()-2);
@@ -600,9 +524,6 @@ public class RdbmsNEW {
         }       i++;
         for (Object fn: whereFieldValues){
             updateFieldValues = labArr.addValueToArray1D(updateFieldValues, fn);}
-
-        updateFieldValues = labArr.encryptTableFieldArray(schemaName, tableName, updateFieldNames, (Object[]) updateFieldValues); 
-        
         Integer numr = rdbm.prepUpQuery(query, updateFieldValues);
         if (numr>0){     
             StackTraceElement[] elements = Thread.currentThread().getStackTrace();
@@ -622,7 +543,7 @@ public class RdbmsNEW {
             diagnoses[5]="No records founds in " + tableName + " by the filter "+ Arrays.toString(whereFieldValues) + " already exists in schema "+schemaName+". Query="+query;
         }
         return diagnoses;                    
-        
+*/        
         /*
         res.last();
         
@@ -678,7 +599,7 @@ public class RdbmsNEW {
             }
                 
             buildPreparedStatement(filteredValoresConInterrogaciones, prep, null); 
-        }catch(Exception er){//cuando se envia un array 
+        }catch(SQLException er){//cuando se envia un array 
 
         }
         
@@ -715,6 +636,8 @@ public class RdbmsNEW {
         setTimeout(getTimeout());
 
         buildPreparedStatement(valoresinterrogaciones, prep, null); 
+        Integer res = prep.executeUpdate();
+
         ResultSet rs = prep.getGeneratedKeys();
 
         if (rs.next()) {
@@ -781,7 +704,7 @@ public class RdbmsNEW {
                case "class json.Na"://to skip fields
                break;  
                case "class [Ljava.lang.String;":
-               Array array = conn.createArrayOf("VARCHAR", (Object []) obj);
+               Array array = conn.createArrayOf("VARCHAR", (String []) obj);
                prepsta.setArray(indexval, array);
                break;
                default:
@@ -800,30 +723,17 @@ public class RdbmsNEW {
         return prop;
     }
     
-    public String getParameterBundle(String configFile, String parameterName, String language){
+    public String getParameterBundle(String configFile, String parameterName){
         
-        ResourceBundle prop = ResourceBundle.getBundle("parameter.config."+configFile+"_"+language); 
+        FileWriter fw = null;
+        String newEntry = "";
+        
+        ResourceBundle prop = ResourceBundle.getBundle("parameter.config."+configFile); 
         if (!prop.containsKey(parameterName)){  
             return "";
         }else{    
             String paramValue = prop.getString(parameterName);
             return paramValue;
-        }    
-    }        
-
-    public String getParameterBundle(String configFile, String parameterName){
-        
-
-        try {
-            ResourceBundle prop = ResourceBundle.getBundle("parameter.config."+configFile); 
-            if (!prop.containsKey(parameterName)){  
-                return "";
-            }else{    
-                String paramValue = prop.getString(parameterName);
-                return paramValue;
-            }
-        }catch (Exception e){    
-            return "";
         }    
     }        
 
@@ -850,5 +760,5 @@ public class RdbmsNEW {
     
     return crs;    
     }
-    
+     
 }

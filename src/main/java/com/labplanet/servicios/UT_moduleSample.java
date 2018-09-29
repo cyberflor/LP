@@ -6,7 +6,7 @@ package com.labplanet.servicios;
  * and open the template in the editor.
  */
 
-import LabPLANET.utilities.LabPLANETArray;
+import labPLANET.utilities.LabPLANETArray;
 import databases.Rdbms;
 import functionalJava.analysis.UserMethod;
 import functionalJava.sampleStructure.DataSample;

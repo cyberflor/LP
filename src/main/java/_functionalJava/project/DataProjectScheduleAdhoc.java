@@ -3,12 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package functionalJava.project;
+package _functionalJava.project;
 
-import LabPLANET.utilities.LabPLANETArray;
+import labPLANET.utilities.LabPLANETArray;
 import java.text.SimpleDateFormat;
-import LabPLANET.utilities.LabPLANETDate;
-import LabPLANET.utilities.LabPLANETPlatform;
+import labPLANET.utilities.LabPLANETDate;
+import labPLANET.utilities.LabPLANETPlatform;
 import databases.Rdbms;
 import java.sql.SQLException;
 import java.util.ArrayList;

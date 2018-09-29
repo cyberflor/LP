@@ -6,8 +6,8 @@
 package functionalJava.unitsOfMeasurement;
 
 import databases.Rdbms;
-import LabPLANET.utilities.LabPLANETArray;
-import LabPLANET.utilities.LabPLANETPlatform;
+import labPLANET.utilities.LabPLANETArray;
+import labPLANET.utilities.LabPLANETPlatform;
 
 /**
  * functionality where units of measurements are involved

@@ -5,7 +5,7 @@
  */
 package testing.platform;
 
-import LabPLANET.utilities.LabPLANETArray;
+import labPLANET.utilities.LabPLANETArray;
 import databases.Rdbms;
 import functionalJava.materialSpec.ConfigSpecStructure;
 import functionalJava.user.UserSecurity;

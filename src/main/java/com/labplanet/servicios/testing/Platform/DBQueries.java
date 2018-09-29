@@ -5,8 +5,8 @@
  */
 package com.labplanet.servicios.testing.Platform;
 
-import LabPLANET.utilities.LabPLANETArray;
-import LabPLANET.utilities.LabPLANETNullValue;
+import labPLANET.utilities.LabPLANETArray;
+import labPLANET.utilities.LabPLANETNullValue;
 import databases.Rdbms;
 import functionalJava.materialSpec.ConfigSpecStructure;
 import java.io.BufferedWriter;

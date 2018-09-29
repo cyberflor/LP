@@ -7,7 +7,7 @@ package testing.platform;
 
 import databases.Rdbms;
 import functionalJava.materialSpec.ConfigSpecStructure;
-import LabPLANET.utilities.LabPLANETArray;
+import labPLANET.utilities.LabPLANETArray;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;

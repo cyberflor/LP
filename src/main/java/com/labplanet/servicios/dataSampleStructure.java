@@ -5,9 +5,9 @@
  */
 package com.labplanet.servicios;
 
-import LabPLANET.utilities.LabPLANETArray;
-import LabPLANET.utilities.LabPLANETNullValue;
-import LabPLANET.utilities.LabPLANETPlatform;
+import labPLANET.utilities.LabPLANETArray;
+import labPLANET.utilities.LabPLANETNullValue;
+import labPLANET.utilities.LabPLANETPlatform;
 import databases.Rdbms;
 import functionalJava.analysis.UserMethod;
 import functionalJava.sampleStructure.DataSample;

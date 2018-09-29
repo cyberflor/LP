@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package LabPLANET.utilities;
+package labPLANET.utilities;
 
 import com.sun.rowset.CachedRowSetImpl;
 import databases.Rdbms;

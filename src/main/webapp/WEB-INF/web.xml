@@ -40,6 +40,14 @@
         <servlet-name>config_specQuantitativeRuleFormat</servlet-name>
         <servlet-class>com.labplanet.servicios.testing.config.config_specQuantitativeRuleFormat</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>TestingConfigSamplingPlanStructure</servlet-name>
+        <servlet-class>com.labplanet.servicios.testing.config._TestingConfigSamplingPlanStructure</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>TestingResultCheckSpecQualitative</servlet-name>
+        <servlet-class>com.labplanet.servicios.testing.config.TestingResultCheckSpecQualitative</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>Authenticate</servlet-name>
         <url-pattern>/Authenticate</url-pattern>
@@ -79,6 +87,14 @@
     <servlet-mapping>
         <servlet-name>config_specQuantitativeRuleFormat</servlet-name>
         <url-pattern>/config_specQuantitativeRuleFormat</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>TestingConfigSamplingPlanStructure</servlet-name>
+        <url-pattern>/TestingConfigSamplingPlanStructure</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>TestingResultCheckSpecQualitative</servlet-name>
+        <url-pattern>/testing/config/ResultCheckSpecQualitative</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

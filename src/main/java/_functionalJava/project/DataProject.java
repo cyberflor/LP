@@ -3,10 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package functionalJava.project;
+package _functionalJava.project;
 
-import LabPLANET.utilities.LabPLANETArray;
-import LabPLANET.utilities.LabPLANETPlatform;
+import labPLANET.utilities.LabPLANETArray;
+import labPLANET.utilities.LabPLANETPlatform;
 import databases.DataDataIntegrity;
 import databases.Rdbms;
 import functionalJava.audit.SampleAudit;
@@ -34,18 +34,14 @@ public class DataProject extends DataSample{
     Object[] mandatoryFieldsValue = null;
 
     String classVersion = "0.1";
-    LabPLANETArray labArr = new LabPLANETArray();
-    LabPLANETPlatform labPlat = new LabPLANETPlatform();
-    DataDataIntegrity labIntChecker = new DataDataIntegrity();
+
     String[] javaDocFields = new String[0];
     Object[] javaDocValues = new Object[0];
     String javaDocLineName = "";
 
     String schemaDataName = "data";
     String schemaConfigName = "config";
-    String tableName = "sample"; 
-
-    SampleAudit smpAudit = new SampleAudit();
+    String tableName = "sample";    
 
     public DataProject(String grouperName) {
         super(grouperName);
@@ -61,6 +57,9 @@ public Object[] createProject(Rdbms rdbm, String schemaPrefix, String sampleTemp
 }
 
 Object[] createProject(Rdbms rdbm, String schemaPrefix, String projectTemplate, Integer projectTemplateVersion, String[] sampleFieldName, Object[] sampleFieldValue, String userName, String userRole, Boolean devMode) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException{
+    LabPLANETArray labArr = new LabPLANETArray();
+    LabPLANETPlatform labPlat = new LabPLANETPlatform();
+    DataDataIntegrity labIntChecker = new DataDataIntegrity();
 
     if (devMode==true){
         try {
@@ -81,8 +80,7 @@ Object[] createProject(Rdbms rdbm, String schemaPrefix, String projectTemplate, 
         
         String schemaDataName = "data";
         String schemaConfigName = "config";
-
-        LabPLANETPlatform labPlat = new LabPLANETPlatform();
+        
         schemaDataName = labPlat.buildSchemaName(schemaPrefix, schemaDataName);    
         schemaConfigName = labPlat.buildSchemaName(schemaPrefix, schemaConfigName); 
         
@@ -248,6 +246,8 @@ Object[] createProject(Rdbms rdbm, String schemaPrefix, String projectTemplate, 
 }    
 
 public Object[] logProjectSample(Rdbms rdbm, String schemaPrefix, String projectTemplate, Integer projectTemplateVersion, String[] fieldName, Object[] fieldValue, String userName, String userRole, String projectName){
+    LabPLANETArray labArr = new LabPLANETArray();
+    LabPLANETPlatform labPlat = new LabPLANETPlatform();
     
     Object[] newProjSample = new Object[0];
         try {

@@ -5,7 +5,7 @@
  */
 package frontEnd.sampleAudit;
 
-import LabPLANET.utilities.LabPLANETArray;
+import labPLANET.utilities.LabPLANETArray;
 import databases.Rdbms;
 import java.io.BufferedReader;
 import java.io.FileReader;

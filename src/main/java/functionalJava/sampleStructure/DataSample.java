@@ -12,8 +12,8 @@ import databases.Rdbms;
 import functionalJava.analysis.UserMethod;
 import functionalJava.audit.SampleAudit;
 import functionalJava.materialSpec.DataSpec;
-import LabPLANET.utilities.LabPLANETArray;
-import LabPLANET.utilities.LabPLANETPlatform;
+import labPLANET.utilities.LabPLANETArray;
+import labPLANET.utilities.LabPLANETPlatform;
 import databases.DataDataIntegrity;
 import functionalJava.unitsOfMeasurement.UnitsOfMeasurement;
 import java.lang.reflect.InvocationTargetException;
@@ -41,8 +41,6 @@ public class DataSample {
     String[] mandatoryFields = null;
     Object[] mandatoryFieldsValue = null;
 
-    LabPLANETArray labArr = new LabPLANETArray();
-    LabPLANETPlatform labPlat = new LabPLANETPlatform();
     DataDataIntegrity labIntChecker = new DataDataIntegrity();
     String[] javaDocFields = new String[0];
     Object[] javaDocValues = new Object[0];
@@ -75,7 +73,11 @@ public Object[] logSample(Rdbms rdbm, String schemaPrefix, String sampleTemplate
 }
 
 Object[] logSample(Rdbms rdbm, String schemaPrefix, String sampleTemplate, Integer sampleTemplateVersion, String[] sampleFieldName, Object[] sampleFieldValue, String userName, String userRole, Boolean devMode) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException{
-
+    
+    LabPLANETArray labArr = new LabPLANETArray();
+    
+    LabPLANETPlatform labPlat = new LabPLANETPlatform();
+    
     if (devMode==true){
         try {
             StackTraceElement[] elementsDev = Thread.currentThread().getStackTrace();
@@ -96,7 +98,6 @@ Object[] logSample(Rdbms rdbm, String schemaPrefix, String sampleTemplate, Integ
         String schemaDataName = "data";
         String schemaConfigName = "config";
 
-        LabPLANETPlatform labPlat = new LabPLANETPlatform();
         schemaDataName = labPlat.buildSchemaName(schemaPrefix, schemaDataName);    
         schemaConfigName = labPlat.buildSchemaName(schemaPrefix, schemaConfigName); 
         
@@ -263,7 +264,7 @@ public Object[] sampleReception(Rdbms rdbm, String schemaPrefix, String userName
 
     String receptionStatus = "RECEIVED";
     String auditActionName = "SAMPLE_RECEPTION";
-    
+    LabPLANETArray labArr = new LabPLANETArray();
     LabPLANETPlatform labPlat = new LabPLANETPlatform();
     schemaDataName = labPlat.buildSchemaName(schemaPrefix, schemaDataName); 
     
@@ -314,6 +315,7 @@ public Object[] sampleReception(Rdbms rdbm, String schemaPrefix, String userName
 
 public Object[] changeSamplingDate(Rdbms rdbm, String schemaPrefix, String userName, Integer sampleId, Date newDate, String userRole) throws SQLException{
 
+    LabPLANETArray labArr = new LabPLANETArray();
     LabPLANETPlatform labPlat = new LabPLANETPlatform();
     schemaDataName = labPlat.buildSchemaName(schemaPrefix, schemaDataName); 
     
@@ -343,6 +345,8 @@ public Object[] changeSamplingDate(Rdbms rdbm, String schemaPrefix, String userN
 
 public Object[] sampleReceptionCommentAdd(Rdbms rdbm, String schemaPrefix, String userName, Integer sampleId, String comment, String userRole) throws SQLException{
     LabPLANETPlatform labPlat = new LabPLANETPlatform();
+    LabPLANETArray labArr = new LabPLANETArray();
+
     schemaDataName = labPlat.buildSchemaName(schemaPrefix, schemaDataName); 
     
     String auditActionName = "SAMPLE_RECEPTION_COMMENT_ADD";
@@ -370,6 +374,7 @@ public Object[] sampleReceptionCommentAdd(Rdbms rdbm, String schemaPrefix, Strin
 }
 
 public Object[] sampleReceptionCommentRemove(Rdbms rdbm, String schemaPrefix, String userName, Integer sampleId, String comment, String userRole) throws SQLException{
+    LabPLANETArray labArr = new LabPLANETArray();
     LabPLANETPlatform labPlat = new LabPLANETPlatform();
     schemaDataName = labPlat.buildSchemaName(schemaPrefix, schemaDataName); 
 
@@ -398,6 +403,7 @@ public Object[] sampleReceptionCommentRemove(Rdbms rdbm, String schemaPrefix, St
 }
 
 public Object[] setSampleStartIncubationDateTime(Rdbms rdbm, String schemaPrefix, String userName, Integer sampleId, String userRole) throws SQLException{
+    LabPLANETArray labArr = new LabPLANETArray();
 
     LabPLANETPlatform labPlat = new LabPLANETPlatform();
     schemaDataName = labPlat.buildSchemaName(schemaPrefix, schemaDataName); 
@@ -431,6 +437,7 @@ public Object[] setSampleStartIncubationDateTime(Rdbms rdbm, String schemaPrefix
 }
 
 public Object[] setSampleEndIncubationDateTime(Rdbms rdbm, String schemaPrefix, String userName, Integer sampleId, String userRole) throws SQLException{
+    LabPLANETArray labArr = new LabPLANETArray();
 
     LabPLANETPlatform labPlat = new LabPLANETPlatform();
     schemaDataName = labPlat.buildSchemaName(schemaPrefix, schemaDataName); 
@@ -481,6 +488,7 @@ public String[] sampleAnalysisAssignAnalyst(Rdbms rdbm, String schemaPrefix, Str
     tableName = "sample_analysis";
     String auditActionName = "SAMPLE_ANALYSIS_ANALYST_ASSIGNMENT";
 
+    LabPLANETArray labArr = new LabPLANETArray();
     LabPLANETPlatform labPlat = new LabPLANETPlatform();
     schemaDataName = labPlat.buildSchemaName(schemaPrefix, schemaDataName);  
     schemaConfigName = labPlat.buildSchemaName(schemaPrefix, schemaConfigName); 
@@ -607,7 +615,8 @@ public String[] sampleAnalysisAddtoSample(Rdbms rdbm, String schemaPrefix, Strin
     tableName = "_analysis";
     String actionName = "Insert";
     String auditActionName = "ADD_SAMPLE_ANALYSIS";
-    
+
+    LabPLANETArray labArr = new LabPLANETArray();   
     LabPLANETPlatform labPlat = new LabPLANETPlatform();
     schemaDataName = labPlat.buildSchemaName(schemaPrefix, schemaDataName);  
     schemaConfigName = labPlat.buildSchemaName(schemaPrefix, schemaConfigName); 
@@ -835,8 +844,7 @@ public String[] sampleAnalysisAddtoSample(Rdbms rdbm, String schemaPrefix, Strin
            return (String[]) labPlat.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);   
     }
     
-    
-    LabPLANETArray labArr = new LabPLANETArray();
+        
     fieldName = labArr.addValueToArray1D(fieldName, "sample_id");
     fieldValue = labArr.addValueToArray1D(fieldValue, sampleId);    
 //    fieldName = labArr.addValueToArray1D(fieldName, "assigned_on");
@@ -914,6 +922,8 @@ public Object[] sampleEvaluateStatus(Rdbms rdbm, String schemaPrefix, String use
     String auditActionName = "SAMPLE_EVALUATE_STATUS";
     if (parentAuditAction!=null){auditActionName = parentAuditAction + ":"+auditActionName;}
     LabPLANETPlatform labPlat = new LabPLANETPlatform();
+    LabPLANETArray labArr = new LabPLANETArray();
+
     schemaDataName = labPlat.buildSchemaName(schemaPrefix, schemaDataName);  
     schemaConfigName = labPlat.buildSchemaName(schemaPrefix, schemaConfigName); 
     tableName = "sample_analysis";      
@@ -945,7 +955,8 @@ public Object[] sampleEvaluateStatus(Rdbms rdbm, String schemaPrefix, String use
 
 public Object[] sampleAnalysisEvaluateStatus(Rdbms rdbm, String schemaPrefix, String userName, Integer sampleId, Integer testId, String parentAuditAction, String userRole) throws SQLException{
     
-    LabPLANETPlatform labPlat = new LabPLANETPlatform();
+   LabPLANETArray labArr = new LabPLANETArray();
+   LabPLANETPlatform labPlat = new LabPLANETPlatform();
     schemaDataName = "data";
     schemaDataName = labPlat.buildSchemaName(schemaPrefix, schemaDataName);  
     
@@ -987,7 +998,8 @@ public Object[] sampleAnalysisResultEntry(Rdbms rdbm, String schemaPrefix, Strin
     tableName = "sample_analysis_result";  
     String actionName = "Insert";
     String auditActionName = "SAMPLE_ANALYSIS_RESULT_ENTRY";
-    
+    LabPLANETArray labArr = new LabPLANETArray();
+
     LabPLANETPlatform labPlat = new LabPLANETPlatform();
     schemaDataName = labPlat.buildSchemaName(schemaPrefix, schemaDataName);  
     schemaConfigName = labPlat.buildSchemaName(schemaPrefix, schemaConfigName); 
@@ -1232,16 +1244,17 @@ public Object[] sampleAnalysisResultEntry(Rdbms rdbm, String schemaPrefix, Strin
             
             resSpecEvaluation = resChkSpec.resultCheck(schemaDataName, (String) resultValue, specRuleType, specValues, specSeparator, specListName);
             if ("LABPLANET_FALSE".equalsIgnoreCase(resSpecEvaluation[0].toString())){
-               errorCode = "DataSample_SampleAnalysisResult_QualitativeSpecNotRecognized";
-                errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, resultId.toString());
-                errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, ruleVariables);
-                errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, schemaDataName);
-                return (String[]) labPlat.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);                  
+                return resSpecEvaluation;
+               //errorCode = "DataSample_SampleAnalysisResult_QualitativeSpecNotRecognized";
+               // errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, resultId.toString());
+               // errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, ruleVariables);
+               // errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, schemaDataName);
+               // return (String[]) labPlat.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);                  
             }
             fieldsName = labArr.addValueToArray1D(fieldsName, "spec_eval");
-            fieldsValue = labArr.addValueToArray1D(fieldsValue, resSpecEvaluation[0]);
+            fieldsValue = labArr.addValueToArray1D(fieldsValue, resSpecEvaluation[resSpecEvaluation.length-1]);
             fieldsName = labArr.addValueToArray1D(fieldsName, "spec_eval_detail");
-            fieldsValue = labArr.addValueToArray1D(fieldsValue, resSpecEvaluation[1]);
+            fieldsValue = labArr.addValueToArray1D(fieldsValue, resSpecEvaluation[resSpecEvaluation.length-2]);
             fieldsName = labArr.addValueToArray1D(fieldsName, "entered_by");
             fieldsValue = labArr.addValueToArray1D(fieldsValue, userName);
             fieldsName = labArr.addValueToArray1D(fieldsName, "entered_on");
@@ -1293,27 +1306,28 @@ public Object[] sampleAnalysisResultEntry(Rdbms rdbm, String schemaPrefix, Strin
             }       
             if (ruleVariables.contains("CONTROL")){
                 if (requiresUnitsConversion){
-                    resSpecEvaluation = resChkSpec.resultCheck(resultConverted, minSpec, maxSpec, minStrict, maxStrict, minControl, maxControl, minControlStrict, maxControlStrict);
+                    resSpecEvaluation = resChkSpec.resultCheck(schemaDataName, resultConverted, minSpec, maxSpec, minStrict, maxStrict, minControl, maxControl, minControlStrict, maxControlStrict);
                 }else {
-                    resSpecEvaluation = resChkSpec.resultCheck((Float) resultValue, minSpec, maxSpec, minStrict, maxStrict, minControl, maxControl, minControlStrict, maxControlStrict);                            
+                    resSpecEvaluation = resChkSpec.resultCheck(schemaDataName, (Float) resultValue, minSpec, maxSpec, minStrict, maxStrict, minControl, maxControl, minControlStrict, maxControlStrict);                            
                 }    
             }else{
                 if (requiresUnitsConversion){
-                    resSpecEvaluation = resChkSpec.resultCheck(resultConverted, minSpec, maxSpec, minStrict, maxStrict);
+                    resSpecEvaluation = resChkSpec.resultCheck(schemaDataName, resultConverted, minSpec, maxSpec, minStrict, maxStrict);
                 }else {
-                    resSpecEvaluation = resChkSpec.resultCheck((Float) resultValue, minSpec, maxSpec, minStrict, maxStrict);
+                    resSpecEvaluation = resChkSpec.resultCheck(schemaDataName, (Float) resultValue, minSpec, maxSpec, minStrict, maxStrict);
                 }    
 //                resSpecEvaluation = resChkSpec.resultCheck((Float) resultValue, (Float) minSpec, (Float) maxSpec, (Boolean) minStrict, (Boolean) maxStrict);
             } 
 
-            if ("LABPLANET_FALSE".equalsIgnoreCase(resSpecEvaluation[0].toString())){                
-                errorCode = "DataSample_SampleAnalysisResult_QuantitativeSpecNotRecognized";
-                errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, resultId.toString());
-                errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, ruleVariables);
-                errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, schemaDataName);
-                return (String[]) labPlat.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);                  
+            if ("LABPLANET_FALSE".equalsIgnoreCase(resSpecEvaluation[0].toString())){        
+                return resSpecEvaluation;
+                //errorCode = "DataSample_SampleAnalysisResult_QuantitativeSpecNotRecognized";
+                //errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, resultId.toString());
+                //errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, ruleVariables);
+                //errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, schemaDataName);
+                //return (String[]) labPlat.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);                  
             }
-            String specEval = (String) resSpecEvaluation[0];      String specEvalDetail = (String) resSpecEvaluation[1];
+            String specEval = (String) resSpecEvaluation[resSpecEvaluation.length-1];      String specEvalDetail = (String) resSpecEvaluation[resSpecEvaluation.length-2];
             if (requiresUnitsConversion=true){specEvalDetail=specEvalDetail+ " in "+specUomName;}
             
             fieldsName = labArr.addValueToArray1D(fieldsName, "spec_eval");
@@ -1370,7 +1384,8 @@ public Object[] sampleAnalysisResultEntry(Rdbms rdbm, String schemaPrefix, Strin
     public Object[] sampleResultReview(Rdbms rdbm, String schemaPrefix, String userName, Integer sampleId, Integer testId, Integer resultId, String userRole) throws SQLException{
         
         tableName = "sample_analysis_result";  
-        
+
+        LabPLANETArray labArr = new LabPLANETArray();
         LabPLANETPlatform labPlat = new LabPLANETPlatform();
         schemaDataName = labPlat.buildSchemaName(schemaPrefix, "data");  
         schemaConfigName = labPlat.buildSchemaName(schemaPrefix, "config"); 
@@ -1700,7 +1715,7 @@ private Map getDefaultValuesTemplate(String schema, String tsample, String templ
     public Object[] sampleAnalysisResultCancel(Rdbms rdbm, String schemaPrefix, String userName, Integer sampleId, Integer testId, Integer resultId, String userRole) throws SQLException{
         
         tableName = "sample_analysis_result";  
-        
+        LabPLANETArray labArr = new LabPLANETArray();        
         LabPLANETPlatform labPlat = new LabPLANETPlatform();
         schemaDataName = labPlat.buildSchemaName(schemaPrefix, "data");  
         schemaConfigName = labPlat.buildSchemaName(schemaPrefix, "config"); 
@@ -1824,7 +1839,7 @@ private Map getDefaultValuesTemplate(String schema, String tsample, String templ
         tableName = "sample_analysis_result";  
        
         String auditActionName = "SAMPLE_ANALYSIS_RESULT_UNCANCELING";
-        
+        LabPLANETArray labArr = new LabPLANETArray();
         LabPLANETPlatform labPlat = new LabPLANETPlatform();
         schemaDataName = labPlat.buildSchemaName(schemaPrefix, schemaDataName);  
         schemaConfigName = labPlat.buildSchemaName(schemaPrefix, schemaConfigName); 
@@ -1942,6 +1957,7 @@ private Map getDefaultValuesTemplate(String schema, String tsample, String templ
     public String[] sampleAnalysisResultCancelBack(Rdbms rdbm, String schemaPrefix, String userName, Integer sampleId, Integer testId, Integer resultId, String userRole) throws SQLException{
         
         tableName = "sample_analysis_result";  
+        LabPLANETArray labArr = new LabPLANETArray();
         
         LabPLANETPlatform labPlat = new LabPLANETPlatform();
         schemaDataName = labPlat.buildSchemaName(schemaPrefix, "data");  

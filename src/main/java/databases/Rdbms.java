@@ -6,8 +6,8 @@
 package databases;
 
 import com.sun.rowset.CachedRowSetImpl;
-import LabPLANET.utilities.LabPLANETArray;
-import LabPLANET.utilities.LabPLANETPlatform;
+import labPLANET.utilities.LabPLANETArray;
+import labPLANET.utilities.LabPLANETPlatform;
 import java.io.FileWriter;
 import java.sql.Array;
 import java.sql.Connection;

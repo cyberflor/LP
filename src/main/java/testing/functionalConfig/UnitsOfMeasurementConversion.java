@@ -8,7 +8,7 @@ package testing.functionalConfig;
 import databases.Rdbms;
 import functionalJava.materialSpec.ConfigSpecStructure;
 import functionalJava.unitsOfMeasurement.UnitsOfMeasurement;
-import LabPLANET.utilities.LabPLANETArray;
+import labPLANET.utilities.LabPLANETArray;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;

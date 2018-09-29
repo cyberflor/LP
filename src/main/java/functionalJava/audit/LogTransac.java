@@ -9,7 +9,7 @@ package functionalJava.audit;
  * UNDER DEVELOPMENT
  * @author Fran Gomez
  */
-import LabPLANET.utilities.LabPLANETArray;
+import labPLANET.utilities.LabPLANETArray;
 
 /**
  * UNDER DEVELOPMENT

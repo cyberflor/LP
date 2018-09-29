@@ -5,8 +5,8 @@
  */
 package functionalJava.materialSpec;
 
-import LabPLANET.utilities.LabPLANETArray;
-import LabPLANET.utilities.LabPLANETPlatform;
+import labPLANET.utilities.LabPLANETArray;
+import labPLANET.utilities.LabPLANETPlatform;
 import java.util.Arrays;
 
 /**
@@ -16,8 +16,8 @@ import java.util.Arrays;
 public class ConfigSpecRule {
 
     String classVersion = "0.1";
-    LabPLANETArray labArr = new LabPLANETArray();
-    LabPLANETPlatform labPlat = new LabPLANETPlatform();
+    //LabPLANETArray labArr = new LabPLANETArray();
+    //LabPLANETPlatform labPlat = new LabPLANETPlatform();
     String[] javaDocFields = new String[0];
     Object[] javaDocValues = new Object[0];
     String javaDocLineName = "";
@@ -56,6 +56,8 @@ public class ConfigSpecRule {
         expectedRules[3] = "NOTCONTAINS";
         expectedRules[4] = "ISONEOF";
         expectedRules[5] = "ISNOTONEOF";
+        LabPLANETArray labArr = new LabPLANETArray();
+        LabPLANETPlatform labPlat = new LabPLANETPlatform();
         
         String schemaName = labPlat.buildSchemaName(schemaPrefix, schemaConfigName);
         
@@ -112,6 +114,8 @@ public class ConfigSpecRule {
  * @return Object[] position 0 is a boolean to determine if the arguments are correct, when set to false then position 1 provides detail about the deficiency 
  */
     public Object[] specLimitIsCorrectQuantitative(Float minSpec, Float maxSpec){
+        LabPLANETArray labArr = new LabPLANETArray();
+
         String errorCode = "";
         Object[]  errorDetailVariables= new Object[0];        
                 
@@ -151,6 +155,7 @@ public class ConfigSpecRule {
         String errorCode = "";
         Object[]  errorDetailVariables= new Object[0];        
         Object[] diagnoses = new Object[2];
+        LabPLANETArray labArr = new LabPLANETArray();
         
         Object[] isCorrectMinMaxSpec = this.specLimitIsCorrectQuantitative(minSpec, maxSpec);
         if ("LABPLANET_FALSE".equalsIgnoreCase(isCorrectMinMaxSpec[0].toString())){
