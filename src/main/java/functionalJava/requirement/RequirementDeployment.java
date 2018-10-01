@@ -755,7 +755,7 @@ return "";
                                     UserSop usSop=new UserSop();
                                     String userInfoId = (String) userProfileInfo[icontUser][0];
 
-                                    Object[] newSopUser = usSop.addSopToUser(rdbm, schemaName+"-data", userInfoId, sopName);
+                                    Object[] newSopUser = usSop.addSopToUserByName(rdbm, schemaName+"-data", userInfoId, sopName);
                                     
                                     newEntry = icontUser+"/"+contUser+"  "+newSopUser[newSopUser.length-1].toString();
                                     try {requirementsLogEntry(methodName, newEntry,4);

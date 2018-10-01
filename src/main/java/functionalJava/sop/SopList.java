@@ -9,6 +9,7 @@ import databases.Rdbms;
 import LabPLANET.utilities.LabPLANETArray;
 import LabPLANET.utilities.LabPLANETPlatform;
 import java.sql.SQLException;
+import java.util.Arrays;
 
 /**
  *
@@ -17,8 +18,6 @@ import java.sql.SQLException;
 public class SopList {
 
     String classVersion = "0.1";
-    LabPLANETArray labArr = new LabPLANETArray();
-    LabPLANETPlatform labPlat = new LabPLANETPlatform();
     String[] javaDocFields = new String[0];
     Object[] javaDocValues = new Object[0];
     String javaDocLineName = "";
@@ -68,9 +67,9 @@ public class SopList {
     public String[] getSopListSopAssigned(){ return this.sopListSopAssigned;}
     
     public Object[] dbInsertSopList(Rdbms rdbm, String schemaPrefix, String userInfoId){
-    
-        schemaDataName = labPlat.buildSchemaName(schemaPrefix, schemaDataName);
-//        schemaPrefix = "\""+schemaPrefix+"\"";
+        LabPLANETArray labArr = new LabPLANETArray();    
+
+        schemaDataName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaDataName);
         //requires added_on
         String[] fieldNames = new String[0];
         Object[] fieldValues = new Object[0];
@@ -93,16 +92,17 @@ public class SopList {
         
     }
     
-    public Object[] dbUpdateSopListSopAssigned(Rdbms rdbm, String schemaPrefix, String[] sopAssigned) throws SQLException{
-    
-        schemaDataName = labPlat.buildSchemaName(schemaPrefix, schemaDataName);
+    public Object[] dbUpdateSopListSopAssigned(Rdbms rdbm, String schemaPrefix, String[] sopAssigned) throws SQLException{    
+        schemaDataName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaDataName);
         Object[] diagnoses = rdbm.updateRecordFieldsByFilter(rdbm, schemaDataName, tableName, 
                                         new String[]{"sop_assigned"}, new Object[]{this.sopListId}, 
-                                        new String[]{"sop_list_id"}, new Object[]{sopAssigned});        
-        return diagnoses;
-    }
+                                        new String[]{"sop_list_id"}, new Object[]{sopAssigned});
+        if ("LABPLANET_FALSE".equalsIgnoreCase(diagnoses[0].toString())) return diagnoses;
+        String errorCode = "SopList_SopAssignedToSopList";
+        LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, new Object[]{sopAssigned, this.sopListId, schemaDataName} );
+        return diagnoses;        
+    }   
     
-
     public Integer sopPositionIntoSopList(String sopId){
         Integer diagnoses = -1;
         String[] currSopAssignedValue = getSopListSopAssigned();
@@ -112,9 +112,28 @@ public class SopList {
         }
         return diagnoses;
     }
+
+    public Object[] sopPositionIntoSopListLabPLANET(String sopId){
+        LabPLANETArray labArr = new LabPLANETArray();
+        Object[] diagnoses = new Object[0];
+        String[] currSopAssignedValue = getSopListSopAssigned();
+        Integer arrayPosic = currSopAssignedValue.length;
+        for (Integer i=0;i<arrayPosic;i++){
+            if (currSopAssignedValue[i] == null ? sopId == null : currSopAssignedValue[i].equals(sopId)){ 
+                diagnoses = LabPLANETPlatform.trapErrorMessage(null, "LABPLANET_TRUE", classVersion, "SOP FOUND IN SOP LIST", 
+                        new Object[]{"SOP <*1*> found in SOP List <*2*> in position <*3>", sopId, currSopAssignedValue, i});
+                diagnoses = labArr.addValueToArray1D(diagnoses, (Integer) i);
+                return diagnoses;
+            }
+        }
+        diagnoses = LabPLANETPlatform.trapErrorMessage(null, "LABPLANET_TRUE", classVersion, "SOP NOT FOUND IN SOP LIST", 
+                new Object[]{"SOP <*1*> NOT found in SOP List <*2*>", sopId, currSopAssignedValue});
+        diagnoses = labArr.addValueToArray1D(diagnoses, -1);
+        return diagnoses;
+    }    
     
-    public String addSopToSopList(String sopId){
-        String diagnoses = "";
+    public Object[]  addSopToSopList(String sopId){
+        Object[] diagnoses = new Object[0];
         
         String[] currSopAssignedValue = getSopListSopAssigned();
         Integer arrayPosic = currSopAssignedValue.length;
@@ -126,6 +145,8 @@ public class SopList {
             newArray[arrayPosic++] = sopId;
             setSopListSopAssigned(newArray);
         }    
+        diagnoses = LabPLANETPlatform.trapErrorMessage(null, "LABPLANET_TRUE", classVersion, "SopList_SopAssignedToSopList", 
+                new Object[]{sopId, Arrays.toString(currSopAssignedValue),""});
         return diagnoses;
     }
      
