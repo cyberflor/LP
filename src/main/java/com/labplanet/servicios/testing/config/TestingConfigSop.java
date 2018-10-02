@@ -160,7 +160,8 @@ public class TestingConfigSop extends HttpServlet {
             fileContent = fileContent + "<td>"+"schemaConfigName: "+schemaConfigName+"</td>";  
             fileContent = fileContent + "<td>"+"sopName:"+sopName+"</td>";      
             fileContent = fileContent + "<td>"+"[sop_id, sop_name]"+"</td>";      
-            fileContent = fileContent + "<td>"+Arrays.toString(labArr.array2dTo1d(dbGetSopIdByName))+"</td></tr>";                  
+            Object[] dbGetSopIdByName1D = labArr.array2dTo1d(dbGetSopIdByName);
+            fileContent = fileContent + "<td>"+Arrays.toString(dbGetSopIdByName1D)+"</td></tr>";                  
 
             UserSop userSop = new UserSop();
             Object[] addSopToUserById = userSop.addSopToUserById(rdbm, schemaDataName, currentUser, sopId);
