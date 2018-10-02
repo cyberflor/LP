@@ -48,6 +48,56 @@
         <servlet-name>TestingResultCheckSpecQuantitative</servlet-name>
         <servlet-class>com.labplanet.servicios.testing.config.TestingResultCheckSpecQuantitative</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>TestingConfigSop</servlet-name>
+        <servlet-class>com.labplanet.servicios.testing.config.TestingConfigSop</servlet-class>
+    </servlet>
+<!-- testing for the Platform.Begin -->
+    <servlet-mapping>
+        <servlet-name>DBActions</servlet-name>
+        <url-pattern>/testing/platform/DBActions</url-pattern>
+    </servlet-mapping>
+<!--// testing for the Platform. End  
+
+// testing for the Config. Begin -->
+    <servlet-mapping>
+        <servlet-name>specQualitative</servlet-name>
+        <url-pattern>/testing/config/specQualitativeRuleFormat</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>config_specQuantitativeRuleFormat</servlet-name>
+        <url-pattern>/testing/config/specQuantitativeRuleFormat</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>TestingResultCheckSpecQualitative</servlet-name>
+        <url-pattern>/testing/config/resultCheckSpecQualitative</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>TestingResultCheckSpecQuantitative</servlet-name>
+        <url-pattern>/testing/config/resultCheckSpecQuantitative</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>TestingConfigSop</servlet-name>
+        <url-pattern>/testing/config/Sop</url-pattern>
+    </servlet-mapping>   
+    <servlet-mapping>         
+        <servlet-name>TestingConfigSamplingPlanStructure</servlet-name>
+        <url-pattern>/testing/config/samplingPlanStructure</url-pattern>
+    </servlet-mapping>    
+<!--/ testing for the Config. End    
+
+// testing for the Data. Begin -->
+    <servlet-mapping>
+        <servlet-name>dataSampleStructure</servlet-name>
+        <url-pattern>/testing/data/dataSampleStructure</url-pattern>
+    </servlet-mapping>                
+<!--/// testing for the Data. End   -->
+
+ 
+  
+   
+    
+      
     <servlet-mapping>
         <servlet-name>Authenticate</servlet-name>
         <url-pattern>/Authenticate</url-pattern>
@@ -60,10 +110,7 @@
         <servlet-name>SecondServlet</servlet-name>
         <url-pattern>/SecondServlet</url-pattern>
     </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>dataSampleStructure</servlet-name>
-        <url-pattern>/dataSampleStructure</url-pattern>
-    </servlet-mapping>
+
     <servlet-mapping>
         <servlet-name>UT_moduleSample</servlet-name>
         <url-pattern>/UT_moduleSample</url-pattern>
@@ -72,30 +119,7 @@
         <servlet-name>DBQueries</servlet-name>
         <url-pattern>/DBQueries</url-pattern>
     </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>DBActions</servlet-name>
-        <url-pattern>/DBActions</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>specQualitative</servlet-name>
-        <url-pattern>/testing/config/specQualitative</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>config_specQuantitativeRuleFormat</servlet-name>
-        <url-pattern>/config_specQuantitativeRuleFormat</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>TestingConfigSamplingPlanStructure</servlet-name>
-        <url-pattern>/TestingConfigSamplingPlanStructure</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>TestingResultCheckSpecQualitative</servlet-name>
-        <url-pattern>/testing/config/ResultCheckSpecQualitative</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>TestingResultCheckSpecQuantitative</servlet-name>
-        <url-pattern>/Testing/config/ResultCheckSpecQuantitative</url-pattern>
-    </servlet-mapping>
+
     <session-config>
         <session-timeout>
             30

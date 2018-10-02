@@ -29,8 +29,6 @@ public class Sop {
     Object[] javaDocValues = new Object[0];
     String javaDocLineName = "";
 
-    String schemaDataName = "data";
-    String schemaConfigName = "config";
     String tableName = "sop_meta_data"; 
 
     public Sop(){}
@@ -48,7 +46,8 @@ public class Sop {
 
     public Object[] dbInsertSopId(Rdbms rdbm, String schemaPrefix, String userInfoId) throws SQLException{
          LabPLANETArray labArr = new LabPLANETArray();
-          schemaDataName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaDataName);
+         String schemaConfigName = "config";
+         schemaConfigName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaConfigName);
 //        schemaPrefix = "\""+schemaPrefix+"\"";
         //requires added_on
         String[] fieldNames = new String[0];
@@ -64,23 +63,30 @@ public class Sop {
         fieldValues = labArr.addValueToArray1D(fieldValues, this.currentStatus);
         fieldNames = labArr.addValueToArray1D(fieldNames, "added_by");
         fieldValues = labArr.addValueToArray1D(fieldValues, userInfoId);
-        
-        Object[] diagnoses = rdbm.insertRecordInTable(rdbm, schemaPrefix, tableName, fieldNames, fieldValues);
-        
-        return diagnoses;
+
+        Object[][] dbGetSopObjByName = this.dbGetSopObjByName(rdbm, schemaPrefix, this.sopName, fieldNames);
+        if ("LABPLANET_FALSE".equalsIgnoreCase(dbGetSopObjByName[0][0].toString())){        
+            Object[] diagnoses = rdbm.insertRecordInTable(rdbm, schemaPrefix, tableName, fieldNames, fieldValues);
+            return diagnoses;
+        }else{
+            Object[] diagnoses = LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, "Sop_SopAlreadyExists", new Object[]{this.sopName, schemaPrefix});
+            return diagnoses;
+        }
     }
     
-    public Integer dbGetSopIdById(Rdbms rdbm, String schemaPrefix, Integer sopId) throws SQLException{                  
-        schemaDataName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaDataName);
-        Object[][] sopInfo = rdbm.getRecordFieldsByFilter(rdbm, schemaDataName, tableName, 
+    public Integer dbGetSopIdById(Rdbms rdbm, String schemaPrefix, Integer sopId) throws SQLException{     
+        String schemaConfigName = "config";
+        schemaConfigName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaConfigName);
+        Object[][] sopInfo = rdbm.getRecordFieldsByFilter(rdbm, schemaConfigName, tableName, 
                                                                 new String[]{"sop_id"}, new Object[]{sopId}, new String[]{"sop_id"});
         Integer getSopId = (Integer) sopInfo[0][0];
         return getSopId;
     }                
 
     public Integer dbGetSopIdByName(Rdbms rdbm, String schemaPrefix, String sopName) throws SQLException{
-        schemaDataName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaDataName);
-        Object[][] sopInfo = rdbm.getRecordFieldsByFilter(rdbm, schemaDataName, tableName, 
+        String schemaConfigName = "config";
+        schemaConfigName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaConfigName);
+        Object[][] sopInfo = rdbm.getRecordFieldsByFilter(rdbm, schemaConfigName, tableName, 
                                                                 new String[]{"sop_name"}, new Object[]{sopName}, new String[]{"sop_id"});
         Integer getSopId = (Integer) sopInfo[0][0];
         return getSopId;
@@ -88,23 +94,25 @@ public class Sop {
     }    
 
     public Object[][] dbGetSopObjByName(Rdbms rdbm, String schemaPrefix, String sopName, String[] fields) throws SQLException{
-        schemaDataName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaDataName);
-        Object[][] sopInfo = rdbm.getRecordFieldsByFilter(rdbm, schemaDataName, tableName, 
+        String schemaConfigName = "config";
+        schemaConfigName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaConfigName);
+        Object[][] sopInfo = rdbm.getRecordFieldsByFilter(rdbm, schemaConfigName, tableName, 
                                                                 new String[]{"sop_name"}, new Object[]{sopName}, fields);
         return sopInfo;
     }
 
     public Object[] createSop(Rdbms rdbm, String schemaPrefix, String sopName) throws SQLException {
+        String schemaConfigName = "config";
+        schemaConfigName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaConfigName); 
         LabPLANETArray labArr = new LabPLANETArray();
         String errorCode = "";        
-        schemaDataName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaDataName);
-        Object[] diagnoses = rdbm.insertRecordInTable(rdbm, schemaDataName, "sop_meta_data", 
+        Object[] diagnoses = rdbm.insertRecordInTable(rdbm, schemaConfigName, "sop_meta_data", 
                             new String[]{"sop_name", "sop_version", "sop_revision"},
                             new Object[]{sopName, 1, 1});
         if ("LABPLANET_FALSE".equals(diagnoses[0].toString() )){
             errorCode = "Sop_SopMetaData_recordNotCreated";
             String[] fieldForInserting = labArr.joinTwo1DArraysInOneOf1DString(new String[]{"sop_name", "sop_version", "sop_revision"}, new Object[]{sopName, 1, 1}, ":");
-            LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, new Object[]{fieldForInserting, schemaDataName} );
+            LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, new Object[]{fieldForInserting, schemaConfigName} );
             return diagnoses;            
         }else{           
             return diagnoses;                        
@@ -112,12 +120,13 @@ public class Sop {
     }   
         
     public Object[] updateSop(Rdbms rdbm, String schemaName, String schemaPrefix, String fieldName, String fieldValue, String fieldType) throws SQLException {
-        schemaDataName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaDataName);
-        Object[] diagnoses = rdbm.updateRecordFieldsByFilter(rdbm, schemaDataName, "sop_meta_data", 
+        String schemaConfigName = "config";
+        schemaConfigName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaConfigName);
+        Object[] diagnoses = rdbm.updateRecordFieldsByFilter(rdbm, schemaConfigName, "sop_meta_data", 
                                         new String[]{fieldName}, new Object[]{fieldValue}, new String[]{"sop_name"}, new Object[]{sopName});
         if ("LABPLANET_FALSE".equalsIgnoreCase(diagnoses[0].toString())){
             String errorCode = "Sop_SopMetaData_recordNotUpdated";
-            LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, new Object[]{fieldName, fieldValue, sopName, schemaDataName} );
+            LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, new Object[]{fieldName, fieldValue, sopName, schemaConfigName} );
             return diagnoses;            
         }else{
             return diagnoses;                        

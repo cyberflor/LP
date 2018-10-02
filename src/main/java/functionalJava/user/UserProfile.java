@@ -5,6 +5,7 @@
  */
 package functionalJava.user;
 
+import LabPLANET.utilities.LabPLANETArray;
 import databases.Rdbms;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -46,7 +47,7 @@ public class UserProfile {
             }
             return UserSchemas;                                
     }
-    
+    // Should not return any role from config and data schemas as those are considered specials, not for business users.
     public Object[][] getUserProfileFieldValues(Rdbms rdbm, String[] filterFieldName, Object[] filterFieldValue, String[] fieldsToReturn) throws SQLException{
                 
         if (fieldsToReturn.length<=0){
@@ -84,6 +85,10 @@ public class UserProfile {
         //    i++;
             //query = query+" and "+fFN+"=?";
         }
+        query=query+" and schema_prefix not in(?, ?)";
+        LabPLANETArray labArr = new LabPLANETArray();
+        filterFieldValue =  labArr.addValueToArray1D(filterFieldValue, "config");
+        filterFieldValue =  labArr.addValueToArray1D(filterFieldValue, "data");
         ResultSet res = rdbm.prepRdQuery(query, filterFieldValue); 
         
         res.last();

@@ -54,7 +54,8 @@ public class UserSop {
             if (us.equalsIgnoreCase(schemaPrefixName)){schemaIsCorrect=true;break;}            
         }
         if (!schemaIsCorrect){
-            diagnoses = LabPLANETPlatform.trapErrorMessage( rdbm, "LABPLANET_FALSE", classVersion, "userSopCertificationLevelImage_ERROR", new Object[]{userInfoId, schemaPrefixName});
+            String errorCode = "UserSop_UserWithNoRolesForThisGivenSchema";
+            diagnoses = LabPLANETPlatform.trapErrorMessage( rdbm, "LABPLANET_FALSE", classVersion, errorCode, new Object[]{userInfoId, schemaPrefixName});
             diagnoses = labArr.addValueToArray1D(diagnoses, "ERROR");
             diagnoses = labArr.addValueToArray1D(diagnoses, Rdbms.getParameterBundle(schemaConfigName, "userSopCertificationLevelImage_ERROR"));
             return diagnoses;
@@ -241,7 +242,7 @@ public class UserSop {
     // This function cannot be replaced by a single query through the rdbm because it run the query through the many procedures
     //      the user is involved on if so ....
         
-    public Object[][] getUserProfileFieldValues(Rdbms rdbm, String[] filterFieldName, Object[] filterFieldValue, String[] fieldsToReturn, String[] schemaPrefix) throws SQLException{                
+    public Object[][] getUserProfileFieldValues(Rdbms rdbm, String[] filterFieldName, Object[] filterFieldValue, String[] fieldsToReturn, String[] schemaPrefix){                
         String tableName = "user_sop";
         LabPLANETArray labArr = new LabPLANETArray();
         Object[] diagnoses = new Object[0];
@@ -286,19 +287,24 @@ public class UserSop {
                 i++;
             }
         }               
-        ResultSet res = rdbm.prepRdQuery(query, filterFieldValueAllSchemas);         
-        res.last();
-        Integer numLines=res.getRow();
-        Integer numColumns=fieldsToReturn.length;
-        res.first();
-        Object[][] getUserProfileNEW=new Object[numLines][numColumns];
-        for (Integer inumLines=0;inumLines<numLines;inumLines++){
-            for (Integer inumColumns=0;inumColumns<numColumns;inumColumns++){
-                getUserProfileNEW[inumLines][inumColumns]=res.getObject(inumColumns+1);
+        try{
+            ResultSet res = rdbm.prepRdQuery(query, filterFieldValueAllSchemas);         
+            res.last();
+            Integer numLines=res.getRow();
+            Integer numColumns=fieldsToReturn.length;
+            res.first();
+            Object[][] getUserProfileNEW=new Object[numLines][numColumns];
+            for (Integer inumLines=0;inumLines<numLines;inumLines++){
+                for (Integer inumColumns=0;inumColumns<numColumns;inumColumns++){
+                    getUserProfileNEW[inumLines][inumColumns]=res.getObject(inumColumns+1);
+                }
+                res.next();
             }
-            res.next();
-        }
-        return getUserProfileNEW;            
+            return getUserProfileNEW;                
+        }catch(SQLException ex){}
+            Object[] diagErr =  LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, "Rdbms_NoRecordsFound", 
+                    new Object[]{tableName, query, Arrays.toString(schemaPrefix)});
+            return labArr.array1dTo2d(diagErr, diagErr.length);
     }
     
     Integer  _notRequireddbGetUserSopBySopId(Rdbms rdbm, String schemaName, String UserId, Integer sopId) {

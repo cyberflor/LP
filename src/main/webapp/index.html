@@ -3,8 +3,49 @@
     <head>
         <title>Start Page</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    </head>
-    <body>
-        <h1>Hello World!! </h1>
-    </body>
+        <link rel="stylesheet" href="LabPLANET_firstCSS.css">        
+    <style>
+
+    </style>   
+<style> 
+
+</style>    
+</head>   
+ <body>
+    <header>
+        <img class="logo-img" width=137 src="LabPLANET_Atom.png" alt="LabPLANET - A new world for your Lab"/>
+        <h1 class="header"> LabPLANET - Unit Testing Area</h1>
+    </header>
+    <p font-color="#FFBF00" id="date"></p>
+    <script>
+        document.getElementById("date").innerHTML = Date();
+    </script>
+        <div class="btn-group">
+            <h1>Platform</h1>
+            <form name="platform" action="/LabPLANETAPI/">
+                <input type="submit" value="Rdbms Class" formaction="/LabPLANETAPI/testing/platform/DBActions">
+            </form>              
+       </div>    
+    
+       <div class="btn-group">
+           <h1>Config</h1>
+           <form name="platform" action="/LabPLANETAPI/">
+             <input type="submit" value="Numeric Rule Formats" formaction="/LabPLANETAPI/testing/config/specQuantitativeRuleFormat">
+             <input type="submit" value="Text Rule Format" formaction="/LabPLANETAPI/testing/config/specQuantitativeRuleFormat">
+             <input type="submit" value="Check Text Result against spec" formaction="/LabPLANETAPI/testing/config/resultCheckSpecQualitative">
+             <input type="submit" value="Check Numeric Result against spec" formaction="/LabPLANETAPI/testing/config/resultCheckSpecQuantitative">
+             <input type="submit" value="SOPs" formaction="/LabPLANETAPI/testing/config/Sop">
+             
+             
+             <input class="vw_aqua_button" type="submit" value="Sampling Plan Structure (Not Released)" formaction="/LabPLANETAPI/testing/config/samplingPlanStructure">             
+           </form>              
+       </div>    
+    
+       <div class="btn-group">
+           <h1>Data</h1>
+           <form name="platform" action="/LabPLANETAPI/">
+            <input type="submit" value="Sample Structure" formaction="/LabPLANETAPI/testing/data/dataSampleStructure">
+           </form>              
+       </div>    
+</body>
 </html>
