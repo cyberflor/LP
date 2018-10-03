@@ -323,7 +323,7 @@ public class LabPLANETArray {
         for (Object[] array2d1 : array2d) {
             list.addAll(Arrays.asList(array2d1)); // java.util.Arrays
         }
-        Object[] array1d = new String[list.size()];
+        Object[] array1d = new Object[list.size()];
         array1d = list.toArray(array1d);
         
        return array1d;

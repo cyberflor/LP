@@ -582,17 +582,15 @@ public class Rdbms {
             fieldValues = labArr.encryptTableFieldArray(schemaName, tableName, fieldNames, (Object[]) fieldValues); 
             String keyValueNewRecord = rdbm.prepUpQueryK(query, fieldValues, 1);
             fieldValues = labArr.decryptTableFieldArray(schemaName, tableName, fieldNames, (Object[]) fieldValues); 
-            ResultSet res = rdbm.prepRdQuery(query, fieldValues);
-            res.last();
-            //if (numr>0){
-                errorCode = "Rdbms_RecordCreated";
-                errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, String.valueOf(keyValueNewRecord));
-                errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, query);
-                errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, Arrays.toString(fieldValues));            
-                errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, schemaName);                
-                Object[] diagnosis =  LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_TRUE", classVersion, errorCode, errorDetailVariables);                         
-                diagnosis = labArr.addValueToArray1D(diagnosis, keyValueNewRecord);
-                return diagnosis;
+            
+            errorCode = "Rdbms_RecordCreated";
+            errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, String.valueOf(keyValueNewRecord));
+            errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, query);
+            errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, Arrays.toString(fieldValues));            
+            errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, schemaName);                
+            Object[] diagnosis =  LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_TRUE", classVersion, errorCode, errorDetailVariables);                         
+            diagnosis = labArr.addValueToArray1D(diagnosis, keyValueNewRecord);
+            return diagnosis;
         } catch (SQLException er) {
             String ermessage=er.getLocalizedMessage()+er.getCause();
             Logger.getLogger(query).log(Level.SEVERE, null, er);     

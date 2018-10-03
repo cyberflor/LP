@@ -57,8 +57,10 @@ public class TestingConfigSop extends HttpServlet {
                 fileContent = fileContent + "<th>"+configSpecTestingArray[0][j]+"</th>";
             }             
             
-            String schemaConfigName = "\"oil-pl1-config\"";
-            String schemaDataName = "\"oil-pl1-data\"";
+            String schemaConfigName = "oil-pl1";
+            String schemaDataName = "oil-pl1";
+//            String schemaConfigName = "\"oil-pl1-config\"";
+//            String schemaDataName = "\"oil-pl1-data\"";
             HttpSession miSession = request.getSession(false);         
             
             Rdbms rdbm = new Rdbms();
@@ -177,7 +179,14 @@ public class TestingConfigSop extends HttpServlet {
             Integer sopListRevision = 1;
             String sopListStatus = "DRAFT";            
             SopList sList = new SopList(sopListId, sopListName, sopListVersion, sopListRevision, sopListStatus, null);
-           // sList.dbInsertSopList(rdbm, schemaConfigName, currentUser);
+            sList.dbInsertSopList(rdbm, schemaConfigName, currentUser);
+
+            sopListId = 1;
+            sopListName = "My second SOP List";
+            sopListVersion = 1;
+            sopListRevision = 1;
+            sopListStatus = "DRAFT";            
+            sList = new SopList(sopListId, sopListName, sopListVersion, sopListRevision, sopListStatus, null);
             
             Integer sopsInSopList = sList.getSopListSopAssigned().length;
             Object[] addSopToSopList = sList.addSopToSopList(sopName);
@@ -187,8 +196,8 @@ public class TestingConfigSop extends HttpServlet {
             
             sopsInSopList = sList.getSopListSopAssigned().length;          
             Object[] addSopToSopList1 = sList.addSopToSopList("SOP-DEMO3");
-            fileContent = fileContent + "<td>"+"sopName:"+"SOP-DEMO3"+"</td>";      
             fileContent = fileContent + "<tr><td>"+"addSopToSopList"+"</td>";                                   
+            fileContent = fileContent + "<td>"+"sopName:"+"SOP-DEMO3"+"</td>";      
             fileContent = fileContent + "<td>"+Arrays.toString(addSopToSopList1)+"</td></tr>";        
             
             sopsInSopList = sList.getSopListSopAssigned().length;          
@@ -196,12 +205,21 @@ public class TestingConfigSop extends HttpServlet {
             fileContent = fileContent + "<tr><td>"+"addSopToSopList"+"</td>";                                   
             fileContent = fileContent + "<td>"+"sopName:"+sopName+"</td>";      
             fileContent = fileContent + "<td>"+Arrays.toString(addSopToSopList2)+"</td></tr>";     
-            
+
+            sList.dbInsertSopList(rdbm, schemaConfigName, currentUser);
+
             sopsInSopList = sList.getSopListSopAssigned().length;  
             Object[] dbUpdateSopListSopAssigned = sList.dbUpdateSopListSopAssigned(rdbm, schemaConfigName, sList.getSopListSopAssigned());
+            fileContent = fileContent + "<tr><td>"+"dbUpdateSopListSopAssigned"+"</td>";                                   
             fileContent = fileContent + "<td>"+"schemaConfigName: "+schemaConfigName+"</td>";  
             fileContent = fileContent + "<td>"+"getSopListSopAssigned: "+Arrays.toString(sList.getSopListSopAssigned())+"</td>";              
+            fileContent = fileContent + "<td>"+Arrays.toString(dbUpdateSopListSopAssigned)+"</td></tr>";        
+
+            sopsInSopList = sList.getSopListSopAssigned().length;  
+            dbUpdateSopListSopAssigned = sList.dbUpdateSopListSopAssigned(rdbm, schemaConfigName, sList.getSopListSopAssigned());
             fileContent = fileContent + "<tr><td>"+"dbUpdateSopListSopAssigned"+"</td>";                                   
+            fileContent = fileContent + "<td>"+"schemaConfigName: "+schemaConfigName+"</td>";  
+            fileContent = fileContent + "<td>"+"getSopListSopAssigned: "+Arrays.toString(sList.getSopListSopAssigned())+"</td>";              
             fileContent = fileContent + "<td>"+Arrays.toString(dbUpdateSopListSopAssigned)+"</td></tr>";        
             
             sopsInSopList++;

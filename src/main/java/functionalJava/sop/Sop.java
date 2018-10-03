@@ -66,7 +66,7 @@ public class Sop {
 
         Object[][] dbGetSopObjByName = this.dbGetSopObjByName(rdbm, schemaPrefix, this.sopName, fieldNames);
         if ("LABPLANET_FALSE".equalsIgnoreCase(dbGetSopObjByName[0][0].toString())){        
-            Object[] diagnoses = rdbm.insertRecordInTable(rdbm, schemaPrefix, tableName, fieldNames, fieldValues);
+            Object[] diagnoses = rdbm.insertRecordInTable(rdbm, schemaConfigName, tableName, fieldNames, fieldValues);
             return diagnoses;
         }else{
             Object[] diagnoses = LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, "Sop_SopAlreadyExists", new Object[]{this.sopName, schemaPrefix});

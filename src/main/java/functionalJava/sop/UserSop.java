@@ -28,8 +28,6 @@ public class UserSop {
     Object[] javaDocValues = new Object[0];
     String javaDocLineName = "";
 
-    String schemaDataName = "data";
-    String schemaConfigName = "config";
     String tableName = "user_sop";  
     
     public void UserSop(){}
@@ -42,10 +40,11 @@ public class UserSop {
     }
     
     private Object[] userSopCertifiedBySopInternalLogic(Rdbms rdbm, String schemaPrefixName, String userInfoId, String SopIdFieldName, String SopIdFieldValue ) throws SQLException{
-        LabPLANETArray labArr = new LabPLANETArray();
+        LabPLANETArray labArr = new LabPLANETArray();        
+        String schemaConfigName = "config";
         Object[] diagnoses = new Object[0];
         schemaConfigName = LabPLANETPlatform.buildSchemaName(schemaPrefixName, "config");
-        Rdbms.getParameterBundle(schemaConfigName, "actionEnabledUserSopCertification"); 
+        String actionEnabledUserSopCertification = Rdbms.getParameterBundle(schemaConfigName, "actionEnabledUserSopCertification"); 
         
         UserProfile usProf = new UserProfile();
         String[] userSchemas = usProf.getAllUserSchemaPrefix(rdbm, userInfoId);
@@ -343,7 +342,7 @@ public class UserSop {
     public Object[] addSopToUserInternalLogic(Rdbms rdbm, String schemaName, String userInfoId, String sopIdFieldName, Object sopIdFieldValue){
         LabPLANETArray labArr = new LabPLANETArray();
         String schemaDataName = "data";
-        schemaName = LabPLANETPlatform.buildSchemaName(schemaDataName, schemaName);
+        schemaName = LabPLANETPlatform.buildSchemaName(schemaName, schemaDataName);
         String diagnoses = "";
         Sop s = null;
         tableName = "user_sop";

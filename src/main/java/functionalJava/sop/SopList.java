@@ -22,8 +22,6 @@ public class SopList {
     Object[] javaDocValues = new Object[0];
     String javaDocLineName = "";
 
-    String schemaDataName = "data";
-    String schemaConfigName = "config";
     String tableName = "sop_list";    
 
     Integer sopListId = null;
@@ -68,8 +66,9 @@ public class SopList {
     
     public Object[] dbInsertSopList(Rdbms rdbm, String schemaPrefix, String userInfoId){
         LabPLANETArray labArr = new LabPLANETArray();    
+        String schemaConfigName = "config";     
+        schemaConfigName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaConfigName);
 
-        schemaDataName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaDataName);
         //requires added_on
         String[] fieldNames = new String[0];
         Object[] fieldValues = new Object[0];
@@ -86,20 +85,21 @@ public class SopList {
         fieldValues = labArr.addValueToArray1D(fieldValues, userInfoId);
         
         //requires added_on        
-        Object[] diagnoses = rdbm.insertRecordInTable(rdbm, schemaPrefix, tableName, fieldNames, fieldValues);
+        Object[] diagnoses = rdbm.insertRecordInTable(rdbm, schemaConfigName, tableName, fieldNames, fieldValues);
         
         return diagnoses;
         
     }
     
     public Object[] dbUpdateSopListSopAssigned(Rdbms rdbm, String schemaPrefix, String[] sopAssigned) throws SQLException{    
-        schemaDataName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaDataName);
-        Object[] diagnoses = rdbm.updateRecordFieldsByFilter(rdbm, schemaDataName, tableName, 
+        String schemaConfigName = "config";     
+        schemaConfigName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaConfigName);
+        Object[] diagnoses = rdbm.updateRecordFieldsByFilter(rdbm, schemaConfigName, tableName, 
                                         new String[]{"sop_assigned"}, new Object[]{this.sopListId}, 
                                         new String[]{"sop_list_id"}, new Object[]{sopAssigned});
         if ("LABPLANET_FALSE".equalsIgnoreCase(diagnoses[0].toString())) return diagnoses;
         String errorCode = "SopList_SopAssignedToSopList";
-        LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, new Object[]{sopAssigned, this.sopListId, schemaDataName} );
+        LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, new Object[]{sopAssigned, this.sopListId, schemaConfigName} );
         return diagnoses;        
     }   
     
