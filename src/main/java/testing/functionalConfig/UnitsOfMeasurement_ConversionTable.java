@@ -13,12 +13,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -112,7 +108,7 @@ public class UnitsOfMeasurement_ConversionTable extends HttpServlet {
             }else{
                 Object[][] tableGet = UOM.getAllUnitsPerFamily(rdbm, schemaPrefix, familyName, fieldsToRetrieve);
                 //fileContent = fileContent + "<td>"+i+"</td><td>"+schemaPrefix+"</td><td>"+familyName+"</td><td>"+Arrays.toString(fieldsToRetrieve)+"</td><td><b>"+baseValue+"</b></td>";
-                if ((tableGet[0][3].toString().equalsIgnoreCase("FALSE"))){
+                if ("LABPLANET_FALSE".equalsIgnoreCase(tableGet[0][0].toString())) {
                      fileContent = fileContent + "<td>"+tableGet[0][3].toString()+": "+tableGet[0][5].toString()+"</td>";                
                 }else{
                      fileContent = fileContent + "<td><b>There are "+(tableGet.length)+" units in the family "+familyName+", the conversions are <b></b>";  
@@ -120,11 +116,10 @@ public class UnitsOfMeasurement_ConversionTable extends HttpServlet {
                      for (int iRows=0;iRows<tableGet.length;iRows++){
                         fileContent = fileContent + "<tr>";
                         Object[] newValue = UOM.convertValue(rdbm, schemaPrefix, baseValue, baseUnitName, (String) tableGet[iRows][0]);
-                        if ((Boolean) newValue[0]==true){
-                            fileContent = fileContent + "<td>"+"Value "+baseValue+" in "+baseUnitName+" is equal to "+newValue[1]+" in "+tableGet[iRows][0].toString()+" once converted.</td>";
-                        }else{
+                        if ("LABPLANET_FALSE".equalsIgnoreCase(newValue[0].toString())) {
                             fileContent = fileContent + "<td>Not Converted</td>"; 
-                            
+                        }else{
+                            fileContent = fileContent + "<td>"+"Value "+baseValue+" in "+baseUnitName+" is equal to "+newValue[newValue.length-2].toString()+" in "+newValue[newValue.length-1].toString()+" once converted.</td>";                            
                         }
                         fileContent = fileContent + "</tr>"; 
 

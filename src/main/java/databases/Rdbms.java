@@ -7,6 +7,7 @@ package databases;
 
 import com.sun.rowset.CachedRowSetImpl;
 import LabPLANET.utilities.LabPLANETArray;
+import LabPLANET.utilities.LabPLANETJson;
 import LabPLANET.utilities.LabPLANETPlatform;
 import java.io.FileWriter;
 import java.sql.Array;
@@ -24,6 +25,7 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
+import org.codehaus.jettison.json.JSONArray;
 
 /**
  *
@@ -321,6 +323,80 @@ public class Rdbms {
         }                    
     }
 
+    public String getRecordFieldsByFilterJSON(Rdbms rdbm, String schemaName, String tableName, String[] whereFieldNames, Object[] whereFieldValues, String[] fieldsToRetrieve){
+        
+        Object[][] diagnoses = new Object[1][6];                
+        LabPLANETArray labArr = new LabPLANETArray();                 
+        String[] errorDetailVariables = new String[0];        
+        schemaName = LabPLANETPlatform.buildSchemaName(schemaName, "");
+        
+        if (whereFieldNames.length==0){
+           errorCode = "Rdbms_NotFilterSpecified";
+           errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, tableName);
+           errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, schemaName);          
+           Object[] diagnosesError = (Object[]) LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);                         
+           return null;
+           //return labArr.array1dTo2d(diagnosesError, 6);
+        }
+        String query = buildSqlStatement("SELECT", schemaName, tableName,
+                whereFieldNames, whereFieldValues,
+                fieldsToRetrieve,  null, null, null, null);        
+            try{
+                Boolean containsInClause = false;
+                ResultSet res = null;
+                query = "select array_to_json(array_agg(row_to_json(t))) from (" + query +") t";
+                //query = "select row_to_json(t) from (" + query +") t";
+                if ( containsInClause ){
+                    res = rdbm.prepRdQuery(query, whereFieldValues);
+                    res.last();
+                }else{
+                    res = rdbm.prepRdQuery(query, whereFieldValues);
+                    res.last();
+                }
+                
+            if (res.getRow()>0){
+                if (1==1){                       
+                          return LabPLANETJson.convertToJSON(res);}
+                
+             Integer totalLines = res.getRow();
+             res.first();
+             Integer icurrLine = 0;   
+             
+             Object[][] diagnoses2 = new Object[totalLines][fieldsToRetrieve.length];
+             while(icurrLine<=totalLines-1) {
+                //fieldValues = labArr.encryptTableFieldArray(schemaName, tableName, fieldNames, fieldValues);                 
+                for (Integer icurrCol=0;icurrCol<fieldsToRetrieve.length;icurrCol++){
+                    Object currValue = res.getObject(icurrCol+1);
+                    diagnoses2[icurrLine][icurrCol] =  currValue;
+                }        
+                res.next();
+                icurrLine++;
+             }         
+             //diagnoses2 = labArr.decryptTableFieldArray(schemaName, tableName, fieldsToRetrieve, (Object[][]) diagnoses2); 
+//                diagnoses2 = labArr.decryptTableFieldArray(schemaName, tableName, fieldsToRetrieve, diagnoses2);
+                return null;
+                //return diagnoses2;
+            }else{
+                errorCode = "Rdbms_NoRecordsFound";
+                errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, tableName);
+                errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, Arrays.toString(whereFieldValues) );
+                errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, schemaName);
+                Object[] diagnosesError = (Object[]) LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);                         
+                return null;
+                //return labArr.array1dTo2d(diagnosesError, 6);
+            }
+        }catch (SQLException er) {
+            String ermessage=er.getLocalizedMessage()+er.getCause();
+            Logger.getLogger(query).log(Level.SEVERE, null, er);     
+            errorCode = "Rdbms_dtSQLException";
+            errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, ermessage);
+            errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, query);
+            Object[] diagnosesError = (Object[]) LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);                         
+            return null;
+            //return labArr.array1dTo2d(diagnosesError, 6);
+        }                    
+    }
+    
     public Object[][] getRecordFieldsByFilter(Rdbms rdbm, String schemaName, String tableName, String[] whereFieldNames, Object[] whereFieldValues, String[] fieldsToRetrieve){
         
         Object[][] diagnoses = new Object[1][6];                
@@ -601,7 +677,7 @@ public class Rdbms {
         }
     }
     
-    public Object[] updateRecordFieldsByFilter(Rdbms rdbm, String schemaName, String tableName, String[] updateFieldNames, Object[] updateFieldValues, String[] whereFieldNames, Object[] whereFieldValues) throws SQLException{
+    public Object[] updateRecordFieldsByFilter(Rdbms rdbm, String schemaName, String tableName, String[] updateFieldNames, Object[] updateFieldValues, String[] whereFieldNames, Object[] whereFieldValues) {
         
         String[] diagnoses = new String[6];        
         LabPLANETArray labArr = new LabPLANETArray();       
@@ -677,9 +753,15 @@ public class Rdbms {
     }
     
 
-    private Integer prepUpQuery(String consultaconinterrogaciones, Object [] valoresinterrogaciones) throws SQLException{
-        Integer reg =  prepUpQuery(consultaconinterrogaciones, valoresinterrogaciones, null);    
-        return reg;
+    private Integer prepUpQuery(String consultaconinterrogaciones, Object [] valoresinterrogaciones) {
+        Integer reg;    
+        try {
+            reg = prepUpQuery(consultaconinterrogaciones, valoresinterrogaciones, null);
+            return reg;
+        } catch (SQLException ex) {
+            Logger.getLogger(Rdbms.class.getName()).log(Level.SEVERE, null, ex);
+            return -1;
+        }        
     }
     
     private Integer prepUpQuery(String consultaconinterrogaciones, Object [] valoresinterrogaciones, Integer [] fieldtypes) throws SQLException{
@@ -727,30 +809,41 @@ public class Rdbms {
         return pkValue; 
     }
     
-    public String [] getTableFieldsArrayEj(String schema, String table) throws SQLException{
+    public String [] getTableFieldsArrayEj(String schema, String table) {
         String sq = "select array(SELECT column_name || ''  FROM information_schema.columns WHERE table_schema = ? AND table_name   = ?) fields";
-        CachedRowSetImpl res = prepRdQuery(sq, new Object[]{schema, table});
-        
-        String [] items = res.next() ? LabPLANETArray.getStringArray(res.getArray("fields").getArray()) : null ;
-        
-        return items;
+        CachedRowSetImpl res;
+        try {
+            res = prepRdQuery(sq, new Object[]{schema, table});
+            String [] items ;
+            items = res.next() ? LabPLANETArray.getStringArray(res.getArray("fields").getArray()) : null;
+            return items;
+        } catch (SQLException ex) {
+            Logger.getLogger(Rdbms.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
     }
     
 
-    public String getTableFieldsArrayEj(String schema, String table, String separator, Boolean addTableName) throws SQLException{
+    public String getTableFieldsArrayEj(String schema, String table, String separator, Boolean addTableName) {
         String sq = "select array(SELECT column_name || ''  FROM information_schema.columns WHERE table_schema = ? AND table_name   = ?) fields";
-        CachedRowSetImpl res = prepRdQuery(sq, new Object[]{schema, table});
-        
-        String [] items = res.next() ? LabPLANETArray.getStringArray(res.getArray("fields").getArray()) : null ;
-        
-        String tableFields = "";
-        
-        for (String f: items){
-            if (tableFields.length()>0){tableFields=tableFields+separator;}
-            if (addTableName){tableFields = tableFields+table+"."+f;            
-            }else{tableFields = tableFields+f;}
-        }
-        return tableFields;
+        CachedRowSetImpl res;
+        try {
+            res = prepRdQuery(sq, new Object[]{schema, table});
+            String [] items ;
+            items = res.next() ? LabPLANETArray.getStringArray(res.getArray("fields").getArray()) : null;
+            String tableFields = "";
+
+            for (String f: items){
+                if (tableFields.length()>0){tableFields=tableFields+separator;}
+                if (addTableName){tableFields = tableFields+table+"."+f;            
+                }else{tableFields = tableFields+f;}
+            }
+            return tableFields;
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(Rdbms.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }                
     }
         
     private void buildPreparedStatement(Object [] valoStrings, PreparedStatement prepsta, Integer [] fieldtypes) throws SQLException{

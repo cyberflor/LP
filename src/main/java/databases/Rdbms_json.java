@@ -3,18 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.labplanet.servicios;
-
-import javax.ws.rs.ApplicationPath;
-import javax.ws.rs.core.Application;
-
-
+package databases;
 
 /**
  *
  * @author Administrator
  */
-@ApplicationPath("LabPLANETAPI")
-public class Configuracion extends Application {
+public class Rdbms_json {
     
 }

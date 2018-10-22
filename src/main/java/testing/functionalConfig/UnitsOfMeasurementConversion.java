@@ -180,8 +180,7 @@ public class UnitsOfMeasurementConversion extends HttpServlet {
             UnitsOfMeasurement UOM = new UnitsOfMeasurement();
             
             Object[] convDiagnoses = UOM.convertValue(rdbm, schemaPrefix, currentValue, currentUOM, newUOM);
-            
-            if ((convDiagnoses[0].toString().equalsIgnoreCase("FALSE"))){
+            if ("LABPLANET_FALSE".equalsIgnoreCase(convDiagnoses[0].toString())) {
                  out.println("<td>"+convDiagnoses[0].toString()+": "+convDiagnoses[3].toString()+"</td>");                
             }else{
                  

@@ -131,7 +131,7 @@ public class DBActions extends HttpServlet {
                             dataSample2D = rdbm.getRecordFieldsByFilter(rdbm, schemaPrefix, tableName, fieldName, fieldValues, fieldsToRetrieve);
                         }
                         if (!"LABPLANET_FALSE".equalsIgnoreCase(dataSample2D[0][0].toString())){
-                            dataSample2Din1D = (String[]) labArr.array2dTo1d(dataSample2D);
+                            dataSample2Din1D =  labArr.array2dTo1d(dataSample2D);
                         }    
                         break;
                     case "UPDATE":                    

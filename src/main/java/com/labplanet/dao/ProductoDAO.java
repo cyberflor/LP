@@ -16,7 +16,7 @@ import java.util.List;
 public class ProductoDAO {
     
     public static List<Producto> getProductos(){
-        List<Producto> lista = new ArrayList();
+        ArrayList<Producto> lista = new ArrayList<>();
         Producto pr = new Producto(1, "HARINA", 500);
         Producto pr2 = new Producto(2, "PASTA", 500);
         Producto pr3 = new Producto(3, "SARDINAS", 100);

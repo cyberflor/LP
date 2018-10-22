@@ -13,6 +13,10 @@
         <servlet-class>com.labplanet.servicios.SecondServlet</servlet-class>
     </servlet>
     <servlet>
+        <servlet-name>ProductoServicio</servlet-name>
+        <servlet-class>com.labplanet.servicios.ProductoServicio</servlet-class>
+    </servlet>
+    <servlet>
         <servlet-name>dataSampleStructure</servlet-name>
         <servlet-class>com.labplanet.servicios.dataSampleStructure</servlet-class>
     </servlet>
@@ -52,12 +56,28 @@
         <servlet-name>TestingConfigSop</servlet-name>
         <servlet-class>com.labplanet.servicios.testing.config.TestingConfigSop</servlet-class>
     </servlet>
-<!-- testing for the Platform.Begin -->
+    <!-- testing for the Platform.Begin -->
+    <servlet>
+        <servlet-name>TestingUOMConversionTable</servlet-name>
+        <servlet-class>com.labplanet.servicios.testing.config.TestingUOMConversionTable</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>TestingUOMFamilyTable</servlet-name>
+        <servlet-class>com.labplanet.servicios.testing.config.TestingUOMFamilyTable</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ProdServicio</servlet-name>
+        <servlet-class>com.labplanet.servicios.ProdServicio</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>samplesToReceive</servlet-name>
+        <servlet-class>com.labplanet.servicios.frontend.samplesToReceive</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>DBActions</servlet-name>
         <url-pattern>/testing/platform/DBActions</url-pattern>
     </servlet-mapping>
-<!--// testing for the Platform. End  
+    <!--// testing for the Platform. End  
 
 // testing for the Config. Begin -->
     <servlet-mapping>
@@ -79,25 +99,19 @@
     <servlet-mapping>
         <servlet-name>TestingConfigSop</servlet-name>
         <url-pattern>/testing/config/Sop</url-pattern>
-    </servlet-mapping>   
-    <servlet-mapping>         
+    </servlet-mapping>
+    <servlet-mapping>
         <servlet-name>TestingConfigSamplingPlanStructure</servlet-name>
         <url-pattern>/testing/config/samplingPlanStructure</url-pattern>
-    </servlet-mapping>    
-<!--/ testing for the Config. End    
+    </servlet-mapping>
+    <!--/ testing for the Config. End    
 
 // testing for the Data. Begin -->
     <servlet-mapping>
         <servlet-name>dataSampleStructure</servlet-name>
         <url-pattern>/testing/data/dataSampleStructure</url-pattern>
-    </servlet-mapping>                
-<!--/// testing for the Data. End   -->
-
- 
-  
-   
-    
-      
+    </servlet-mapping>
+    <!--/// testing for the Data. End   -->
     <servlet-mapping>
         <servlet-name>Authenticate</servlet-name>
         <url-pattern>/Authenticate</url-pattern>
@@ -110,7 +124,6 @@
         <servlet-name>SecondServlet</servlet-name>
         <url-pattern>/SecondServlet</url-pattern>
     </servlet-mapping>
-
     <servlet-mapping>
         <servlet-name>UT_moduleSample</servlet-name>
         <url-pattern>/UT_moduleSample</url-pattern>
@@ -119,7 +132,23 @@
         <servlet-name>DBQueries</servlet-name>
         <url-pattern>/DBQueries</url-pattern>
     </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>TestingUOMConversionTable</servlet-name>
+        <url-pattern>/testing/config/UOMConversionTable</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>TestingUOMFamilyTable</servlet-name>
+        <url-pattern>/testing/config/UOMFamilyTable</url-pattern>
+    </servlet-mapping>
 
+    <servlet-mapping>
+        <servlet-name>ProdServicio</servlet-name>
+        <url-pattern>/ProdServicio</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>samplesToReceive</servlet-name>
+        <url-pattern>/frontend/samplesToReceive</url-pattern>
+    </servlet-mapping>
     <session-config>
         <session-timeout>
             30

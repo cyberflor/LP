@@ -260,7 +260,7 @@ Object[] logSample(Rdbms rdbm, String schemaPrefix, String sampleTemplate, Integ
     return diagnoses; 
 }
 
-public Object[] sampleReception(Rdbms rdbm, String schemaPrefix, String userName, Integer sampleId, String userRole) throws SQLException{
+public Object[] sampleReception(Rdbms rdbm, String schemaPrefix, String userName, Integer sampleId, String userRole) {
 
     String receptionStatus = "RECEIVED";
     String auditActionName = "SAMPLE_RECEPTION";
@@ -1220,7 +1220,7 @@ public Object[] sampleAnalysisResultEntry(Rdbms rdbm, String schemaPrefix, Strin
             requiresUnitsConversion=true;
             UnitsOfMeasurement UOM = new UnitsOfMeasurement();            
             Object[] convDiagnoses = UOM.convertValue(rdbm, schemaPrefix, Float.parseFloat(resultValue.toString()), resultUomName, specUomName);
-            if ((Boolean) convDiagnoses[0] == false){
+            if ("LABPLANET_FALSE".equalsIgnoreCase(convDiagnoses[0].toString())) {
                 errorCode = "DataSample_SampleAnalysisResult_ConverterFALSE";
                 errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, resultId.toString());
                 errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, convDiagnoses[3].toString());

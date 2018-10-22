@@ -50,7 +50,7 @@ public class SampleAudit {
  * @param userRole String - User Role in use when the action was performed. 
  * @throws SQLException 
  */
-    public void sampleAuditAdd(Rdbms rdbm, String schemaPrefix, String action, String tableName, Integer tableId, Integer sampleId, Integer testId, Integer resultId, Object[] auditlog, String userName, String userRole) throws SQLException{
+    public void sampleAuditAdd(Rdbms rdbm, String schemaPrefix, String action, String tableName, Integer tableId, Integer sampleId, Integer testId, Integer resultId, Object[] auditlog, String userName, String userRole) {
         
         String auditTableName = "sample";
         String schemaName = "data-audit";                
@@ -152,7 +152,7 @@ public class SampleAudit {
  * @return
  * @throws SQLException 
  */    
-    public String sampleJsonString(Rdbms rdbm, String schemaPrefix, Integer sampleId) throws SQLException{
+    public String sampleJsonString(Rdbms rdbm, String schemaPrefix, Integer sampleId) {
         String jsonStructure = null;
         String query = "";
         String schemaName = "data";                

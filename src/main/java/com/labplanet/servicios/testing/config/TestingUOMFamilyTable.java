@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package testing.functionalConfig;
+package com.labplanet.servicios.testing.config;
 
 import databases.Rdbms;
 import functionalJava.materialSpec.ConfigSpecStructure;
@@ -25,7 +25,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Fran
  */
-public class UnitsOfMeasurement_familyTable extends HttpServlet {
+public class TestingUOMFamilyTable extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.

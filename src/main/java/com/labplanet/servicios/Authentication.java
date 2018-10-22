@@ -5,6 +5,7 @@
  */
 package com.labplanet.servicios;
 
+import LabPLANET.utilities.LabPLANETWebToken;
 import com.labplanet.dao.ProductoDAO;
 import com.labplanet.modelo.Producto;
 import databases.Rdbms;
@@ -20,7 +21,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -38,10 +38,11 @@ public class Authentication {
 
    @GET
    @Path("/{user}-{pass}")
-   @Produces("application/xml")       
+   @Produces("application/json")       
     public Response login(@PathParam("user")String usr, @PathParam("pass")String pw){
-        Rdbms rdbm = new Rdbms();        
         
+        Rdbms rdbm = new Rdbms();        
+       //String createJWT = LabPLANETWebToken.createJWT("hola", "que tal", "adios", 0);
         if (usr.length()==0){return Response.status(Response.Status.NOT_ACCEPTABLE).build();}
         boolean isConnected = false;
         isConnected = rdbm.startRdbms(usr, pw);           
@@ -52,7 +53,29 @@ public class Authentication {
             return Response.ok().build();
         } else return Response.status(Response.Status.NOT_FOUND).build();} 
         
-      
+    @GET
+   //@Path("/{user}-{pass}")
+    //@consumes("application/json")
+   @Produces("application/json")       
+    public Response login(String[] args){
+        String usr = args[0]; //request.getParameter("userName");
+        String pw = args[1]; //request.getParameter("password");
+        return Response.ok(usr).build();
+   /*     
+        Rdbms rdbm = new Rdbms();        
+       //String createJWT = LabPLANETWebToken.createJWT("hola", "que tal", "adios", 0);
+        if (usr.length()==0){return Response.status(Response.Status.NOT_ACCEPTABLE).build();}
+        boolean isConnected = false;
+        isConnected = rdbm.startRdbms(usr, pw);           
+        if (isConnected){                    
+//                HttpSession mySession = request.getSession(true);
+//                request.setAttribute("m_respuestaUsuarioValido", true);
+//                mySession.setAttribute("dhue8y7d8ue8", true);
+            return Response.ok().build();
+        } else return Response.status(Response.Status.NOT_FOUND).build();
+        */
+        } 
+         
 
 /*    @GET    
     //@Path("{userName}")   

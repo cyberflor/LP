@@ -7,10 +7,16 @@ package LabPLANET.utilities;
 
 import com.sun.rowset.CachedRowSetImpl;
 import databases.Rdbms;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 
 /**
  * LabPLANETJSon is a library of utilities for working with json objects
@@ -23,7 +29,121 @@ public class LabPLANETJson {
  * {@value}
  */   
     String classVersion = "0.1";
-      
+
+
+    public static String convertToJSON(ResultSet res) {
+        try {
+            String jsonarrayf;
+            jsonarrayf = null;
+            String obj [] = null;
+            boolean first = res.first();
+            String finalString = "";
+            
+            try {
+                while (!res.isAfterLast()){
+                    jsonarrayf = res.getString(1);
+                    
+                    Integer numchars = jsonarrayf.length();
+                    String [] objarr = null;
+                    
+                    if (numchars>2){
+                        
+                        String str1 = jsonarrayf.substring(2, numchars - 2);
+                        String [] strarr0 = str1.split("[}],[{]");
+                        
+                        Set<String> mySet = new HashSet(Arrays.asList(strarr0));
+                        String[] strarr = Arrays.copyOf(mySet.toArray(), mySet.toArray().length, String[].class);
+                        
+                        int index = 0;
+                        
+                        while(index < strarr.length)
+                        {
+                            String fieldar = strarr[index];
+                            String fieldarm = "";
+                            
+                            if (!fieldar.startsWith("{")){
+                                fieldarm = "{"+fieldar;
+                            }
+                            
+                            if (!fieldar.endsWith("}")){
+                                fieldarm += "},";
+                            }
+                         
+                            fieldarm =   fieldar; 
+                            fieldarm = fieldarm.replace("\\\"", "\"");
+                            
+                            //fieldarm = fieldarm.replace("'gTr(", "gTr(");
+                            //fieldarm = fieldarm.replace(")'", ")");
+                            
+                            strarr[index] =  fieldarm;
+                            finalString = finalString + "{"+fieldarm+"}";
+                            if (index < strarr.length-1){finalString=finalString+",";}
+                            index++;
+                        }
+                        
+                        objarr = strarr;
+                        
+                    }
+                    
+                    obj = objarr;
+                    res.next();
+                }} catch (SQLException ex) {
+                    Logger.getLogger(LabPLANETJson.class.getName()).log(Level.SEVERE, null, ex);
+                    return ex.getMessage();
+                }             
+            finalString="["+finalString+"]";
+            return finalString;
+        } catch (SQLException ex) {
+            Logger.getLogger(LabPLANETJson.class.getName()).log(Level.SEVERE, null, ex);
+            return ex.getMessage();
+        }
+    }
+
+    /**
+     *
+     * @param resultSet
+     * @return
+     */
+    public JSONArray convertToJSON2(ResultSet resultSet) {
+        try {
+            JSONArray jsonArray = new JSONArray();
+            Integer totalLines = resultSet.getRow();
+            Integer icurrLine = 0;   
+            resultSet.first();
+            
+            while(icurrLine<=totalLines-1) {
+                int total_rows = resultSet.getMetaData().getColumnCount();
+                for (int i = 0; i < total_rows; i++) {
+                    JSONObject obj = new JSONObject();
+                    try {
+                        if (resultSet.getObject(i+1)==null){
+                            obj.put(resultSet.getMetaData().getColumnLabel(i + 1)
+                                    .toLowerCase(), "");                            
+                        }else{
+                        obj.put(resultSet.getMetaData().getColumnLabel(i + 1)
+                                .toLowerCase(), resultSet.getObject(i + 1));
+                        }
+                    } catch (JSONException ex) {
+                        Logger.getLogger(LabPLANETJson.class.getName()).log(Level.SEVERE, null, ex);
+                        try {
+                            obj.put(resultSet.getMetaData().getColumnLabel(i + 1)
+                                    .toLowerCase(), "");
+                            //return null;
+                        } catch (JSONException ex1) {
+                            Logger.getLogger(LabPLANETJson.class.getName()).log(Level.SEVERE, null, ex1);
+                        }
+                    }
+                    jsonArray.put(obj);
+                }
+                resultSet.next();
+                icurrLine++;                
+            }
+            return jsonArray;
+        } catch (SQLException ex) {
+            Logger.getLogger(LabPLANETJson.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+    }    
 /**
  * 
  * @param rdbm Rdbms - Pass the current db connection for running queries
