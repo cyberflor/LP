@@ -1,12 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app version="3.1" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
     <servlet>
-        <servlet-name>Authenticate</servlet-name>
-        <servlet-class>com.labplanet.servicios.Authenticate</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>AuthenticateServlet</servlet-name>
-        <servlet-class>com.labplanet.servicios.AuthenticateServlet</servlet-class>
+        <servlet-name>Authentication</servlet-name>
+        <servlet-class>com.labplanet.servicios.Authentication</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>SecondServlet</servlet-name>
@@ -73,6 +69,11 @@
         <servlet-name>samplesToReceive</servlet-name>
         <servlet-class>com.labplanet.servicios.frontend.samplesToReceive</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>logSample</servlet-name>
+        <servlet-class>com.labplanet.servicios.frontend.logSample</servlet-class>
+    </servlet>
+
     <servlet-mapping>
         <servlet-name>DBActions</servlet-name>
         <url-pattern>/testing/platform/DBActions</url-pattern>
@@ -113,12 +114,8 @@
     </servlet-mapping>
     <!--/// testing for the Data. End   -->
     <servlet-mapping>
-        <servlet-name>Authenticate</servlet-name>
-        <url-pattern>/Authenticate</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>AuthenticateServlet</servlet-name>
-        <url-pattern>/AuthenticateServlet</url-pattern>
+        <servlet-name>Authentication</servlet-name>
+        <url-pattern>/Authentication</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>SecondServlet</servlet-name>
@@ -140,7 +137,6 @@
         <servlet-name>TestingUOMFamilyTable</servlet-name>
         <url-pattern>/testing/config/UOMFamilyTable</url-pattern>
     </servlet-mapping>
-
     <servlet-mapping>
         <servlet-name>ProdServicio</servlet-name>
         <url-pattern>/ProdServicio</url-pattern>
@@ -148,6 +144,10 @@
     <servlet-mapping>
         <servlet-name>samplesToReceive</servlet-name>
         <url-pattern>/frontend/samplesToReceive</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>logSample</servlet-name>
+        <url-pattern>/frontEnd/logSample</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

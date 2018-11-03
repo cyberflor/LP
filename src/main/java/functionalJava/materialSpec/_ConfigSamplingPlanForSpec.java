@@ -54,7 +54,7 @@ public class _ConfigSamplingPlanForSpec {
         String actionName = "Insert";
         tableName = "project";
         String auditActionName = "CREATE SAMPLING PLAN DETAIL RECORD";
-        schemaConfigName = labPlat.buildSchemaName(schemaPrefix, schemaConfigName);
+        schemaConfigName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaConfigName);
     if (devMode==true){
         StackTraceElement[] elementsDev = Thread.currentThread().getStackTrace();
         javaDocLineName = "CHECK fieldsName and fieldsValue match in length";
@@ -74,7 +74,7 @@ public class _ConfigSamplingPlanForSpec {
         labPlat.addJavaClassDoc(rdbm, javaDocFields, javaDocValues, elementsDev);
     }  
     if (devMode==false){
-        schemaDataName = labPlat.buildSchemaName(schemaPrefix, schemaDataName);         
+        schemaDataName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaDataName);         
         Object[][] mandatoryFieldsCheck = (Object[][]) labPlat.mandatoryFieldsCheck(schemaDataName, fieldsName, fieldsValue, tableName, actionName);                
         if ("LABPLANET_FALSE".equalsIgnoreCase(mandatoryFieldsCheck[0][0].toString())){ return mandatoryFieldsCheck;}
         for (Integer i=0;i<mandatoryFieldsCheck[1].length;i++){

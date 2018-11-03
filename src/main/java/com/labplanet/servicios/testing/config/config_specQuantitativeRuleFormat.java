@@ -5,7 +5,6 @@
  */
 package com.labplanet.servicios.testing.config;
 
-import LabPLANET.utilities.LabPLANETArray;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;

@@ -6,11 +6,6 @@
 package functionalJava.requirement;
 
 import databases.Rdbms;
-import static java.lang.System.out;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -19,7 +14,6 @@ import java.util.logging.Logger;
 public class ConfigRequirement {
     
     public void _getConfigObject2(Rdbms rdbm, String procedure, Integer pVersion){
-        return;
     }
    /*
         try {

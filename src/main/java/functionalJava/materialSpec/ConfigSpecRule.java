@@ -40,7 +40,7 @@ public class ConfigSpecRule {
         LabPLANETArray labArr = new LabPLANETArray();
         LabPLANETPlatform labPlat = new LabPLANETPlatform();
         
-        String schemaName = labPlat.buildSchemaName(schemaPrefix, schemaConfigName);
+        String schemaName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaConfigName);
         
         if ((rule==null) || (rule.length()==0)){
            errorCode = "specLimits_ruleMandatoryArgumentNull";

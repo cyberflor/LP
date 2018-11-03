@@ -34,7 +34,7 @@ public class LabPLANETPlatform {
         Object[] errorDetailVariables = new Object[0];
         Rdbms rdbm = new Rdbms();
         LabPLANETArray labArr = new LabPLANETArray();
-        String[] procedureActions = rdbm.getParameterBundle(schemaPrefix.replace("\"", "")+"-procedure", "procedureActions").split("\\|");
+        String[] procedureActions = Rdbms.getParameterBundle(schemaPrefix.replace("\"", "")+"-procedure", "procedureActions").split("\\|");
         
         if (labArr.valueInArray(procedureActions, "ALL")){
             errorCode = "ACTION_ENABLED_BY_ALL";
@@ -66,7 +66,7 @@ public class LabPLANETPlatform {
         String errorCode = ""; String errorDetail = "";
         Object[] errorDetailVariables = new Object[0];            
         Rdbms rdbm = new Rdbms();        
-        String[] procedureActionsUserRoles = rdbm.getParameterBundle(schemaPrefix.replace("\"", "")+"-procedure", "actionEnabled"+actionName).split("\\|");
+        String[] procedureActionsUserRoles = Rdbms.getParameterBundle(schemaPrefix.replace("\"", "")+"-procedure", "actionEnabled"+actionName).split("\\|");
         
         if (labArr.valueInArray(procedureActionsUserRoles, "ALL")){
             errorCode = "userRoleActionEnabled_ALL";
@@ -171,7 +171,7 @@ public class LabPLANETPlatform {
  * @param elementsDev StackTraceElement[] - Provides info from the context such as the ClassName + MethodName + LineNumber
  * @throws SQLException - For exception running sql queries.
  */
-    public void addJavaClassDoc(Rdbms rdbm, String[] fields, Object[] values, StackTraceElement[] elementsDev) throws SQLException{
+    public void addJavaClassDoc(Rdbms rdbm, String[] fields, Object[] values, StackTraceElement[] elementsDev) {
                 
         String schemaName = "requirements";
         String tableName = "java_class_doc";
@@ -179,7 +179,7 @@ public class LabPLANETPlatform {
         Object[] fldValue = new Object[0];
         String currField = "";        
         LabPLANETArray labArr = new LabPLANETArray();
-        String mandatoryFieldsStr = rdbm.getParameterBundle("labtimus", "mandatoryFields_requerimentsJavaDoc");
+        String mandatoryFieldsStr = Rdbms.getParameterBundle("labtimus", "mandatoryFields_requerimentsJavaDoc");
         String[] mandatoryFields = mandatoryFieldsStr.split("\\|");
         
 
@@ -273,8 +273,8 @@ public class LabPLANETPlatform {
         LabPLANETArray labArr = new LabPLANETArray();
         String propertyName = tableName+"_mandatoryFields"+actionName;
         
-        String mandatoryFieldsToCheck = rdbm.getParameterBundle(schemaName.replace("\"", ""), propertyName);
-        String mandatoryFieldsToCheckDefault = rdbm.getParameterBundle(schemaName.replace("\"", ""), propertyName+"Default");
+        String mandatoryFieldsToCheck = Rdbms.getParameterBundle(schemaName.replace("\"", ""), propertyName);
+        String mandatoryFieldsToCheckDefault = Rdbms.getParameterBundle(schemaName.replace("\"", ""), propertyName+"Default");
         
         String[] mandatoryFields = mandatoryFieldsToCheck.split("\\|");
         
@@ -371,7 +371,7 @@ public class LabPLANETPlatform {
         LabPLANETArray labArr = new LabPLANETArray();
         String propertyName = tableName+"_fieldsAddingMandatory"+actionName;
         
-        String mandatoryFieldsByDependency = rdbm.getParameterBundle(schemaName.replace("\"", ""), propertyName);
+        String mandatoryFieldsByDependency = Rdbms.getParameterBundle(schemaName.replace("\"", ""), propertyName);
                 
         String[] mandatoryByDependency = mandatoryFieldsByDependency.split("\\|");
 
@@ -427,8 +427,8 @@ public class LabPLANETPlatform {
         String configTableNamePropertyName = tableName+"_configTableName";
         String configTableKeyFieldsPropertyName = tableName+"_configTableKeyFields";        
         
-        String configTableName = rdbm.getParameterBundle(schemaName.replace("\"", ""), configTableNamePropertyName);
-        String configTableKeyFields = rdbm.getParameterBundle(schemaName.replace("\"", ""), configTableKeyFieldsPropertyName);
+        String configTableName = Rdbms.getParameterBundle(schemaName.replace("\"", ""), configTableNamePropertyName);
+        String configTableKeyFields = Rdbms.getParameterBundle(schemaName.replace("\"", ""), configTableKeyFieldsPropertyName);
 
         String[] configTableKeyFieldName = configTableKeyFields.split("\\|");
         Object[] configTableKeyFielValue = new Object[0];
@@ -497,8 +497,8 @@ public class LabPLANETPlatform {
         String specialFieldNamePropertyName = tableName+"_specialFieldsCheck";
         String specialFieldMethodNamePropertyName = tableName+"_specialFieldsCheck_methodName";        
         
-        String specialFieldName = rdbm.getParameterBundle(schemaName.replace("\"", ""), specialFieldNamePropertyName);
-        String specialFieldMethodName = rdbm.getParameterBundle(schemaName.replace("\"", ""), specialFieldMethodNamePropertyName);
+        String specialFieldName = Rdbms.getParameterBundle(schemaName.replace("\"", ""), specialFieldNamePropertyName);
+        String specialFieldMethodName = Rdbms.getParameterBundle(schemaName.replace("\"", ""), specialFieldMethodNamePropertyName);
         String[] specialFields = specialFieldName.split("\\|");
         String[] specialFieldsMethods = specialFieldMethodName.split("\\|");
         String specialFieldsCheck = "";
@@ -586,7 +586,7 @@ public class LabPLANETPlatform {
         className = className.replace(".java", "");
         Boolean errorCodeFromBundle = true;
         String errorCodeText = Rdbms.getParameterBundle("LabPLANET", "errorTraping", className+"_"+errorCode, null);
-        if (errorCodeText.length()==0){errorCodeText = rdbm.getParameterBundle("LabPLANET", "errorTraping", errorCode, null);}
+        if (errorCodeText.length()==0){errorCodeText = Rdbms.getParameterBundle("LabPLANET", "errorTraping", errorCode, null);}
         if (errorCodeText.length()==0){errorCodeText = errorCode; errorCodeFromBundle=false;}
         
         if (!errorCodeFromBundle){

@@ -30,7 +30,16 @@ public class LabPLANETJson {
  */   
     String classVersion = "0.1";
 
-
+    public static String convertToJSON(Object[] diagn) {
+        String jsonStr ="{";
+        
+        for(int diagnItem = 0; diagnItem<diagn.length;diagnItem++){            
+            jsonStr=jsonStr+"diagn"+String.valueOf(diagnItem)+":"+diagn[diagnItem].toString();
+        }
+        jsonStr=jsonStr+"}";
+        return jsonStr;
+    }
+    
     public static String convertToJSON(ResultSet res) {
         try {
             String jsonarrayf;

@@ -402,11 +402,11 @@ public class TestingResultCheckSpecQualitative extends HttpServlet {
                     String values = "";
                     String separator = "";
                     String listName = "";
-                    if (QualitSpecTestingArray[i][0]!=null){result = QualitSpecTestingArray[i][0].toString();}
-                    if (QualitSpecTestingArray[i][1]!=null){ruleType = QualitSpecTestingArray[i][1].toString();}               
-                    if (QualitSpecTestingArray[i][2]!=null){values = QualitSpecTestingArray[i][2].toString();}               
-                    if (QualitSpecTestingArray[i][3]!=null){separator = QualitSpecTestingArray[i][3].toString();}               
-                    if (QualitSpecTestingArray[i][4]!=null){listName = QualitSpecTestingArray[i][4].toString();}               
+                    if (QualitSpecTestingArray[i][0]!=null){result = QualitSpecTestingArray[i][0];}
+                    if (QualitSpecTestingArray[i][1]!=null){ruleType = QualitSpecTestingArray[i][1];}               
+                    if (QualitSpecTestingArray[i][2]!=null){values = QualitSpecTestingArray[i][2];}               
+                    if (QualitSpecTestingArray[i][3]!=null){separator = QualitSpecTestingArray[i][3];}               
+                    if (QualitSpecTestingArray[i][4]!=null){listName = QualitSpecTestingArray[i][4];}               
                     
                     out.println("<td>"+i+"</td><td>"+result+"</td><td>"+ruleType+"</td><td>"+values+"</td><td>"+separator+"</td><td>"+listName+"</td>");
 

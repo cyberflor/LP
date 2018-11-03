@@ -6,9 +6,6 @@
 package functionalJava.user;
 
 import databases.Rdbms;
-import LabPLANET.utilities.LabPLANETArray;
-import LabPLANET.utilities.LabPLANETPlatform;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**

@@ -5,25 +5,17 @@
  */
 package com.labplanet.servicios;
 
-import LabPLANET.utilities.LabPLANETWebToken;
-import com.labplanet.dao.ProductoDAO;
-import com.labplanet.modelo.Producto;
+import com.labplanet.modelo.UserSession;
 import databases.Rdbms;
-import java.sql.SQLException;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.naming.NamingException;
-import javax.servlet.http.HttpSession;
+import java.math.BigDecimal;
+import javax.json.Json;
+import javax.json.JsonObject;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.core.Response.ResponseBuilder;
 
 
 /**
@@ -38,29 +30,36 @@ public class Authentication {
 
    @GET
    @Path("/{user}-{pass}")
-   @Produces("application/json")       
-    public Response login(@PathParam("user")String usr, @PathParam("pass")String pw){
+   @Produces("application/json")           
+    public Response login(@PathParam("user") String usr, @PathParam("pass") String pw){
         
         Rdbms rdbm = new Rdbms();        
        //String createJWT = LabPLANETWebToken.createJWT("hola", "que tal", "adios", 0);
         if (usr.length()==0){return Response.status(Response.Status.NOT_ACCEPTABLE).build();}
         boolean isConnected = false;
         isConnected = rdbm.startRdbms(usr, pw);           
-        if (isConnected){                    
+        if (isConnected){      
+            //UserSession usSess = new UserSession(usr, rdbm);         
+            String myToken = rdbm.createToken("1", usr, "Admin");
+            JsonObject json = Json.createObjectBuilder()
+                    .add("JWT", myToken).build();
+            return Response.status(Response.Status.CREATED).entity(json).build();
 //                HttpSession mySession = request.getSession(true);
 //                request.setAttribute("m_respuestaUsuarioValido", true);
 //                mySession.setAttribute("dhue8y7d8ue8", true);
-            return Response.ok().build();
+//               ResponseBuilder builder = Response.ok();
+//                return builder.build();
         } else return Response.status(Response.Status.NOT_FOUND).build();} 
         
-    @GET
+    //1@GET
    //@Path("/{user}-{pass}")
     //@consumes("application/json")
-   @Produces("application/json")       
-    public Response login(String[] args){
-        String usr = args[0]; //request.getParameter("userName");
-        String pw = args[1]; //request.getParameter("password");
-        return Response.ok(usr).build();
+   //@Produces("application/json")       
+    //1public Response login(String[] args){
+    //1    String usr = args[0]; //request.getParameter("userName");
+    //1    String pw = args[1]; //request.getParameter("password");
+    //1    return Response.ok().build();
+        //return Response.ok(usr).build();
    /*     
         Rdbms rdbm = new Rdbms();        
        //String createJWT = LabPLANETWebToken.createJWT("hola", "que tal", "adios", 0);
@@ -74,7 +73,7 @@ public class Authentication {
             return Response.ok().build();
         } else return Response.status(Response.Status.NOT_FOUND).build();
         */
-        } 
+    //1    } 
          
 
 /*    @GET    

@@ -8,7 +8,6 @@ package com.labplanet.servicios.testing.config;
 import LabPLANET.utilities.LabPLANETArray;
 import functionalJava.sop.*;
 import java.io.IOException;
-import static java.lang.System.out;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;

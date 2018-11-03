@@ -10,19 +10,14 @@ import functionalJava.analysis.UserMethod;
 import _functionalJava.project.DataProject;
 import LabPLANET.utilities.LabPLANETArray;
 import LabPLANET.utilities.LabPLANETNullValue;
-import LabPLANET.utilities.LabPLANETPlatform;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
-import java.sql.Date;
 import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -144,7 +139,7 @@ public class projectStructure extends HttpServlet {
                         try {                        
                             fieldValue = labArr.convertStringWithDataTypeToObjectArray(configSpecTestingArray[i][6].toString().split("\\|"));
                             fileContent = fileContent + "<td>sampleId, userName, fieldNames, fieldValues</td>";
-                            fileContent = fileContent + "<td>"+sampleId.toString()+", "+userName.toString()+", "
+                            fileContent = fileContent + "<td>"+sampleId.toString()+", "+userName+", "
                                 +configSpecTestingArray[i][5].toString()+", "+configSpecTestingArray[i][6].toString()+"</td>";                            
                             dataProject = prj.sampleAnalysisAddtoSample(rdbm, schemaPrefix, userName, sampleId, fieldName, fieldValue, userRole);
                         } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
@@ -157,9 +152,9 @@ public class projectStructure extends HttpServlet {
                 LabPLANETNullValue labNull = new LabPLANETNullValue();
                 if (functionBeingTested.equalsIgnoreCase("GETSAMPLEINFO")){
                     fileContent = fileContent + "<td>"+dataSample2D[0][0].toString();
-                    fileContent = fileContent + ". "+labNull.replaceNull((String) dataSample2D[0][1]);
-                    fileContent = fileContent + ". "+labNull.replaceNull((String) dataSample2D[0][2]);
-                    fileContent = fileContent + ". "+labNull.replaceNull((String) dataSample2D[0][3])+"</td>";
+                    fileContent = fileContent + ". "+LabPLANETNullValue.replaceNull((String) dataSample2D[0][1]);
+                    fileContent = fileContent + ". "+LabPLANETNullValue.replaceNull((String) dataSample2D[0][2]);
+                    fileContent = fileContent + ". "+LabPLANETNullValue.replaceNull((String) dataSample2D[0][3])+"</td>";
 
                 }else{
                     fileContent = fileContent + "<td>"+dataProject[0].toString()+". "+dataProject[1].toString()+". "+dataProject[2].toString()+". "+dataProject[3].toString()+". "+dataProject[4].toString()+". "+dataProject[5].toString()+"</td>";

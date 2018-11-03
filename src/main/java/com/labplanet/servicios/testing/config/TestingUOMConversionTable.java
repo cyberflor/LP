@@ -113,17 +113,16 @@ public class TestingUOMConversionTable extends HttpServlet {
                 }else{
                      fileContent = fileContent + "<td><b>There are "+(tableGet.length)+" units in the family "+familyName+", the conversions are <b></b>";  
                      fileContent = fileContent + "<table id=\"scriptTable2\">"; 
-                     for (int iRows=0;iRows<tableGet.length;iRows++){
+                    for (Object[] tableGet1 : tableGet) {
                         fileContent = fileContent + "<tr>";
-                        Object[] newValue = UOM.convertValue(rdbm, schemaPrefix, baseValue, baseUnitName, (String) tableGet[iRows][0]);
+                        Object[] newValue = UOM.convertValue(rdbm, schemaPrefix, baseValue, baseUnitName, (String) tableGet1[0]);
                         if ("LABPLANET_FALSE".equalsIgnoreCase(newValue[0].toString())) {
                             fileContent = fileContent + "<td>Not Converted</td>"; 
                         }else{
                             fileContent = fileContent + "<td>"+"Value "+baseValue+" in "+baseUnitName+" is equal to "+newValue[newValue.length-2].toString()+" in "+newValue[newValue.length-1].toString()+" once converted.</td>";                            
                         }
-                        fileContent = fileContent + "</tr>"; 
-
-                     }                 
+                        fileContent = fileContent + "</tr>";
+                    }                 
                      fileContent = fileContent + "</table>";
                 }                   
             }    

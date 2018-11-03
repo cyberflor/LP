@@ -13,21 +13,24 @@ import databases.Rdbms;
  */
 public class UserSession {
     private String userId;
+    private String dbUserId;
     private String userRole;
     private Boolean userSessionValidated=false;
-    private Rdbms rdbm;
+    private String rdbm;
+    private String token;
 
-    public UserSession(String userId, Rdbms rdbm) {
-        this.userId = userId;
-        this.rdbm = rdbm;
+    public UserSession(String dbUserId, Rdbms rdbm) {
+        this.dbUserId = dbUserId;
+        this.rdbm = rdbm.toString();
+        this.token = "myNameIs"+dbUserId;
     }
 
-    public String getUserId() {
-        return userId;
+    public String getDbUserId() {
+        return dbUserId;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setUserId(String dbUserId) {
+        this.dbUserId = dbUserId;
     }
 
     public String getUserRole() {
@@ -46,11 +49,11 @@ public class UserSession {
         this.userSessionValidated = userSessionValidated;
     }
 
-    public Rdbms getRdbm() {
-        return rdbm;
+    public String getRdbm() {
+        return this.rdbm;
     }
 
-    public void setRdbm(Rdbms rdbm) {
+    public void setRdbm(String rdbm) {
         this.rdbm = rdbm;
     }
     

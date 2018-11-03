@@ -221,9 +221,9 @@ public class specQualitative extends HttpServlet {
                     String rule = "";
                     String specText = "";
                     String separator = "";
-                    if (QualitSpecTestingArray[i][0]!=null){rule = QualitSpecTestingArray[i][0].toString();}
-                    if (QualitSpecTestingArray[i][1]!=null){specText = QualitSpecTestingArray[i][1].toString();}               
-                    if (QualitSpecTestingArray[i][2]!=null){separator = QualitSpecTestingArray[i][2].toString();}               
+                    if (QualitSpecTestingArray[i][0]!=null){rule = QualitSpecTestingArray[i][0];}
+                    if (QualitSpecTestingArray[i][1]!=null){specText = QualitSpecTestingArray[i][1];}               
+                    if (QualitSpecTestingArray[i][2]!=null){separator = QualitSpecTestingArray[i][2];}               
                 
                     out.println("<td>"+i+"</td><td>"+rule+"</td><td>"+specText+"</td><td>"+separator+"</td>");    
                     String schemaName = "config";

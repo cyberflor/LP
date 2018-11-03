@@ -10,7 +10,6 @@ import LabPLANET.utilities.LabPLANETArray;
 import LabPLANET.utilities.LabPLANETPlatform;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.Arrays;
 import javax.json.Json;
 import javax.json.JsonException;
@@ -48,7 +47,6 @@ public class SampleAudit {
  * @param auditlog Object[] - All data that should be stored in the audit as part of the action being performed
  * @param userName String - User who performed the action.
  * @param userRole String - User Role in use when the action was performed. 
- * @throws SQLException 
  */
     public void sampleAuditAdd(Rdbms rdbm, String schemaPrefix, String action, String tableName, Integer tableId, Integer sampleId, Integer testId, Integer resultId, Object[] auditlog, String userName, String userRole) {
         
@@ -57,7 +55,7 @@ public class SampleAudit {
     LabPLANETArray labArr = new LabPLANETArray();
     LabPLANETPlatform labPlat = new LabPLANETPlatform();
         
-        schemaName = labPlat.buildSchemaName(schemaPrefix, schemaName);                
+        schemaName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaName);                
         
         String[] fieldNames = new String[0];
         Object[] fieldValues = new Object[0];
@@ -125,7 +123,7 @@ public class SampleAudit {
     LabPLANETArray labArr = new LabPLANETArray();
     LabPLANETPlatform labPlat = new LabPLANETPlatform();    
         
-        schemaName = labPlat.buildSchemaName(schemaPrefix, schemaName);                
+        schemaName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaName);                
         
         String[] fieldNames = new String[0];
         Object[] fieldValues = new Object[0];
@@ -149,8 +147,7 @@ public class SampleAudit {
  * @param rdbm Rdbms - Database Communication Channel
  * @param schemaPrefix String - Procedure Name
  * @param sampleId Integer - sampleId
- * @return
- * @throws SQLException 
+ * @return 
  */    
     public String sampleJsonString(Rdbms rdbm, String schemaPrefix, Integer sampleId) {
         String jsonStructure = null;
@@ -159,7 +156,7 @@ public class SampleAudit {
     LabPLANETArray labArr = new LabPLANETArray();
     LabPLANETPlatform labPlat = new LabPLANETPlatform();
                 
-        schemaName = labPlat.buildSchemaName(schemaPrefix, schemaName);  
+        schemaName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaName);  
         
         String[] sampleTblFldsArr = rdbm.getTableFieldsArrayEj(schemaName.replace("\"", ""), "sample");
         

@@ -122,7 +122,7 @@ public class SopList {
             if (currSopAssignedValue[i] == null ? sopId == null : currSopAssignedValue[i].equals(sopId)){ 
                 diagnoses = LabPLANETPlatform.trapErrorMessage(null, "LABPLANET_TRUE", classVersion, "SOP FOUND IN SOP LIST", 
                         new Object[]{"SOP <*1*> found in SOP List <*2*> in position <*3>", sopId, currSopAssignedValue, i});
-                diagnoses = labArr.addValueToArray1D(diagnoses, (Integer) i);
+                diagnoses = labArr.addValueToArray1D(diagnoses, i);
                 return diagnoses;
             }
         }

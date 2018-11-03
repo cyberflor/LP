@@ -6,18 +6,13 @@
 package functionalJava.requirement;
 
 import databases.Rdbms;
-import functionalJava.parameter.Parameter;
 import functionalJava.sop.Sop;
 import functionalJava.sop.UserSop;
 import functionalJava.user.Role;
-import LabPLANET.utilities.LabPLANETArray;
-import LabPLANET.utilities.LabPLANETJson;
-import LabPLANET.utilities.LabPLANETPlatform;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import static java.lang.System.out;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.ResourceBundle;
@@ -162,7 +157,6 @@ return "";
         String navCode = "";
         String procCode = "";
         String privId = "";
-        return;
     }
 /*        String codeName = "OIL-PL1";
 
@@ -237,7 +231,6 @@ return "";
         String prurs_widget_desc = "";
         String prurs_schema_name = "";
         String prurs_table_name = "";
-        return;
     }    
  /*       
         try{
@@ -773,7 +766,6 @@ return "";
     }         
 
     private void _createDataBaseSchemas(Rdbms rdbm, String schemaNamePrefix){
-   return;
     }
 /*
         String methodName = "createDataBaseSchemas";
@@ -804,7 +796,6 @@ return "";
     }
 */
     private void _createDataBaseSchemaTable(Rdbms rdbm, String schemaNamePrefix, String procedure, Integer procVersion){
-     return;   
     }
 /*    
         String methodName = "createDataBaseSchemaTable";
@@ -872,7 +863,6 @@ return "";
     }
 */
     public void _getConfigObject(Rdbms rdbm, String procedure, Integer pVersion){
-        return;
     }
 /*
         String methodName = "RequirementConfigObjects-ProcessRequest";

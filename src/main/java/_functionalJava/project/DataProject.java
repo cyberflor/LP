@@ -62,15 +62,13 @@ Object[] createProject(Rdbms rdbm, String schemaPrefix, String projectTemplate, 
     DataDataIntegrity labIntChecker = new DataDataIntegrity();
 
     if (devMode==true){
-        try {
-            StackTraceElement[] elementsDev = Thread.currentThread().getStackTrace();
-            javaDocLineName = "BEGIN";
-            javaDocFields = labArr.addValueToArray1D(javaDocFields, "line_name");         javaDocValues = labArr.addValueToArray1D(javaDocValues, javaDocLineName);
-            javaDocFields = labArr.addValueToArray1D(javaDocFields, "class_version");         javaDocValues = labArr.addValueToArray1D(javaDocValues, classVersion);
-            labPlat.addJavaClassDoc(rdbm, javaDocFields, javaDocValues, elementsDev);
-        } catch (SQLException ex) {
-            Logger.getLogger(DataProject.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        StackTraceElement[] elementsDev = Thread.currentThread().getStackTrace();
+        javaDocLineName = "BEGIN";
+        javaDocFields = labArr.addValueToArray1D(javaDocFields, "line_name");
+        javaDocValues = labArr.addValueToArray1D(javaDocValues, javaDocLineName);
+        javaDocFields = labArr.addValueToArray1D(javaDocFields, "class_version");
+        javaDocValues = labArr.addValueToArray1D(javaDocValues, classVersion);
+        labPlat.addJavaClassDoc(rdbm, javaDocFields, javaDocValues, elementsDev);
     }    
     
         String query = "";
@@ -88,15 +86,13 @@ Object[] createProject(Rdbms rdbm, String schemaPrefix, String projectTemplate, 
         
         
     if (devMode==true){
-        try {
-            StackTraceElement[] elementsDev = Thread.currentThread().getStackTrace();
-            javaDocLineName = "CHECK sampleFieldName and sampleFieldValue match in length";
-            javaDocFields = labArr.addValueToArray1D(javaDocFields, "line_name");         javaDocValues = labArr.addValueToArray1D(javaDocValues, javaDocLineName);
-            javaDocFields = labArr.addValueToArray1D(javaDocFields, "class_version");         javaDocValues = labArr.addValueToArray1D(javaDocValues, classVersion);
-            labPlat.addJavaClassDoc(rdbm, javaDocFields, javaDocValues, elementsDev);
-        } catch (SQLException ex) {
-            Logger.getLogger(DataProject.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        StackTraceElement[] elementsDev = Thread.currentThread().getStackTrace();
+        javaDocLineName = "CHECK sampleFieldName and sampleFieldValue match in length";
+        javaDocFields = labArr.addValueToArray1D(javaDocFields, "line_name");
+        javaDocValues = labArr.addValueToArray1D(javaDocValues, javaDocLineName);
+        javaDocFields = labArr.addValueToArray1D(javaDocFields, "class_version");
+        javaDocValues = labArr.addValueToArray1D(javaDocValues, classVersion);
+        labPlat.addJavaClassDoc(rdbm, javaDocFields, javaDocValues, elementsDev);
     }    
     if (devMode==false){
         diagnoses = labArr.checkTwoArraysSameLength(sampleFieldName, sampleFieldValue);
@@ -112,15 +108,13 @@ Object[] createProject(Rdbms rdbm, String schemaPrefix, String projectTemplate, 
         }
     }    
     if (devMode==true){
-        try {
-            StackTraceElement[] elementsDev = Thread.currentThread().getStackTrace();
-            javaDocLineName = "CHECK sampleFieldName and sampleFieldValue match in length";
-            javaDocFields = labArr.addValueToArray1D(javaDocFields, "line_name");         javaDocValues = labArr.addValueToArray1D(javaDocValues, javaDocLineName);
-            javaDocFields = labArr.addValueToArray1D(javaDocFields, "class_version");         javaDocValues = labArr.addValueToArray1D(javaDocValues, classVersion);
-            labPlat.addJavaClassDoc(rdbm, javaDocFields, javaDocValues, elementsDev);
-        } catch (SQLException ex) {
-            Logger.getLogger(DataProject.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        StackTraceElement[] elementsDev = Thread.currentThread().getStackTrace();
+        javaDocLineName = "CHECK sampleFieldName and sampleFieldValue match in length";
+        javaDocFields = labArr.addValueToArray1D(javaDocFields, "line_name");
+        javaDocValues = labArr.addValueToArray1D(javaDocValues, javaDocLineName);
+        javaDocFields = labArr.addValueToArray1D(javaDocFields, "class_version");
+        javaDocValues = labArr.addValueToArray1D(javaDocValues, classVersion);
+        labPlat.addJavaClassDoc(rdbm, javaDocFields, javaDocValues, elementsDev);
     }    
     if (devMode==false){        
         LabPLANETArray lpa = new LabPLANETArray();
@@ -267,7 +261,7 @@ public Object[] logProjectSample(Rdbms rdbm, String schemaPrefix, String project
                         new String[]{"project"}, new Object[]{projectName}, 
                         new String[]{"sample_id"}, new Object[]{Integer.parseInt(newProjSample[newProjSample.length-1])});
             }*/
-        } catch (IllegalAccessException|IllegalArgumentException|InvocationTargetException|SQLException ex) {
+        } catch (IllegalArgumentException ex) {
             Logger.getLogger(DataProject.class.getName()).log(Level.SEVERE, null, ex);
         }
         

@@ -23,19 +23,6 @@ import java.util.logging.Logger;
  */
 public class BatchArray extends Batch{
 
-    String classVersion = "0.1";
-    LabPLANETArray labArr = new LabPLANETArray();
-    LabPLANETPlatform labPlat = new LabPLANETPlatform();
-    String[] javaDocFields = new String[0];
-    Object[] javaDocValues = new Object[0];
-    String javaDocLineName = "";
-
-    String schemaDataName = "data";
-    String schemaConfigName = "config";
-    String tableName = "user_method"; 
-    
-    String[] diagnoses = new String[7];    
-    
     public Integer numTotalPositions = 0;
     public Integer numRows = 0;
     public Integer numCols = 0; 

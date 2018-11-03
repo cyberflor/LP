@@ -112,9 +112,9 @@ public class TestingUOMFamilyTable extends HttpServlet {
                      fileContent = fileContent + "<td>The units are:";  
                      fileContent = fileContent + "<table id=\"scriptTable2\">"; 
                      fileContent = fileContent + "<tr><th>"+"#"+"</th>";
-                     for (int iColumns=0;iColumns<fieldsToRetrieve.length;iColumns++){
-                        fileContent = fileContent + "<th>"+fieldsToRetrieve[iColumns]+"</th>";                               
-                     }
+                    for (String fieldsToRetrieve1 : fieldsToRetrieve) {
+                        fileContent = fileContent + "<th>" + fieldsToRetrieve1 + "</th>";
+                    }
                      fileContent = fileContent + "</tr>"; 
                      for (int iRows=0;iRows<tableGet.length;iRows++){
                         fileContent = fileContent + "<tr>"; 

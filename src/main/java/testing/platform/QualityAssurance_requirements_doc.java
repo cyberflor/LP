@@ -5,7 +5,6 @@
  */
 package testing.platform;
 
-import LabPLANET.utilities.LabPLANETPlatform;
 import LabPLANET.utilities.LabPLANETQualityAssurance;
 import java.io.File;
 import java.io.FileWriter;

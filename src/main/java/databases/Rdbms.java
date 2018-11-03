@@ -9,6 +9,9 @@ import com.sun.rowset.CachedRowSetImpl;
 import LabPLANET.utilities.LabPLANETArray;
 import LabPLANET.utilities.LabPLANETJson;
 import LabPLANET.utilities.LabPLANETPlatform;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import java.io.FileWriter;
 import java.sql.Array;
 import java.sql.Connection;
@@ -25,6 +28,9 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
+import javax.xml.bind.DatatypeConverter;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.Claims;
 import org.codehaus.jettison.json.JSONArray;
 
 /**
@@ -49,12 +55,44 @@ public class Rdbms {
     private Boolean isStarted = false;
     private Integer timeout;
     private String lastError = "";
+    
+    String KEY = " mi clave";
 
     public Rdbms() {
         //default query timeout
         this.timeout = 5;        
     }    
+    
+    public Boolean isValidToken(String jwtToken){       
+        try {
+            Claims claims = Jwts.parser()         
+               .setSigningKey(DatatypeConverter.parseBase64Binary(KEY))
+               .parseClaimsJws(jwtToken).getBody();
 
+            System.out.println("ID: " + claims.getId());
+            System.out.println("Subject: " + claims.getSubject());
+            System.out.println("Issuer: " + claims.getIssuer());
+            System.out.println("Expiration: " + claims.getExpiration());
+            
+            return true;
+        }catch (Exception e){
+            return false;
+        }
+    }
+    
+    public String  createToken(String userDBId, String userId, String userRole){        
+        long tiempo = System.currentTimeMillis();
+        String vwt = Jwts.builder()
+                .signWith(SignatureAlgorithm.HS256, KEY)
+                .setSubject(userId)
+                .setHeaderParam("userRole", userRole)
+                .setHeaderParam("userDB", userDBId)
+                .setIssuedAt(new Date(tiempo))
+                .setExpiration(new Date(tiempo+900000))
+                .claim("email", "mymail@gmail.com")
+                .compact();
+        return vwt;
+    }
     public Boolean startRdbms(Rdbms rdbm, String user, String pass) {
         try {
             ResourceBundle prop = ResourceBundle.getBundle("parameter.config.config");
@@ -769,10 +807,10 @@ public class Rdbms {
 
         setTimeout(getTimeout());
 
-        if (valoresinterrogaciones != null){
-            buildPreparedStatement(valoresinterrogaciones, prep, fieldtypes); 
-        }
         try{
+            if (valoresinterrogaciones != null){
+                buildPreparedStatement(valoresinterrogaciones, prep, fieldtypes); 
+            }            
             Integer res=prep.executeUpdate();
             return res; 
         }catch (SQLException er){
