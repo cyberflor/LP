@@ -3,41 +3,43 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.labplanet.servicios;
+package com.labplanet.servicios.testing.ModuleSample;
 
-import databases.Rdbms;
-import functionalJava.analysis.UserMethod;
-import functionalJava.sampleStructure.DataSample;
 import LabPLANET.utilities.LabPLANETArray;
-import LabPLANET.utilities.LabPLANETNullValue;
 import LabPLANET.utilities.LabPLANETPlatform;
-import java.io.File;
-import java.io.FileWriter;
+import com.labplanet.dao.ProductoDAO;
+import com.labplanet.modelo.Producto;
+import databases.Rdbms;
+import functionalJava.sampleStructure.DataSample;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.Date;
-import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.ResourceBundle;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import testing.functionalData.testingFileContentSections;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+import org.json.simple.JSONArray;
+import frontEnd.APIHandler;
+
 
 /**
  *
  * @author Administrator
  */
-public class SampleStructure extends HttpServlet {
+public class sampleAPI extends HttpServlet {
+
+    Status  responseOnERROR = Response.Status.BAD_REQUEST;
 
     /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
+     * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      *
      * @param request servlet request
      * @param response servlet response
@@ -46,92 +48,181 @@ public class SampleStructure extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-
+        
+        LabPLANETArray labArr = new LabPLANETArray();
+        
+        //ResponseEntity<String> responsew;
+        
+        //response.setContentType("application/json;charset=UTF-8");
+        
+        //response.setContentType("application/json");
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+    
         try (PrintWriter out = response.getWriter()) {
+            /* TODO output your page here. You may use following sample code. */
+            String[] errObject = new String[]{"Servlet sampleAPI at " + request.getServletPath()};            
+                        
+            String functionBeingTested = request.getParameter("functionBeingTested");
             
-            response.setContentType("text/html;charset=UTF-8");
-            UserMethod um = new UserMethod();
-
+            if (functionBeingTested==null) {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);                
+                errObject = labArr.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
+                errObject = labArr.addValueToArray1D(errObject, "API Error Message: functionBeingTested is one mandatory param for this API");                    
+                out.println(Arrays.toString(errObject));
+                return ;
+            }
+                    
+            String schemaPrefix = request.getParameter("schemaPrefix");
+            String dbUserName = request.getParameter("dbUserName");
+            String dbUserPassword = request.getParameter("dbUserPassword");
+            String userName = request.getParameter("userName");
+            String userRole = request.getParameter("userRole");
+            if (schemaPrefix==null) {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);                
+                errObject = labArr.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
+                errObject = labArr.addValueToArray1D(errObject, "API Error Message: schemaPrefix is one mandatory param for this API");                    
+                out.println(Arrays.toString(errObject));
+                return ;
+            }          
+            if (dbUserName==null) {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);           
+                errObject = labArr.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
+                errObject = labArr.addValueToArray1D(errObject, "API Error Message: dbUserName is one mandatory param for this API");                    
+                out.println(Arrays.toString(errObject));
+                return ;
+            }        
+            if (dbUserPassword==null) {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);           
+                errObject = labArr.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
+                errObject = labArr.addValueToArray1D(errObject, "API Error Message: dbUserPassword is one mandatory param for this API");                    
+                out.println(Arrays.toString(errObject));
+                return ;
+            }   
+            if (userName==null) {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);           
+                errObject = labArr.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
+                errObject = labArr.addValueToArray1D(errObject, "API Error Message: userName is one mandatory param for this API");                    
+                out.println(Arrays.toString(errObject));
+                return ;
+            }     
+            if (userRole==null) {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);           
+                errObject = labArr.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
+                errObject = labArr.addValueToArray1D(errObject, "API Error Message: userRole is one mandatory param for this API");                    
+                out.println(Arrays.toString(errObject));
+                return ;
+            }                 
             Rdbms rdbm = new Rdbms();            
             boolean isConnected = false;
-            isConnected = rdbm.startRdbms("labplanet", "LabPlanet");
+            isConnected = rdbm.startRdbms(dbUserName, dbUserPassword);
+            if (!isConnected){
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);                
+                errObject = labArr.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
+                errObject = labArr.addValueToArray1D(errObject, "API Error Message: db User Name and Password not correct, connection to the database is not possible");                    
+                out.println(Arrays.toString(errObject));
+                return ;               
+            }
             
-            String csvFileName = "dataSampleStructure.txt"; String csvFileSeparator=";";
-            String csvPathName = "\\\\FRANCLOUD\\fran\\LabPlanet\\testingRepository\\"+csvFileName; 
- 
-            Object[][] dataSample2D = new Object[0][0];
-        
-            Integer numTesting = 1;
-            Integer inumTesting = 0;
-            Object[][] configSpecTestingArray = new Object[numTesting][6];
-            LabPLANETArray labArr = new LabPLANETArray();
-            String userName="1"; 
-            String userRole="oil1plant_analyst";
-            
-            configSpecTestingArray = labArr.convertCSVinArray(csvPathName, csvFileSeparator);
-
-        String fileContent="";
-        fileContent = testingFileContentSections.getHtmlStyleHeader(this.getServletName());
-            
-        DataSample smp = new DataSample("");
-            
-        for (Integer j=0;j<configSpecTestingArray[0].length;j++){
-            fileContent = fileContent + "<th>"+configSpecTestingArray[0][j]+"</th>";
-        }            
-
-        for (Integer i=1;i<configSpecTestingArray.length;i++){
-            //if (configSpecTestingArray[i][2]==null && configSpecTestingArray[i][3]==null){
-            fileContent = fileContent + "<tr>";
-            String[] fieldName=null;    
-            Object[] fieldValue=null;
-            String schemaPrefix=null;
-            Integer sampleId=null;
-            userName=null;                
-            String functionBeingTested=null;
+            DataSample smp = new DataSample("");            
             Object[] dataSample = null;
-
-            if (configSpecTestingArray[i][1]!=null){schemaPrefix = (String) configSpecTestingArray[i][1];}
-            if (configSpecTestingArray[i][2]!=null){functionBeingTested = (String) configSpecTestingArray[i][2];}
-
-            fileContent = fileContent + "<td>"+i+"</td><td>"+schemaPrefix+"</td><td>"+functionBeingTested+"</td>";
-
+            
             switch (functionBeingTested.toUpperCase()){
                 case "LOGSAMPLE":
-                    String sampleTemplate=null;
-                    Integer sampleTemplateVersion=null;
-                    String[] sampleTemplateInfo = configSpecTestingArray[i][3].toString().split("\\|");
-                    sampleTemplate = sampleTemplateInfo[0];
-                    sampleTemplateVersion = Integer.parseInt(sampleTemplateInfo[1]);
-                    if (configSpecTestingArray[i][3]!=null){fieldName = (String[]) configSpecTestingArray[i][4].toString().split("\\|");}              
-                    if (configSpecTestingArray[i][4]!=null){fieldValue = (Object[]) configSpecTestingArray[i][5].toString().split("\\|");}    
-                    fieldValue = labArr.convertStringWithDataTypeToObjectArray((String[]) fieldValue);
-                    fileContent = fileContent + "<td>templateName, templateVersion, fieldNames, fieldValues</td>";
-                    fileContent = fileContent + "<td>"+sampleTemplate+", "+sampleTemplateVersion.toString()+", "
-                            +configSpecTestingArray[i][4].toString()+", "+configSpecTestingArray[i][5].toString()+"</td>";                        
-                    try {
-                        dataSample = smp.logSample(rdbm, schemaPrefix, sampleTemplate, sampleTemplateVersion, fieldName, fieldValue, userName, userRole);
-                    } catch (IllegalArgumentException ex) {
-                        Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
-                    }
-                    break;
+                    String sampleTemplate=request.getParameter("sampleTemplate");
+                    if (sampleTemplate==null) {
+                        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);           
+                        errObject = labArr.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
+                        errObject = labArr.addValueToArray1D(errObject, "API Error Message: sampleTemplate is one mandatory param for this API");                    
+                        out.println(Arrays.toString(errObject));
+                        return ;
+                    }                 
+                    Integer sampleTemplateVersion = Integer.parseInt(request.getParameter("sampleTemplateVersion"));                   
+                    if (sampleTemplateVersion==null) {
+                        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);           
+                        errObject = labArr.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
+                        errObject = labArr.addValueToArray1D(errObject, "sampleTemplateVersion="+request.getParameter("sampleTemplateVersion"));
+                        errObject = labArr.addValueToArray1D(errObject, "API Error Message: sampleTemplateVersion is one mandatory param and should be one integer value for this API");                    
+                        out.println(Arrays.toString(errObject));
+                        return ;
+                    }            
+                    
+                    String fieldName=request.getParameter("fieldName");                                        
+                    String fieldValue=request.getParameter("fieldValue");
+                    String[] fieldNames=null;
+                    Object[] fieldValues=null;
+                    if (fieldName!=null) fieldNames = (String[]) fieldName.split("\\|");                                            
+                    if (fieldValue!=null) fieldValues = (Object[]) labArr.convertStringWithDataTypeToObjectArray(fieldValue.split("\\|"));
+                                        
+                    dataSample = smp.logSample(rdbm, schemaPrefix, sampleTemplate, sampleTemplateVersion, fieldNames, fieldValues, userName, userRole);
+                    out.println("logSample returns with "+dataSample[0].toString());                   
+                    break;                                        
                 case "RECEIVESAMPLE":  
-                    if (configSpecTestingArray[i][3]!=null){sampleId = Integer.parseInt( (String) configSpecTestingArray[i][3]);}
-                    if (configSpecTestingArray[i][4]!=null){userName = (String) configSpecTestingArray[i][4];}
-                    fileContent = fileContent + "<td>sampleId, receiver</td>";
-                    fileContent = fileContent + "<td>"+sampleId.toString()+", "+userName.toString()+"</td>";
+                    Integer sampleId = Integer.parseInt(request.getParameter("sampleId"));                   
+                    if (sampleId==null) {
+                        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);           
+                        errObject = labArr.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
+                        errObject = labArr.addValueToArray1D(errObject, "sampleTemplateVersion="+request.getParameter("sampleTemplateVersion"));
+                        errObject = labArr.addValueToArray1D(errObject, "API Error Message: sampleId is one mandatory param and should be one integer value for this API");                    
+                        out.println(Arrays.toString(errObject));
+                        return ;
+                    }                
+                    String sl = "[{\"diag\":\"true\", \"isDiag\":true, \"sampleReturned\":"+ sampleId.toString()+"}]";
+                            //response.getWriter().write(sl);
+//                    List<Producto> lista = ProductoDAO.getProductos();
+                    
+//                    Response.ok(sl).build();
+//                    return;
+ //                   return;
+                    //return Response.status(Response.Status.NOT_FOUND).build();                         
+/*            String  dataSamples = rdbm.getRecordFieldsByFilterJSON(rdbm, "sample-A-data", "sample",
+                    //new String[] {"received_by is null", "sample_id"}, new Object[]{"", 124},
+                    new String[] {"sample_id"}, new Object[]{124},
+                    new String[] { "sample_id", "sample_config_code", "sampling_comment"});
+            rdbm.closeRdbms();         
+            out.println("my filter! "+dataSamples.length());
+                            
+             Response.ok(dataSamples).build();
+*/                            
+//             return;
+                      
+                    dataSample= labArr.addValueToArray1D(dataSample, "LABPLANET_TRUE");
+                    dataSample= labArr.addValueToArray1D(dataSample, "eXAMPLE");
+                    dataSample= labArr.addValueToArray1D(dataSample, sampleId.toString());
+                    //dataSample[1]="";
+                  JSONArray jArray= new JSONArray();
+                    for (int i = 0; i < dataSample.length; i++) {     
+                        jArray.add(dataSample[i]);
+                       //jArray.put(dataSample[i]);
+                    }        
+                    System.out.println(jArray);
+                    response.getWriter().write(jArray.toJSONString());
                     dataSample = smp.sampleReception(rdbm, schemaPrefix, userName, sampleId, userRole);
-                    break;       
+                    return;
+                    //break;    
+                    
                 case "CHANGESAMPLINGDATE":
-                    Date newDate=null;
-                    if (configSpecTestingArray[i][3]!=null){sampleId = Integer.parseInt( (String) configSpecTestingArray[i][3]);}
-                    if (configSpecTestingArray[i][4]!=null){userName = (String) configSpecTestingArray[i][4];}
-                    if (configSpecTestingArray[i][5]!=null){newDate =  Date.valueOf((String) configSpecTestingArray[i][5]);}
-                    fileContent = fileContent + "<td>sampleId, userName, newDate</td>";
-                    fileContent = fileContent + "<td>"+sampleId.toString()+", "+userName.toString()+newDate.toString()+"</td>";
+                    sampleId = Integer.parseInt(request.getParameter("sampleId"));                   
+                    if (sampleId==null) {
+                        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);           
+                        errObject = labArr.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
+                        errObject = labArr.addValueToArray1D(errObject, "sampleTemplateVersion="+request.getParameter("sampleTemplateVersion"));
+                        errObject = labArr.addValueToArray1D(errObject, "API Error Message: sampleId is one mandatory param and should be one integer value for this API");                    
+                        out.println(Arrays.toString(errObject));
+                        return ;
+                    }                       
+                    Date newDate=Date.valueOf(request.getParameter("newDate"));
+                    if (newDate==null) {
+                        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);           
+                        errObject = labArr.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
+                        errObject = labArr.addValueToArray1D(errObject, "sampleTemplateVersion="+request.getParameter("sampleTemplateVersion"));
+                        errObject = labArr.addValueToArray1D(errObject, "API Error Message: newDate is one mandatory param and should be one integer value for this API");                    
+                        out.println(Arrays.toString(errObject));
+                        return ;
+                    }                     
                     dataSample = smp.changeSamplingDate(rdbm, schemaPrefix, userName, sampleId, newDate, userRole);
                     break;       
-                case "SAMPLINGCOMMENTADD":
+/*                case "SAMPLINGCOMMENTADD":
                     String comment=null;
                     if (configSpecTestingArray[i][3]!=null){sampleId = Integer.parseInt( (String) configSpecTestingArray[i][3]);}
                     if (configSpecTestingArray[i][4]!=null){userName = (String) configSpecTestingArray[i][4];}
@@ -258,42 +349,30 @@ public class SampleStructure extends HttpServlet {
                                  +sampleId.toString()+"</td>";                      
                          dataSample2D = rdbm.getRecordFieldsByFilter(rdbm, schemaDataName, "sample", new String[]{"sample_id"}, new Object[]{sampleId}, fieldsToGet);
                     break;
-                default:                
-                    break;
-            }
-            LabPLANETNullValue labNull = new LabPLANETNullValue();
-            if (functionBeingTested.equalsIgnoreCase("GETSAMPLEINFO")){
-                fileContent = fileContent + "<td>"+dataSample2D[0][0].toString();
-                fileContent = fileContent + ". "+labNull.replaceNull((String) dataSample2D[0][1]);
-                fileContent = fileContent + ". "+labNull.replaceNull((String) dataSample2D[0][2]);
-                fileContent = fileContent + ". "+labNull.replaceNull((String) dataSample2D[0][3])+"</td>";
-                
-            }else{
-                fileContent = fileContent + "<td>"+dataSample[0].toString()+". "+dataSample[1].toString()+". "+dataSample[2].toString()+". "+dataSample[3].toString()+". "+dataSample[4].toString()+". "+dataSample[5].toString()+"</td>";
+*/                    
+                default:      
+                    errObject = frontEnd.APIHandler.actionNotRecognized(errObject, functionBeingTested, response);
+                    out.println(Arrays.toString(errObject));                   
+                    return;                    
             }    
-            fileContent = fileContent + "</tr>";
+            if ("LABPLANET_TRUE".equalsIgnoreCase(dataSample[0].toString())){                                
+                //out.println(Arrays.toString(dataSample));
+                response.getWriter().write(Arrays.toString(dataSample));
+                Response.ok().build();
+            }else{
+               // response.getWriter().write(Arrays.toString(dataSample));                          
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);                
+                out.println(Arrays.toString(dataSample));                    
+            }            
+        }catch(Exception e){            
+            String[] errObject = new String[]{e.getMessage()};
+            errObject = frontEnd.APIHandler.actionNotRecognized(errObject, null, response);
+            //out.println(Arrays.toString(errObject));                   
+            Response.serverError();
+            Response.status(responseOnERROR).build();
+            return;                 
         }
-        fileContent = fileContent + "</table>";        
-        out.println(fileContent);
-
-        csvPathName = csvPathName.replace(".txt", ".html");
-        File file = new File(csvPathName);
-        FileWriter fileWriter = new FileWriter(file);
-        if (file.exists()){ file.delete();} 
-        fileWriter.write(fileContent);
-        fileWriter.flush();
-        fileWriter.close();   
-
-        rdbm.closeRdbms();
-
-        }   catch (SQLException|IOException ex) {
-                Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);   
-             
-        }        
     }
-
-
-
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**

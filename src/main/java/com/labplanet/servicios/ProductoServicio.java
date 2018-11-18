@@ -46,7 +46,7 @@ public class ProductoServicio {
                 if (obj.getId()==id) {
                      List<Producto> lista2 = new ArrayList<>();
                     lista2.add(obj);
-                    //return Response.ok(lista2).build();} // Si envío el objeto dentro de una lista entonces sí funciona
+                    //return Response.ok(lista2).build();} // Si envío el objeto dentro de una lista entonces sí funciona                    
                     return Response.ok(obj).build();} // Si lo envío de esta manera me devuelve un error 500 Internal Server Error
         }
         return Response.status(Response.Status.NOT_FOUND).build();        

@@ -125,7 +125,7 @@ Object[] logSample(Rdbms rdbm, String schemaPrefix, String sampleTemplate, Integ
            errorCode = "DataSample_FieldArraysDifferentSize";
            errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, Arrays.toString(sampleFieldName));
            errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, Arrays.toString(sampleFieldValue));
-           return (String[]) LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);
+           return LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);
         }
     }    
     if (devMode==true){
@@ -142,7 +142,7 @@ Object[] logSample(Rdbms rdbm, String schemaPrefix, String sampleTemplate, Integ
         if (lpa.duplicates(sampleFieldName)){
            errorCode = "DataSample_FieldsDuplicated";
            errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, Arrays.toString(sampleFieldName));
-           return (String[]) LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);                      
+           return LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);                      
         }
 
         // spec is not mandatory but when any of the fields involved is added to the parameters 
@@ -177,7 +177,7 @@ Object[] logSample(Rdbms rdbm, String schemaPrefix, String sampleTemplate, Integ
         if (mandatoryFieldsMissing.length()>0){
            errorCode = "DataSample_MissingMandatoryFields";
            errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, mandatoryFieldsMissing);
-           return (String[]) LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);    
+           return LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);    
         }               
         
         Object[] diagnosis = rdbm.existsRecord(rdbm, schemaConfigName, tableName, new String[]{"code","code_version"}, new Object[]{sampleTemplate, sampleTemplateVersion});
@@ -187,7 +187,7 @@ Object[] logSample(Rdbms rdbm, String schemaPrefix, String sampleTemplate, Integ
            errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, sampleTemplateVersion);
            errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, schemaConfigName);
            errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, diagnosis[5]);
-           return (String[]) LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);    
+           return LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);    
         }
         //String[] specialFields = getSpecialFields();
         //String[] specialFieldsFunction = getSpecialFieldsFunction();
@@ -220,7 +220,7 @@ Object[] logSample(Rdbms rdbm, String schemaPrefix, String sampleTemplate, Integ
                         errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, currField);
                         errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, aMethod);
                         errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, specialFunctionReturn.toString());
-                        return (String[]) LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);                            
+                        return LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);                            
                     } 
             }
         }
@@ -235,7 +235,7 @@ Object[] logSample(Rdbms rdbm, String schemaPrefix, String sampleTemplate, Integ
         if (!"LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){
             errorCode = "DataSample_errorInsertingSampleRecord";
             errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, diagnoses[5]);
-            return (String[]) LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);
+            return LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);
         }        
 
         Object[] fieldsOnLogSample = labArr.joinTwo1DArraysInOneOf1DString(sampleFieldName, sampleFieldValue, ":");
@@ -273,7 +273,7 @@ public Object[] sampleReception(Rdbms rdbm, String schemaPrefix, String userName
         errorCode = "DataSample_SampleNotFound";
         errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, sampleId);
         errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, schemaPrefix);
-        return (String[]) LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);
+        return LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);
     }
     if (currSampleStatus[0][1]!=null){ 
         errorCode = "DataSample_SampleAlreadyReceived";
@@ -305,10 +305,10 @@ public Object[] sampleReception(Rdbms rdbm, String schemaPrefix, String userName
     
     diagnoses = rdbm.updateRecordFieldsByFilter(rdbm, schemaDataName, tableName, sampleFieldName, sampleFieldValue, 
                                             new String[] {"sample_id"}, new Object[]{sampleId});
-    if ("LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){
-        String[] fieldsForAudit = labArr.joinTwo1DArraysInOneOf1DString(sampleFieldName, sampleFieldValue, userName);
-        smpAudit.sampleAuditAdd(rdbm, schemaPrefix, auditActionName, this.getSampleGrouper()+"_"+"sample", sampleId, sampleId, null, null, fieldsForAudit, userName, userRole);
-    }    
+//    if ("LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){
+//        String[] fieldsForAudit = labArr.joinTwo1DArraysInOneOf1DString(sampleFieldName, sampleFieldValue, userName);
+//        smpAudit.sampleAuditAdd(rdbm, schemaPrefix, auditActionName, this.getSampleGrouper()+"_"+"sample", sampleId, sampleId, null, null, fieldsForAudit, userName, userRole);
+//    }    
     return diagnoses;
 }
 
@@ -334,7 +334,7 @@ public Object[] changeSamplingDate(Rdbms rdbm, String schemaPrefix, String userN
         errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, sampleId.toString());
         errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, schemaDataName);
         errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, Arrays.toString(labArr.joinTwo1DArraysInOneOf1DString(sampleFieldName, sampleFieldValue, ", ")));        
-        diagnoses = (String[]) LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_TRUE", classVersion, errorCode, errorDetailVariables);
+        diagnoses = LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_TRUE", classVersion, errorCode, errorDetailVariables);
 
         String[] fieldsForAudit = labArr.joinTwo1DArraysInOneOf1DString(sampleFieldName, sampleFieldValue, userName);
         smpAudit.sampleAuditAdd(rdbm, schemaPrefix, auditActionName, "sample", sampleId, sampleId, null, null, fieldsForAudit, userName, userRole);
@@ -364,7 +364,7 @@ public Object[] sampleReceptionCommentAdd(Rdbms rdbm, String schemaPrefix, Strin
         errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, sampleId);
         errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, schemaDataName);
         errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, Arrays.toString(labArr.joinTwo1DArraysInOneOf1DString(sampleFieldName, sampleFieldValue, ", ")));
-        diagnoses = (String[]) LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);                
+        diagnoses = LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);                
         
         String[] fieldsForAudit = labArr.joinTwo1DArraysInOneOf1DString(sampleFieldName, sampleFieldValue, userName);
         smpAudit.sampleAuditAdd(rdbm, schemaPrefix, auditActionName, "sample", sampleId, sampleId, null, null, fieldsForAudit, userName, userRole);
@@ -393,7 +393,7 @@ public Object[] sampleReceptionCommentRemove(Rdbms rdbm, String schemaPrefix, St
         errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, sampleId);
         errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, schemaDataName);
         errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, Arrays.toString(labArr.joinTwo1DArraysInOneOf1DString(sampleFieldName, sampleFieldValue, ", ")));
-        diagnoses = (String[]) LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);                
+        diagnoses = LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);                
 
         String[] fieldsForAudit = labArr.joinTwo1DArraysInOneOf1DString(sampleFieldName, sampleFieldValue, userName);
         smpAudit.sampleAuditAdd(rdbm, schemaPrefix, auditActionName, "sample", sampleId, sampleId, null, null, fieldsForAudit, userName, userRole);
@@ -427,7 +427,7 @@ public Object[] setSampleStartIncubationDateTime(Rdbms rdbm, String schemaPrefix
         errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, sampleId);
         errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, schemaDataName);
         errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, Arrays.toString(labArr.joinTwo1DArraysInOneOf1DString(sampleFieldName, sampleFieldValue, ", ")));
-        diagnoses = (String[]) LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_TRUE", classVersion, errorCode, errorDetailVariables);                
+        diagnoses = LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_TRUE", classVersion, errorCode, errorDetailVariables);                
         
         String[] fieldsForAudit = labArr.joinTwo1DArraysInOneOf1DString(sampleFieldName, sampleFieldValue, userName);
         smpAudit.sampleAuditAdd(rdbm, schemaPrefix, auditActionName, "sample", sampleId, sampleId, null, null, fieldsForAudit, userName, userRole);
@@ -450,7 +450,7 @@ public Object[] setSampleEndIncubationDateTime(Rdbms rdbm, String schemaPrefix, 
         errorCode = "DataSample_SampleIncubationEnded_NotStartedYet";
         errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, sampleId);
         errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, schemaDataName);
-        return (String[]) LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);
+        return LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);
     }
     String[] sampleFieldName = new String[2];
     Object[] sampleFieldValue = new Object[2];
@@ -470,7 +470,7 @@ public Object[] setSampleEndIncubationDateTime(Rdbms rdbm, String schemaPrefix, 
         errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, sampleId);
         errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, schemaDataName);
         errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, Arrays.toString(labArr.joinTwo1DArraysInOneOf1DString(sampleFieldName, sampleFieldValue, ", ")));
-        diagnoses = (String[]) LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_TRUE", classVersion, errorCode, errorDetailVariables);                
+        diagnoses = LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_TRUE", classVersion, errorCode, errorDetailVariables);                
 
         String[] fieldsForAudit = labArr.joinTwo1DArraysInOneOf1DString(sampleFieldName, sampleFieldValue, userName);
         smpAudit.sampleAuditAdd(rdbm, schemaPrefix, auditActionName, "sample", sampleId, sampleId, null, null, fieldsForAudit, userName, userRole);

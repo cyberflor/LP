@@ -73,7 +73,14 @@
         <servlet-name>logSample</servlet-name>
         <servlet-class>com.labplanet.servicios.frontend.logSample</servlet-class>
     </servlet>
-
+    <servlet>
+        <servlet-name>sampleAPI</servlet-name>
+        <servlet-class>com.labplanet.servicios.testing.ModuleSample.sampleAPI</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>authenticationAPI</servlet-name>
+        <servlet-class>frontEnd.api.authenticationAPI</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>DBActions</servlet-name>
         <url-pattern>/testing/platform/DBActions</url-pattern>
@@ -148,6 +155,14 @@
     <servlet-mapping>
         <servlet-name>logSample</servlet-name>
         <url-pattern>/frontEnd/logSample</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>sampleAPI</servlet-name>
+        <url-pattern>/moduleSample/sampleAPI</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>authenticationAPI</servlet-name>
+        <url-pattern>/frontEnd/authenticationAPI</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
