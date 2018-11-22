@@ -9,6 +9,12 @@ import com.sun.rowset.CachedRowSetImpl;
 import LabPLANET.utilities.LabPLANETArray;
 import LabPLANET.utilities.LabPLANETJson;
 import LabPLANET.utilities.LabPLANETPlatform;
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.JWTVerifier;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.interfaces.Claim;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -31,6 +37,9 @@ import javax.sql.DataSource;
 import javax.xml.bind.DatatypeConverter;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Header;
+import java.util.HashMap;
+import java.util.Map;
 import org.codehaus.jettison.json.JSONArray;
 
 /**
@@ -56,43 +65,6 @@ public class Rdbms {
     private Integer timeout;
     private String lastError = "";
     
-    String KEY = " mi clave";
-
-    public Rdbms() {
-        //default query timeout
-        this.timeout = 5;        
-    }    
-    
-    public Boolean isValidToken(String jwtToken){       
-        try {
-            Claims claims = Jwts.parser()         
-               .setSigningKey(DatatypeConverter.parseBase64Binary(KEY))
-               .parseClaimsJws(jwtToken).getBody();
-
-            System.out.println("ID: " + claims.getId());
-            System.out.println("Subject: " + claims.getSubject());
-            System.out.println("Issuer: " + claims.getIssuer());
-            System.out.println("Expiration: " + claims.getExpiration());
-            
-            return true;
-        }catch (Exception e){
-            return false;
-        }
-    }
-    
-    public String  createToken(String userDBId, String userId, String userRole){        
-        long tiempo = System.currentTimeMillis();
-        String vwt = Jwts.builder()
-                .signWith(SignatureAlgorithm.HS256, KEY)
-                .setSubject(userId)
-                .setHeaderParam("userRole", userRole)
-                .setHeaderParam("userDB", userDBId)
-                .setIssuedAt(new Date(tiempo))
-                .setExpiration(new Date(tiempo+900000))
-                .claim("email", "mymail@gmail.com")
-                .compact();
-        return vwt;
-    }
     public Boolean startRdbms(Rdbms rdbm, String user, String pass) {
         try {
             ResourceBundle prop = ResourceBundle.getBundle("parameter.config.config");

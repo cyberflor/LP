@@ -146,6 +146,11 @@ public class Role {
         return diagnoses;
     }   
 
+    public Object[][] getInternalUser(Rdbms rdbm, String dbUserName) {
+        Object[][] recordFieldsByFilter = rdbm.getRecordFieldsByFilter(rdbm, "config", "user_info", new String[]{"user_info_name"}, new Object[]{dbUserName},
+                new String[]{"user_info_id"});        
+        return recordFieldsByFilter;
+    }
     
     
 }

@@ -81,6 +81,14 @@
         <servlet-name>authenticationAPI</servlet-name>
         <servlet-class>frontEnd.api.authenticationAPI</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>userInfoAPI</servlet-name>
+        <servlet-class>frontEnd.api.userInfoAPI</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>appHeaderAPI</servlet-name>
+        <servlet-class>frontEnd.api.appHeaderAPI</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>DBActions</servlet-name>
         <url-pattern>/testing/platform/DBActions</url-pattern>
@@ -163,6 +171,14 @@
     <servlet-mapping>
         <servlet-name>authenticationAPI</servlet-name>
         <url-pattern>/frontEnd/authenticationAPI</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>userInfoAPI</servlet-name>
+        <url-pattern>/userInfoAPI</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>appHeaderAPI</servlet-name>
+        <url-pattern>/frontEnd/appHeaderAPI</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

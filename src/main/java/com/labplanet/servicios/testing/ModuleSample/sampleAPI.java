@@ -352,9 +352,11 @@ public class sampleAPI extends HttpServlet {
 */                    
                 default:      
                     errObject = frontEnd.APIHandler.actionNotRecognized(errObject, functionBeingTested, response);
-                    out.println(Arrays.toString(errObject));                   
+                    out.println(Arrays.toString(errObject));   
+                    rdbm.closeRdbms();                    
                     return;                    
             }    
+            rdbm.closeRdbms();
             if ("LABPLANET_TRUE".equalsIgnoreCase(dataSample[0].toString())){                                
                 //out.println(Arrays.toString(dataSample));
                 response.getWriter().write(Arrays.toString(dataSample));
@@ -369,7 +371,7 @@ public class sampleAPI extends HttpServlet {
             errObject = frontEnd.APIHandler.actionNotRecognized(errObject, null, response);
             //out.println(Arrays.toString(errObject));                   
             Response.serverError();
-            Response.status(responseOnERROR).build();
+            Response.status(responseOnERROR).build();            
             return;                 
         }
     }

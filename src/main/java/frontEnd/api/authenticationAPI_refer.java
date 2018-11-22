@@ -8,7 +8,6 @@ package frontEnd.api;
 import LabPLANET.utilities.LabPLANETArray;
 import com.labplanet.modelo.UserRole;
 import databases.Rdbms;
-import databases.Token;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Arrays;
@@ -29,7 +28,7 @@ import org.json.simple.JSONArray;
  *
  * @author Administrator
  */
-public class authenticationAPI extends HttpServlet {
+public class authenticationAPI_refer extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -39,7 +38,7 @@ public class authenticationAPI extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    //public enum actionsList {    AUTHENTICATE,    GETUSERROLE,    LOW    }
+    public enum actionsList {    AUTHENTICATE,    GETUSERROLE,    LOW    }
     
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -94,10 +93,9 @@ public class authenticationAPI extends HttpServlet {
                         //errObject = labArr.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);                        
                         out.println(Arrays.toString(internalUser));                                       
                     }
-                    Token token = new Token();
                     String internalUserStr = internalUser[0][0].toString();
                     //UserSession usSess = new UserSession(usr, rdbm);         
-                    String myToken = token.createToken(dbUserName, dbUserPassword, internalUserStr, "Admin");
+                    String myToken = rdbm.createToken(internalUserStr, dbUserName, dbUserPassword, "Admin");
                     //JsonObject json = Json.createObjectBuilder()
                     //        .add("JWT", myToken).build();
                     
@@ -106,9 +104,14 @@ public class authenticationAPI extends HttpServlet {
                             .add("myToken", myToken)
                             .build();                                                
                     response.getWriter().write(json.toString());
-                    Response.ok().build();    
-                    rdbm.closeRdbms();
-                    return;
+                    Response.ok().build();                    
+                    Response.status(Response.Status.CREATED).entity(json).build();                    
+                    break;    
+            //                HttpSession mySession = request.getSession(true);
+            //                request.setAttribute("m_respuestaUsuarioValido", true);
+            //                mySession.setAttribute("dhue8y7d8ue8", true);
+            //               ResponseBuilder builder = Response.ok();
+            //                return builder.build();
                 case "GETUSERROLE":         
                     dbUserName = request.getParameter("dbUserName");                   
                     dbUserPassword = request.getParameter("dbUserPassword");      
@@ -127,7 +130,8 @@ public class authenticationAPI extends HttpServlet {
                             errObject = labArr.addValueToArray1D(errObject, "Error Status Code: "+"Connection not established");                        
                             out.println(Arrays.toString(errObject));              
                             return;
-                    }                    
+                    }
+                    //Response.ok().build();
                     Object[][] recordFieldsByFilter = rdbm.getRecordFieldsByFilter(rdbm, "config", "user_profile", 
                                 new String[]{"user_info_id"}, new Object[]{userInfoId}, new String[]{"role_id"});
                         //Object[] recordFieldsByFilter1D =  labArr.array2dTo1d(recordFieldsByFilter);
@@ -138,8 +142,11 @@ public class authenticationAPI extends HttpServlet {
                         Response.ok(recordFieldsByFilter).build();
                         return;
                     }
-                    Object[] recordsFieldsByFilter1D = labArr.array2dTo1d(recordFieldsByFilter);                    
+                    Object[] recordsFieldsByFilter1D = labArr.array2dTo1d(recordFieldsByFilter);
+                    
                     System.out.println(recordsFieldsByFilter1D);
+                    //response.getWriter().write(recordsFieldsByFilter1D);       
+//                    Response.ok(recordsFieldsByFilter1D).build(); 
                     
                     JSONArray jArray= new JSONArray();
                     for (int i = 0; i < recordFieldsByFilter.length; i++) {     
@@ -148,45 +155,65 @@ public class authenticationAPI extends HttpServlet {
                         }
                     }        
                     System.out.println(jArray);
-                    response.getWriter().write(jArray.toJSONString());                                
-                    return;    
-                case "FINALTOKEN":     
-                    String firstToken = request.getParameter("myToken");                   
-                    String userRole = request.getParameter("userRole");                      
+                    response.getWriter().write(jArray.toJSONString());                    
+                        
+//                    int[][] data = {{1, 2, 3}, {3, 4, 5}, {4, 5, 6}};
+//                    String json = gson.toJson(data);
+                    //System.out.println("Data = " + json);                        
+                        
+                    //System.out.println(jArray);
+//                    response.getWriter().write(jArray.toJSONString());                                
+/*            String  myData = rdbm.getRecordFieldsByFilterJSON(rdbm, "sample-A-data", "sample",
+                    new String[] {"received_by is null"}, new Object[]{""},
+                    //new String[] {"sample_id"}, new Object[]{5},
+                    new String[] { "sample_id", "sample_config_code", "sampling_comment"});
+                  JSONArray jArray= new JSONArray();
+                    for (int i = 0; i < recordFieldsByFilter.length; i++) {     
+                        jArray.add(recordFieldsByFilter[i][0]);
+                       //jArray.put(dataSample[i]);
+                    }        
+                    System.out.println(jArray);
+                    response.getWriter().write(jArray.toJSONString());            
+                    Response.ok(myData).build();  
+            rdbm.closeRdbms();*/
+                    
+/*                    String[] dataSample = new String[0];
+                    dataSample= labArr.addValueToArray1D(dataSample, "LABPLANET_TRUE");
+                    dataSample= labArr.addValueToArray1D(dataSample, "eXAMPLE");
+                    dataSample= labArr.addValueToArray1D(dataSample, userInfoId.toString());
+                    //dataSample[1]="";
+                  JSONArray jArray= new JSONArray();
+                    for (int i = 0; i < dataSample.length; i++) {     
+                        jArray.add(dataSample[i]);
+                       //jArray.put(dataSample[i]);
+                    }        
 
-                    if ((firstToken==null) || (userRole==null) ) {
-                        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);       
-                        errObject = labArr.addValueToArray1D(errObject, "API Error Message: myToken and userRole are mandatory params for this API");                    
-                        out.println(Arrays.toString(errObject));
-                        return ;
-                    }                    
-                                       
-                    token = new Token();
-                    String[] tokenParams = token.tokenParamsList();
-                    String[] tokenParamsValues = token.validateToken(firstToken, tokenParams);
+
+                    //dataSample[1]="";
+                  JSONArray jArray= new JSONArray();
+                    for (int i = 0; i < dataSample.length; i++) {     
+                        jArray.add(dataSample[i]);
+                       //jArray.put(dataSample[i]);
+                    }        
+*/                    
+//                    System.out.println(jArray);
+//                    response.getWriter().write(jArray.toJSONString());            
+            //Response.ok(myData).build();   
+            
+            return;
                     
-                    String userName = tokenParamsValues[labArr.valuePosicInArray(tokenParams, "userDB")];
-                    String password = tokenParamsValues[labArr.valuePosicInArray(tokenParams, "userDBPassword")];
-                    internalUserStr = tokenParamsValues[labArr.valuePosicInArray(tokenParams, "internalUserID")];
-                    
-                    String myFinalToken = token.createToken(userName, password, internalUserStr, userRole);
-            //JsonObject json = Json.createObjectBuilder()
-            //        .add("JWT", myToken).build();
-                    
-                    json = Json.createObjectBuilder()
-                            //.add("userInfoId", internalUserStr)
-                            //.add("myTokenDecoded", myFirstTokenDecoded)
-                            .add("finalToken", myFinalToken)
-                            .build();                                                
-                    response.getWriter().write(json.toString());
-                    Response.ok().build();                    
-                    Response.status(Response.Status.CREATED).entity(json).build();   
-                    rdbm.closeRdbms();
-                    return;
+//                    Response.status(Response.Status.CREATED).entity(recordFieldsByFilter).build();    
+//                    return;
+                        /*List<UserRole> lista = new ArrayList();
+                        for (int i=0; i<recordFieldsByFilter.length;i++){
+                            UserRole ur = new UserRole((int) recordFieldsByFilter[i][0].hashCode(), (String) recordFieldsByFilter[i][1]);
+                            lista.add(ur);
+                        }
+                        return Response.ok(lista).build();                  */
+                       // Object[] myJson = JSON.stringify({ x: 5, y: 6 }) ;                   
                 default:      
                     errObject = frontEnd.APIHandler.actionNotRecognized(errObject, actionName, response);
                     out.println(Arrays.toString(errObject));                   
-                    rdbm.closeRdbms();
                     return;                           
             }
             return;
@@ -195,7 +222,6 @@ public class authenticationAPI extends HttpServlet {
             
             Response.serverError();
             Response.status(Response.Status.BAD_REQUEST).build();
-            rdbm.closeRdbms();
             return;
         }
         
