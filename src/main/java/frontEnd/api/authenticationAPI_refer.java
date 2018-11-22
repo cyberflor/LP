@@ -95,13 +95,13 @@ public class authenticationAPI_refer extends HttpServlet {
                     }
                     String internalUserStr = internalUser[0][0].toString();
                     //UserSession usSess = new UserSession(usr, rdbm);         
-                    String myToken = rdbm.createToken(internalUserStr, dbUserName, dbUserPassword, "Admin");
+                   // String myToken = rdbm.createToken(internalUserStr, dbUserName, dbUserPassword, "Admin");
                     //JsonObject json = Json.createObjectBuilder()
                     //        .add("JWT", myToken).build();
                     
                     JsonObject json = Json.createObjectBuilder()
                             .add("userInfoId", internalUserStr)
-                            .add("myToken", myToken)
+                            //.add("myToken", myToken)
                             .build();                                                
                     response.getWriter().write(json.toString());
                     Response.ok().build();                    

@@ -40,10 +40,11 @@ public class Authentication {
         isConnected = rdbm.startRdbms(usr, pw);           
         if (isConnected){      
             //UserSession usSess = new UserSession(usr, rdbm);         
-            String myToken = rdbm.createToken("1", usr, "Admin");
-            JsonObject json = Json.createObjectBuilder()
-                    .add("JWT", myToken).build();
-            return Response.status(Response.Status.CREATED).entity(json).build();
+            //String myToken = rdbm.createToken("1", usr, "Admin");
+            //JsonObject json = Json.createObjectBuilder()
+            //        .add("JWT", myToken).build();
+            //return Response.status(Response.Status.CREATED).entity(json).build();
+            return Response.status(Response.Status.CREATED).build();
 //                HttpSession mySession = request.getSession(true);
 //                request.setAttribute("m_respuestaUsuarioValido", true);
 //                mySession.setAttribute("dhue8y7d8ue8", true);
