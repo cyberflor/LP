@@ -212,8 +212,8 @@ public class authenticationAPI_refer extends HttpServlet {
                         return Response.ok(lista).build();                  */
                        // Object[] myJson = JSON.stringify({ x: 5, y: 6 }) ;                   
                 default:      
-                    errObject = frontEnd.APIHandler.actionNotRecognized(errObject, actionName, response);
-                    out.println(Arrays.toString(errObject));                   
+                    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);                
+                    response.getWriter().write(Arrays.toString(errObject));       
                     return;                           
             }
             return;

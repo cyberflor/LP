@@ -3,13 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.labplanet.servicios.testing.ModuleSample;
+package com.labplanet.servicios.ModuleSample;
 
 import LabPLANET.utilities.LabPLANETArray;
 import LabPLANET.utilities.LabPLANETPlatform;
 import com.labplanet.dao.ProductoDAO;
 import com.labplanet.modelo.Producto;
 import databases.Rdbms;
+import databases.Token;
 import functionalJava.sampleStructure.DataSample;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -27,7 +28,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import org.json.simple.JSONArray;
-import frontEnd.APIHandler;
+//import frontEnd.APIHandler;
 
 
 /**
@@ -50,7 +51,7 @@ public class sampleAPI extends HttpServlet {
             throws ServletException, IOException {
         
         LabPLANETArray labArr = new LabPLANETArray();
-        
+        Rdbms rdbm = new Rdbms();            
         //ResponseEntity<String> responsew;
         
         //response.setContentType("application/json;charset=UTF-8");
@@ -78,14 +79,16 @@ public class sampleAPI extends HttpServlet {
             String dbUserPassword = request.getParameter("dbUserPassword");
             String userName = request.getParameter("userName");
             String userRole = request.getParameter("userRole");
+
             if (schemaPrefix==null) {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);                
                 errObject = labArr.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
                 errObject = labArr.addValueToArray1D(errObject, "API Error Message: schemaPrefix is one mandatory param for this API");                    
                 out.println(Arrays.toString(errObject));
                 return ;
-            }          
-            if (dbUserName==null) {
+            }        
+            
+/*            if (dbUserName==null) {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);           
                 errObject = labArr.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
                 errObject = labArr.addValueToArray1D(errObject, "API Error Message: dbUserName is one mandatory param for this API");                    
@@ -112,8 +115,26 @@ public class sampleAPI extends HttpServlet {
                 errObject = labArr.addValueToArray1D(errObject, "API Error Message: userRole is one mandatory param for this API");                    
                 out.println(Arrays.toString(errObject));
                 return ;
-            }                 
-            Rdbms rdbm = new Rdbms();            
+            }       */          
+                    String finalToken = request.getParameter("finalToken");                   
+                    //String userRole = request.getParameter("userRole");                      
+
+                    if (finalToken==null) {
+                        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);       
+                        errObject = labArr.addValueToArray1D(errObject, "API Error Message: myToken and userRole are mandatory params for this API");                    
+                        out.println(Arrays.toString(errObject));
+                        return ;
+                    }                    
+                                       
+                    Token token = new Token();
+                    String[] tokenParams = token.tokenParamsList();
+                    String[] tokenParamsValues = token.validateToken(finalToken, tokenParams);
+                    
+            dbUserName = tokenParamsValues[labArr.valuePosicInArray(tokenParams, "userDB")];
+            dbUserPassword = tokenParamsValues[labArr.valuePosicInArray(tokenParams, "userDBPassword")];
+            String internalUserID = tokenParamsValues[labArr.valuePosicInArray(tokenParams, "internalUserID")];         
+            userRole = tokenParamsValues[labArr.valuePosicInArray(tokenParams, "userRole")];                     
+                                
             boolean isConnected = false;
             isConnected = rdbm.startRdbms(dbUserName, dbUserPassword);
             if (!isConnected){
@@ -137,8 +158,8 @@ public class sampleAPI extends HttpServlet {
                         out.println(Arrays.toString(errObject));
                         return ;
                     }                 
-                    Integer sampleTemplateVersion = Integer.parseInt(request.getParameter("sampleTemplateVersion"));                   
-                    if (sampleTemplateVersion==null) {
+                    String sampleTemplateVersionStr = request.getParameter("sampleTemplateVersion");                                  
+                    if (sampleTemplateVersionStr==null) {
                         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);           
                         errObject = labArr.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
                         errObject = labArr.addValueToArray1D(errObject, "sampleTemplateVersion="+request.getParameter("sampleTemplateVersion"));
@@ -146,7 +167,7 @@ public class sampleAPI extends HttpServlet {
                         out.println(Arrays.toString(errObject));
                         return ;
                     }            
-                    
+                    Integer sampleTemplateVersion = Integer.parseInt(sampleTemplateVersionStr);                  
                     String fieldName=request.getParameter("fieldName");                                        
                     String fieldValue=request.getParameter("fieldValue");
                     String[] fieldNames=null;
@@ -154,38 +175,36 @@ public class sampleAPI extends HttpServlet {
                     if (fieldName!=null) fieldNames = (String[]) fieldName.split("\\|");                                            
                     if (fieldValue!=null) fieldValues = (Object[]) labArr.convertStringWithDataTypeToObjectArray(fieldValue.split("\\|"));
                                         
+                    
                     dataSample = smp.logSample(rdbm, schemaPrefix, sampleTemplate, sampleTemplateVersion, fieldNames, fieldValues, userName, userRole);
                     out.println("logSample returns with "+dataSample[0].toString());                   
                     break;                                        
                 case "RECEIVESAMPLE":  
-                    Integer sampleId = Integer.parseInt(request.getParameter("sampleId"));                   
-                    if (sampleId==null) {
+                    
+                    String sampleIdStr = request.getParameter("sampleId");                             
+                    if (sampleIdStr==null) {
                         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);           
                         errObject = labArr.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
-                        errObject = labArr.addValueToArray1D(errObject, "sampleTemplateVersion="+request.getParameter("sampleTemplateVersion"));
+                        errObject = labArr.addValueToArray1D(errObject, "sampleId="+request.getParameter("sampleId"));
                         errObject = labArr.addValueToArray1D(errObject, "API Error Message: sampleId is one mandatory param and should be one integer value for this API");                    
                         out.println(Arrays.toString(errObject));
                         return ;
                     }                
-                    String sl = "[{\"diag\":\"true\", \"isDiag\":true, \"sampleReturned\":"+ sampleId.toString()+"}]";
-                            //response.getWriter().write(sl);
-//                    List<Producto> lista = ProductoDAO.getProductos();
-                    
-//                    Response.ok(sl).build();
-//                    return;
- //                   return;
-                    //return Response.status(Response.Status.NOT_FOUND).build();                         
-/*            String  dataSamples = rdbm.getRecordFieldsByFilterJSON(rdbm, "sample-A-data", "sample",
-                    //new String[] {"received_by is null", "sample_id"}, new Object[]{"", 124},
-                    new String[] {"sample_id"}, new Object[]{124},
-                    new String[] { "sample_id", "sample_config_code", "sampling_comment"});
-            rdbm.closeRdbms();         
-            out.println("my filter! "+dataSamples.length());
-                            
-             Response.ok(dataSamples).build();
-*/                            
-//             return;
-                      
+                    Integer sampleId = Integer.parseInt(sampleIdStr);      
+
+                    dataSample = smp.sampleReception(rdbm, schemaPrefix, internalUserID, sampleId, userRole);
+
+                    rdbm.closeRdbms();
+                    if ("LABPLANET_FALSE".equalsIgnoreCase(dataSample[0].toString())){  
+                        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);         
+                        response.getWriter().write(Arrays.toString(dataSample));      
+                    }else{
+                        Response.ok().build();
+                        response.getWriter().write(Arrays.toString(dataSample));          
+                    }            
+                    rdbm.closeRdbms();
+                    return;
+/*                     
                     dataSample= labArr.addValueToArray1D(dataSample, "LABPLANET_TRUE");
                     dataSample= labArr.addValueToArray1D(dataSample, "eXAMPLE");
                     dataSample= labArr.addValueToArray1D(dataSample, sampleId.toString());
@@ -200,7 +219,8 @@ public class sampleAPI extends HttpServlet {
                     dataSample = smp.sampleReception(rdbm, schemaPrefix, userName, sampleId, userRole);
                     return;
                     //break;    
-                    
+                    //break;    
+ */                   
                 case "CHANGESAMPLINGDATE":
                     sampleId = Integer.parseInt(request.getParameter("sampleId"));                   
                     if (sampleId==null) {
@@ -351,8 +371,9 @@ public class sampleAPI extends HttpServlet {
                     break;
 */                    
                 default:      
-                    errObject = frontEnd.APIHandler.actionNotRecognized(errObject, functionBeingTested, response);
-                    out.println(Arrays.toString(errObject));   
+                    //errObject = frontEnd.APIHandler.actionNotRecognized(errObject, functionBeingTested, response);
+                    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);                
+                    response.getWriter().write(Arrays.toString(errObject));
                     rdbm.closeRdbms();                    
                     return;                    
             }    
@@ -366,12 +387,18 @@ public class sampleAPI extends HttpServlet {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);                
                 out.println(Arrays.toString(dataSample));                    
             }            
-        }catch(Exception e){            
+        }catch(Exception e){      
+            rdbm.closeRdbms();        
+            
             String[] errObject = new String[]{e.getMessage()};
-            errObject = frontEnd.APIHandler.actionNotRecognized(errObject, null, response);
-            //out.println(Arrays.toString(errObject));                   
-            Response.serverError();
-            Response.status(responseOnERROR).build();            
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);                
+            response.getWriter().write(Arrays.toString(errObject));
+
+            Response.serverError().entity(errObject).build();
+            
+            //out.println(Arrays.toString(errObject));                    
+            //Response.serverError();
+            //Response.status(responseOnERROR).build();            
             return;                 
         }
     }

@@ -75,19 +75,23 @@
     </servlet>
     <servlet>
         <servlet-name>sampleAPI</servlet-name>
-        <servlet-class>com.labplanet.servicios.testing.ModuleSample.sampleAPI</servlet-class>
+        <servlet-class>com.labplanet.servicios.ModuleSample.sampleAPI</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>authenticationAPI</servlet-name>
-        <servlet-class>frontEnd.api.authenticationAPI</servlet-class>
+        <servlet-class>com.labplanet.servicios.app.authenticationAPI</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>userInfoAPI</servlet-name>
-        <servlet-class>frontEnd.api.userInfoAPI</servlet-class>
+        <servlet-class>frontEnd.api._userInfoAPI</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>appHeaderAPI</servlet-name>
-        <servlet-class>frontEnd.api.appHeaderAPI</servlet-class>
+        <servlet-class>com.labplanet.servicios.app.appHeaderAPI</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>sampleAPIfrontend</servlet-name>
+        <servlet-class>com.labplanet.servicios.ModuleSample.sampleAPIfrontend</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>DBActions</servlet-name>
@@ -179,6 +183,10 @@
     <servlet-mapping>
         <servlet-name>appHeaderAPI</servlet-name>
         <url-pattern>/frontEnd/appHeaderAPI</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>sampleAPIfrontend</servlet-name>
+        <url-pattern>/frontEnd/sampleAPIfrontEnd</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

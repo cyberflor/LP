@@ -82,6 +82,7 @@ public class LabPLANETPlatform {
             errorCode = "userRoleActionEnabled_roleNotIncluded";
             errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, schemaPrefix);
             errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, actionName);
+            errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, userRole);
             errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, Arrays.toString(procedureActionsUserRoles));            
             return trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);      
         }else{

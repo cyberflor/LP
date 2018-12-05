@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package frontEnd.api;
+package com.labplanet.servicios.app;
 
 import LabPLANET.utilities.LabPLANETArray;
 import com.labplanet.modelo.UserRole;
@@ -84,15 +84,27 @@ public class authenticationAPI extends HttpServlet {
                     boolean isConnected = false;
                     isConnected = rdbm.startRdbms(dbUserName, dbUserPassword);           
                     if (!isConnected){     
-                        response.setStatus(HttpServletResponse.SC_NOT_FOUND);                           
-                        break;    
+                        response.setStatus(HttpServletResponse.SC_NOT_FOUND);               
+                        JsonObject json = Json.createObjectBuilder()
+                            .add("userInfoId", "")
+                            .add("label_en", "User "+dbUserName+" does not exist or password incorrect.")
+                            .add("label_es", "Usuario"+dbUserName+" no existe o contraseña incorrecta.")
+                            .build();    
+                        response.getWriter().write(json.toString());
+                        return;    
                     }
                     Role rol = new Role();
                     Object[][] internalUser = rol.getInternalUser(rdbm, dbUserName);
                     if ("LABPLANET_FALSE".equalsIgnoreCase(internalUser[0][0].toString())){
                         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);           
+                        JsonObject json = Json.createObjectBuilder()
+                                .add("userInfoId", "")
+                                .add("label_en", "User does not exist or password incorrect.")
+                                .add("label_es", "Usuario no existe o contraseña incorrecta.")
+                                .build();                             
                         //errObject = labArr.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);                        
-                        out.println(Arrays.toString(internalUser));                                       
+                        out.println(Arrays.toString(internalUser));                
+                        return;
                     }
                     Token token = new Token();
                     String internalUserStr = internalUser[0][0].toString();
@@ -184,8 +196,8 @@ public class authenticationAPI extends HttpServlet {
                     rdbm.closeRdbms();
                     return;
                 default:      
-                    errObject = frontEnd.APIHandler.actionNotRecognized(errObject, actionName, response);
-                    out.println(Arrays.toString(errObject));                   
+                    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);                
+                    response.getWriter().write(Arrays.toString(errObject));     
                     rdbm.closeRdbms();
                     return;                           
             }

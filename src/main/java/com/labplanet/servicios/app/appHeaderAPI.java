@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package frontEnd.api;
+package com.labplanet.servicios.app;
 
 import LabPLANET.utilities.LabPLANETArray;
 import databases.Rdbms;
@@ -77,8 +77,8 @@ public class appHeaderAPI extends HttpServlet {
                     rdbm.closeRdbms();
                     return;
                 default:      
-                    errObject = frontEnd.APIHandler.actionNotRecognized(errObject, actionName, response);
-                    out.println(Arrays.toString(errObject));      
+                    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);                
+                    response.getWriter().write(Arrays.toString(errObject));
                     rdbm.closeRdbms();
                     return;                           
             }            
