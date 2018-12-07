@@ -93,6 +93,10 @@
         <servlet-name>sampleAPIfrontend</servlet-name>
         <servlet-class>com.labplanet.servicios.ModuleSample.sampleAPIfrontend</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>AppProcedureList</servlet-name>
+        <servlet-class>com.labplanet.servicios.app.AppProcedureList</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>DBActions</servlet-name>
         <url-pattern>/testing/platform/DBActions</url-pattern>
@@ -187,6 +191,10 @@
     <servlet-mapping>
         <servlet-name>sampleAPIfrontend</servlet-name>
         <url-pattern>/frontEnd/sampleAPIfrontEnd</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AppProcedureList</servlet-name>
+        <url-pattern>/fronEnd/AppProcedureList</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

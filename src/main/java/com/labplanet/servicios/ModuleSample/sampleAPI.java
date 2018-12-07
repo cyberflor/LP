@@ -54,9 +54,6 @@ public class sampleAPI extends HttpServlet {
         Rdbms rdbm = new Rdbms();            
         //ResponseEntity<String> responsew;
         
-        //response.setContentType("application/json;charset=UTF-8");
-        
-        //response.setContentType("application/json");
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
     

@@ -122,17 +122,17 @@ public class UserSecurity {
     public Object[] isValidUserPassword(String user, String pass) throws ClassNotFoundException, IllegalAccessException, InstantiationException, SQLException, NamingException {            
         Object[] diagnoses = new Object[2];
         diagnoses[0]=false;
-        Rdbms rdbms2 = new Rdbms();
+        Rdbms rdbms = new Rdbms();
         
-        Boolean startRdbms = rdbms2.startRdbms( user, pass);        
+        Boolean startRdbms = rdbms.startRdbms( user, pass);        
         if(startRdbms){
             diagnoses[0] = true; diagnoses[1] = "The eSign password is correct"; 
         }else{
             diagnoses[0] = false; diagnoses[1]="eSign incorrect for the user "+user;               
         }    
-        Connection connection = rdbms2.getConnection();
+        Connection connection = rdbms.getConnection();
         connection.close();
-        rdbms2.closeRdbms();        
+        rdbms.closeRdbms();        
         return diagnoses;
         
     }    

@@ -84,19 +84,19 @@ public class TestingConfigSop extends HttpServlet {
             filterFieldValue[1]=true;
             filterFieldName[2]="schema_prefix is not null";            
             
-            Object[][] userProfileField = usProf.getUserProfileFieldValues(rdbm, filterFieldName, filterFieldValue, fieldsToReturn);  
+            Object[] userProfileField = usProf.getProcedureUserProfileFieldValues(rdbm, schemaDataName, filterFieldName, filterFieldValue, fieldsToReturn);  
             fileContent = fileContent + "<tr><td>"+"getUserProfileFieldValues"+"</td>";                                   
             fileContent = fileContent + "<td>"+"filterFieldName: "+Arrays.toString(filterFieldName)+"</td>";                                   
             fileContent = fileContent + "<td>"+"filterFieldValue: "+Arrays.toString(filterFieldValue)+"</td>";                                   
             fileContent = fileContent + "<td>"+"fieldsToReturn: "+Arrays.toString(fieldsToReturn)+"</td>";                                   
-            fileContent = fileContent + "<td>"+Arrays.toString(labArr.array2dTo1d(userProfileField))+"</td></tr>";    
+            fileContent = fileContent + "<td>"+Arrays.toString(userProfileField)+"</td></tr>";    
             
             String[] schemaPrefix = new String[userProfileField.length];
             for(Integer i=0;i<userProfileField.length;i++){
-                schemaPrefix[i]=userProfileField[i][1].toString();
+                schemaPrefix[i]=userProfileField[i].toString();
             }
             
-            String[] userSchemas = usProf.getAllUserSchemaPrefix(rdbm, "1");
+            Object[] userSchemas = usProf.getAllUserProcedurePrefix(rdbm, "1");
             fileContent = fileContent + "<tr><td>"+"getAllUserSchemaPrefix"+"</td>";  
             fileContent = fileContent + "<td>"+"UserInfoId: 1"+"</td>";                                               
             fileContent = fileContent + "<td>"+Arrays.toString(userSchemas)+"</td></tr>";    

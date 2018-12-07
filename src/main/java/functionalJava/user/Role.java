@@ -147,8 +147,8 @@ public class Role {
     }   
 
     public Object[][] getInternalUser(Rdbms rdbm, String dbUserName) {
-        Object[][] recordFieldsByFilter = rdbm.getRecordFieldsByFilter(rdbm, "config", "user_info", new String[]{"user_info_name"}, new Object[]{dbUserName},
-                new String[]{"user_info_id"});        
+        Object[][] recordFieldsByFilter = rdbm.getRecordFieldsByFilter(rdbm, "app", "users", new String[]{"user_name"}, new Object[]{dbUserName},
+                new String[]{"person_name"});        
         return recordFieldsByFilter;
     }
     

@@ -39,7 +39,13 @@ public class LabPLANETJson {
         jsonStr=jsonStr+"}";
         return jsonStr;
     }
-    
+    public static JSONArray convertToJSON(String[] normal_array) {
+        JSONArray json_array= new JSONArray();
+        for (int i = 0; i < normal_array.length; i++) {
+           json_array.put(normal_array[i]);
+        }
+        return json_array;
+    }
     public static String convertToJSON(ResultSet res) {
         try {
             String jsonarrayf;

@@ -47,7 +47,7 @@ public class UserSop {
         String actionEnabledUserSopCertification = Rdbms.getParameterBundle(schemaConfigName, "actionEnabledUserSopCertification"); 
         
         UserProfile usProf = new UserProfile();
-        String[] userSchemas = usProf.getAllUserSchemaPrefix(rdbm, userInfoId);
+        String[] userSchemas = (String[]) usProf.getAllUserProcedurePrefix(rdbm, userInfoId);
         Boolean schemaIsCorrect = false;
         for (String us: userSchemas){
             if (us.equalsIgnoreCase(schemaPrefixName)){schemaIsCorrect=true;break;}            
@@ -106,7 +106,7 @@ public class UserSop {
         String[] userSchemas = null;
         if (schemapPrefixName.contains("ALL")){
             UserProfile usProf = new UserProfile();
-            userSchemas = usProf.getAllUserSchemaPrefix(rdbm, userInfoId);
+            userSchemas = (String[]) usProf.getAllUserProcedurePrefix(rdbm, userInfoId);
         }
         else{
             userSchemas = new String[1];
@@ -174,7 +174,7 @@ public class UserSop {
         }
         
         UserProfile usProf = new UserProfile();
-        String[] userSchemas = usProf.getAllUserSchemaPrefix(rdbm, userInfoId);
+        String[] userSchemas = (String[]) usProf.getAllUserProcedurePrefix(rdbm, userInfoId);
         Boolean schemaIsCorrect = false;
         for (String us: userSchemas){
             if (us.equalsIgnoreCase(schemaPrefixName)){schemaIsCorrect=true;break;}            
