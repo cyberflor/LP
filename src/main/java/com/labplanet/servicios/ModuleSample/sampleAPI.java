@@ -217,17 +217,18 @@ public class sampleAPI extends HttpServlet {
                     return;
                     //break;    
                     //break;    
- */                   
+ */                                  
                 case "CHANGESAMPLINGDATE":
-                    sampleId = Integer.parseInt(request.getParameter("sampleId"));                   
-                    if (sampleId==null) {
+                    sampleIdStr = request.getParameter("sampleId");                             
+                    if (sampleIdStr==null) {
                         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);           
                         errObject = labArr.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
-                        errObject = labArr.addValueToArray1D(errObject, "sampleTemplateVersion="+request.getParameter("sampleTemplateVersion"));
+                        errObject = labArr.addValueToArray1D(errObject, "sampleId="+request.getParameter("sampleId"));
                         errObject = labArr.addValueToArray1D(errObject, "API Error Message: sampleId is one mandatory param and should be one integer value for this API");                    
                         out.println(Arrays.toString(errObject));
                         return ;
-                    }                       
+                    }                
+                    sampleId = Integer.parseInt(sampleIdStr);      
                     Date newDate=Date.valueOf(request.getParameter("newDate"));
                     if (newDate==null) {
                         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);           
@@ -237,27 +238,39 @@ public class sampleAPI extends HttpServlet {
                         out.println(Arrays.toString(errObject));
                         return ;
                     }                     
-                    dataSample = smp.changeSamplingDate(rdbm, schemaPrefix, userName, sampleId, newDate, userRole);
+                    dataSample = smp.changeSamplingDate(rdbm, schemaPrefix, internalUserID, sampleId, newDate, userRole);
                     break;       
-/*                case "SAMPLINGCOMMENTADD":
-                    String comment=null;
-                    if (configSpecTestingArray[i][3]!=null){sampleId = Integer.parseInt( (String) configSpecTestingArray[i][3]);}
-                    if (configSpecTestingArray[i][4]!=null){userName = (String) configSpecTestingArray[i][4];}
-                    if (configSpecTestingArray[i][5]!=null){comment = (String) configSpecTestingArray[i][5];}
-                    fileContent = fileContent + "<td>sampleId, userName, comment</td>";
-                    fileContent = fileContent + "<td>"+sampleId.toString()+", "+userName.toString()+comment.toString()+"</td>";
-                    dataSample = smp.sampleReceptionCommentAdd(rdbm, schemaPrefix, userName, sampleId, comment, userRole);
+                case "SAMPLINGCOMMENTADD":
+                    sampleIdStr = request.getParameter("sampleId");                             
+                    if (sampleIdStr==null) {
+                        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);           
+                        errObject = labArr.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
+                        errObject = labArr.addValueToArray1D(errObject, "sampleId="+request.getParameter("sampleId"));
+                        errObject = labArr.addValueToArray1D(errObject, "API Error Message: sampleId is one mandatory param and should be one integer value for this API");                    
+                        out.println(Arrays.toString(errObject));
+                        return ;
+                    }                
+                    sampleId = Integer.parseInt(sampleIdStr);      
+                    String comment=null;                    
+                    comment = request.getParameter("sampleComment"); 
+                    dataSample = smp.sampleReceptionCommentAdd(rdbm, schemaPrefix, internalUserID, sampleId, comment, userRole);
                     break;       
                 case "SAMPLINGCOMMENTREMOVE":
-                    comment=null;
-                    if (configSpecTestingArray[i][3]!=null){sampleId = Integer.parseInt( (String) configSpecTestingArray[i][3]);}
-                    if (configSpecTestingArray[i][4]!=null){userName = (String) configSpecTestingArray[i][4];}
-                    if (configSpecTestingArray[i][5]!=null){comment = (String) configSpecTestingArray[i][5];}
-                    fileContent = fileContent + "<td>sampleId, userName, comment</td>";
-                    fileContent = fileContent + "<td>"+sampleId.toString()+", "+userName.toString()+comment.toString()+"</td>";
-                    dataSample = smp.sampleReceptionCommentRemove(rdbm, schemaPrefix, userName, sampleId, comment, userRole);
+                    sampleIdStr = request.getParameter("sampleId");                             
+                    if (sampleIdStr==null) {
+                        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);           
+                        errObject = labArr.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
+                        errObject = labArr.addValueToArray1D(errObject, "sampleId="+request.getParameter("sampleId"));
+                        errObject = labArr.addValueToArray1D(errObject, "API Error Message: sampleId is one mandatory param and should be one integer value for this API");                    
+                        out.println(Arrays.toString(errObject));
+                        return ;
+                    }                
+                    sampleId = Integer.parseInt(sampleIdStr);      
+                    comment=null;        
+                    comment = request.getParameter("sampleComment"); 
+                    dataSample = smp.sampleReceptionCommentRemove(rdbm, schemaPrefix, internalUserID, sampleId, comment, userRole);
                     break;       
-                case "INCUBATIONSTART":
+ /*               case "INCUBATIONSTART":
                     if (configSpecTestingArray[i][3]!=null){sampleId = Integer.parseInt( (String) configSpecTestingArray[i][3]);}
                     if (configSpecTestingArray[i][4]!=null){userName = (String) configSpecTestingArray[i][4];}
                     fileContent = fileContent + "<td>sampleId, userName</td>";

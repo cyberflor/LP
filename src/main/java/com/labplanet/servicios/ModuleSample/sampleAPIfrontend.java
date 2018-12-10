@@ -89,15 +89,8 @@ public class sampleAPIfrontend extends HttpServlet {
                 return ;
             }           
             
-
             switch (actionName.toUpperCase()){
             case "UNRECEIVESAMPLES_LIST":            
-
-                /* TODO output your page here. You may use following sample code. */
-                Object[][] myObj = new Object[2][3];
-                myObj[0][0] = "hola"; myObj[0][1] = 1; myObj[0][2] = "bueno";
-                myObj[1][0] = "hola"; myObj[1][1] = "adios"; myObj[1][2] = true;
-
                 String  myData = rdbm.getRecordFieldsByFilterJSON(rdbm, schemaPrefix+"-data", "sample",
                         new String[] {"received_by is null"}, new Object[]{""},
                         //new String[] {"sample_id"}, new Object[]{5},
@@ -114,6 +107,46 @@ public class sampleAPIfrontend extends HttpServlet {
                 rdbm.closeRdbms();
                     //return Response.ok(myData).build();            
                     return;
+            case "SAMPLES_INPROGRESS_LIST":   
+                String whereFieldsName = request.getParameter("whereFieldsName"); 
+                String whereFieldsValue = request.getParameter("whereFieldsValue"); 
+                String sampleFieldToRetrieve = request.getParameter("sampleFieldToRetrieve"); 
+                
+                String[] sampleFieldToRetrieveArr = new String[]{"sample_id"};
+                if (sampleFieldToRetrieve!=null){
+                    sampleFieldToRetrieveArr=labArr.addValueToArray1D(sampleFieldToRetrieveArr, sampleFieldToRetrieve.split("\\|"));
+                }
+                
+                String[] whereFieldsNameArr = new String[]{"status"};
+                if (whereFieldsName!=null){
+                    whereFieldsNameArr=labArr.addValueToArray1D(whereFieldsNameArr, whereFieldsName.split("\\|"));
+                }            
+                Object[] whereFieldsValueArr = new Object[]{"RECEIVED"};
+                if (whereFieldsValue!=null){
+                    whereFieldsValueArr=labArr.addValueToArray1D(whereFieldsValueArr, whereFieldsValue.split("\\|"));
+                }                 
+ /*               whereFieldsNameArr = labArr.addValueToArray1D(whereFieldsNameArr, "status");
+                whereFieldsNameArr = labArr.addValueToArray1D(whereFieldsNameArr, "RECEIVED");
+                
+                String[] whereFieldsNameArr=whereFieldsName.split("\\|");                
+                Object[] whereFieldsValueArr = labArr.convertStringWithDataTypeToObjectArray(whereFieldsValue.split("\\|"));
+  */              
+
+                myData = rdbm.getRecordFieldsByFilterJSON(rdbm, schemaPrefix+"-data", "sample",
+                        whereFieldsNameArr, whereFieldsValueArr,                        
+                        sampleFieldToRetrieveArr);
+                rdbm.closeRdbms();
+                if (myData.contains("LABPLANET_FALSE")){  
+                    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);         
+                    response.getWriter().write(myData);      
+                }else{
+                    Response.ok().build();
+                    response.getWriter().write(myData);           
+                }
+                    //Response.serverError().entity(myData).build();
+                rdbm.closeRdbms();
+                    //return Response.ok(myData).build();            
+                    return;                    
             default:      
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);                
                 response.getWriter().write(Arrays.toString(errObject));

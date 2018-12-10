@@ -74,17 +74,10 @@ public class TestingConfigSop extends HttpServlet {
             UserSop usSop = new UserSop();
             String[] filterFieldName = new String[3];
             Object[] filterFieldValue = new Object[2];
-            String[] fieldsToReturn = new String[2];
-            
-            fieldsToReturn[0] = "role_id";
-            fieldsToReturn[1] = "schema_prefix";
-            filterFieldName[0]="user_info_id";
-            filterFieldValue[0]="1";
-            filterFieldName[1]="active";
-            filterFieldValue[1]=true;
-            filterFieldName[2]="schema_prefix is not null";            
-            
-            Object[] userProfileField = usProf.getProcedureUserProfileFieldValues(rdbm, schemaDataName, filterFieldName, filterFieldValue, fieldsToReturn);  
+            String[] fieldsToReturn = new String[2];     
+
+            String userInfoId = "1"; 
+            Object[] userProfileField = usProf.getProcedureUserProfileFieldValues(rdbm, schemaDataName, userInfoId);  
             fileContent = fileContent + "<tr><td>"+"getUserProfileFieldValues"+"</td>";                                   
             fileContent = fileContent + "<td>"+"filterFieldName: "+Arrays.toString(filterFieldName)+"</td>";                                   
             fileContent = fileContent + "<td>"+"filterFieldValue: "+Arrays.toString(filterFieldValue)+"</td>";                                   

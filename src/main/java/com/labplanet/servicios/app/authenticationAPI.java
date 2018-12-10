@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.Response;
 import functionalJava.user.Role;
+import functionalJava.user.UserProfile;
 import java.util.ArrayList;
 import java.util.List;
 import javax.json.JsonArray;
@@ -140,6 +141,27 @@ public class authenticationAPI extends HttpServlet {
                             out.println(Arrays.toString(errObject));              
                             return;
                     }                    
+                    
+                    UserProfile usProf = new UserProfile();
+                    Object[] allUserProcedurePrefix = usProf.getAllUserProcedurePrefix(rdbm, dbUserName);
+                    if ("LABPLANET_FALSE".equalsIgnoreCase(allUserProcedurePrefix[0].toString())){
+                        response.setStatus(HttpServletResponse.SC_BAD_REQUEST); 
+                        response.getWriter().write(Arrays.toString(allUserProcedurePrefix));  
+                    }                    
+                    
+                    Object[] allUserProcedureRoles = usProf.getProcedureUserProfileFieldValues(rdbm, allUserProcedurePrefix, userInfoId);
+                    if ("LABPLANET_FALSE".equalsIgnoreCase(allUserProcedureRoles[0].toString())){
+                        response.setStatus(HttpServletResponse.SC_BAD_REQUEST); 
+                        response.getWriter().write(Arrays.toString(allUserProcedureRoles));  
+                    }                    
+                    JSONArray jArray= new JSONArray();
+                    for (int i = 0; i < allUserProcedureRoles.length; i++) {         
+                            jArray.add(allUserProcedureRoles[i]);                        
+                    }        
+                    System.out.println(jArray);
+                    response.getWriter().write(jArray.toJSONString());                     
+                    if (1==1) return;
+                    
                     Object[][] recordFieldsByFilter = rdbm.getRecordFieldsByFilter(rdbm, "config", "user_profile", 
                                 new String[]{"user_info_id"}, new Object[]{userInfoId}, new String[]{"role_id"});
                         //Object[] recordFieldsByFilter1D =  labArr.array2dTo1d(recordFieldsByFilter);
@@ -153,7 +175,7 @@ public class authenticationAPI extends HttpServlet {
                     Object[] recordsFieldsByFilter1D = labArr.array2dTo1d(recordFieldsByFilter);                    
                     System.out.println(recordsFieldsByFilter1D);
                     
-                    JSONArray jArray= new JSONArray();
+                     jArray= new JSONArray();
                     for (int i = 0; i < recordFieldsByFilter.length; i++) {     
                         for (int j = 0; j < recordFieldsByFilter[0].length; j++) {     
                             jArray.add(recordFieldsByFilter[i][j]);

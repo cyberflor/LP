@@ -741,13 +741,15 @@ public class Rdbms {
         prep.setQueryTimeout(getTimeout());
         
         try{
-            for (Integer i=0;i<valoresinterrogaciones.length;i++){
-                Boolean addToFilter = true;
-                if (valoresinterrogaciones[i].toString().equalsIgnoreCase("IN()")){addToFilter=false;}
-                if (valoresinterrogaciones[i].toString().equalsIgnoreCase("IS NULL")){addToFilter=false;}
-                if (valoresinterrogaciones[i].toString().equalsIgnoreCase("IS NOT NULL")){addToFilter=false;}
-                if (addToFilter){
-                    filteredValoresConInterrogaciones = labArr.addValueToArray1D(filteredValoresConInterrogaciones, valoresinterrogaciones[i]);}
+            if (valoresinterrogaciones!=null){
+                for (Integer i=0;i<valoresinterrogaciones.length;i++){
+                    Boolean addToFilter = true;
+                    if (valoresinterrogaciones[i].toString().equalsIgnoreCase("IN()")){addToFilter=false;}
+                    if (valoresinterrogaciones[i].toString().equalsIgnoreCase("IS NULL")){addToFilter=false;}
+                    if (valoresinterrogaciones[i].toString().equalsIgnoreCase("IS NOT NULL")){addToFilter=false;}
+                    if (addToFilter){
+                        filteredValoresConInterrogaciones = labArr.addValueToArray1D(filteredValoresConInterrogaciones, valoresinterrogaciones[i]);}
+                }
             }
                 
             buildPreparedStatement(filteredValoresConInterrogaciones, prep, null); 

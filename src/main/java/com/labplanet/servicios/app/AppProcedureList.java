@@ -86,26 +86,91 @@ JSONObject log = new JSONObject();
 log.put("connected", true);
 log.put("person_name", internalUserID);
 
+String rolName = userRole;
+
+
             UserProfile usProf = new UserProfile();
             Object[] allUserProcedurePrefix = usProf.getAllUserProcedurePrefix(rdbm, dbUserName);
+            if ("LABPLANET_FALSE".equalsIgnoreCase(allUserProcedurePrefix[0].toString())){
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST); 
+                response.getWriter().write(Arrays.toString(allUserProcedurePrefix));  
+            }
 logs.add(Arrays.toString(allUserProcedurePrefix));
 log.put("user profiles", logs);
 
+
+            String[] procFldNameArray = new String[0];
+            procFldNameArray = labArr.addValueToArray1D(procFldNameArray, "name");
+            procFldNameArray = labArr.addValueToArray1D(procFldNameArray, "version");
+            procFldNameArray = labArr.addValueToArray1D(procFldNameArray, "label_en");
+            procFldNameArray = labArr.addValueToArray1D(procFldNameArray, "label_es");
+            //procFldNameArray = labArr.addValueToArray1D(procFldNameArray, "schemaPrefix");
             
+            String[] procEventFldNameArray = new String[0];
+            procEventFldNameArray = labArr.addValueToArray1D(procEventFldNameArray, "name");
+            procEventFldNameArray = labArr.addValueToArray1D(procEventFldNameArray, "label_en");
+            procEventFldNameArray = labArr.addValueToArray1D(procEventFldNameArray, "label_es");
+            procEventFldNameArray = labArr.addValueToArray1D(procEventFldNameArray, "branch_level");
+            procEventFldNameArray = labArr.addValueToArray1D(procEventFldNameArray, "type");
+            procEventFldNameArray = labArr.addValueToArray1D(procEventFldNameArray, "mode");
+
+
+    for (int yProcEv=0; yProcEv<procEventFldNameArray.length;yProcEv++){ 
+        
+    }             
             
-Response.ok().build();
-response.getWriter().write(log.toString());   
+            //Object[] procArray = new Object[0];
+            JSONArray procedures = new JSONArray();     
+            for (Object curProc: allUserProcedurePrefix){
+                JSONObject procedure = new JSONObject();
+                //JSONArray procEventsJson = new JSONArray();
+                Object[][] procInfo = rdbm.getRecordFieldsByFilter(rdbm, curProc.toString()+"-config", "procedure_info", 
+                        new String[]{"name is not null"}, null, procFldNameArray);
+                if ("LABPLANET_FALSE".equalsIgnoreCase(procInfo[0][0].toString())){
+                     response.setStatus(HttpServletResponse.SC_BAD_REQUEST); 
+                     response.getWriter().write(Arrays.toString(procInfo));
+                }                       
+                for (int yProc=0; yProc<procInfo[0].length; yProc++){
+              
+                    //procArray = labArr.addValueToArray1D(procArray, procInfo[0][yProc]);
+                    procedure.put(procFldNameArray[yProc], procInfo[0][yProc]);
+                }
+                //procArray = labArr.addValueToArray1D(procArray, curProc);
+                procedure.put("schemaPrefix", curProc);
+                
+                Object[][] procEvent = rdbm.getRecordFieldsByFilter(rdbm, curProc.toString()+"-config", "procedure_events", 
+                        new String[]{"role_name"}, new String[]{rolName}, 
+                        procEventFldNameArray, new String[]{"order_number"});
+                if (!"LABPLANET_FALSE".equalsIgnoreCase(procEvent[0][0].toString())){        
+                    JSONArray procEvents = new JSONArray(); 
+                    for (int xProcEv=0; xProcEv<procEvent.length; xProcEv++){
+                        JSONObject procEventJson = new JSONObject();
+                        for (int yProcEv=0; yProcEv<procEvent[0].length; yProcEv++){
+                            //procArray = labArr.addValueToArray1D(procArray, procEvent[xProcEv][yProcEv]);
+                            procEventJson.put(procEventFldNameArray[yProcEv], procEvent[xProcEv][yProcEv]);
+                        }  
+                        procEvents.add(procEventJson);
+                    }
+                    procedure.put("definition", procEvents);
+                }        
+                procedures.add(procedure);
+            }
+            procFldNameArray = labArr.addValueToArray1D(procFldNameArray, "schemaPrefix");
+            //Object[][] procArray2d = labArr.array1dTo2d(procArray, procFldNameArray.length);
+            
+  
+            JSONObject proceduresList = new JSONObject();
+            proceduresList.put("procedures", procedures);
+
+            Response.ok().build();
+            response.getWriter().write(proceduresList.toString());               
+//Response.ok().build();
+//response.getWriter().write(log.toString());   
 
 rdbm.closeRdbms();
 
 if (1==1) return;
-            
-  String[] procFldNameArray = new String[0];
-procFldNameArray = labArr.addValueToArray1D(procFldNameArray, "name");
-procFldNameArray = labArr.addValueToArray1D(procFldNameArray, "version");
-procFldNameArray = labArr.addValueToArray1D(procFldNameArray, "label_en");
-procFldNameArray = labArr.addValueToArray1D(procFldNameArray, "label_es");
-procFldNameArray = labArr.addValueToArray1D(procFldNameArray, "schemaPrefix");
+/*            
 //JSONArray procArrayJson = labJson.convertToJSON(procFldNameArray);
 Object[] procArray = new Object[0];
 procArray = labArr.addValueToArray1D(procArray, "ProcessUSA");
@@ -120,15 +185,8 @@ procArray = labArr.addValueToArray1D(procArray, "Process EU");
 procArray = labArr.addValueToArray1D(procArray, "Proceso UE");
 procArray = labArr.addValueToArray1D(procArray, "process-eu");
 Object[][] procArray2d = labArr.array1dTo2d(procArray, procFldNameArray.length);
-
-String[] procEventFldNameArray = new String[0];
-procEventFldNameArray = labArr.addValueToArray1D(procEventFldNameArray, "name");
-procEventFldNameArray = labArr.addValueToArray1D(procEventFldNameArray, "label_en");
-procEventFldNameArray = labArr.addValueToArray1D(procEventFldNameArray, "label_es");
-procEventFldNameArray = labArr.addValueToArray1D(procEventFldNameArray, "branch_level");
-procEventFldNameArray = labArr.addValueToArray1D(procEventFldNameArray, "type");
-procEventFldNameArray = labArr.addValueToArray1D(procEventFldNameArray, "mode");
-
+*/
+/*
 Object[] procEventArray = new Object[0];
 procEventArray = labArr.addValueToArray1D(procEventArray, "Home");
 procEventArray = labArr.addValueToArray1D(procEventArray, "Home");
@@ -152,7 +210,8 @@ procEventArray = labArr.addValueToArray1D(procEventArray, "tree-list");
 procEventArray = labArr.addValueToArray1D(procEventArray, "edit");
 
 Object[][] procEventArray2d = labArr.array1dTo2d(procEventArray, procEventFldNameArray.length);
-
+*/
+/*
 JSONArray procedures = new JSONArray();
 
 
@@ -182,7 +241,7 @@ for (int xProc=0; xProc<procArray2d.length;xProc++){
                       Response.ok().build();
                    response.getWriter().write(proceduresList.toString());   
   
-            
+ */           
 if (1==1) return;
             
 JsonObjectBuilder jsonBuilder = Json.createObjectBuilder();
