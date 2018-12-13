@@ -21,12 +21,18 @@ import java.util.Scanner;
 import java.util.Set;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
+import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * LabPLANETArray is a library for methods for building and modeling 1D and 2D arrays.
@@ -222,7 +228,20 @@ public class LabPLANETArray {
                         break;
                     case "BOOLEAN":               
                         myObjectsArray[i]=Boolean.valueOf((String) rowParse[0]);
-                        break;                        
+                        break;               
+                    case "DATE":        
+                        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+                        //DateFormat df = DateFormat.getDateInstance();
+                        {
+                            try {
+                                myObjectsArray[i]= format.parse((String) rowParse[0]);
+//                                myObjectsArray[i]= df.parse((String) rowParse[0]);
+                            } catch (ParseException ex) {
+                                String errMessage = ex.getMessage();
+                                Logger.getLogger(LabPLANETArray.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                        }
+                        break;                                                            
                     default:
                         myObjectsArray[i]=(String) rowParse[0];
                         break;
@@ -457,7 +476,7 @@ public class LabPLANETArray {
         }else{
             arrayLen = array.length;
         }
-        Object[] newArray = new Object[arrayLen+1];
+        Object[] newArray = new Object[arrayLen];
 
         if (array!=null){     
             for (Integer i=0;i<array.length;i++){
@@ -485,7 +504,7 @@ public class LabPLANETArray {
         }else{
             arrayLen = array.length;
         }
-        String[] newArray = new String[arrayLen+1];
+        String[] newArray = new String[arrayLen];
         
         if (array!=null){
             for (Integer i=0;i<array.length;i++){

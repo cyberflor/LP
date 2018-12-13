@@ -16,6 +16,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.Response;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 /**
  *
@@ -90,8 +92,30 @@ public class sampleAPIfrontend extends HttpServlet {
             }           
             
             switch (actionName.toUpperCase()){
+            case "GET_SAMPLETEMPLATES":       
+                Object[][] Datas = rdbm.getRecordFieldsByFilter(rdbm, schemaPrefix+"-config", "sample", 
+                //String  myData = rdbm.getRecordFieldsByFilterJSON(rdbm, schemaPrefix+"-config", "sample",
+                        new String[] {"code"}, new Object[]{"sampleTemplate"},
+                        new String[] { "json_definition"});
+                rdbm.closeRdbms();
+                JSONObject proceduresList = new JSONObject();
+                JSONArray jArray = new JSONArray();
+                if ("LABPLANET_FALSE".equalsIgnoreCase(Datas[0][0].toString())){  
+                    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);         
+                    response.getWriter().write(Arrays.toString(labArr.array2dTo1d(Datas)));      
+                }else{
+                   Response.ok().build();                   
+                   for (Object fv: labArr.array2dTo1d(Datas)){
+                       jArray.add(fv);
+                       //proceduresList.put("procedures", fv);                          
+                   }                                 
+//                   response.getWriter().write(myData);           
+                }           
+                //response.getWriter().write(proceduresList.toString());                  
+                response.getWriter().write(jArray.toString());                  
+                return;
             case "UNRECEIVESAMPLES_LIST":            
-                String  myData = rdbm.getRecordFieldsByFilterJSON(rdbm, schemaPrefix+"-data", "sample",
+                String myData = rdbm.getRecordFieldsByFilterJSON(rdbm, schemaPrefix+"-data", "sample",
                         new String[] {"received_by is null"}, new Object[]{""},
                         //new String[] {"sample_id"}, new Object[]{5},
                         new String[] { "sample_id", "sample_config_code", "sampling_comment"});
