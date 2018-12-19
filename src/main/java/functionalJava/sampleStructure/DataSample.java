@@ -609,7 +609,7 @@ public String[] sampleAnalysisAssignAnalyst(Rdbms rdbm, String schemaPrefix, Str
     return (String[]) LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);           
 }
         
-public String[] sampleAnalysisAddtoSample(Rdbms rdbm, String schemaPrefix, String userName, Integer sampleId, String[] fieldName, Object[] fieldValue, String userRole) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException{
+public Object[] sampleAnalysisAddtoSample(Rdbms rdbm, String schemaPrefix, String userName, Integer sampleId, String[] fieldName, Object[] fieldValue, String userRole) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException{
 
     tableName = "_analysis";
     String actionName = "Insert";
@@ -913,7 +913,7 @@ public String[] sampleAnalysisAddtoSample(Rdbms rdbm, String schemaPrefix, Strin
     errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, "");
     errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, testId.toString());
     errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, schemaDataName);
-    return (String[]) LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);       
+    return LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);       
 }
 
 public Object[] sampleEvaluateStatus(Rdbms rdbm, String schemaPrefix, String userName, Integer sampleId, String parentAuditAction, String userRole) throws SQLException{
@@ -930,21 +930,21 @@ public Object[] sampleEvaluateStatus(Rdbms rdbm, String schemaPrefix, String use
     String sampleStatusIncomplete = Rdbms.getParameterBundle(schemaDataName.replace("\"", ""), "sample_statusIncomplete");
     String sampleStatusComplete = Rdbms.getParameterBundle(schemaDataName.replace("\"", ""), "sample_statusComplete");
     
-    String[] diagnoses = null;
+    Object[] diagnoses = null;
     String smpPrevStatus=""; String smpAnaNewStatus="";
     
-    diagnoses = (String[]) rdbm.existsRecord(rdbm, schemaDataName, "sample_analysis", 
+    diagnoses =  rdbm.existsRecord(rdbm, schemaDataName, "sample_analysis", 
                                         new String[]{"sample_id","status in "}, 
                                         new Object[]{sampleId, "NOT_STARTED|STARTED|INCOMPLETE"});
-    if (diagnoses[3].equalsIgnoreCase("LABPLANET_TRUE")){smpAnaNewStatus=sampleStatusIncomplete;}
+    if (diagnoses[3].toString().equalsIgnoreCase("LABPLANET_TRUE")){smpAnaNewStatus=sampleStatusIncomplete;}
     else{smpAnaNewStatus=sampleStatusComplete;}
     
-    diagnoses = (String[]) rdbm.updateRecordFieldsByFilter(rdbm, schemaDataName, "sample", 
+    diagnoses = rdbm.updateRecordFieldsByFilter(rdbm, schemaDataName, "sample", 
             new String[]{"status"}, 
             new Object[]{smpAnaNewStatus},
             new String[]{"sample_id"},
             new Object[]{sampleId});
-    if ("LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0])){
+    if ("LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){
         String[] fieldsForAudit = new String[0];
         fieldsForAudit = labArr.addValueToArray1D(fieldsForAudit, "status:"+smpAnaNewStatus);
         smpAudit.sampleAuditAdd(rdbm, schemaPrefix, auditActionName, "sample", sampleId, sampleId, null, null, fieldsForAudit, userName, userRole);        

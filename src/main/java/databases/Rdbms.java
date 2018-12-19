@@ -201,7 +201,10 @@ public class Rdbms {
         String fieldsToRetrieveStr = ""; String fieldsToRetrieveArgStr = "";
         String setFieldNamesStr = ""; String setFieldNamesArgStr = "";
         if (fieldsToRetrieve!=null){            
-            for (String fn: fieldsToRetrieve){       fieldsToRetrieveStr = fieldsToRetrieveStr + fn + ", ";}
+            for (String fn: fieldsToRetrieve){
+                fn = fn.toUpperCase().replace(" IN", "");  
+                fieldsToRetrieveStr = fieldsToRetrieveStr + fn.toLowerCase() + ", ";
+            }
             fieldsToRetrieveStr = fieldsToRetrieveStr.substring(0, fieldsToRetrieveStr.length()-2);  
         }              
         String fieldsToOrderStr = "";
@@ -310,8 +313,8 @@ public class Rdbms {
         try{
             Object[] keyFieldValuesSplitted = new Object[0];
             for (int i=0; i< keyFieldValues.length; i++){
-                String currFieldValue = (String) keyFieldValues[i];
-                if (currFieldValue.contains("\\|")){
+                //String currFieldValue = keyFieldValues[i].toString();                
+                if(keyFieldValues[i] instanceof String){                    
                     keyFieldValuesSplitted = labArr.addValueToArray1D(keyFieldValuesSplitted, keyFieldValues[i].toString().split("\\|"));
                 }else{
                     keyFieldValuesSplitted = labArr.addValueToArray1D(keyFieldValuesSplitted, keyFieldValues[i]);

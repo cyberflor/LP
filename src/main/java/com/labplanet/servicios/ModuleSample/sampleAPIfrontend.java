@@ -165,7 +165,7 @@ public class sampleAPIfrontend extends HttpServlet {
                 String[] whereFieldsNameArr=whereFieldsName.split("\\|");                
                 Object[] whereFieldsValueArr = labArr.convertStringWithDataTypeToObjectArray(whereFieldsValue.split("\\|"));
   */              
-                if (sampleLastLevel=="SAMPLE"){
+                if ("SAMPLE".equals(sampleLastLevel)){
                     myData = rdbm.getRecordFieldsByFilterJSON(rdbm, schemaPrefix+"-data", "sample",
                             whereFieldsNameArr, whereFieldsValueArr, sampleFieldToRetrieveArr);
                     if (myData.contains("LABPLANET_FALSE")){  
@@ -190,19 +190,22 @@ public class sampleAPIfrontend extends HttpServlet {
                         for (int yProc=0; yProc<mySamples[0].length; yProc++){
                             sampleObj.put(sampleFieldToRetrieveArr[yProc], mySamples[xProc][yProc]);
                         }
-                        if ( (sampleLastLevel=="TEST") || (sampleLastLevel=="RESULT") ) {
+                        if ( ("TEST".equals(sampleLastLevel)) || ("RESULT".equals(sampleLastLevel)) ) {
                             String[] testWhereFieldsNameArr = new String[]{"sample_id"};
                             Object[] testWhereFieldsValueArr = new Object[]{sampleId};
                             Object[][] mySampleAnalysis = rdbm.getRecordFieldsByFilter(rdbm, schemaPrefix+"-data", "sample_analysis",
-                                    testWhereFieldsNameArr, testWhereFieldsValueArr, testFieldToRetrieveArr);          
+                                    testWhereFieldsNameArr, testWhereFieldsValueArr, testFieldToRetrieveArr);      
+                            JSONArray testsArray = new JSONArray();   
                             for (int xSmpAna=0; xSmpAna<mySampleAnalysis.length; xSmpAna++){
                                 JSONObject testObj = new JSONObject();
                                 Integer testId = (Integer) mySampleAnalysis[xSmpAna][0];
                                 for (int ySmpAna=0; ySmpAna<mySampleAnalysis[0].length; ySmpAna++){         
                                     testObj.put(testFieldToRetrieveArr[xSmpAna], mySampleAnalysis[ySmpAna][0]);
                                 }      
-                                sampleArray.add(testObj);
+                                testsArray.add(testObj);
+                                //sampleArray.add(testsArray);
                             }
+                            sampleObj.put("tests", testsArray);
                         }
                         sampleArray.add(sampleObj);
                         samplesArray.add(sampleArray);
