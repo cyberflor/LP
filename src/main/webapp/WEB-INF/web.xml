@@ -95,7 +95,15 @@
     </servlet>
     <servlet>
         <servlet-name>AppProcedureList</servlet-name>
-        <servlet-class>com.labplanet.servicios.app.AppProcedureList</servlet-class>
+        <servlet-class>com.labplanet.servicios.app.AppProcedureListAPI</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>sopUser</servlet-name>
+        <servlet-class>com.labplanet.servicios.app.sopUserAPI</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>sopUserAPIfrontend</servlet-name>
+        <servlet-class>com.labplanet.servicios.app.sopUserAPIfrontend</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>DBActions</servlet-name>
@@ -195,6 +203,14 @@
     <servlet-mapping>
         <servlet-name>AppProcedureList</servlet-name>
         <url-pattern>/fronEnd/AppProcedureList</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>sopUser</servlet-name>
+        <url-pattern>/frontEnd/sopUser</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>sopUserAPIfrontend</servlet-name>
+        <url-pattern>/frontEnd/sopUserAPIfrontend</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

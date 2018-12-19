@@ -173,16 +173,17 @@ public class Rdbms {
                         separator = separator.substring(posicINClause+2, posicINClause+3);
                         separator = separator.trim();
                         separator = separator.replace(" IN", "");  
+                        if (separator.length()==0){ separator="|";}
                         containsInClause = true;
                         String textSpecs = (String) whereFieldValues[i-1];
                         String[] textSpecArray = textSpecs.split("\\"+separator);
-                        queryWhere = queryWhere + fn.replace(separator, "") + "(" ;
-                        for (Integer iNew=0;iNew<i-1;iNew++){
-                            whereFieldValuesNew[iNew] = whereFieldValues[i];                        
-                        }
+                         queryWhere = queryWhere + fn.replace(separator, "") + "(" ;
+                        /*for (Integer iNew =0;iNew<i-1;iNew++){
+                             whereFieldValuesNew[iNew] = whereFieldValues[i];                        
+                        }*/
                         for (String f: textSpecArray){
                             queryWhere = queryWhere + "?,";
-                            whereFieldValuesNew = labArr.addValueToArray1D(whereFieldValuesNew, textSpecArray);                        
+                            whereFieldValuesNew = labArr.addValueToArray1D(whereFieldValuesNew, f);                        
                             i++;
                         }
                         for (Integer j=i;j<=whereFieldValues.length;j++){
@@ -307,7 +308,16 @@ public class Rdbms {
         String query = buildSqlStatement("SELECT", schemaName, tableName,
                 keyFieldNames, keyFieldValues, keyFieldNames,  null, null,  null, null);             
         try{
-            ResultSet res = rdbm.prepRdQuery(query, keyFieldValues);
+            Object[] keyFieldValuesSplitted = new Object[0];
+            for (int i=0; i< keyFieldValues.length; i++){
+                String currFieldValue = (String) keyFieldValues[i];
+                if (currFieldValue.contains("\\|")){
+                    keyFieldValuesSplitted = labArr.addValueToArray1D(keyFieldValuesSplitted, keyFieldValues[i].toString().split("\\|"));
+                }else{
+                    keyFieldValuesSplitted = labArr.addValueToArray1D(keyFieldValuesSplitted, keyFieldValues[i]);
+                }
+            }
+            ResultSet res = rdbm.prepRdQuery(query, keyFieldValuesSplitted);
             res.last();
 
             if (res.getRow()>0){

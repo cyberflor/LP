@@ -76,7 +76,8 @@ public class LabPLANETPlatform {
         if ( (procedureActionsUserRoles.length==1 && "".equals(procedureActionsUserRoles[0])) ){
             errorCode = "userRoleActionEnabled_missedParameter";
             errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, schemaPrefix);
-            errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, actionName);
+            //errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, actionName);            
+            errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, procedureActionsUserRoles);                        
             return trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);        
         }else if(!labArr.valueInArray(procedureActionsUserRoles, userRole)){    
             errorCode = "userRoleActionEnabled_roleNotIncluded";

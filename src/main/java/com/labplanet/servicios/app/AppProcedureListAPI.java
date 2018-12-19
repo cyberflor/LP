@@ -32,7 +32,7 @@ import org.json.simple.JSONArray;
  *
  * @author Administrator
  */
-public class AppProcedureList extends HttpServlet {
+public class AppProcedureListAPI extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -87,8 +87,6 @@ log.put("connected", true);
 log.put("person_name", internalUserID);
 
 String rolName = userRole;
-
-
             UserProfile usProf = new UserProfile();
             Object[] allUserProcedurePrefix = usProf.getAllUserProcedurePrefix(rdbm, dbUserName);
             if ("LABPLANET_FALSE".equalsIgnoreCase(allUserProcedurePrefix[0].toString())){

@@ -101,8 +101,9 @@ public class UserSop {
         }               
     }
 
-    public String[] getNotCompletedUserSOP(Rdbms rdbm, String userInfoId, String schemapPrefixName) throws SQLException{
+    public Object[][] getNotCompletedUserSOP(Rdbms rdbm, String userInfoId, String schemapPrefixName, String[] fieldsToRetrieve) throws SQLException{
 
+        LabPLANETArray labArr = new LabPLANETArray();
         String[] userSchemas = null;
         if (schemapPrefixName.contains("ALL")){
             UserProfile usProf = new UserProfile();
@@ -115,16 +116,24 @@ public class UserSop {
 
         String[] filterFieldName = new String[2];
         Object[] filterFieldValue = new Object[2];
-        String[] fieldsToReturn = new String[2];
+        String[] fieldsToReturn = new String[0];
 
-        fieldsToReturn[0] = "sop_id";
-        fieldsToReturn[1] = "sop_name";
         filterFieldName[0]="user_id";
         filterFieldValue[0]=userInfoId;
         filterFieldName[1]="light";
         filterFieldValue[1]="RED";
+        if (fieldsToRetrieve!=null){            
+            for (String fv: fieldsToRetrieve){
+                fieldsToReturn = labArr.addValueToArray1D(fieldsToReturn, fv);
+            }
+        }else{
+            fieldsToReturn = labArr.addValueToArray1D(fieldsToReturn, "sop_id");
+            fieldsToReturn = labArr.addValueToArray1D(fieldsToReturn, "sop_name");
+        }
                 
         Object[][] getUserProfileFieldValues = getUserProfileFieldValues(rdbm, filterFieldName, filterFieldValue, fieldsToReturn, userSchemas);   
+        return getUserProfileFieldValues;
+/*
         Integer numLines=getUserProfileFieldValues.length;
 
         String[]UserSchemas=new String[numLines];
@@ -132,6 +141,7 @@ public class UserSop {
             UserSchemas[inumLines]=getUserProfileFieldValues[inumLines][0].toString();
         }
         return UserSchemas;           
+*/        
     }
     
     public Object[] _NotRequireduserSopCertifiedBySopName(Rdbms rdbm, String schemaPrefixName, String userInfoId, String sopName, String procedure, Integer procVersion ) throws SQLException{

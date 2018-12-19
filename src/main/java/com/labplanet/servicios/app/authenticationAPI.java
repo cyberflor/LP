@@ -63,8 +63,7 @@ public class authenticationAPI extends HttpServlet {
                 out.println(Arrays.toString(errObject));
                 return ;
             }            
-            
-            
+                        
             switch (actionName.toUpperCase()){
                 case "AUTHENTICATE":
                     String dbUserName = request.getParameter("dbUserName");                   

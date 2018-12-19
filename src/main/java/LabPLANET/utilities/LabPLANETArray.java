@@ -673,4 +673,22 @@ public class LabPLANETArray {
         return data;
     }    
 
+/**
+ * Converts one Object[] to String[]
+ * 
+ * {@link java.util.Arrays#copyOf}
+ * @param obj Object
+ * @return String[]
+ */    
+    public static String[] ConvertObjectArrayToStringArray(Object[] objArray) {
+        String[] strArray = new String[objArray.length];
+        for (int i = 0; i < objArray.length; i++)
+            strArray[i] = String.valueOf(objArray[i]);
+        return strArray;
+    }    
+
 }
+
+
+
+

@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.Response;
 import databases.Token;
+import org.json.simple.JSONObject;
 
 /**
  *
@@ -53,27 +54,55 @@ public class appHeaderAPI extends HttpServlet {
                 out.println(Arrays.toString(errObject));
                 return ;
             }         
+            
+            
             switch (actionName.toUpperCase()){
-                case "GETAPPHEADER":            
+                case "GETAPPHEADER":          
+                    
+                    String personFieldsName = request.getParameter("personFieldsName");
+                    
                     Token token = new Token();
                     String[] tokenParams = token.tokenParamsList();
                     String[] tokenParamsValues = token.validateToken(finalToken, tokenParams);
-                    Integer posic = labArr.valuePosicInArray(tokenParams, "userDB");
-                    String userName = tokenParamsValues[posic];
-                    String password = tokenParamsValues[labArr.valuePosicInArray(tokenParams, "userDBPassword")];
-                    if (!rdbm.startRdbms(userName, password)) {
-                                    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);           
-                                    errObject = labArr.addValueToArray1D(errObject, "Error Status Code: "+"Connection not established");                        
-                                    out.println(Arrays.toString(errObject));              
-                                    return;                
-                    }                        
-                    JsonObject json = Json.createObjectBuilder()
-                            .add("DBUser", userName)
-                            .add("userDBPassword", password)
-                            .build();                                                
-                    response.getWriter().write(json.toString());
+
+                    String dbUserName = tokenParamsValues[labArr.valuePosicInArray(tokenParams, "userDB")];
+                    String dbUserPassword = tokenParamsValues[labArr.valuePosicInArray(tokenParams, "userDBPassword")];
+                    String internalUserID = tokenParamsValues[labArr.valuePosicInArray(tokenParams, "internalUserID")];         
+                    String userRole = tokenParamsValues[labArr.valuePosicInArray(tokenParams, "userRole")];       
+                    
+/*                    JsonObject json = Json.createObjectBuilder()
+                            .add("DBUser", dbUserName)
+                            .add("userRole", userRole).build();
+*/
+                    JSONObject personInfoJsonObj = new JSONObject();
+
+                    if ( personFieldsName!=null){
+                        String[] personFieldsNameArr = personFieldsName.split("\\|");
+                        
+                        if (!rdbm.startRdbms(dbUserName, dbUserPassword)) {
+                                        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);           
+                                        errObject = labArr.addValueToArray1D(errObject, "Error Status Code: "+"Connection not established");                        
+                                        out.println(Arrays.toString(errObject));              
+                                        return;                
+                        }
+                        Object[][] personInfoArr = rdbm.getRecordFieldsByFilter(rdbm, "config", "person", 
+                             new String[]{"person_id"}, new String[]{internalUserID}, personFieldsNameArr);
+                             
+                        if ("LABPLANET_FALSE".equals(personInfoArr[0][0].toString())){
+                            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);           
+                            for (int iFields=0; iFields<personInfoArr[0].length; iFields++ ){
+                                personInfoJsonObj.put("field"+String.valueOf(iFields) , personInfoArr[0][iFields]);
+                            }
+                            response.getWriter().write(personInfoJsonObj.toString());                                                                                                                                                       
+                            return;
+                        }
+                        for (int iFields=0; iFields<personFieldsNameArr.length; iFields++ ){
+                            personInfoJsonObj.put(personFieldsNameArr[iFields], personInfoArr[0][iFields]);
+                        }
+                    }             
+                    response.getWriter().write(personInfoJsonObj.toString());                                                                                                                           
                     Response.ok().build();                     
-                    Response.status(Response.Status.CREATED).entity(json).build();  
+//                    Response.status(Response.Status.CREATED).entity(json).build();  
                     rdbm.closeRdbms();
                     return;
                 default:      

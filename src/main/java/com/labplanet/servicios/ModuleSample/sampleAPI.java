@@ -21,6 +21,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.json.Json;
+import javax.json.JsonObject;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -113,19 +115,19 @@ public class sampleAPI extends HttpServlet {
                 out.println(Arrays.toString(errObject));
                 return ;
             }       */          
-                    String finalToken = request.getParameter("finalToken");                   
-                    //String userRole = request.getParameter("userRole");                      
+            String finalToken = request.getParameter("finalToken");                   
+            //String userRole = request.getParameter("userRole");                      
 
-                    if (finalToken==null) {
-                        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);       
-                        errObject = labArr.addValueToArray1D(errObject, "API Error Message: myToken and userRole are mandatory params for this API");                    
-                        out.println(Arrays.toString(errObject));
-                        return ;
-                    }                    
-                                       
-                    Token token = new Token();
-                    String[] tokenParams = token.tokenParamsList();
-                    String[] tokenParamsValues = token.validateToken(finalToken, tokenParams);
+            if (finalToken==null) {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);       
+                errObject = labArr.addValueToArray1D(errObject, "API Error Message: myToken and userRole are mandatory params for this API");                    
+                out.println(Arrays.toString(errObject));
+                return ;
+            }                    
+
+            Token token = new Token();
+            String[] tokenParams = token.tokenParamsList();
+            String[] tokenParamsValues = token.validateToken(finalToken, tokenParams);
                     
             dbUserName = tokenParamsValues[labArr.valuePosicInArray(tokenParams, "userDB")];
             dbUserPassword = tokenParamsValues[labArr.valuePosicInArray(tokenParams, "userDBPassword")];
@@ -176,8 +178,7 @@ public class sampleAPI extends HttpServlet {
                     dataSample = smp.logSample(rdbm, schemaPrefix, sampleTemplate, sampleTemplateVersion, fieldNames, fieldValues, userName, userRole);
                     out.println("logSample returns with "+dataSample[0].toString());                   
                     break;                                        
-                case "RECEIVESAMPLE":  
-                    
+                case "RECEIVESAMPLE":                      
                     String sampleIdStr = request.getParameter("sampleId");                             
                     if (sampleIdStr==null) {
                         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);           
@@ -220,7 +221,7 @@ public class sampleAPI extends HttpServlet {
  */                                  
                 case "CHANGESAMPLINGDATE":
                     sampleIdStr = request.getParameter("sampleId");                             
-                    if (sampleIdStr==null) {
+                    if ( (sampleIdStr==null) || (sampleIdStr.contains("undefined")) ) {
                         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);           
                         errObject = labArr.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
                         errObject = labArr.addValueToArray1D(errObject, "sampleId="+request.getParameter("sampleId"));
@@ -242,7 +243,7 @@ public class sampleAPI extends HttpServlet {
                     break;       
                 case "SAMPLINGCOMMENTADD":
                     sampleIdStr = request.getParameter("sampleId");                             
-                    if (sampleIdStr==null) {
+                    if ( (sampleIdStr==null) || (sampleIdStr.contains("undefined")) ) {
                         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);           
                         errObject = labArr.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
                         errObject = labArr.addValueToArray1D(errObject, "sampleId="+request.getParameter("sampleId"));
@@ -257,7 +258,7 @@ public class sampleAPI extends HttpServlet {
                     break;       
                 case "SAMPLINGCOMMENTREMOVE":
                     sampleIdStr = request.getParameter("sampleId");                             
-                    if (sampleIdStr==null) {
+                    if ( (sampleIdStr==null) || (sampleIdStr.contains("undefined")) ) {
                         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);           
                         errObject = labArr.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
                         errObject = labArr.addValueToArray1D(errObject, "sampleId="+request.getParameter("sampleId"));
@@ -270,21 +271,33 @@ public class sampleAPI extends HttpServlet {
                     comment = request.getParameter("sampleComment"); 
                     dataSample = smp.sampleReceptionCommentRemove(rdbm, schemaPrefix, internalUserID, sampleId, comment, userRole);
                     break;       
- /*               case "INCUBATIONSTART":
-                    if (configSpecTestingArray[i][3]!=null){sampleId = Integer.parseInt( (String) configSpecTestingArray[i][3]);}
-                    if (configSpecTestingArray[i][4]!=null){userName = (String) configSpecTestingArray[i][4];}
-                    fileContent = fileContent + "<td>sampleId, userName</td>";
-                    fileContent = fileContent + "<td>"+sampleId.toString()+", "+userName.toString()+"</td>";
+                case "INCUBATIONSTART":
+                    sampleIdStr = request.getParameter("sampleId");                             
+                    if ( (sampleIdStr==null) || (sampleIdStr.contains("undefined")) ) {
+                        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);           
+                        errObject = labArr.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
+                        errObject = labArr.addValueToArray1D(errObject, "sampleId="+request.getParameter("sampleId"));
+                        errObject = labArr.addValueToArray1D(errObject, "API Error Message: sampleId is one mandatory param and should be one integer value for this API");                    
+                        out.println(Arrays.toString(errObject));
+                        return ;
+                    }                
+                    sampleId = Integer.parseInt(sampleIdStr);      
                     dataSample = smp.setSampleStartIncubationDateTime(rdbm, schemaPrefix, userName, sampleId, userRole);
                     break;       
                 case "INCUBATIONEND":
-                    if (configSpecTestingArray[i][3]!=null){sampleId = Integer.parseInt( (String) configSpecTestingArray[i][3]);}
-                    if (configSpecTestingArray[i][4]!=null){userName = (String) configSpecTestingArray[i][4];}
-                    fileContent = fileContent + "<td>sampleId, userName</td>";
-                    fileContent = fileContent + "<td>"+sampleId.toString()+", "+userName.toString()+"</td>";
+                    sampleIdStr = request.getParameter("sampleId");                             
+                    if ( (sampleIdStr==null) || (sampleIdStr.contains("undefined")) ) {
+                        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);           
+                        errObject = labArr.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
+                        errObject = labArr.addValueToArray1D(errObject, "sampleId="+request.getParameter("sampleId"));
+                        errObject = labArr.addValueToArray1D(errObject, "API Error Message: sampleId is one mandatory param and should be one integer value for this API");                    
+                        out.println(Arrays.toString(errObject));
+                        return ;
+                    }                
+                    sampleId = Integer.parseInt(sampleIdStr);      
                     dataSample = smp.setSampleEndIncubationDateTime(rdbm, schemaPrefix, userName, sampleId, userRole);
                     break;       
-                case "SAMPLEANALYSISADD":
+ /*               case "SAMPLEANALYSISADD":
                     if (configSpecTestingArray[i][3]!=null){sampleId = Integer.parseInt( (String) configSpecTestingArray[i][3]);}
                     if (configSpecTestingArray[i][4]!=null){userName = (String) configSpecTestingArray[i][4];}
                     if (configSpecTestingArray[i][5]!=null){fieldName = (String[]) configSpecTestingArray[i][5].toString().split("\\|");}              
@@ -368,6 +381,7 @@ public class sampleAPI extends HttpServlet {
                         Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
                     }
                     break;   
+                    
                 case "GETSAMPLEINFO":
                     String schemaDataName = "data";
                     LabPLANETPlatform labPlat = new LabPLANETPlatform();
@@ -393,18 +407,45 @@ public class sampleAPI extends HttpServlet {
                 response.getWriter().write(Arrays.toString(dataSample));
                 Response.ok().build();
             }else{
-               // response.getWriter().write(Arrays.toString(dataSample));                          
-                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);                
-                out.println(Arrays.toString(dataSample));                    
+//response.getWriter().write(Arrays.toString(dataSample));                          
+response.setStatus(HttpServletResponse.SC_BAD_REQUEST);                
+                JSONArray procEvents = new JSONArray(); 
+                for (Object fv: dataSample){
+                    procEvents.add(fv.toString());
+                }
+                 response.getWriter().write(procEvents.toString());
+/*                
+                        JsonObject json = Json.createObjectBuilder()
+                            .add("userInfoId", "")
+                            .add("label_en", "User "+dbUserName+" does not exist or password incorrect.")
+                            .add("label_es", "Usuario"+dbUserName+" no existe o contraseña incorrecta.")
+                            .build();    
+                        response.getWriter().write(json.toString());
+*/                        
+                //procEvents.add(Arrays.asList(dataSample));
+               // response.getWriter().write(procEvents.toString());         
+                //JSONArray mJSONArray = new JSONArray(Arrays.asList(dataSample));
+               
+                
+                //out.println(Arrays.toString(procEvents));                    
             }            
         }catch(Exception e){      
             rdbm.closeRdbms();        
             
             String[] errObject = new String[]{e.getMessage()};
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);                
-            response.getWriter().write(Arrays.toString(errObject));
-
-            Response.serverError().entity(errObject).build();
+            
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);               
+            JsonObject json = Json.createObjectBuilder()
+                .add("userInfoId", "")
+                .add("label_en", "User does not exist or password incorrect.")
+                .add("label_es", "Usuario no existe o contraseña incorrecta.")
+                .build();    
+            response.getWriter().write(json.toString());            
+            Response.status(Response.Status.NOT_ACCEPTABLE).build();
+//            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);                
+//            response.getWriter().write(Arrays.toString(errObject));
+            
+//            Response.serverError().entity(errObject).build();
             
             //out.println(Arrays.toString(errObject));                    
             //Response.serverError();

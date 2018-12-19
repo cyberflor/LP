@@ -365,7 +365,8 @@ public class dataSampleStructure extends HttpServlet {
             if (isConnected){rdbm.closeRdbms();}            
                 Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);   
                 fileContent = fileContent + "</table>";        
-                out.println(fileContent);                     
+                out.println(fileContent);     
+                
         }
     }
 

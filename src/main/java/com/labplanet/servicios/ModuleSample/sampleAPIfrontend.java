@@ -135,11 +135,21 @@ public class sampleAPIfrontend extends HttpServlet {
                 String whereFieldsName = request.getParameter("whereFieldsName"); 
                 String whereFieldsValue = request.getParameter("whereFieldsValue"); 
                 String sampleFieldToRetrieve = request.getParameter("sampleFieldToRetrieve"); 
+                String testFieldToRetrieve = request.getParameter("testFieldToRetrieve"); 
+                String sampleLastLevel = request.getParameter("sampleLastLevel"); 
                 
+                if (sampleLastLevel!=null){
+                    sampleLastLevel="SAMPLE";
+                }
+                                
                 String[] sampleFieldToRetrieveArr = new String[]{"sample_id"};
                 if (sampleFieldToRetrieve!=null){
                     sampleFieldToRetrieveArr=labArr.addValueToArray1D(sampleFieldToRetrieveArr, sampleFieldToRetrieve.split("\\|"));
                 }
+                String[] testFieldToRetrieveArr = new String[]{"test_id"};
+                if (testFieldToRetrieve!=null){
+                    testFieldToRetrieveArr=labArr.addValueToArray1D(testFieldToRetrieveArr, testFieldToRetrieve.split("\\|"));
+                }                
                 
                 String[] whereFieldsNameArr = new String[]{"status"};
                 if (whereFieldsName!=null){
@@ -155,10 +165,77 @@ public class sampleAPIfrontend extends HttpServlet {
                 String[] whereFieldsNameArr=whereFieldsName.split("\\|");                
                 Object[] whereFieldsValueArr = labArr.convertStringWithDataTypeToObjectArray(whereFieldsValue.split("\\|"));
   */              
+                if (sampleLastLevel=="SAMPLE"){
+                    myData = rdbm.getRecordFieldsByFilterJSON(rdbm, schemaPrefix+"-data", "sample",
+                            whereFieldsNameArr, whereFieldsValueArr, sampleFieldToRetrieveArr);
+                    if (myData.contains("LABPLANET_FALSE")){  
+                        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);         
+                        response.getWriter().write(myData);      
+                    }else{
+                        Response.ok().build();
+                        response.getWriter().write(myData);           
+                    }
+                }else{
+                    JSONArray samplesArray = new JSONArray();    
+                    JSONArray sampleArray = new JSONArray();    
+                    Object[][] mySamples = rdbm.getRecordFieldsByFilter(rdbm, schemaPrefix+"-data", "sample",
+                            whereFieldsNameArr, whereFieldsValueArr, sampleFieldToRetrieveArr);
+                    if ( "LABPLANET_FALSE".equalsIgnoreCase(mySamples[0][0].toString()) ){
+                        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);         
+                        response.getWriter().write( Arrays.toString(mySamples) );      
+                    }
+                    for (int xProc=0; xProc<mySamples.length; xProc++){
+                        JSONObject sampleObj = new JSONObject();
+                        Integer sampleId = (Integer) mySamples[xProc][0];
+                        for (int yProc=0; yProc<mySamples[0].length; yProc++){
+                            sampleObj.put(sampleFieldToRetrieveArr[yProc], mySamples[xProc][yProc]);
+                        }
+                        if ( (sampleLastLevel=="TEST") || (sampleLastLevel=="RESULT") ) {
+                            String[] testWhereFieldsNameArr = new String[]{"sample_id"};
+                            Object[] testWhereFieldsValueArr = new Object[]{sampleId};
+                            Object[][] mySampleAnalysis = rdbm.getRecordFieldsByFilter(rdbm, schemaPrefix+"-data", "sample_analysis",
+                                    testWhereFieldsNameArr, testWhereFieldsValueArr, testFieldToRetrieveArr);          
+                            for (int xSmpAna=0; xSmpAna<mySampleAnalysis.length; xSmpAna++){
+                                JSONObject testObj = new JSONObject();
+                                Integer testId = (Integer) mySampleAnalysis[xSmpAna][0];
+                                for (int ySmpAna=0; ySmpAna<mySampleAnalysis[0].length; ySmpAna++){         
+                                    testObj.put(testFieldToRetrieveArr[xSmpAna], mySampleAnalysis[ySmpAna][0]);
+                                }      
+                                sampleArray.add(testObj);
+                            }
+                        }
+                        sampleArray.add(sampleObj);
+                        samplesArray.add(sampleArray);
+                    }
+                    JSONObject JsonObj = new JSONObject();
+                    JsonObj.put("samples", samplesArray);                    
+                    Response.ok().build();
+                    response.getWriter().write(JsonObj.toString());               
 
-                myData = rdbm.getRecordFieldsByFilterJSON(rdbm, schemaPrefix+"-data", "sample",
-                        whereFieldsNameArr, whereFieldsValueArr,                        
-                        sampleFieldToRetrieveArr);
+                }
+                rdbm.closeRdbms();
+                    //Response.serverError().entity(myData).build();
+                    //return Response.ok(myData).build();            
+                return;          
+            case "ANALYSIS_ALL_LIST":          
+                String fieldToRetrieve = request.getParameter("fieldToRetrieve"); 
+                    
+                String[] fieldToRetrieveArr = new String[0];
+                if ( (fieldToRetrieve==null) || (fieldToRetrieve.length()==0) ){
+                    fieldToRetrieveArr=labArr.addValueToArray1D(fieldToRetrieveArr, "code");
+                    fieldToRetrieveArr=labArr.addValueToArray1D(fieldToRetrieveArr, "method_name");                           
+                    fieldToRetrieveArr=labArr.addValueToArray1D(fieldToRetrieveArr, "method_version");                           
+                }else{
+                    fieldToRetrieveArr=labArr.addValueToArray1D(fieldToRetrieveArr, fieldToRetrieve.split("\\|"));
+                    if (labArr.valuePosicInArray(fieldToRetrieveArr, "code")==-1){
+                        fieldToRetrieveArr=labArr.addValueToArray1D(fieldToRetrieveArr, "code");     
+                        fieldToRetrieveArr=labArr.addValueToArray1D(fieldToRetrieveArr, "method_name");                           
+                        fieldToRetrieveArr=labArr.addValueToArray1D(fieldToRetrieveArr, "method_version");                           
+                    }                    
+                }                
+
+                myData = rdbm.getRecordFieldsByFilterJSON(rdbm, schemaPrefix+"-config", "analysis_methods_view",
+                        new String[]{"code is not null"},new Object[]{true}, fieldToRetrieveArr);
                 rdbm.closeRdbms();
                 if (myData.contains("LABPLANET_FALSE")){  
                     response.setStatus(HttpServletResponse.SC_BAD_REQUEST);         
@@ -170,7 +247,7 @@ public class sampleAPIfrontend extends HttpServlet {
                     //Response.serverError().entity(myData).build();
                 rdbm.closeRdbms();
                     //return Response.ok(myData).build();            
-                    return;                    
+                return;                          
             default:      
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);                
                 response.getWriter().write(Arrays.toString(errObject));

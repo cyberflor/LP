@@ -364,7 +364,7 @@ public Object[] sampleReceptionCommentAdd(Rdbms rdbm, String schemaPrefix, Strin
         errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, sampleId);
         errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, schemaDataName);
         errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, Arrays.toString(labArr.joinTwo1DArraysInOneOf1DString(sampleFieldName, sampleFieldValue, ", ")));
-        diagnoses = LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);                
+        diagnoses = LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_TRUE", classVersion, errorCode, errorDetailVariables);                
         
         String[] fieldsForAudit = labArr.joinTwo1DArraysInOneOf1DString(sampleFieldName, sampleFieldValue, userName);
         smpAudit.sampleAuditAdd(rdbm, schemaPrefix, auditActionName, "sample", sampleId, sampleId, null, null, fieldsForAudit, userName, userRole);
@@ -683,11 +683,11 @@ public String[] sampleAnalysisAddtoSample(Rdbms rdbm, String schemaPrefix, Strin
            return (String[]) LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);    
     }   
     Object[][] sampleSpecData = rdbm.getRecordFieldsByFilter(rdbm, schemaDataName, sampleTableName, new String[]{"sample_id"}, new Object[]{sampleId}, 
-        new String[]{"spec_code","spec_code_version","spec_variation_name", "status"});
+        new String[]{"sample_id", "spec_code","spec_code_version","spec_variation_name", "status"});
     
-    if (!"LABPLANET_FALSE".equalsIgnoreCase(sampleSpecData[0][0].toString())){                
-        String sampleSpecCode = (String) sampleSpecData[0][0];Integer sampleSpecCodeVersion = (Integer) sampleSpecData[0][1];
-        String sampleSpecVariationName = (String) sampleSpecData[0][2];
+    if ( (sampleSpecData[0][0]==null) || (!"LABPLANET_FALSE".equalsIgnoreCase(sampleSpecData[0][0].toString())) ){                
+        String sampleSpecCode = (String) sampleSpecData[0][1];Integer sampleSpecCodeVersion = (Integer) sampleSpecData[0][2];
+        String sampleSpecVariationName = (String) sampleSpecData[0][3];
         if (sampleSpecCode!=null){
             Object[][] specRules = rdbm.getRecordFieldsByFilter(rdbm, schemaConfigName, "spec_rules", new String[]{"code", "config_version"}, new Object[]{sampleSpecCode, sampleSpecCodeVersion}, 
             new String[]{"allow_other_analysis","allow_multi_spec","code", "config_version"});
@@ -934,8 +934,8 @@ public Object[] sampleEvaluateStatus(Rdbms rdbm, String schemaPrefix, String use
     String smpPrevStatus=""; String smpAnaNewStatus="";
     
     diagnoses = (String[]) rdbm.existsRecord(rdbm, schemaDataName, "sample_analysis", 
-                                        new String[]{"sample_id","status in ('NOT_STARTED','STARTED','INCOMPLETE')"}, 
-                                        new Object[]{sampleId, "IN()"});
+                                        new String[]{"sample_id","status in "}, 
+                                        new Object[]{sampleId, "NOT_STARTED|STARTED|INCOMPLETE"});
     if (diagnoses[3].equalsIgnoreCase("LABPLANET_TRUE")){smpAnaNewStatus=sampleStatusIncomplete;}
     else{smpAnaNewStatus=sampleStatusComplete;}
     

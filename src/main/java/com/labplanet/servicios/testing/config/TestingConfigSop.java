@@ -115,11 +115,12 @@ public class TestingConfigSop extends HttpServlet {
 //                out.println(Arrays.toString(userSOP));
 //            }
 
-            String[] userPendingSOPs = usSop.getNotCompletedUserSOP(rdbm, "1", "ALL");
+            Object[][] userPendingSOPs = usSop.getNotCompletedUserSOP(rdbm, "1", "ALL", null);
             fileContent = fileContent + "<tr><td>"+"getNotCompletedUserSOP"+"</td>";                                   
             fileContent = fileContent + "<td>"+"UserInfoId: 1"+"</td>";      
-            fileContent = fileContent + "<td>"+"schemaPrefix: ALL"+"</td>";                
-            fileContent = fileContent + "<td>"+Arrays.toString(userPendingSOPs)+"</td></tr>";                
+            fileContent = fileContent + "<td>"+"schemaPrefix: ALL"+"</td>";          
+            Object[] userPendingSOPs1D = labArr.array2dTo1d(userPendingSOPs);
+            fileContent = fileContent + "<td>"+Arrays.toString(userPendingSOPs1D)+"</td></tr>";                
             
             Object[] certificationStatus = usSop.userSopCertifiedBySopId(rdbm, "oil-pl11", "1", "58");
             fileContent = fileContent + "<tr><td>"+"userSopCertifiedBySopId"+"</td>";                                   
