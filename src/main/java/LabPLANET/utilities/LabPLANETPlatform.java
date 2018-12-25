@@ -18,6 +18,8 @@ import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 /**
  * LabPLANETPlatform is a library for methods solving topics that are specifically part of the LabPLANET Paradigm.
@@ -617,5 +619,17 @@ public class LabPLANETPlatform {
 
          return fldValue;
   }
+    
+    public JSONObject trapErrorMessageJSON(Object[] errorArray){
+                
+        JSONObject errorJson = new JSONObject();
+            errorJson.put("evaluation", errorArray[0]);
+            errorJson.put("class", errorArray[1]);
+            errorJson.put("classVersion", errorArray[2]);
+            errorJson.put("Code line", errorArray[3]);
+            errorJson.put("errorCodeText", errorArray[4]);
+            errorJson.put("errorDetail", errorArray[5]);
+        return errorJson;
+    }
     
 }

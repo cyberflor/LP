@@ -6,6 +6,7 @@
 package com.labplanet.servicios.app;
 
 import LabPLANET.utilities.LabPLANETArray;
+import LabPLANET.utilities.LabPLANETFrontEnd;
 import LabPLANET.utilities.LabPLANETJson;
 import databases.Rdbms;
 import databases.Token;
@@ -43,10 +44,15 @@ public class AppProcedureListAPI extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-    
-            Rdbms rdbm = new Rdbms();       
+            throws ServletException, IOException {   
+
+            String language = "en";
+
             LabPLANETArray labArr = new LabPLANETArray();
+            LabPLANETFrontEnd labFrEnd = new LabPLANETFrontEnd();
+
+            Rdbms rdbm = new Rdbms();       
+            
             LabPLANETJson labJson = new LabPLANETJson();
             response.setContentType("application/json");        response.setCharacterEncoding("UTF-8");
 
@@ -55,10 +61,10 @@ public class AppProcedureListAPI extends HttpServlet {
             
             String finalToken = request.getParameter("finalToken");                      
 
-            if (finalToken==null) {
-                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);       
+            if (finalToken==null) {                  
                 errObject = labArr.addValueToArray1D(errObject, "API Error Message: finalToken is one mandatory param for this API");                    
-                out.println(Arrays.toString(errObject));
+                Object[] errMsg = labFrEnd.responseError(errObject, language, null);
+                response.sendError((int) errMsg[0], (String) errMsg[1]);    
                 return ;
             }                    
 
@@ -74,29 +80,20 @@ public class AppProcedureListAPI extends HttpServlet {
             boolean isConnected = false;
             isConnected = rdbm.startRdbms(dbUserName, dbUserPassword);
             if (!isConnected){
-                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);                
                 errObject = labArr.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
                 errObject = labArr.addValueToArray1D(errObject, "API Error Message: db User Name and Password not correct, connection to the database is not possible");                    
-                out.println(Arrays.toString(errObject));
+                Object[] errMsg = labFrEnd.responseError(errObject, language, null);
+                response.sendError((int) errMsg[0], (String) errMsg[1]);    
                 return ;               
             }       
             
-JSONArray logs = new JSONArray();
-JSONObject log = new JSONObject();
-log.put("connected", true);
-log.put("person_name", internalUserID);
-
-String rolName = userRole;
+            String rolName = userRole;
             UserProfile usProf = new UserProfile();
             Object[] allUserProcedurePrefix = usProf.getAllUserProcedurePrefix(rdbm, dbUserName);
             if ("LABPLANET_FALSE".equalsIgnoreCase(allUserProcedurePrefix[0].toString())){
-                response.setStatus(HttpServletResponse.SC_BAD_REQUEST); 
-                response.getWriter().write(Arrays.toString(allUserProcedurePrefix));  
+                Object[] errMsg = labFrEnd.responseError(allUserProcedurePrefix, language, null);
+                response.sendError((int) errMsg[0], (String) errMsg[1]);                    
             }
-logs.add(Arrays.toString(allUserProcedurePrefix));
-log.put("user profiles", logs);
-
-
             String[] procFldNameArray = new String[0];
             procFldNameArray = labArr.addValueToArray1D(procFldNameArray, "name");
             procFldNameArray = labArr.addValueToArray1D(procFldNameArray, "version");
@@ -111,12 +108,6 @@ log.put("user profiles", logs);
             procEventFldNameArray = labArr.addValueToArray1D(procEventFldNameArray, "branch_level");
             procEventFldNameArray = labArr.addValueToArray1D(procEventFldNameArray, "type");
             procEventFldNameArray = labArr.addValueToArray1D(procEventFldNameArray, "mode");
-
-
-    for (int yProcEv=0; yProcEv<procEventFldNameArray.length;yProcEv++){ 
-        
-    }             
-            
             //Object[] procArray = new Object[0];
             JSONArray procedures = new JSONArray();     
             for (Object curProc: allUserProcedurePrefix){
@@ -125,11 +116,10 @@ log.put("user profiles", logs);
                 Object[][] procInfo = rdbm.getRecordFieldsByFilter(rdbm, curProc.toString()+"-config", "procedure_info", 
                         new String[]{"name is not null"}, null, procFldNameArray);
                 if ("LABPLANET_FALSE".equalsIgnoreCase(procInfo[0][0].toString())){
-                     response.setStatus(HttpServletResponse.SC_BAD_REQUEST); 
-                     response.getWriter().write(Arrays.toString(procInfo));
+                    Object[] errMsg = labFrEnd.responseError(procInfo, language,  curProc.toString());
+                    response.sendError((int) errMsg[0], (String) errMsg[1]);                    
                 }                       
-                for (int yProc=0; yProc<procInfo[0].length; yProc++){
-              
+                for (int yProc=0; yProc<procInfo[0].length; yProc++){              
                     //procArray = labArr.addValueToArray1D(procArray, procInfo[0][yProc]);
                     procedure.put(procFldNameArray[yProc], procInfo[0][yProc]);
                 }
@@ -154,182 +144,13 @@ log.put("user profiles", logs);
                 procedures.add(procedure);
             }
             procFldNameArray = labArr.addValueToArray1D(procFldNameArray, "schemaPrefix");
-            //Object[][] procArray2d = labArr.array1dTo2d(procArray, procFldNameArray.length);
-            
-  
+            //Object[][] procArray2d = labArr.array1dTo2d(procArray, procFldNameArray.length);              
             JSONObject proceduresList = new JSONObject();
             proceduresList.put("procedures", procedures);
 
             Response.ok().build();
             response.getWriter().write(proceduresList.toString());               
-//Response.ok().build();
-//response.getWriter().write(log.toString());   
-
-rdbm.closeRdbms();
-
-if (1==1) return;
-/*            
-//JSONArray procArrayJson = labJson.convertToJSON(procFldNameArray);
-Object[] procArray = new Object[0];
-procArray = labArr.addValueToArray1D(procArray, "ProcessUSA");
-procArray = labArr.addValueToArray1D(procArray, 1);
-procArray = labArr.addValueToArray1D(procArray, "Process US");
-procArray = labArr.addValueToArray1D(procArray, "Proceso EEUU");
-procArray = labArr.addValueToArray1D(procArray, "process-us");
-
-procArray = labArr.addValueToArray1D(procArray, "ProcessEU");
-procArray = labArr.addValueToArray1D(procArray, 1);
-procArray = labArr.addValueToArray1D(procArray, "Process EU");
-procArray = labArr.addValueToArray1D(procArray, "Proceso UE");
-procArray = labArr.addValueToArray1D(procArray, "process-eu");
-Object[][] procArray2d = labArr.array1dTo2d(procArray, procFldNameArray.length);
-*/
-/*
-Object[] procEventArray = new Object[0];
-procEventArray = labArr.addValueToArray1D(procEventArray, "Home");
-procEventArray = labArr.addValueToArray1D(procEventArray, "Home");
-procEventArray = labArr.addValueToArray1D(procEventArray, "Inicio");
-procEventArray = labArr.addValueToArray1D(procEventArray, "level1");
-procEventArray = labArr.addValueToArray1D(procEventArray, "tree-list");
-procEventArray = labArr.addValueToArray1D(procEventArray, "edit");
-
-procEventArray = labArr.addValueToArray1D(procEventArray, "logSample");
-procEventArray = labArr.addValueToArray1D(procEventArray, "Log Sample");
-procEventArray = labArr.addValueToArray1D(procEventArray, "Registrar Muestra");
-procEventArray = labArr.addValueToArray1D(procEventArray, "level2");
-procEventArray = labArr.addValueToArray1D(procEventArray, "tree-list");
-procEventArray = labArr.addValueToArray1D(procEventArray, "edit");
-
-procEventArray = labArr.addValueToArray1D(procEventArray, "receiveSample");
-procEventArray = labArr.addValueToArray1D(procEventArray, "Receive Sample");
-procEventArray = labArr.addValueToArray1D(procEventArray, "Recibir Muestra");
-procEventArray = labArr.addValueToArray1D(procEventArray, "level2");
-procEventArray = labArr.addValueToArray1D(procEventArray, "tree-list");
-procEventArray = labArr.addValueToArray1D(procEventArray, "edit");
-
-Object[][] procEventArray2d = labArr.array1dTo2d(procEventArray, procEventFldNameArray.length);
-*/
-/*
-JSONArray procedures = new JSONArray();
-
-
-for (int xProc=0; xProc<procArray2d.length;xProc++){  
-  JSONObject procedure = new JSONObject();
-  for (int yProc=0; yProc<procFldNameArray.length; yProc++){ 
-    procedure.put(procFldNameArray[yProc], procArray2d[xProc][yProc]);
-  }
-  //JSONObject procEventsJson = new JSONObject();
-  JSONArray procEventsJson = new JSONArray();
-  for ( int xProcEv=0; xProcEv<procEventArray2d.length;xProcEv++){
-    JSONObject procEventJson = new JSONObject();
-    for (int yProcEv=0; yProcEv<procEventFldNameArray.length;yProcEv++){ 
-        procEventJson.put(procEventFldNameArray[yProcEv], procEventArray2d[xProcEv][yProcEv]);
-    }    
-    procEventsJson.add(procEventJson);
-  }
-    procedure.put("definition", procEventsJson);
-    procedures.add(procedure);
-}
-  
-
-
-
-  JSONObject proceduresList = new JSONObject();
-  proceduresList.put("procedures", procedures);
-                      Response.ok().build();
-                   response.getWriter().write(proceduresList.toString());   
-  
- */           
-if (1==1) return;
-            
-JsonObjectBuilder jsonBuilder = Json.createObjectBuilder();
-JsonObjectBuilder procedureListBuilder = Json.createObjectBuilder();
-
-procedureListBuilder.add("procedure", "proc");
-
-
-JsonObject procedureObj = procedureListBuilder.build();
-JsonArrayBuilder kvArrBld = Json.createArrayBuilder();
-
-JsonArrayBuilder procEvent1 = Json.createArrayBuilder();
-JsonArrayBuilder procEvent2 = Json.createArrayBuilder();
-procEvent1.add(Json.createObjectBuilder().add("name", "Home").build());
-procEvent1.add(Json.createObjectBuilder().add("label_es", "Inicio").build());
-procEvent2.add(Json.createObjectBuilder().add("name", "receiveSample").build());
-JsonArrayBuilder procedureList = Json.createArrayBuilder();
-/*
-String[] procFldNameArray = new String[0];
-procFldNameArray = labArr.addValueToArray1D(procFldNameArray, "name");
-procFldNameArray = labArr.addValueToArray1D(procFldNameArray, "version");
-procFldNameArray = labArr.addValueToArray1D(procFldNameArray, "label_en");
-procFldNameArray = labArr.addValueToArray1D(procFldNameArray, "label_es");
-procFldNameArray = labArr.addValueToArray1D(procFldNameArray, "schemaPrefix");
-//JSONArray procArrayJson = labJson.convertToJSON(procFldNameArray);
-
-Object[] procArray = new Object[0];
-procArray = labArr.addValueToArray1D(procArray, "Module1");
-procArray = labArr.addValueToArray1D(procArray, 1);
-procArray = labArr.addValueToArray1D(procArray, "Module 1");
-procArray = labArr.addValueToArray1D(procArray, "Modulo 1");
-procArray = labArr.addValueToArray1D(procArray, "module1");
-//JSONArray procArrayJson = labJson.convertToJSON(procArray);
-
-Object[] procArray2 = new Object[0];
-procArray2 = labArr.addValueToArray1D(procArray2, "Module1A");
-procArray2 = labArr.addValueToArray1D(procArray2, 1);
-procArray2 = labArr.addValueToArray1D(procArray2, "Module 1 A");
-procArray2 = labArr.addValueToArray1D(procArray2, "Modulo 1 A");
-procArray2 = labArr.addValueToArray1D(procArray2, "module1-A");
-//JSONArray procArrayJson2 = labJson.convertToJSON(procArray);
-*/
-
-
-/*
-JsonArrayBuilder procedures = Json.createArrayBuilder();
-for (int i=0; i<procFldNameArray.length;i++){
-    procedures.add(Json.createObjectBuilder().add(procFldNameArray[i], procArray[i]).build());
-}
-JsonArrayBuilder procedures2 = Json.createArrayBuilder();
-for (int i=0; i<procFldNameArray.length;i++){
-    procedures2.add(Json.createObjectBuilder().add(procFldNameArray[i], procArray2[i]).build());
-}
-*/
-//                JsonArrayBuilder added = procedures.add(Json.createObjectBuilder().add(procArrayJson.toString()).build());
-
-
-//procedureListBuilder.add("", procedures2.build()).add("", procedures.build());
-//procedureListBuilder.add("", procedures2.build());
-//procedureList.add(Json.createObjectBuilder().add("procedure", procArrayJson).build());
-//procedureList.add(Json.createObjectBuilder().add("name", "Module1").build());
-
-
-//procedureList.add(Json.createObjectBuilder().add("definition", procEvent1).add("def", procEvent2).build());
-procedureListBuilder.add("procedure", procedureListBuilder);
-
-JsonObject procListObj = procedureListBuilder.build();
-
-StringWriter strWtr = new StringWriter();
-JsonWriter jsonWtr = Json.createWriter(strWtr);
-jsonWtr.writeObject(procListObj);
-jsonWtr.close(); 
-
-
-//JsonObject procedureListObjectAll = procedureListObject.build();
-/*StringWriter strWtr = new StringWriter();
-JsonWriter jsonWtr = Json.createWriter(strWtr);
-jsonWtr.writeObject(empObj);
-jsonWtr.close();
-*/
-                    Response.ok().build();
-                   response.getWriter().write(strWtr.toString());   
-       
-if (1==1) return;
-            
-            
-
-            
-            
-            
+            rdbm.closeRdbms();
         }
     }
 

@@ -6,6 +6,7 @@
 package com.labplanet.servicios.app;
 
 import LabPLANET.utilities.LabPLANETArray;
+import LabPLANET.utilities.LabPLANETFrontEnd;
 import com.labplanet.modelo.UserRole;
 import databases.Rdbms;
 import databases.Token;
@@ -47,7 +48,11 @@ public class authenticationAPI extends HttpServlet {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         
-        LabPLANETArray labArr = new LabPLANETArray();        
+        String language = "en";
+
+        LabPLANETArray labArr = new LabPLANETArray();
+        LabPLANETFrontEnd labFrEnd = new LabPLANETFrontEnd();
+
         Rdbms rdbm = new Rdbms();     
     
         try (PrintWriter out = response.getWriter()) {            
@@ -57,10 +62,10 @@ public class authenticationAPI extends HttpServlet {
             actionName = request.getParameter("actionName");
             
             if (actionName==null) {
-                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);           
                 errObject = labArr.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
                 errObject = labArr.addValueToArray1D(errObject, "API Error Message: actionName is one mandatory param and should be one integer value for this API");                    
-                out.println(Arrays.toString(errObject));
+                Object[] errMsg = labFrEnd.responseError(errObject, language, null);
+                response.sendError((int) errMsg[0], (String) errMsg[1]);     
                 return ;
             }            
                         
@@ -70,48 +75,40 @@ public class authenticationAPI extends HttpServlet {
                     String dbUserPassword = request.getParameter("dbUserPassword");       
                     
                     if (dbUserName==null || dbUserPassword==null) {
-                        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);           
                         errObject = labArr.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
                         if (dbUserName==null) errObject = labArr.addValueToArray1D(errObject, "API Error Message: dbUserName is one mandatory param and should be one integer value for this API");                    
                         else errObject = labArr.addValueToArray1D(errObject, "API Error Message: dbUserPassword is one mandatory param and should be one integer value for this API");                    
-                        out.println(Arrays.toString(errObject));
+                        Object[] errMsg = labFrEnd.responseError(errObject, language, null);
+                        response.sendError((int) errMsg[0], (String) errMsg[1]);     
                         return ;
                     }                   
                     if (dbUserName.length()==0){
-                        Response.status(Response.Status.NOT_ACCEPTABLE).build();
-                        break;    
+                        errObject = labArr.addValueToArray1D(errObject, "API Error Message: dbUserPassword is one mandatory param and should be one integer value for this API");                    
+                        Object[] errMsg = labFrEnd.responseError(errObject, language, null);
+                        response.sendError((int) errMsg[0], (String) errMsg[1]);     
+                        return ;
                     }                      
                     boolean isConnected = false;
                     isConnected = rdbm.startRdbms(dbUserName, dbUserPassword);           
-                    if (!isConnected){     
-                        response.setStatus(HttpServletResponse.SC_NOT_FOUND);               
-                        JsonObject json = Json.createObjectBuilder()
-                            .add("userInfoId", "")
-                            .add("label_en", "User "+dbUserName+" does not exist or password incorrect.")
-                            .add("label_es", "Usuario"+dbUserName+" no existe o contraseña incorrecta.")
-                            .build();    
-                        response.getWriter().write(json.toString());
-                        return;    
+                    if (!isConnected){                            
+                        errObject = labArr.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
+                        errObject = labArr.addValueToArray1D(errObject, "API Error Message: db User Name and Password not correct, connection to the database is not possible");                    
+                        Object[] errMsg = labFrEnd.responseError(errObject, language, null);
+                        response.sendError((int) errMsg[0], (String) errMsg[1]);                            
+                        return ;                                 
                     }
                     Role rol = new Role();
                     Object[][] internalUser = rol.getInternalUser(rdbm, dbUserName);
                     if ("LABPLANET_FALSE".equalsIgnoreCase(internalUser[0][0].toString())){
-                        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);           
-                        JsonObject json = Json.createObjectBuilder()
-                                .add("userInfoId", "")
-                                .add("label_en", "User does not exist or password incorrect.")
-                                .add("label_es", "Usuario no existe o contraseña incorrecta.")
-                                .build();                             
-                        //errObject = labArr.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);                        
-                        out.println(Arrays.toString(internalUser));                
-                        return;
+                        errObject = labArr.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
+                        errObject = labArr.addValueToArray1D(errObject, "API Error Message: Person does not exist or password incorrect.");                    
+                        Object[] errMsg = labFrEnd.responseError(errObject, language, null);
+                        response.sendError((int) errMsg[0], (String) errMsg[1]);                            
+                        return ;                                 
                     }
                     Token token = new Token();
                     String internalUserStr = internalUser[0][0].toString();
-                    //UserSession usSess = new UserSession(usr, rdbm);         
                     String myToken = token.createToken(dbUserName, dbUserPassword, internalUserStr, "Admin");
-                    //JsonObject json = Json.createObjectBuilder()
-                    //        .add("JWT", myToken).build();
                     
                     JsonObject json = Json.createObjectBuilder()
                             .add("userInfoId", internalUserStr)
@@ -129,29 +126,30 @@ public class authenticationAPI extends HttpServlet {
                     if (userInfoId==null) {
                         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);       
                         errObject = labArr.addValueToArray1D(errObject, "API Error Message: userInfoId is one mandatory param and should be one integer value for this API");                    
-                        out.println(Arrays.toString(errObject));
+                        Object[] errMsg = labFrEnd.responseError(errObject, language, null);
+                        response.sendError((int) errMsg[0], (String) errMsg[1]);                            
                         return ;
                     }
-                    isConnected = rdbm.startRdbms(dbUserName, dbUserPassword);
-                    
+                    isConnected = rdbm.startRdbms(dbUserName, dbUserPassword);                    
                     if (!isConnected){
-                            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);           
-                            errObject = labArr.addValueToArray1D(errObject, "Error Status Code: "+"Connection not established");                        
-                            out.println(Arrays.toString(errObject));              
-                            return;
+                        errObject = labArr.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
+                        errObject = labArr.addValueToArray1D(errObject, "API Error Message: db User Name and Password not correct, connection to the database is not possible");                    
+                        Object[] errMsg = labFrEnd.responseError(errObject, language, null);
+                        response.sendError((int) errMsg[0], (String) errMsg[1]);                            
+                        return ;  
                     }                    
                     
                     UserProfile usProf = new UserProfile();
                     Object[] allUserProcedurePrefix = usProf.getAllUserProcedurePrefix(rdbm, dbUserName);
                     if ("LABPLANET_FALSE".equalsIgnoreCase(allUserProcedurePrefix[0].toString())){
-                        response.setStatus(HttpServletResponse.SC_BAD_REQUEST); 
-                        response.getWriter().write(Arrays.toString(allUserProcedurePrefix));  
+                        Object[] errMsg = labFrEnd.responseError(allUserProcedurePrefix, language, null);
+                        response.sendError((int) errMsg[0], (String) errMsg[1]);                            
                     }                    
                     
                     Object[] allUserProcedureRoles = usProf.getProcedureUserProfileFieldValues(rdbm, allUserProcedurePrefix, userInfoId);
                     if ("LABPLANET_FALSE".equalsIgnoreCase(allUserProcedureRoles[0].toString())){
-                        response.setStatus(HttpServletResponse.SC_BAD_REQUEST); 
-                        response.getWriter().write(Arrays.toString(allUserProcedureRoles));  
+                        Object[] errMsg = labFrEnd.responseError(allUserProcedureRoles, language, null);
+                        response.sendError((int) errMsg[0], (String) errMsg[1]);                            
                     }                    
                     JSONArray jArray= new JSONArray();
                     for (int i = 0; i < allUserProcedureRoles.length; i++) {         
@@ -165,10 +163,8 @@ public class authenticationAPI extends HttpServlet {
                                 new String[]{"user_info_id"}, new Object[]{userInfoId}, new String[]{"role_id"});
                         //Object[] recordFieldsByFilter1D =  labArr.array2dTo1d(recordFieldsByFilter);
                     if ("LABPLANET_FALSE".equalsIgnoreCase(recordFieldsByFilter[0][0].toString())){
-                        response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-                        out.println("No user profile defined for internal user "+userInfoId);
-                        response.getWriter().write(Arrays.toString(recordFieldsByFilter));                        
-                        Response.ok(recordFieldsByFilter).build();
+                        Object[] errMsg = labFrEnd.responseError(labArr.array2dTo1d(recordFieldsByFilter), language, null);
+                        response.sendError((int) errMsg[0], (String) errMsg[1]);                            
                         return;
                     }
                     Object[] recordsFieldsByFilter1D = labArr.array2dTo1d(recordFieldsByFilter);                    
@@ -188,9 +184,10 @@ public class authenticationAPI extends HttpServlet {
                     String userRole = request.getParameter("userRole");                      
 
                     if ((firstToken==null) || (userRole==null) ) {
-                        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);       
                         errObject = labArr.addValueToArray1D(errObject, "API Error Message: myToken and userRole are mandatory params for this API");                    
                         out.println(Arrays.toString(errObject));
+                        Object[] errMsg = labFrEnd.responseError(errObject, language, null);
+                        response.sendError((int) errMsg[0], (String) errMsg[1]);                            
                         return ;
                     }                    
                                        
@@ -203,12 +200,8 @@ public class authenticationAPI extends HttpServlet {
                     internalUserStr = tokenParamsValues[labArr.valuePosicInArray(tokenParams, "internalUserID")];
                     
                     String myFinalToken = token.createToken(userName, password, internalUserStr, userRole);
-            //JsonObject json = Json.createObjectBuilder()
-            //        .add("JWT", myToken).build();
                     
                     json = Json.createObjectBuilder()
-                            //.add("userInfoId", internalUserStr)
-                            //.add("myTokenDecoded", myFirstTokenDecoded)
                             .add("finalToken", myFinalToken)
                             .build();                                                
                     response.getWriter().write(json.toString());
@@ -217,17 +210,15 @@ public class authenticationAPI extends HttpServlet {
                     rdbm.closeRdbms();
                     return;
                 default:      
-                    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);                
-                    response.getWriter().write(Arrays.toString(errObject));     
                     rdbm.closeRdbms();
+                    Object[] errMsg = labFrEnd.responseError(errObject, language, null);
+                    response.sendError((int) errMsg[0], (String) errMsg[1]);                            
                     return;                           
             }
-            return;
         }catch(Exception e){            
-            String exceptionMessage = e.getMessage();
-            
-            Response.serverError();
-            Response.status(Response.Status.BAD_REQUEST).build();
+            String exceptionMessage = e.getMessage();            
+            Object[] errMsg = labFrEnd.responseError(new String[]{exceptionMessage}, language, null);
+            response.sendError((int) errMsg[0], (String) errMsg[1]);                                        
             rdbm.closeRdbms();
             return;
         }

@@ -6,6 +6,7 @@
 package com.labplanet.servicios.app;
 
 import LabPLANET.utilities.LabPLANETArray;
+import LabPLANET.utilities.LabPLANETFrontEnd;
 import databases.Rdbms;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -39,7 +40,11 @@ public class appHeaderAPI extends HttpServlet {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         
-        LabPLANETArray labArr = new LabPLANETArray();        
+        String language = "en";
+
+        LabPLANETArray labArr = new LabPLANETArray();
+        LabPLANETFrontEnd labFrEnd = new LabPLANETFrontEnd();
+
         Rdbms rdbm = new Rdbms();     
     
         try (PrintWriter out = response.getWriter()) {            
@@ -48,14 +53,12 @@ public class appHeaderAPI extends HttpServlet {
             String actionName = request.getParameter("actionName");
             String finalToken = request.getParameter("finalToken");
             if (actionName==null & finalToken==null) {
-                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);           
                 errObject = labArr.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
                 errObject = labArr.addValueToArray1D(errObject, "API Error Message: actionName and finalToken are mandatory params for this API");                    
-                out.println(Arrays.toString(errObject));
+                Object[] errMsg = labFrEnd.responseError(errObject, language, null);
+                response.sendError((int) errMsg[0], (String) errMsg[1]);   
                 return ;
-            }         
-            
-            
+            }                     
             switch (actionName.toUpperCase()){
                 case "GETAPPHEADER":          
                     
@@ -86,14 +89,10 @@ public class appHeaderAPI extends HttpServlet {
                                         return;                
                         }
                         Object[][] personInfoArr = rdbm.getRecordFieldsByFilter(rdbm, "config", "person", 
-                             new String[]{"person_id"}, new String[]{internalUserID}, personFieldsNameArr);
-                             
-                        if ("LABPLANET_FALSE".equals(personInfoArr[0][0].toString())){
-                            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);           
-                            for (int iFields=0; iFields<personInfoArr[0].length; iFields++ ){
-                                personInfoJsonObj.put("field"+String.valueOf(iFields) , personInfoArr[0][iFields]);
-                            }
-                            response.getWriter().write(personInfoJsonObj.toString());                                                                                                                                                       
+                             new String[]{"person_id"}, new String[]{internalUserID}, personFieldsNameArr);             
+                        if ("LABPLANET_FALSE".equals(personInfoArr[0][0].toString())){                                                                                                                                                   
+                            Object[] errMsg = labFrEnd.responseError(labArr.array2dTo1d(personInfoArr), language, null);
+                            response.sendError((int) errMsg[0], (String) errMsg[1]);   
                             return;
                         }
                         for (int iFields=0; iFields<personFieldsNameArr.length; iFields++ ){
@@ -102,19 +101,20 @@ public class appHeaderAPI extends HttpServlet {
                     }             
                     response.getWriter().write(personInfoJsonObj.toString());                                                                                                                           
                     Response.ok().build();                     
-//                    Response.status(Response.Status.CREATED).entity(json).build();  
                     rdbm.closeRdbms();
                     return;
                 default:      
-                    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);                
-                    response.getWriter().write(Arrays.toString(errObject));
+                    errObject = labArr.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
+                    errObject = labArr.addValueToArray1D(errObject, "API Error Message: actionName "+actionName+ " not recognized as an action by this API");                                        
+                    Object[] errMsg = labFrEnd.responseError(errObject, language, null);
+                    response.sendError((int) errMsg[0], (String) errMsg[1]);                   
                     rdbm.closeRdbms();
                     return;                           
             }            
         }catch(Exception e){            
             String exceptionMessage = e.getMessage();           
-            Response.serverError();
-            Response.status(Response.Status.BAD_REQUEST).build();
+            Object[] errMsg = labFrEnd.responseError(new String[]{exceptionMessage}, language, null);
+            response.sendError((int) errMsg[0], (String) errMsg[1]);              
             return;
         }                                       
     }
