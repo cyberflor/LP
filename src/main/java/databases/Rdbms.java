@@ -38,6 +38,7 @@ import javax.xml.bind.DatatypeConverter;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Header;
+import java.sql.Types;
 import java.util.HashMap;
 import java.util.Map;
 import org.codehaus.jettison.json.JSONArray;
@@ -146,125 +147,14 @@ public class Rdbms {
     
     private void setIsStarted(Boolean isStart) { this.isStarted = isStart;}
     
-    private String buildSqlStatement (String operation, String schemaName, String tableName, String[] whereFieldNames, 
-            Object[] whereFieldValues, String[] fieldsToRetrieve, String[] setFieldNames, Object[] setFieldValues, 
-            String[] fieldsToOrder, String[] fieldsToGroup){
-        
-        LabPLANETArray labArr = new LabPLANETArray();
-        String queryWhere = "";
-        schemaName = schemaName.replace("\"", "");
-        schemaName = "\""+schemaName+"\"";   
-        
-        tableName = tableName.replace("\"", "");
-        tableName = "\""+tableName+"\"";   
-
-        Integer i=1;
-        Boolean containsInClause = false;
-        Object[] whereFieldValuesNew = new Object[0];   
-        if (whereFieldNames!=null){
-            for (String fn: whereFieldNames){
-                    if ( i >1){queryWhere = queryWhere + " and ";}
-
-                    if ( fn.toUpperCase().contains("NULL")){ queryWhere = queryWhere + fn;}
-                    else if (fn.toUpperCase().contains(" LIKE")){ queryWhere = queryWhere + fn + " ? ";} 
-                    else if (fn.toUpperCase().contains(" IN")){ 
-                        Integer posicINClause = fn.toUpperCase().indexOf("IN");
-                        String separator = fn;
-                        separator = separator.substring(posicINClause+2, posicINClause+3);
-                        separator = separator.trim();
-                        separator = separator.replace(" IN", "");  
-                        if (separator.length()==0){ separator="|";}
-                        containsInClause = true;
-                        String textSpecs = (String) whereFieldValues[i-1];
-                        String[] textSpecArray = textSpecs.split("\\"+separator);
-                         queryWhere = queryWhere + fn.replace(separator, "") + "(" ;
-                        /*for (Integer iNew =0;iNew<i-1;iNew++){
-                             whereFieldValuesNew[iNew] = whereFieldValues[i];                        
-                        }*/
-                        for (String f: textSpecArray){
-                            queryWhere = queryWhere + "?,";
-                            whereFieldValuesNew = labArr.addValueToArray1D(whereFieldValuesNew, f);                        
-                            i++;
-                        }
-                        for (Integer j=i;j<=whereFieldValues.length;j++){
-                            whereFieldValuesNew = labArr.addValueToArray1D(whereFieldValuesNew, whereFieldValues[j]);  
-                        }
-                        queryWhere = queryWhere.substring(0, queryWhere.length()-1);
-                        queryWhere = queryWhere + ")" ;
-                        whereFieldValues = whereFieldValuesNew;
-                    }                 
-                    else {queryWhere = queryWhere + fn + "=? ";}
-
-                    i++;
-                }    
-            }
-        String fieldsToRetrieveStr = ""; String fieldsToRetrieveArgStr = "";
-        String setFieldNamesStr = ""; String setFieldNamesArgStr = "";
-        if (fieldsToRetrieve!=null){            
-            for (String fn: fieldsToRetrieve){
-                fn = fn.toUpperCase().replace(" IN", "");  
-                fieldsToRetrieveStr = fieldsToRetrieveStr + fn.toLowerCase() + ", ";
-            }
-            fieldsToRetrieveStr = fieldsToRetrieveStr.substring(0, fieldsToRetrieveStr.length()-2);  
-        }              
-        String fieldsToOrderStr = "";
-        if (fieldsToOrder!=null){            
-            for (String fn: fieldsToOrder){         fieldsToOrderStr = fieldsToOrderStr + fn + ", ";}  
-            if (fieldsToOrderStr.length()> 0) {
-                fieldsToOrderStr = fieldsToOrderStr.substring(0, fieldsToOrderStr.length()-2);   
-                fieldsToOrderStr = "Order By " + fieldsToOrderStr;
-            }
-        }                                   
-        String fieldsToGroupStr = "";
-        if (fieldsToGroup!=null){            
-            for (String fn: fieldsToGroup){        fieldsToGroupStr = fieldsToGroupStr + fn + ", ";} 
-            if (fieldsToGroupStr.length()> 0) {
-                fieldsToGroupStr = fieldsToGroupStr.substring(0, fieldsToGroupStr.length()-2);            
-                fieldsToGroupStr = "Group By " + fieldsToGroupStr;
-            }
-        }             
-        if (setFieldNames!=null){                   
-            for (int iFields=0; iFields<setFieldNames.length;iFields++){
-                setFieldNamesStr = setFieldNamesStr + setFieldNames[iFields] + ", ";
-                setFieldNamesArgStr = setFieldNamesArgStr + "?, ";
-            }
-            setFieldNamesStr = setFieldNamesStr.substring(0, setFieldNamesStr.length()-2);     
-            setFieldNamesArgStr = setFieldNamesArgStr.substring(0, setFieldNamesArgStr.length()-2);     
-        }
-        
-        String query = "";                
-        switch (operation.toUpperCase()){            
-            case "SELECT":              
-                query = "select " + fieldsToRetrieveStr + " from " + schemaName + "." + tableName
-                        + "   where " + queryWhere + " " + fieldsToGroupStr + " " + fieldsToOrderStr;
-                break;
-            case "INSERT":
-                query = "insert into " + schemaName + "." + tableName
-                        + " (" + setFieldNamesStr + ") values ( " + setFieldNamesArgStr + ") " ;        
-                break;
-            case "UPDATE":
-                String updateSetSectionStr = "";
-                //String[] updateSetSection = labArr.joinTwo1DArraysInOneOf1DString(setFieldNames, setFieldValues, "=");
-                for (int iFields=0; iFields<setFieldNames.length;iFields++){
-                    updateSetSectionStr = updateSetSectionStr + setFieldNames[iFields] + "=?, ";                    
-                }
-                updateSetSectionStr = updateSetSectionStr.substring(0, updateSetSectionStr.length()-2);     
-                query = "update " + schemaName + "." + tableName
-                        + " set " + updateSetSectionStr + " where " + queryWhere;        
-                break;
-            default:
-                break;
-        }        
-        return query;
-    }
     
     public Object[] zzzexistsRecord(Rdbms rdbm, String schemaName, String tableName, String[] keyFieldName, Object keyFieldValue){
         
         String[] diagnoses = new String[6];
         LabPLANETArray labArr = new LabPLANETArray();        
         String[] errorDetailVariables = new String[0];
-        
-        String query = buildSqlStatement("SELECT", schemaName, tableName,
+        SqlStatement sql = new SqlStatement();        
+        String query = sql.buildSqlStatement("SELECT", schemaName, tableName,
                 keyFieldName, null, keyFieldName,  null, null,  null, null);          
         try{
             ResultSet res;
@@ -308,14 +198,39 @@ public class Rdbms {
            errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, schemaName);          
            return (Object[]) LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);                         
         }
-        String query = buildSqlStatement("SELECT", schemaName, tableName,
+        SqlStatement sql = new SqlStatement(); 
+        String query = sql.buildSqlStatement("SELECT", schemaName, tableName,
                 keyFieldNames, keyFieldValues, keyFieldNames,  null, null,  null, null);             
         try{
             Object[] keyFieldValuesSplitted = new Object[0];
-            for (int i=0; i< keyFieldValues.length; i++){
+            for (int i=0; i< keyFieldValues.length; i++){                    
+                //Boolean containsInClause = false;
+                String separator = "";
+                String fn = keyFieldNames[i];
+                if (fn.toUpperCase().contains(" IN")){ 
+                    Integer posicINClause = fn.toUpperCase().indexOf("IN");
+                    separator = fn;
+                    separator = separator.substring(posicINClause+2, posicINClause+3);
+                    separator = separator.trim();
+                    separator = separator.replace(" IN", "");  
+                    if (separator.length()==0){ separator="\\|";} 
+                 //containsInClause = true;
+                }
                 //String currFieldValue = keyFieldValues[i].toString();                
                 if(keyFieldValues[i] instanceof String){                    
-                    keyFieldValuesSplitted = labArr.addValueToArray1D(keyFieldValuesSplitted, keyFieldValues[i].toString().split("\\|"));
+                    Object[] fieldsIN = keyFieldValues[i].toString().split(separator);
+                    int fINlen=fieldsIN.length;
+                    LabPLANETPlatform labPlat = new LabPLANETPlatform();
+                    
+                    //Object[] decrypted = labPlat.decryptString("fS￵ￃﾺﾀ?p￦￠￝ﾅ\\ﾭﾡ￡");
+                    //"fS￵ￃﾺﾀ?p￦￠￝ﾅ\ﾭﾡ￡"
+                            
+                    for (int ii=0; ii<fINlen; ii++){
+                        String fldToEncrypt = fieldsIN[ii].toString();
+                        Object[] fEnc = labPlat.encryptString(fldToEncrypt);
+                        fieldsIN[ii] = fEnc[1];                        
+                    }
+                    keyFieldValuesSplitted = labArr.addValueToArray1D(keyFieldValuesSplitted, fieldsIN);
                 }else{
                     keyFieldValuesSplitted = labArr.addValueToArray1D(keyFieldValuesSplitted, keyFieldValues[i]);
                 }
@@ -346,7 +261,7 @@ public class Rdbms {
         }                    
     }
 
-    public String getRecordFieldsByFilterJSON(Rdbms rdbm, String schemaName, String tableName, String[] whereFieldNames, Object[] whereFieldValues, String[] fieldsToRetrieve){
+    public String getRecordFieldsByFilterJSON(Rdbms rdbm, String schemaName, String tableName, String[] whereFieldNames, Object[] whereFieldValues, String[] fieldsToRetrieve, String[] fieldsSortBy){
         
         Object[][] diagnoses = new Object[1][6];                
         LabPLANETArray labArr = new LabPLANETArray();                 
@@ -361,13 +276,23 @@ public class Rdbms {
            return null;
            //return labArr.array1dTo2d(diagnosesError, 6);
         }
-        String query = buildSqlStatement("SELECT", schemaName, tableName,
+        SqlStatement sql = new SqlStatement(); 
+        String query = sql.buildSqlStatement("SELECT", schemaName, tableName,
                 whereFieldNames, whereFieldValues,
-                fieldsToRetrieve,  null, null, null, null);        
+                fieldsToRetrieve,  null, null, fieldsSortBy, null);        
             try{
                 Boolean containsInClause = false;
                 ResultSet res = null;
                 query = "select array_to_json(array_agg(row_to_json(t))) from (" + query +") t";
+                
+/*                if (fieldsSortBy!=null){
+                    query=query+" Order By ";
+                    for (String fn: fieldsSortBy){
+                        query=query+" "+fn+" , ";
+                    }
+                    query=query.substring(0, query.length()-2);
+                } 
+*/                
                 //query = "select row_to_json(t) from (" + query +") t";
                 if ( containsInClause ){
                     res = rdbm.prepRdQuery(query, whereFieldValues);
@@ -434,7 +359,8 @@ public class Rdbms {
            Object[] diagnosesError = (Object[]) LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);                         
            return labArr.array1dTo2d(diagnosesError, 6);
         }
-        String query = buildSqlStatement("SELECT", schemaName, tableName,
+        SqlStatement sql = new SqlStatement(); 
+        String query = sql.buildSqlStatement("SELECT", schemaName, tableName,
                 whereFieldNames, whereFieldValues,
                 fieldsToRetrieve,  null, null, null, null);        
             try{
@@ -574,7 +500,8 @@ public class Rdbms {
            Object[] diagnosesError = (Object[]) labPlat.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);                         
            return labArr.array1dTo2d(diagnosesError, 6);               
         }
-        String query = buildSqlStatement("SELECT", schemaName, tableName,
+        SqlStatement sql = new SqlStatement(); 
+        String query = sql.buildSqlStatement("SELECT", schemaName, tableName,
                 whereFieldNames, whereFieldValues,
                 fieldsToRetrieve,  orderBy, null, null, null);   
 /*        
@@ -661,7 +588,8 @@ public class Rdbms {
            errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, Arrays.toString(fieldValues));
            return (String[]) labPlat.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);
         }
-        String query = buildSqlStatement("INSERT", schemaName, tableName,
+        SqlStatement sql = new SqlStatement(); 
+        String query = sql.buildSqlStatement("INSERT", schemaName, tableName,
                 null, null, null, fieldNames, fieldValues,
                 null, null);    
  /*       String query = "";
@@ -714,7 +642,8 @@ public class Rdbms {
            errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, schemaName);          
            return (Object[]) labPlat.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);                         
         }
-        String query = buildSqlStatement("UPDATE", schemaName, tableName,
+        SqlStatement sql = new SqlStatement(); 
+        String query = sql.buildSqlStatement("UPDATE", schemaName, tableName,
                 whereFieldNames, whereFieldValues, null, updateFieldNames, updateFieldValues,
                 null, null);   
        
@@ -876,116 +805,53 @@ public class Rdbms {
         Integer indexval = 1;
 
         for(Integer numi=0;numi<numfields;numi++){
-             Object obj = valoStrings[numi];
+            Object obj = valoStrings[numi];
 
-             String clase;
+            String clase;
 
-             if (obj != null){
-             clase = obj.getClass().toString();
-             }else{
-             clase = "null";    
-             }
-
-               switch(clase){
+            if (obj != null){
+               clase = obj.getClass().toString();
+            }else{
+               clase = "null";    
+            }
+            switch(clase){
                case "class java.lang.Integer":
-               prepsta.setInt(indexval, (Integer)obj);
-               break;
+                    prepsta.setInt(indexval, (Integer)obj);
+                    break;
                case "class java.lang.Boolean":
-               prepsta.setBoolean(indexval, (Boolean)obj);
-               break;
+                    prepsta.setBoolean(indexval, (Boolean)obj);
+                    break;
                case "class java.sql.Date":
-               prepsta.setDate(indexval, (java.sql.Date) obj);
-               break;
+                    prepsta.setDate(indexval, (java.sql.Date) obj);
+                    break;
                case "class java.util.Date":
                    Date dt = (Date) obj;
                    java.sql.Date sqlDate = new java.sql.Date(dt.getTime());                   
                    prepsta.setDate(indexval, (java.sql.Date) sqlDate);
-               break;
+                   break;
                case "null":
-               prepsta.setNull(indexval, fieldtypes[numi]);
-               break; 
+                   //prepsta.setNull(indexval, fieldtypes[numi]);
+                   prepsta.setNull(indexval, Types.VARCHAR);
+                   break; 
                case "class json.Na"://to skip fields
-               break;  
+                   break;  
                case "class [Ljava.lang.String;":
-               Array array = conn.createArrayOf("VARCHAR", (Object []) obj);
-               prepsta.setArray(indexval, array);
-               break;
+                   Array array = conn.createArrayOf("VARCHAR", (Object []) obj);
+                   prepsta.setArray(indexval, array);
+                   break;
                default:
-               prepsta.setString(indexval, (String) obj);
-               break; 
-           }
-           
+                   prepsta.setString(indexval, (String) obj);
+                   break; 
+           }           
            if (!clase.equals("class json.Na")){
                indexval++;
            }
         }     
     }
 
-    public static ResourceBundle getParameterBundle(String configFile){
-        ResourceBundle prop = ResourceBundle.getBundle("parameter.config."+configFile);
-        return prop;
-    }
     
-    public static String getParameterBundle(String configFile, String parameterName, String language){
-        
-        FileWriter fw = null;
-        String newEntry = "";
-        
-        ResourceBundle prop = ResourceBundle.getBundle("parameter.config."+configFile+"_"+language); 
-        if (!prop.containsKey(parameterName)){  
-            return "";
-        }else{    
-            String paramValue = prop.getString(parameterName);
-            return paramValue;
-        }    
-    }        
 
-    public static String getParameterBundle(String configFile, String parameterName){
-        
-        FileWriter fw = null;
-        String newEntry = "";
-        try {
-            ResourceBundle prop = ResourceBundle.getBundle("parameter.config."+configFile); 
-            if (!prop.containsKey(parameterName)){  
-                return "";
-            }else{    
-                String paramValue = prop.getString(parameterName);
-                return paramValue;
-            }
-        }catch (Exception e){
-            
-            return "";
-        }    
-    }        
 
-    /**
-     *
-     * @param packageName
-     * @param configFile
-     * @param parameterName
-     * @return
-     **/
-    public static String getParameterBundle(String packageName, String configFile, String parameterName, String language){
-        ResourceBundle prop = null;
-        FileWriter fw = null;
-        String newEntry = "";
-        try {
-            if (language==null){
-                prop = ResourceBundle.getBundle("parameter."+packageName+"."+configFile);                 
-            }else{
-                prop = ResourceBundle.getBundle("parameter."+packageName+"."+configFile+"_"+language); 
-            }    
-            if (!prop.containsKey(parameterName)){  
-                return "";
-            }else{    
-                String paramValue = prop.getString(parameterName);
-                return paramValue;
-            }
-        }catch (Exception e){
-            
-            return "";
-        }    
-    }        
    
     public Date getLocalDate(){
         Date de = new java.sql.Date(System.currentTimeMillis());        

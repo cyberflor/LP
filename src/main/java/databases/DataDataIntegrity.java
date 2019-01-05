@@ -6,6 +6,7 @@
 package databases;
 
 import LabPLANET.utilities.LabPLANETPlatform;
+import functionalJava.parameter.Parameter;
 
 /**
  *
@@ -22,7 +23,7 @@ public class DataDataIntegrity {
         String schemaDataName = labPlat.buildSchemaName(schemaName, "data");
         
         String propertyEntryName = tableName+"_mandatoryFields"+actionName;        
-        String propertyEntryValue = rdbm.getParameterBundle(schemaDataName.replace("\"", ""), propertyEntryName);        
+        String propertyEntryValue = Parameter.getParameterBundle(schemaDataName.replace("\"", ""), propertyEntryName);        
         if (propertyEntryValue.length()>0){
             myMandatoryFields = propertyEntryValue.split("\\|");
         }                  
@@ -37,7 +38,7 @@ public class DataDataIntegrity {
         
         String propertyEntryName = tableName+"_fieldsDefaultValues"+actionName;        
         
-        String propertyEntryValue = rdbm.getParameterBundle(schemaDataName.replace("\"", ""), propertyEntryName);        
+        String propertyEntryValue = Parameter.getParameterBundle(schemaDataName.replace("\"", ""), propertyEntryName);        
         if (propertyEntryValue.length()>0){
             myMandatoryFields = propertyEntryValue.split("\\|");
         }                  
@@ -52,7 +53,7 @@ public class DataDataIntegrity {
         
         String propertyEntryName = tableName+"_specialFields";        
         
-        String propertyEntryValue = rdbm.getParameterBundle(schemaDataName.replace("\"", ""), propertyEntryName);        
+        String propertyEntryValue = Parameter.getParameterBundle(schemaDataName.replace("\"", ""), propertyEntryName);        
         if (propertyEntryValue.length()>0){
             myMandatoryFields = propertyEntryValue.split("\\|");
         }                  
@@ -67,7 +68,7 @@ public class DataDataIntegrity {
         
         String propertyEntryName = tableName+"_specialFieldsFunction";        
         
-        String propertyEntryValue = rdbm.getParameterBundle(schemaDataName.replace("\"", ""), propertyEntryName);        
+        String propertyEntryValue = Parameter.getParameterBundle(schemaDataName.replace("\"", ""), propertyEntryName);        
         if (propertyEntryValue.length()>0){
             myMandatoryFields = propertyEntryValue.split("\\|");
         }                  

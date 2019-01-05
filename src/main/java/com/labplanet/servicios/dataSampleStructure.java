@@ -208,7 +208,7 @@ public class dataSampleStructure extends HttpServlet {
                                 fileContent = fileContent + "<td>"+sampleId.toString()+", "+userName+", "
                                     +configSpecTestingArray[i][6].toString()+", "+configSpecTestingArray[i][7].toString()+"</td>";                            
                                 dataSample = smp.sampleAnalysisAddtoSample(rdbm, schemaPrefix, userName, sampleId, fieldName, fieldValue, userRole);
-                            } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+                            } catch (IllegalArgumentException ex) {
                                 Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
                             }
                             break;              

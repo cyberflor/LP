@@ -6,6 +6,7 @@
 package LabPLANET.utilities;
 
 import databases.Rdbms;
+import functionalJava.parameter.Parameter;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.security.InvalidKeyException;
@@ -13,6 +14,7 @@ import java.security.Key;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.HashMap;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
@@ -36,7 +38,7 @@ public class LabPLANETPlatform {
         Object[] errorDetailVariables = new Object[0];
         Rdbms rdbm = new Rdbms();
         LabPLANETArray labArr = new LabPLANETArray();
-        String[] procedureActions = Rdbms.getParameterBundle(schemaPrefix.replace("\"", "")+"-procedure", "procedureActions").split("\\|");
+        String[] procedureActions = Parameter.getParameterBundle(schemaPrefix.replace("\"", "")+"-procedure", "procedureActions").split("\\|");
         
         if (labArr.valueInArray(procedureActions, "ALL")){
             errorCode = "ACTION_ENABLED_BY_ALL";
@@ -68,7 +70,7 @@ public class LabPLANETPlatform {
         String errorCode = ""; String errorDetail = "";
         Object[] errorDetailVariables = new Object[0];            
         Rdbms rdbm = new Rdbms();        
-        String[] procedureActionsUserRoles = Rdbms.getParameterBundle(schemaPrefix.replace("\"", "")+"-procedure", "actionEnabled"+actionName).split("\\|");
+        String[] procedureActionsUserRoles = Parameter.getParameterBundle(schemaPrefix.replace("\"", "")+"-procedure", "actionEnabled"+actionName).split("\\|");
         
         if (labArr.valueInArray(procedureActionsUserRoles, "ALL")){
             errorCode = "userRoleActionEnabled_ALL";
@@ -94,6 +96,28 @@ public class LabPLANETPlatform {
             errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, actionName);
             return trapErrorMessage(rdbm, "LABPLANET_TRUE", classVersion, errorCode, errorDetailVariables);        
         }            
+    }
+    
+    public Boolean isEncryptedField(String schemaPrefix, String schemaSuffix, String tableName, String fieldName){
+        Boolean diagnoses = false;
+        if ((schemaPrefix==null) || (schemaSuffix==null) || (tableName==null) || (fieldName==null) ) {return diagnoses;}
+        
+        Rdbms rdbm = new Rdbms();
+        String parameterName = "encrypted_"+tableName;
+        String tableEncrytedFields = Parameter.getParameterBundle(schemaPrefix+"-"+schemaSuffix, parameterName);
+        if ( (tableEncrytedFields==null) ){return diagnoses;}
+        if ( (tableEncrytedFields=="") ){return diagnoses;}        
+        LabPLANETArray labArr = new LabPLANETArray();
+        return labArr.valueInArray(tableEncrytedFields.split("\\|"), fieldName);        
+    }
+    
+    public HashMap<String, String> encryptEncryptableFields(String fieldName, String fieldValue){
+        HashMap<String, String> hm = new HashMap<>();
+        
+        
+        
+        hm.put(fieldName, fieldValue);
+        return hm;
     }
     
     public Object[] encryptString(String stringToEncrypt){
@@ -183,7 +207,7 @@ public class LabPLANETPlatform {
         Object[] fldValue = new Object[0];
         String currField = "";        
         LabPLANETArray labArr = new LabPLANETArray();
-        String mandatoryFieldsStr = Rdbms.getParameterBundle("labtimus", "mandatoryFields_requerimentsJavaDoc");
+        String mandatoryFieldsStr = Parameter.getParameterBundle("labtimus", "mandatoryFields_requerimentsJavaDoc");
         String[] mandatoryFields = mandatoryFieldsStr.split("\\|");
         
 
@@ -277,8 +301,8 @@ public class LabPLANETPlatform {
         LabPLANETArray labArr = new LabPLANETArray();
         String propertyName = tableName+"_mandatoryFields"+actionName;
         
-        String mandatoryFieldsToCheck = Rdbms.getParameterBundle(schemaName.replace("\"", ""), propertyName);
-        String mandatoryFieldsToCheckDefault = Rdbms.getParameterBundle(schemaName.replace("\"", ""), propertyName+"Default");
+        String mandatoryFieldsToCheck = Parameter.getParameterBundle(schemaName.replace("\"", ""), propertyName);
+        String mandatoryFieldsToCheckDefault = Parameter.getParameterBundle(schemaName.replace("\"", ""), propertyName+"Default");
         
         String[] mandatoryFields = mandatoryFieldsToCheck.split("\\|");
         
@@ -375,7 +399,7 @@ public class LabPLANETPlatform {
         LabPLANETArray labArr = new LabPLANETArray();
         String propertyName = tableName+"_fieldsAddingMandatory"+actionName;
         
-        String mandatoryFieldsByDependency = Rdbms.getParameterBundle(schemaName.replace("\"", ""), propertyName);
+        String mandatoryFieldsByDependency = Parameter.getParameterBundle(schemaName.replace("\"", ""), propertyName);
                 
         String[] mandatoryByDependency = mandatoryFieldsByDependency.split("\\|");
 
@@ -431,8 +455,8 @@ public class LabPLANETPlatform {
         String configTableNamePropertyName = tableName+"_configTableName";
         String configTableKeyFieldsPropertyName = tableName+"_configTableKeyFields";        
         
-        String configTableName = Rdbms.getParameterBundle(schemaName.replace("\"", ""), configTableNamePropertyName);
-        String configTableKeyFields = Rdbms.getParameterBundle(schemaName.replace("\"", ""), configTableKeyFieldsPropertyName);
+        String configTableName = Parameter.getParameterBundle(schemaName.replace("\"", ""), configTableNamePropertyName);
+        String configTableKeyFields = Parameter.getParameterBundle(schemaName.replace("\"", ""), configTableKeyFieldsPropertyName);
 
         String[] configTableKeyFieldName = configTableKeyFields.split("\\|");
         Object[] configTableKeyFielValue = new Object[0];
@@ -501,8 +525,8 @@ public class LabPLANETPlatform {
         String specialFieldNamePropertyName = tableName+"_specialFieldsCheck";
         String specialFieldMethodNamePropertyName = tableName+"_specialFieldsCheck_methodName";        
         
-        String specialFieldName = Rdbms.getParameterBundle(schemaName.replace("\"", ""), specialFieldNamePropertyName);
-        String specialFieldMethodName = Rdbms.getParameterBundle(schemaName.replace("\"", ""), specialFieldMethodNamePropertyName);
+        String specialFieldName = Parameter.getParameterBundle(schemaName.replace("\"", ""), specialFieldNamePropertyName);
+        String specialFieldMethodName = Parameter.getParameterBundle(schemaName.replace("\"", ""), specialFieldMethodNamePropertyName);
         String[] specialFields = specialFieldName.split("\\|");
         String[] specialFieldsMethods = specialFieldMethodName.split("\\|");
         String specialFieldsCheck = "";
@@ -589,8 +613,8 @@ public class LabPLANETPlatform {
         Integer lineNumber = Thread.currentThread().getStackTrace()[CLIENT_CODE_STACK_INDEX].getLineNumber(); 
         className = className.replace(".java", "");
         Boolean errorCodeFromBundle = true;
-        String errorCodeText = Rdbms.getParameterBundle("LabPLANET", "errorTraping", className+"_"+errorCode, null);
-        if (errorCodeText.length()==0){errorCodeText = Rdbms.getParameterBundle("LabPLANET", "errorTraping", errorCode, null);}
+        String errorCodeText = Parameter.getParameterBundle("LabPLANET", "errorTraping", className+"_"+errorCode, null);
+        if (errorCodeText.length()==0){errorCodeText = Parameter.getParameterBundle("LabPLANET", "errorTraping", errorCode, null);}
         if (errorCodeText.length()==0){errorCodeText = errorCode; errorCodeFromBundle=false;}
         
         if (!errorCodeFromBundle){
@@ -602,8 +626,8 @@ public class LabPLANETPlatform {
                 }
             }            
         }else{
-            errorDetail = Rdbms.getParameterBundle("LabPLANET", "errorTraping", className+"_"+errorCode+"_detail", null);
-            if (errorDetail.length()==0){errorDetail = Rdbms.getParameterBundle("LabPLANET", "errorTraping", errorCode+"_detail", null);}
+            errorDetail = Parameter.getParameterBundle("LabPLANET", "errorTraping", className+"_"+errorCode+"_detail", null);
+            if (errorDetail.length()==0){errorDetail = Parameter.getParameterBundle("LabPLANET", "errorTraping", errorCode+"_detail", null);}
             if (errorVariables!=null){
                 for (int iVarValue=1; iVarValue<=errorVariables.length; iVarValue++){
                     errorDetail = errorDetail.replace("<*"+String.valueOf(iVarValue)+"*>", errorVariables[iVarValue-1].toString());

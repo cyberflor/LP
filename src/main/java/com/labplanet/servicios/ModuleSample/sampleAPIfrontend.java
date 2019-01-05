@@ -7,6 +7,7 @@ package com.labplanet.servicios.ModuleSample;
 
 import LabPLANET.utilities.LabPLANETArray;
 import LabPLANET.utilities.LabPLANETFrontEnd;
+import LabPLANET.utilities.LabPLANETPlatform;
 import databases.Rdbms;
 import databases.Token;
 import java.io.IOException;
@@ -116,9 +117,14 @@ public class sampleAPIfrontend extends HttpServlet {
                 response.getWriter().write(jArray.toString());                  
                 return;
             case "UNRECEIVESAMPLES_LIST":            
+                String[] sortFieldsNameArr = null;
+                String sortFieldsName = request.getParameter("sortFieldsName"); 
+                    if (! ((sortFieldsName==null) || (sortFieldsName.contains("undefined"))) ) {
+                        sortFieldsNameArr = (String[]) sortFieldsName.split("\\|");                                    
+                    }else{   sortFieldsNameArr=null;}             
                 String myData = rdbm.getRecordFieldsByFilterJSON(rdbm, schemaPrefix+"-data", "sample",
                         new String[] {"received_by is null"}, new Object[]{""},
-                        new String[] { "sample_id", "sample_config_code", "sampling_comment"});
+                        new String[] { "sample_id", "sample_config_code", "sampling_comment"}, sortFieldsNameArr);
                 rdbm.closeRdbms();
                 if (myData.contains("LABPLANET_FALSE")){  
                     Object[] errMsg = labFrEnd.responseError(new String[]{myData}, language, null);
@@ -150,7 +156,18 @@ public class sampleAPIfrontend extends HttpServlet {
                 if (whereFieldsName!=null){
                     whereFieldsNameArr=labArr.addValueToArray1D(whereFieldsNameArr, whereFieldsName.split("\\|"));
                 }            
-                Object[] whereFieldsValueArr = new Object[]{"RECEIVED"};
+/*                Object[] whereFieldsValueArr = new Object[]{"RECEIVED"};
+                LabPLANETPlatform labPlat = new LabPLANETPlatform();
+                
+                Object[] wordDecripted = labPlat.decryptString("fS￵ￃﾺﾀ?p￦￠￝ﾅ\\ﾭﾡ￡");
+                Object[] recEncrypted = labPlat.encryptString("RECEIVED");
+                whereFieldsValueArr=labArr.addValueToArray1D(whereFieldsValueArr, recEncrypted[1]);
+                recEncrypted = labPlat.encryptString("LOGGED");
+                whereFieldsValueArr=labArr.addValueToArray1D(whereFieldsValueArr, recEncrypted[1]);
+*/                
+                LabPLANETPlatform labPlat = new LabPLANETPlatform();
+                Object[] recEncrypted = labPlat.encryptString("LOGGED");
+                Object[] whereFieldsValueArr = new Object[]{recEncrypted[1]};
                 if (whereFieldsValue!=null){
                     whereFieldsValueArr=labArr.addValueToArray1D(whereFieldsValueArr, whereFieldsValue.split("\\|"));
                 }                 
@@ -160,10 +177,20 @@ public class sampleAPIfrontend extends HttpServlet {
                 String[] whereFieldsNameArr=whereFieldsName.split("\\|");                
                 Object[] whereFieldsValueArr = labArr.convertStringWithDataTypeToObjectArray(whereFieldsValue.split("\\|"));
   */              
+                sortFieldsNameArr = null;
+                sortFieldsName = request.getParameter("sortFieldsName"); 
+                if (! ((sortFieldsName==null) || (sortFieldsName.contains("undefined"))) ) {
+                    sortFieldsNameArr = (String[]) sortFieldsName.split("\\|");                                    
+                }else{   sortFieldsNameArr=null;}  
+                
                 if ("SAMPLE".equals(sampleLastLevel)){
                     myData = rdbm.getRecordFieldsByFilterJSON(rdbm, schemaPrefix+"-data", "sample",
-                            whereFieldsNameArr, whereFieldsValueArr, sampleFieldToRetrieveArr);
-                    if (myData.contains("LABPLANET_FALSE")){  
+                            whereFieldsNameArr, whereFieldsValueArr, sampleFieldToRetrieveArr, sortFieldsNameArr);
+                    if (myData==null){
+                        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "No info found or error running the query for this sample "); 
+                        return;
+                    }
+                    if ( myData.contains("LABPLANET_FALSE")) {  
                         Object[] errMsg = labFrEnd.responseError(new String[]{myData}, language, null);
                         response.sendError((int) errMsg[0], (String) errMsg[1]);                            
                     }else{
@@ -221,44 +248,92 @@ public class sampleAPIfrontend extends HttpServlet {
                 }
                     //Response.serverError().entity(myData).build();
                     //return Response.ok(myData).build();            
-                    return;          
+                    return;                                        
                 case "ANALYSIS_ALL_LIST":          
-                String fieldToRetrieve = request.getParameter("fieldToRetrieve"); 
-                    
-                String[] fieldToRetrieveArr = new String[0];
-                if ( (fieldToRetrieve==null) || (fieldToRetrieve.length()==0) ){
-                    fieldToRetrieveArr=labArr.addValueToArray1D(fieldToRetrieveArr, "code");
-                    fieldToRetrieveArr=labArr.addValueToArray1D(fieldToRetrieveArr, "method_name");                           
-                    fieldToRetrieveArr=labArr.addValueToArray1D(fieldToRetrieveArr, "method_version");                           
-                }else{
-                    fieldToRetrieveArr=labArr.addValueToArray1D(fieldToRetrieveArr, fieldToRetrieve.split("\\|"));
-                    if (labArr.valuePosicInArray(fieldToRetrieveArr, "code")==-1){
-                        fieldToRetrieveArr=labArr.addValueToArray1D(fieldToRetrieveArr, "code");     
+                    String fieldToRetrieve = request.getParameter("fieldToRetrieve"); 
+
+                    String[] fieldToRetrieveArr = new String[0];
+                    if ( (fieldToRetrieve==null) || (fieldToRetrieve.length()==0) ){
+                        fieldToRetrieveArr=labArr.addValueToArray1D(fieldToRetrieveArr, "code");
                         fieldToRetrieveArr=labArr.addValueToArray1D(fieldToRetrieveArr, "method_name");                           
                         fieldToRetrieveArr=labArr.addValueToArray1D(fieldToRetrieveArr, "method_version");                           
-                    }                    
-                }                
+                    }else{
+                        fieldToRetrieveArr=labArr.addValueToArray1D(fieldToRetrieveArr, fieldToRetrieve.split("\\|"));
+                        if (labArr.valuePosicInArray(fieldToRetrieveArr, "code")==-1){
+                            fieldToRetrieveArr=labArr.addValueToArray1D(fieldToRetrieveArr, "code");     
+                            fieldToRetrieveArr=labArr.addValueToArray1D(fieldToRetrieveArr, "method_name");                           
+                            fieldToRetrieveArr=labArr.addValueToArray1D(fieldToRetrieveArr, "method_version");                           
+                        }                    
+                    }                
+                    sortFieldsNameArr = null;
+                    sortFieldsName = request.getParameter("sortFieldsName"); 
+                    if (! ((sortFieldsName==null) || (sortFieldsName.contains("undefined"))) ) {
+                        sortFieldsNameArr = (String[]) sortFieldsName.split("\\|");                                    
+                    }else{   sortFieldsNameArr=null;}  
 
-                myData = rdbm.getRecordFieldsByFilterJSON(rdbm, schemaPrefix+"-config", "analysis_methods_view",
-                        new String[]{"code is not null"},new Object[]{true}, fieldToRetrieveArr);
-                rdbm.closeRdbms();
-                if (myData.contains("LABPLANET_FALSE")){  
-                    Object[] errMsg = labFrEnd.responseError(new String[] {myData}, language, null);
-                    response.sendError((int) errMsg[0], (String) errMsg[1]);                            
-                }else{
-                    Response.ok().build();
-                    response.getWriter().write(myData);           
-                }
-                rdbm.closeRdbms();
-                return;                          
-            default:      
-                errObject = labArr.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
-                errObject = labArr.addValueToArray1D(errObject, "API Error Message: actionName "+actionName+ " not recognized as an action by this API");                                                            
-                Object[] errMsg = labFrEnd.responseError(errObject, language, schemaPrefix);
-                response.sendError((int) errMsg[0], (String) errMsg[1]);    
-                rdbm.closeRdbms();                    
-                return;
-            }               
+                    myData = rdbm.getRecordFieldsByFilterJSON(rdbm, schemaPrefix+"-config", "analysis_methods_view",
+                            new String[]{"code is not null"},new Object[]{true}, fieldToRetrieveArr, sortFieldsNameArr);
+                    rdbm.closeRdbms();
+                    if (myData.contains("LABPLANET_FALSE")){  
+                        Object[] errMsg = labFrEnd.responseError(new String[] {myData}, language, null);
+                        response.sendError((int) errMsg[0], (String) errMsg[1]);                            
+                    }else{
+                        Response.ok().build();
+                        response.getWriter().write(myData);           
+                    }
+                    rdbm.closeRdbms();
+                    return;         
+                case "GET_SAMPLE_ANALYSIS_RESULT_LIST":
+                    String sampleIdStr = request.getParameter("sampleId");                             
+                    if ( (sampleIdStr==null) || (sampleIdStr.contains("undefined")) ) {
+                        errObject = labArr.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
+                        errObject = labArr.addValueToArray1D(errObject, "sampleId="+request.getParameter("sampleId"));
+                        errObject = labArr.addValueToArray1D(errObject, "API Error Message: sampleId is one mandatory param and should be one integer value for this API");                    
+                        Object[] errMsg = labFrEnd.responseError(errObject, language, schemaPrefix);
+                        response.sendError((int) errMsg[0], (String) errMsg[1]);     
+                        return ;
+                    }                              
+                    Integer sampleId = Integer.parseInt(sampleIdStr);       
+                    
+                    String resultFieldToRetrieve = request.getParameter("resultFieldToRetrieve");  
+                    String[] resultFieldToRetrieveArr=  resultFieldToRetrieve.split("\\|");
+                    String fieldName = "result_id";
+                    if (labArr.valuePosicInArray(resultFieldToRetrieveArr, fieldName)==-1){
+                        resultFieldToRetrieveArr=labArr.addValueToArray1D(resultFieldToRetrieveArr, fieldName);}     
+                    fieldName = "param_name";
+                    if (labArr.valuePosicInArray(resultFieldToRetrieveArr, fieldName)==-1){
+                        resultFieldToRetrieveArr=labArr.addValueToArray1D(resultFieldToRetrieveArr, fieldName);}     
+                    
+                    sortFieldsNameArr = null;
+                    sortFieldsName = request.getParameter("sortFieldsName"); 
+                    if (! ((sortFieldsName==null) || (sortFieldsName.contains("undefined"))) ) {
+                        sortFieldsNameArr = (String[]) sortFieldsName.split("\\|");                                    
+                    }else{   
+                        sortFieldsNameArr = labArr.addValueToArray1D(sortFieldsNameArr, "sample_id");
+                        sortFieldsNameArr = labArr.addValueToArray1D(sortFieldsNameArr, "test_id");
+                        sortFieldsNameArr = labArr.addValueToArray1D(sortFieldsNameArr, "result_id");
+                    }  
+                    myData = rdbm.getRecordFieldsByFilterJSON(rdbm, schemaPrefix+"-data", "sample_analysis_result",
+                            new String[]{"sample_id"},new Object[]{sampleId}, resultFieldToRetrieveArr, sortFieldsNameArr);
+                    rdbm.closeRdbms();
+                    if (myData.contains("LABPLANET_FALSE")){  
+                        Object[] errMsg = labFrEnd.responseError(new String[] {myData}, language, null);
+                        response.sendError((int) errMsg[0], (String) errMsg[1]);                            
+                    }else{
+                        Response.ok().build();
+                        response.getWriter().write(myData);           
+                    }
+                    
+                    rdbm.closeRdbms();
+                    return;                             
+                default:      
+                    errObject = labArr.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
+                    errObject = labArr.addValueToArray1D(errObject, "API Error Message: actionName "+actionName+ " not recognized as an action by this API");                                                            
+                    Object[] errMsg = labFrEnd.responseError(errObject, language, schemaPrefix);
+                    response.sendError((int) errMsg[0], (String) errMsg[1]);    
+                    rdbm.closeRdbms();                    
+                    return;
+                }               
 /*            rdbm.closeRdbms();
             if ("LABPLANET_TRUE".equalsIgnoreCase(dataSample[0].toString())){                                
                 //out.println(Arrays.toString(dataSample));

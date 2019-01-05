@@ -151,7 +151,7 @@ public class sampleAPI extends HttpServlet {
                     Object[] fieldValues=null;
                     if (fieldName!=null) fieldNames = (String[]) fieldName.split("\\|");                                            
                     if (fieldValue!=null) fieldValues = (Object[]) labArr.convertStringWithDataTypeToObjectArray(fieldValue.split("\\|"));                                                            
-                    rdbm.closeRdbms();
+                    dataSample = smp.logSample(rdbm, schemaPrefix, sampleTemplate, sampleTemplateVersion, fieldNames, fieldValues, internalUserID, userRole);
                     if ("LABPLANET_FALSE".equalsIgnoreCase(dataSample[0].toString())){  
                         Object[] errMsg = labFrEnd.responseError(dataSample, language, schemaPrefix);
                         response.sendError((int) errMsg[0], (String) errMsg[1]);    
@@ -159,6 +159,7 @@ public class sampleAPI extends HttpServlet {
                         Response.ok().build();
                         response.getWriter().write(Arrays.toString(dataSample));      
                     }  
+                    rdbm.closeRdbms();
                     return;
                 case "RECEIVESAMPLE":                      
                     String sampleIdStr = request.getParameter("sampleId");                             
@@ -171,7 +172,7 @@ public class sampleAPI extends HttpServlet {
                         return ;
                     }                
                     Integer sampleId = Integer.parseInt(sampleIdStr);      
-sampleId = 12312131;
+//sampleId = 12312131;
 
                     dataSample = smp.sampleReception(rdbm, schemaPrefix, internalUserID, sampleId, userRole);
                     rdbm.closeRdbms();
@@ -247,7 +248,7 @@ sampleId = 12312131;
                         return ;
                     }                
                     sampleId = Integer.parseInt(sampleIdStr);      
-                    dataSample = smp.setSampleStartIncubationDateTime(rdbm, schemaPrefix, userName, sampleId, userRole);
+                    dataSample = smp.setSampleStartIncubationDateTime(rdbm, schemaPrefix, internalUserID, sampleId, userRole);
                     break;       
                 case "INCUBATIONEND":
                     sampleIdStr = request.getParameter("sampleId");                             
@@ -260,39 +261,79 @@ sampleId = 12312131;
                         return ;
                     }                
                     sampleId = Integer.parseInt(sampleIdStr);      
-                    dataSample = smp.setSampleEndIncubationDateTime(rdbm, schemaPrefix, userName, sampleId, userRole);
+                    dataSample = smp.setSampleEndIncubationDateTime(rdbm, schemaPrefix, internalUserID, sampleId, userRole);
                     break;       
- /*               case "SAMPLEANALYSISADD":
-                    if (configSpecTestingArray[i][3]!=null){sampleId = Integer.parseInt( (String) configSpecTestingArray[i][3]);}
-                    if (configSpecTestingArray[i][4]!=null){userName = (String) configSpecTestingArray[i][4];}
-                    if (configSpecTestingArray[i][5]!=null){fieldName = (String[]) configSpecTestingArray[i][5].toString().split("\\|");}              
-                    if (configSpecTestingArray[i][6]!=null){fieldValue = (Object[]) configSpecTestingArray[i][6].toString().split("\\|");}   
-                    fieldValue = labArr.convertStringWithDataTypeToObjectArray((String[]) fieldValue);
-                    try {                        
-                        fieldValue = labArr.convertStringWithDataTypeToObjectArray(configSpecTestingArray[i][6].toString().split("\\|"));
-                        fileContent = fileContent + "<td>sampleId, userName, fieldNames, fieldValues</td>";
-                        fileContent = fileContent + "<td>"+sampleId.toString()+", "+userName.toString()+", "
-                            +configSpecTestingArray[i][5].toString()+", "+configSpecTestingArray[i][6].toString()+"</td>";                            
-                        dataSample = smp.sampleAnalysisAddtoSample(rdbm, schemaPrefix, userName, sampleId, fieldName, fieldValue, userRole);
-                    } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
-                        Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
-                    }
+                case "SAMPLEANALYSISADD":
+                    sampleIdStr = request.getParameter("sampleId");                             
+                    if ( (sampleIdStr==null) || (sampleIdStr.contains("undefined")) ) {
+                        errObject = labArr.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
+                        errObject = labArr.addValueToArray1D(errObject, "sampleId="+request.getParameter("sampleId"));
+                        errObject = labArr.addValueToArray1D(errObject, "API Error Message: sampleId is one mandatory param and should be one integer value for this API");                    
+                        Object[] errMsg = labFrEnd.responseError(errObject, language, schemaPrefix);
+                        response.sendError((int) errMsg[0], (String) errMsg[1]);     
+                        return ;
+                    }                              
+                    sampleId = Integer.parseInt(sampleIdStr);       
+                    String[] fieldNameArr = null;
+                    Object[] fieldValueArr = null;
+                    fieldName = request.getParameter("fieldName");
+                    if (! ((fieldName==null) || (fieldName.contains("undefined"))) ) {
+                        fieldNameArr = (String[]) fieldName.split("\\|");                                    
+                    }else{
+                        errObject = labArr.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
+                        errObject = labArr.addValueToArray1D(errObject, "fieldName="+request.getParameter("fieldName"));
+                        errObject = labArr.addValueToArray1D(errObject, "API Error Message: fieldName is one mandatory param for this API");                    
+                        Object[] errMsg = labFrEnd.responseError(errObject, language, schemaPrefix);
+                        response.sendError((int) errMsg[0], (String) errMsg[1]);     
+                        return ;                        
+                    }                    
+                    fieldValue = request.getParameter("fieldValue");
+                    if (! ((fieldValue==null) || (fieldValue.contains("undefined"))) ) {
+                        fieldValueArr = (String[]) fieldValue.split("\\|");                        
+                        fieldValueArr = labArr.convertStringWithDataTypeToObjectArray((String[]) fieldValueArr);
+                    }else{
+                        errObject = labArr.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
+                        errObject = labArr.addValueToArray1D(errObject, "fieldValue="+request.getParameter("fieldValue"));
+                        errObject = labArr.addValueToArray1D(errObject, "API Error Message: fieldValue is one mandatory param for this API");                    
+                        Object[] errMsg = labFrEnd.responseError(errObject, language, schemaPrefix);
+                        response.sendError((int) errMsg[0], (String) errMsg[1]);     
+                        return ;                        
+                    }                    
+                    dataSample = smp.sampleAnalysisAddtoSample(rdbm, schemaPrefix, internalUserID, sampleId, fieldNameArr, fieldValueArr, userRole);
+                    rdbm.closeRdbms();  
                     break;              
                 case "ENTERRESULT":
                     Integer resultId = 0;
                     String rawValueResult = "";
-                    if (configSpecTestingArray[i][3]!=null){resultId = Integer.parseInt( (String) configSpecTestingArray[i][3]);}
-                    if (configSpecTestingArray[i][4]!=null){userName = (String) configSpecTestingArray[i][4];}
-                    if (configSpecTestingArray[i][5]!=null){rawValueResult = (String) configSpecTestingArray[i][5];}   
-                    fileContent = fileContent + "<td>resultId, userName, rawValueResult</td>";
-                    fileContent = fileContent + "<td>"+resultId.toString()+", "+userName+", "+rawValueResult+"</td>";
+                    String resultIdStr = request.getParameter("resultId");
+                    if (! ((resultIdStr==null) || (resultIdStr.contains("undefined"))) ) {
+                        resultId = Integer.parseInt(resultIdStr);       
+                    }else{
+                        errObject = labArr.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
+                        errObject = labArr.addValueToArray1D(errObject, "resultId="+request.getParameter("resultId"));
+                        errObject = labArr.addValueToArray1D(errObject, "API Error Message: resultId is one mandatory param for this API");                    
+                        Object[] errMsg = labFrEnd.responseError(errObject, language, schemaPrefix);
+                        response.sendError((int) errMsg[0], (String) errMsg[1]);     
+                        return ;                        
+                    }                    
+                    rawValueResult = request.getParameter("rawValueResult");
+                    if (! ((resultIdStr==null) || (resultIdStr.contains("undefined"))) ) {
+                        resultId = Integer.parseInt(resultIdStr);       
+                    }else{
+                        errObject = labArr.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
+                        errObject = labArr.addValueToArray1D(errObject, "rawValueResult="+request.getParameter("rawValueResult"));
+                        errObject = labArr.addValueToArray1D(errObject, "API Error Message: rawValueResult is one mandatory param for this API");                    
+                        Object[] errMsg = labFrEnd.responseError(errObject, language, schemaPrefix);
+                        response.sendError((int) errMsg[0], (String) errMsg[1]);     
+                        return ;                        
+                    }                    
                     try {
-                        dataSample = smp.sampleAnalysisResultEntry(rdbm, schemaPrefix, userName, resultId, rawValueResult, userRole);
+                        dataSample = smp.sampleAnalysisResultEntry(rdbm, schemaPrefix, internalUserID, resultId, rawValueResult, userRole);
                     } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
                         Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
                     }
                     break;              
-                case "CANCELRESULT":
+ /*               case "CANCELRESULT":
                     Integer objectId = 0;
                     String objectLevel = "";
                     rawValueResult = "";
@@ -307,7 +348,7 @@ sampleId = 12312131;
                         if (objectLevel.equalsIgnoreCase("SAMPLE")){sampleId = objectId;}
                         if (objectLevel.equalsIgnoreCase("TEST")){testId = objectId;}
                         if (objectLevel.equalsIgnoreCase("RESULT")){resultId = objectId;}
-                        dataSample = smp.sampleAnalysisResultCancel(rdbm, schemaPrefix, userName, sampleId, testId, resultId, userRole);
+                        dataSample = smp.sampleAnalysisResultCancel(rdbm, schemaPrefix, internalUserID, sampleId, testId, resultId, userRole);
                     } catch (IllegalArgumentException ex) {
                         Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
                     }
@@ -319,15 +360,15 @@ sampleId = 12312131;
                     if (configSpecTestingArray[i][3]!=null){objectId = Integer.parseInt( (String) configSpecTestingArray[i][3]);}
                     if (configSpecTestingArray[i][4]!=null){userName = (String) configSpecTestingArray[i][4];}
                     if (configSpecTestingArray[i][5]!=null){objectLevel = (String) configSpecTestingArray[i][5];}                      
-                    fileContent = fileContent + "<td>resultId, userName, objectLevel</td>";
-                    fileContent = fileContent + "<td>"+objectId.toString()+", "+userName+", "+objectLevel+"</td>";
+                    fileContent = fileContent + "<td>resultId, internalUserID, objectLevel</td>";
+                    fileContent = fileContent + "<td>"+objectId.toString()+", "+internalUserID+", "+objectLevel+"</td>";
                     try {
                         sampleId = null; Integer testId = null; resultId = null;
 
                         if (objectLevel.equalsIgnoreCase("SAMPLE")){sampleId = objectId;}
                         if (objectLevel.equalsIgnoreCase("TEST")){testId = objectId;}
                         if (objectLevel.equalsIgnoreCase("RESULT")){resultId = objectId;}
-                        dataSample = smp.sampleAnalysisResultUnCancel(rdbm, schemaPrefix, userName, sampleId, testId, resultId, userRole);
+                        dataSample = smp.sampleAnalysisResultUnCancel(rdbm, schemaPrefix, internalUserID, sampleId, testId, resultId, userRole);
                     } catch (IllegalArgumentException ex) {
                         Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
                     }
@@ -338,27 +379,57 @@ sampleId = 12312131;
                     if (configSpecTestingArray[i][3]!=null){testId = Integer.parseInt( (String) configSpecTestingArray[i][3]);}
                     if (configSpecTestingArray[i][4]!=null){userName = (String) configSpecTestingArray[i][4];}
                     if (configSpecTestingArray[i][5]!=null){newAnalyst = (String) configSpecTestingArray[i][5];}                      
-                    fileContent = fileContent + "<td>testId, userName, newAnalyst</td>";
+                    fileContent = fileContent + "<td>testId, internalUserID, newAnalyst</td>";
                     fileContent = fileContent + "<td>"+testId.toString()+", "+userName+", "+newAnalyst+"</td>";
                     try {
-                        dataSample = smp.sampleAnalysisAssignAnalyst(rdbm, schemaPrefix, userName, testId, newAnalyst, userRole);
+                        dataSample = smp.sampleAnalysisAssignAnalyst(rdbm, schemaPrefix, internalUserID, testId, newAnalyst, userRole);
                     } catch (IllegalArgumentException ex) {
                         Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
                     }
                     break;   
-                    
+*/                    
                 case "GETSAMPLEINFO":
+                    sampleIdStr = request.getParameter("sampleId");                             
+                    if ( (sampleIdStr==null) || (sampleIdStr.contains("undefined")) ) {
+                        errObject = labArr.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
+                        errObject = labArr.addValueToArray1D(errObject, "sampleId="+request.getParameter("sampleId"));
+                        errObject = labArr.addValueToArray1D(errObject, "API Error Message: sampleId is one mandatory param and should be one integer value for this API");                    
+                        Object[] errMsg = labFrEnd.responseError(errObject, language, schemaPrefix);
+                        response.sendError((int) errMsg[0], (String) errMsg[1]);     
+                        return ;
+                    }             
+                    sampleId = Integer.parseInt(sampleIdStr);                           
+                    
+                    String sampleFieldToRetrieve = request.getParameter("sampleFieldToRetrieve");                                                                                     
+                    if (sampleFieldToRetrieve==null) {
+                        errObject = labArr.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
+                        errObject = labArr.addValueToArray1D(errObject, "API Error Message: sampleFieldToRetrieve is one mandatory param for this API");                    
+                        Object[] errMsg = labFrEnd.responseError(errObject, language, schemaPrefix);
+                        response.sendError((int) errMsg[0], (String) errMsg[1]);     
+                        return ;
+                    }                 
+                    String[] sampleFieldToRetrieveArr = (String[]) sampleFieldToRetrieve.split("\\|");                           
                     String schemaDataName = "data";
                     LabPLANETPlatform labPlat = new LabPLANETPlatform();
-                    schemaDataName = labPlat.buildSchemaName(schemaPrefix, schemaDataName);                     
-                    if (configSpecTestingArray[i][3]!=null){sampleId = Integer.parseInt( (String) configSpecTestingArray[i][3]);}
-                    String[] fieldsToGet = (configSpecTestingArray[i][4].toString().split("\\|"));                    
-                         fileContent = fileContent + "<td>"
-                                 +configSpecTestingArray[i][4].toString()+"</td><td>"
-                                 +sampleId.toString()+"</td>";                      
-                         dataSample2D = rdbm.getRecordFieldsByFilter(rdbm, schemaDataName, "sample", new String[]{"sample_id"}, new Object[]{sampleId}, fieldsToGet);
-                    break;
-*/                    
+                    schemaDataName = labPlat.buildSchemaName(schemaPrefix, schemaDataName);              
+
+                    String[] sortFieldsNameArr = null;
+                    String sortFieldsName = request.getParameter("sortFieldsName"); 
+                    if (! ((sortFieldsName==null) || (sortFieldsName.contains("undefined"))) ) {
+                        sortFieldsNameArr = (String[]) sortFieldsName.split("\\|");                                    
+                    }else{   sortFieldsNameArr=null;}  
+                    
+                    String dataSampleStr = rdbm.getRecordFieldsByFilterJSON(rdbm, schemaDataName, "sample", 
+                            new String[]{"sample_id"}, new Object[]{sampleId}, sampleFieldToRetrieveArr, sortFieldsNameArr);
+                   if (dataSampleStr.contains("LABPLANET_FALSE")){                                 
+                        Object[] errMsg = labFrEnd.responseError(dataSampleStr.split("\\|"), language, schemaPrefix);
+                        response.sendError((int) errMsg[0], (String) errMsg[1]);                     
+                    }else{
+                        response.getWriter().write(dataSampleStr);
+                        Response.ok().build();
+                    }  
+                    rdbm.closeRdbms();                    
+                    return;                   
                 default:      
                     //errObject = frontEnd.APIHandler.actionNotRecognized(errObject, functionBeingTested, response);
                     errObject = labArr.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
@@ -369,13 +440,12 @@ sampleId = 12312131;
                     return;                    
             }    
             rdbm.closeRdbms();
-            if ("LABPLANET_TRUE".equalsIgnoreCase(dataSample[0].toString())){                                
-                //out.println(Arrays.toString(dataSample));
+            if ("LABPLANET_FALSE".equalsIgnoreCase(dataSample[0].toString())){                                
+                Object[] errMsg = labFrEnd.responseError(dataSample, language, schemaPrefix);
+                response.sendError((int) errMsg[0], (String) errMsg[1]);                     
+            }else{
                 response.getWriter().write(Arrays.toString(dataSample));
                 Response.ok().build();
-            }else{
-                Object[] errMsg = labFrEnd.responseError(errObject, language, schemaPrefix);
-                response.sendError((int) errMsg[0], (String) errMsg[1]);                     
             }            
         }catch(Exception e){      
             rdbm.closeRdbms();                   

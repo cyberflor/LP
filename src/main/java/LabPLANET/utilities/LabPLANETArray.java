@@ -6,6 +6,7 @@
 package LabPLANET.utilities;
 
 import databases.Rdbms;
+import functionalJava.parameter.Parameter;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
@@ -96,7 +97,7 @@ public class LabPLANETArray {
         //schemaDataName = labPlat.buildSchemaName(schemaName, schemaDataName);  
         //String fieldsEncrypted = rdbm.getParameterBundle(schemaDataName.replace("\"", ""), "encrypted_"+tableName);
         schemaDataName = labPlat.buildSchemaName(schemaName, schemaName);  
-        String fieldsEncrypted = rdbm.getParameterBundle(schemaName.replace("\"", ""), "encrypted_"+tableName);        
+        String fieldsEncrypted = Parameter.getParameterBundle(schemaName.replace("\"", ""), "encrypted_"+tableName);        
         String[] fieldsEncryptedArr = fieldsEncrypted.split("\\|");
         for (int iFields=0;iFields<fieldName.length;iFields++){
             if (fieldsEncrypted.contains(fieldName[iFields])){
@@ -135,7 +136,7 @@ public class LabPLANETArray {
         //LabPLANETPlatform labPlat = new LabPLANETPlatform();
         //schemaDataName = labPlat.buildSchemaName(schemaName, schemaDataName);  
         Rdbms rdbm = new Rdbms();
-        String fieldsEncrypted = rdbm.getParameterBundle(schemaName.replace("\"", ""), "encrypted_"+tableName);
+        String fieldsEncrypted = Parameter.getParameterBundle(schemaName.replace("\"", ""), "encrypted_"+tableName);
         String[] fieldsEncryptedArr = fieldsEncrypted.split("\\|");
         for (int iFields=0;iFields<fieldName.length;iFields++){
             if (fieldsEncrypted.contains(fieldName[iFields])){
@@ -173,7 +174,7 @@ public class LabPLANETArray {
         //LabPLANETPlatform labPlat = new LabPLANETPlatform();
         //schemaDataName = labPlat.buildSchemaName(schemaName, schemaDataName);  
         Rdbms rdbm = new Rdbms();
-        String fieldsEncrypted = rdbm.getParameterBundle(schemaName.replace("\"", ""), "encrypted_"+tableName);
+        String fieldsEncrypted = Parameter.getParameterBundle(schemaName.replace("\"", ""), "encrypted_"+tableName);
         String[] fieldsEncryptedArr = fieldsEncrypted.split("\\|");
         for (int iFields=0;iFields<fieldName.length;iFields++){
             if (fieldsEncrypted.contains(fieldName[iFields])){
@@ -599,10 +600,15 @@ public class LabPLANETArray {
         for (Integer iarrLength = 0;iarrLength<arrLength;iarrLength++){
             
             if (arrOneLength < iarrLength) {currValueA ="";}
+            if (arrayOne[iarrLength]==null){currValueA ="";}
             else{currValueA = arrayOne[iarrLength].toString();}
             
             if (arrTwoLength < iarrLength) {currValueB ="";}
+            if (arrayTwo[iarrLength]==null){currValueB ="";}
             else{currValueB = arrayTwo[iarrLength].toString();}
+            
+            if (currValueA==null){currValueA="";}
+            if (currValueB==null){currValueB="";}
             
             String newValue = currValueA + separator + currValueB;
             newArray = addValueToArray1D(newArray, newValue);

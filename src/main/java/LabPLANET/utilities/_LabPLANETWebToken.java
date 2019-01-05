@@ -15,7 +15,7 @@ import javax.xml.bind.DatatypeConverter;
  *
  * @author Administrator
  */
-public class LabPLANETWebToken {
+public class _LabPLANETWebToken {
 
  
  

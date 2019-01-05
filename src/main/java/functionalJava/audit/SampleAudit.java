@@ -92,14 +92,14 @@ public class SampleAudit {
         fieldNames = labArr.addValueToArray1D(fieldNames, "user_role");
         fieldValues = labArr.addValueToArray1D(fieldValues, userRole);
         
-        String jsonString = "";
-        jsonString = sampleJsonString(rdbm, schemaPrefix+"-data", sampleId);
+        String jsonString = null;
+/*        jsonString = sampleJsonString(rdbm, schemaPrefix+"-data", sampleId);
         if ((jsonString!=null)){
         //if (!jsonString.isEmpty()){
             fieldNames = labArr.addValueToArray1D(fieldNames, "picture_after");
             fieldValues = labArr.addValueToArray1D(fieldValues, jsonString);            
         }
-        
+*/        
 //        fieldNames = labArr.addValueToArray1D(fieldNames, "user");
 //        fieldValues = labArr.addValueToArray1D(fieldValues, userName);        
         Object[] diagnoses = rdbm.insertRecordInTable(rdbm, schemaName, auditTableName, fieldNames, fieldValues);

@@ -8,6 +8,7 @@ package functionalJava.analysis;
 import databases.Rdbms;
 import LabPLANET.utilities.LabPLANETArray;
 import LabPLANET.utilities.LabPLANETPlatform;
+import functionalJava.parameter.Parameter;
 
 /**
  * Class for anything related to analysis user method
@@ -51,9 +52,9 @@ public class UserMethod {
         schemaDataName = labPlat.buildSchemaName(schemaPrefix, schemaDataName);  
         schemaConfigName = labPlat.buildSchemaName(schemaPrefix, schemaConfigName);   
         
-        String userMethodNotAssigned = rdbm.getParameterBundle(schemaConfigName, "userMethodCertificate_notAssigned");
-        String userMethodInactive = rdbm.getParameterBundle(schemaConfigName, "userMethodCertificate_inactive");
-        String userMethodCertified = rdbm.getParameterBundle(schemaConfigName, "userMethodCertificate_certified");
+        String userMethodNotAssigned = Parameter.getParameterBundle(schemaConfigName, "userMethodCertificate_notAssigned");
+        String userMethodInactive = Parameter.getParameterBundle(schemaConfigName, "userMethodCertificate_inactive");
+        String userMethodCertified = Parameter.getParameterBundle(schemaConfigName, "userMethodCertificate_certified");
         
         String[] whereFieldName = new String[0];
         Object[] whereFieldValue = new Object[0];

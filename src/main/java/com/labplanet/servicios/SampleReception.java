@@ -42,7 +42,7 @@ public class SampleReception {
             String  myData = rdbm.getRecordFieldsByFilterJSON(rdbm, "sample-A-data", "sample",
                     new String[] {"received_by is null"}, new Object[]{""},
                     //new String[] {"sample_id"}, new Object[]{5},
-                    new String[] { "sample_id", "sample_config_code", "sampling_comment"});
+                    new String[] { "sample_id", "sample_config_code", "sampling_comment"}, null);
             rdbm.closeRdbms();
             return Response.ok(myData).build();            
     }  

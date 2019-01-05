@@ -9,6 +9,7 @@ import databases.Rdbms;
 import functionalJava.user.UserProfile;
 import LabPLANET.utilities.LabPLANETArray;
 import LabPLANET.utilities.LabPLANETPlatform;
+import functionalJava.parameter.Parameter;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Arrays;
@@ -44,7 +45,7 @@ public class UserSop {
         String schemaConfigName = "config";
         Object[] diagnoses = new Object[0];
         schemaConfigName = LabPLANETPlatform.buildSchemaName(schemaPrefixName, "config");
-        String actionEnabledUserSopCertification = Rdbms.getParameterBundle(schemaConfigName, "actionEnabledUserSopCertification"); 
+        String actionEnabledUserSopCertification = Parameter.getParameterBundle(schemaConfigName, "actionEnabledUserSopCertification"); 
         
         UserProfile usProf = new UserProfile();
         String[] userSchemas = (String[]) usProf.getAllUserProcedurePrefix(rdbm, userInfoId);
@@ -56,7 +57,7 @@ public class UserSop {
             String errorCode = "UserSop_UserWithNoRolesForThisGivenSchema";
             diagnoses = LabPLANETPlatform.trapErrorMessage( rdbm, "LABPLANET_FALSE", classVersion, errorCode, new Object[]{userInfoId, schemaPrefixName});
             diagnoses = labArr.addValueToArray1D(diagnoses, "ERROR");
-            diagnoses = labArr.addValueToArray1D(diagnoses, Rdbms.getParameterBundle(schemaConfigName, "userSopCertificationLevelImage_ERROR"));
+            diagnoses = labArr.addValueToArray1D(diagnoses, Parameter.getParameterBundle(schemaConfigName, "userSopCertificationLevelImage_ERROR"));
             return diagnoses;
         }
         String[] userSchema = new String[1];
@@ -83,20 +84,20 @@ public class UserSop {
         if (getUserProfileFieldValues.length<=0){
             diagnoses = LabPLANETPlatform.trapErrorMessage( rdbm, "LABPLANET_FALSE", classVersion, "UserSop_SopNotAssignedToThisUser", new Object[]{SopIdFieldValue, userInfoId, schemaPrefixName});
             diagnoses = labArr.addValueToArray1D(diagnoses, "ERROR");
-            diagnoses = labArr.addValueToArray1D(diagnoses, Rdbms.getParameterBundle(schemaConfigName, "userSopCertificationLevelImage_NotAssigned"));
+            diagnoses = labArr.addValueToArray1D(diagnoses, Parameter.getParameterBundle(schemaConfigName, "userSopCertificationLevelImage_NotAssigned"));
             return diagnoses;
         }
         if (getUserProfileFieldValues[0][3].toString().contains("GREEN")){
             diagnoses = LabPLANETPlatform.trapErrorMessage( rdbm, "LABPLANET_TRUE", classVersion, "UserSop_SopNotAssignedToThisUser", 
                     new Object[]{userInfoId, SopIdFieldValue, schemaPrefixName, "current status is "+getUserProfileFieldValues[0][2].toString()+" and the light is "+getUserProfileFieldValues[0][3].toString()});
             diagnoses = labArr.addValueToArray1D(diagnoses, "PASS");
-            diagnoses = labArr.addValueToArray1D(diagnoses, Rdbms.getParameterBundle(schemaConfigName, "userSopCertificationLevelImage_Certified"));
+            diagnoses = labArr.addValueToArray1D(diagnoses, Parameter.getParameterBundle(schemaConfigName, "userSopCertificationLevelImage_Certified"));
             return diagnoses;
         }
         else{
             diagnoses = LabPLANETPlatform.trapErrorMessage( rdbm, "LABPLANET_FALSE", classVersion, "UserSop_UserNotCertifiedForSop", new Object[]{userInfoId, SopIdFieldValue, schemaPrefixName});
             diagnoses = labArr.addValueToArray1D(diagnoses, "NOTPASS");
-            diagnoses = labArr.addValueToArray1D(diagnoses, Rdbms.getParameterBundle(schemaConfigName, "userSopCertificationLevelImage_NotCertified"));
+            diagnoses = labArr.addValueToArray1D(diagnoses, Parameter.getParameterBundle(schemaConfigName, "userSopCertificationLevelImage_NotCertified"));
             return diagnoses;
         }               
     }

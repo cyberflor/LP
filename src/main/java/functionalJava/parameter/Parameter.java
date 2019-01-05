@@ -16,6 +16,67 @@ import java.util.ResourceBundle;
  */
 public class Parameter {
 
+    /**
+     *
+     * @param packageName
+     * @param configFile
+     * @param parameterName
+     * @return
+     **/
+    public static String getParameterBundle(String packageName, String configFile, String parameterName, String language) {
+        ResourceBundle prop = null;
+        FileWriter fw = null;
+        String newEntry = "";
+        try {
+            if (language == null) {
+                prop = ResourceBundle.getBundle("parameter." + packageName + "." + configFile);
+            } else {
+                prop = ResourceBundle.getBundle("parameter." + packageName + "." + configFile + "_" + language);
+            }
+            if (!prop.containsKey(parameterName)) {
+                return "";
+            } else {
+                String paramValue = prop.getString(parameterName);
+                return paramValue;
+            }
+        } catch (Exception e) {
+            return "";
+        }
+    }
+
+    public static ResourceBundle getParameterBundle(String configFile) {
+        ResourceBundle prop = ResourceBundle.getBundle("parameter.config." + configFile);
+        return prop;
+    }
+
+    public static String getParameterBundle(String configFile, String parameterName, String language) {
+        FileWriter fw = null;
+        String newEntry = "";
+        ResourceBundle prop = ResourceBundle.getBundle("parameter.config." + configFile + "_" + language);
+        if (!prop.containsKey(parameterName)) {
+            return "";
+        } else {
+            String paramValue = prop.getString(parameterName);
+            return paramValue;
+        }
+    }
+
+    public static String getParameterBundle(String configFile, String parameterName) {
+        FileWriter fw = null;
+        String newEntry = "";
+        try {
+            ResourceBundle prop = ResourceBundle.getBundle("parameter.config." + configFile);
+            if (!prop.containsKey(parameterName)) {
+                return "";
+            } else {
+                String paramValue = prop.getString(parameterName);
+                return paramValue;
+            }
+        } catch (Exception e) {
+            return "";
+        }
+    }
+
     private void addTagInPropertiesFile(String fileName, String entryName, String entryValue, String testBackup) throws Exception{
          
         FileWriter fw = null;

@@ -142,7 +142,7 @@ public class projectStructure extends HttpServlet {
                             fileContent = fileContent + "<td>"+sampleId.toString()+", "+userName+", "
                                 +configSpecTestingArray[i][5].toString()+", "+configSpecTestingArray[i][6].toString()+"</td>";                            
                             dataProject = prj.sampleAnalysisAddtoSample(rdbm, schemaPrefix, userName, sampleId, fieldName, fieldValue, userRole);
-                        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+                        } catch (IllegalArgumentException ex) {
                             Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
                         }
                         break;                           
