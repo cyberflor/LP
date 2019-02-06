@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.labplanet.servicios.testing.Platform;
+package com.labplanet.servicios.testing.data;
 
 import LabPLANET.utilities.LabPLANETArray;
 import LabPLANET.utilities.LabPLANETNullValue;
@@ -11,6 +11,7 @@ import LabPLANET.utilities.LabPLANETPlatform;
 import databases.Rdbms;
 import databases.SqlStatement;
 import functionalJava.analysis.UserMethod;
+import functionalJava.batch.DataBatch;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -30,7 +31,7 @@ import testing.functionalData.testingFileContentSections;
  *
  * @author Administrator
  */
-public class DBActions extends HttpServlet {
+public class tstDataBatchArray extends HttpServlet {
     String classVersion = "0.1";
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -45,7 +46,8 @@ public class DBActions extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         
         String fileContent = "";        
-        Rdbms rdbm = new Rdbms();              
+        Rdbms rdbm = new Rdbms();          
+        DataBatch batch = new DataBatch();
         try (PrintWriter out = response.getWriter()) {
             
             response.setContentType("text/html;charset=UTF-8");
@@ -54,7 +56,7 @@ public class DBActions extends HttpServlet {
             boolean isConnected = false;
             isConnected = rdbm.startRdbms("labplanet", "LabPlanet");
 
-            String csvFileName = "dbActions.txt"; String csvFileSeparator=";";
+            String csvFileName = "tstDataBatchArray.txt"; String csvFileSeparator=";";
             String csvPathName = "\\\\FRANCLOUD\\fran\\LabPlanet\\testingRepository\\"+csvFileName; 
  
          
@@ -111,18 +113,6 @@ public class DBActions extends HttpServlet {
                 if ( (fieldName!=null) && (fieldValue!=null) ){
                     //whereFieldsNameArr=labArr.addValueToArray1D(whereFieldsNameArr, whereFieldsName.split("\\|"));
                     //whereFieldsValueArr = labArr.addValueToArray1D(whereFieldsValueArr, labArr.convertStringWithDataTypeToObjectArray(whereFieldsValue.split("\\|")));                                                              
-                    for (int iFields=0; iFields<fieldName.length; iFields++){
-                        if (labPlat.isEncryptedField(schemaPrefix, "sample", fieldName[iFields])){                
-                            HashMap<String, String> hm = labPlat.encryptEncryptableFieldsAddBoth(fieldName[iFields], fieldValues[iFields].toString());
-                            fieldName[iFields]= hm.keySet().iterator().next();    
-                            SqlStatement sql = new SqlStatement();
-                            String separator = sql.inSeparator(fieldName[iFields]);
-                            if ( hm.get(fieldName[iFields]).length()!=fieldValues[iFields].toString().length()){
-                                String newWhereFieldValues = hm.get(fieldName[iFields]);
-                                fieldValues[iFields]=newWhereFieldValues;
-                            }
-                        }
-                    }                                    
                 }                         
                 //Object[] fieldValues = labArr.convertStringWithDataTypeToObjectArray(fieldValue);
                 Object[] setFieldValues = labArr.convertStringWithDataTypeToObjectArray(setFieldValue);
@@ -133,13 +123,14 @@ public class DBActions extends HttpServlet {
                         +"</td><td>"+Arrays.toString(orderBy)+"</td><td><b>"+Arrays.toString(groupBy)+"</b></td>";
                 
                 Object[] allFunctionsBeingTested = new Object[0];                
-                allFunctionsBeingTested = labArr.addValueToArray1D(allFunctionsBeingTested, "EXISTSRECORD");
+                allFunctionsBeingTested = labArr.addValueToArray1D(allFunctionsBeingTested, "CREATEBATCHARRAY");
                 allFunctionsBeingTested = labArr.addValueToArray1D(allFunctionsBeingTested, "INSERT");
                 allFunctionsBeingTested = labArr.addValueToArray1D(allFunctionsBeingTested, "GETRECORDFIELDSBYFILTER");
                 allFunctionsBeingTested = labArr.addValueToArray1D(allFunctionsBeingTested, "UPDATE");
                 
                 switch (functionBeingTested.toUpperCase()){
-                    case "EXISTSRECORD":   
+                    case "CREATEBATCHARRAY":   
+                        //batch.dbCreateBatchArray(rdbm, );
                         Object[] exRec =  rdbm.existsRecord(rdbm, schemaPrefix, tableName, fieldName, fieldValues);
                         dataSample2D = labArr.array1dTo2d(exRec, exRec.length);
                         break;

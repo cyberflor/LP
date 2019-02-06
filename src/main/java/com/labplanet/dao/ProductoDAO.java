@@ -15,6 +15,10 @@ import java.util.List;
  */
 public class ProductoDAO {
     
+    /**
+     *
+     * @return
+     */
     public static List<Producto> getProductos(){
         ArrayList<Producto> lista = new ArrayList<>();
         Producto pr = new Producto(1, "HARINA", 500);

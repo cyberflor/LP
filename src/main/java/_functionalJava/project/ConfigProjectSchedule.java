@@ -17,6 +17,11 @@ public class ConfigProjectSchedule {
         HOURS, DAYS, MONTHS, YEARS;
     }
     
+    /**
+     *
+     * @param numItems
+     * @param itemsMeasurement
+     */
     public void configProjectSchedule (Double numItems, String itemsMeasurement){
         this.itemsMeasurement =itemsMeasurement;
         this.numItems=numItems;

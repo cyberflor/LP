@@ -31,10 +31,26 @@ public class Sop {
 
     String tableName = "sop_meta_data"; 
 
+    /**
+     *
+     */
     public Sop(){}
     
+    /**
+     *
+     * @param sopName
+     */
     public Sop(String sopName){this.sopName=sopName;}
             
+    /**
+     *
+     * @param sopId
+     * @param sopName
+     * @param sopVersion
+     * @param sopRevision
+     * @param currentStatus
+     * @param mandatoryLevel
+     */
     public Sop (Integer sopId, String sopName, Integer sopVersion, Integer sopRevision, String currentStatus, String mandatoryLevel){
         this.sopId = sopId;
         this.sopName=sopName;
@@ -44,6 +60,14 @@ public class Sop {
         this.mandatoryLevel = mandatoryLevel;               
     }
 
+    /**
+     *
+     * @param rdbm
+     * @param schemaPrefix
+     * @param userInfoId
+     * @return
+     * @throws SQLException
+     */
     public Object[] dbInsertSopId(Rdbms rdbm, String schemaPrefix, String userInfoId) throws SQLException{
          LabPLANETArray labArr = new LabPLANETArray();
          String schemaConfigName = "config";
@@ -74,6 +98,14 @@ public class Sop {
         }
     }
     
+    /**
+     *
+     * @param rdbm
+     * @param schemaPrefix
+     * @param sopId
+     * @return
+     * @throws SQLException
+     */
     public Integer dbGetSopIdById(Rdbms rdbm, String schemaPrefix, Integer sopId) throws SQLException{     
         String schemaConfigName = "config";
         schemaConfigName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaConfigName);
@@ -83,6 +115,14 @@ public class Sop {
         return getSopId;
     }                
 
+    /**
+     *
+     * @param rdbm
+     * @param schemaPrefix
+     * @param sopName
+     * @return
+     * @throws SQLException
+     */
     public Integer dbGetSopIdByName(Rdbms rdbm, String schemaPrefix, String sopName) throws SQLException{
         String schemaConfigName = "config";
         schemaConfigName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaConfigName);
@@ -93,6 +133,15 @@ public class Sop {
         
     }    
 
+    /**
+     *
+     * @param rdbm
+     * @param schemaPrefix
+     * @param sopName
+     * @param fields
+     * @return
+     * @throws SQLException
+     */
     public Object[][] dbGetSopObjByName(Rdbms rdbm, String schemaPrefix, String sopName, String[] fields) throws SQLException{
         String schemaConfigName = "config";
         schemaConfigName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaConfigName);
@@ -101,6 +150,14 @@ public class Sop {
         return sopInfo;
     }
 
+    /**
+     *
+     * @param rdbm
+     * @param schemaPrefix
+     * @param sopName
+     * @return
+     * @throws SQLException
+     */
     public Object[] createSop(Rdbms rdbm, String schemaPrefix, String sopName) throws SQLException {
         String schemaConfigName = "config";
         schemaConfigName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaConfigName); 
@@ -119,6 +176,17 @@ public class Sop {
         }
     }   
         
+    /**
+     *
+     * @param rdbm
+     * @param schemaName
+     * @param schemaPrefix
+     * @param fieldName
+     * @param fieldValue
+     * @param fieldType
+     * @return
+     * @throws SQLException
+     */
     public Object[] updateSop(Rdbms rdbm, String schemaName, String schemaPrefix, String fieldName, String fieldValue, String fieldType) throws SQLException {
         String schemaConfigName = "config";
         schemaConfigName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaConfigName);

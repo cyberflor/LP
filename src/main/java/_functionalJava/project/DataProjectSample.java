@@ -15,6 +15,10 @@ public class DataProjectSample extends DataSample{
     
     String tableName = "project_sample";
 
+    /**
+     *
+     * @param grouperName
+     */
     public DataProjectSample(String grouperName) {
         super(grouperName);
     }

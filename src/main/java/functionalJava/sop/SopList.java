@@ -31,6 +31,15 @@ public class SopList {
     String sopListStatus = "";
     String[] sopListSopAssigned = null;
     
+    /**
+     *
+     * @param sopListId
+     * @param sopListName
+     * @param sopListVersion
+     * @param sopListRevision
+     * @param sopListStatus
+     * @param sopListSopAssigned
+     */
     public SopList (Integer sopListId, String sopListName, Integer sopListVersion, Integer sopListRevision, String sopListStatus, String[] sopListSopAssigned){
         this.sopListId = sopListId;
         this.sopListName = sopListName;
@@ -44,26 +53,73 @@ public class SopList {
         }
     }
 
+    /**
+     *
+     * @param sopListId
+     */
     public void setSopListId(Integer sopListId){ this.sopListId=sopListId;}
     
+    /**
+     *
+     * @param sopListName
+     */
     public void setSopListName(String sopListName){ this.sopListName=sopListName;}
     
+    /**
+     *
+     * @param sopListVersion
+     */
     public void setSopListVersion(Integer sopListVersion){ this.sopListVersion=sopListVersion;}
     
+    /**
+     *
+     * @param sopListRevision
+     */
     public void setSopListRevision(Integer sopListRevision){ this.sopListRevision=sopListRevision;}   
     
+    /**
+     *
+     * @param sopListSopAssigned
+     */
     public void setSopListSopAssigned(String[] sopListSopAssigned){ this.sopListSopAssigned=sopListSopAssigned;} 
     
+    /**
+     *
+     * @return
+     */
     public Integer getSopListId(){ return this.sopListId;}
     
+    /**
+     *
+     * @return
+     */
     public String getSopListName(){ return this.sopListName;}
     
+    /**
+     *
+     * @return
+     */
     public Integer getSopListVersion(){ return this.sopListVersion;}
     
+    /**
+     *
+     * @return
+     */
     public Integer getSopListRevision(){ return this.sopListRevision;}
     
+    /**
+     *
+     * @return
+     */
     public String[] getSopListSopAssigned(){ return this.sopListSopAssigned;}
     
+    /**
+     *
+     * @param rdbm
+     * @param schemaPrefix
+     * @param userInfoId
+     * @return
+     */
     public Object[] dbInsertSopList(Rdbms rdbm, String schemaPrefix, String userInfoId){
         LabPLANETArray labArr = new LabPLANETArray();    
         String schemaConfigName = "config";     
@@ -91,6 +147,14 @@ public class SopList {
         
     }
     
+    /**
+     *
+     * @param rdbm
+     * @param schemaPrefix
+     * @param sopAssigned
+     * @return
+     * @throws SQLException
+     */
     public Object[] dbUpdateSopListSopAssigned(Rdbms rdbm, String schemaPrefix, String[] sopAssigned) throws SQLException{    
         String schemaConfigName = "config";     
         schemaConfigName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaConfigName);
@@ -103,6 +167,11 @@ public class SopList {
         return diagnoses;        
     }   
     
+    /**
+     *
+     * @param sopId
+     * @return
+     */
     public Integer sopPositionIntoSopList(String sopId){
         Integer diagnoses = -1;
         String[] currSopAssignedValue = getSopListSopAssigned();
@@ -113,6 +182,11 @@ public class SopList {
         return diagnoses;
     }
 
+    /**
+     *
+     * @param sopId
+     * @return
+     */
     public Object[] sopPositionIntoSopListLabPLANET(String sopId){
         LabPLANETArray labArr = new LabPLANETArray();
         Object[] diagnoses = new Object[0];
@@ -132,6 +206,11 @@ public class SopList {
         return diagnoses;
     }    
     
+    /**
+     *
+     * @param sopId
+     * @return
+     */
     public Object[]  addSopToSopList(String sopId){
         Object[] diagnoses = new Object[0];
         

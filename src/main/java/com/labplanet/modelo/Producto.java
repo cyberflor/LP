@@ -15,40 +15,77 @@ public class Producto {
     private String nombre;
     private float precio;
     
+    /**
+     *
+     */
     public Producto(){
     
     }
 
+    /**
+     *
+     * @param id
+     * @param nombre
+     * @param precio
+     */
     public Producto(int id, String nombre, float precio) {
         this.id = id;
         this.nombre = nombre;
         this.precio = precio;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getId() {
         return id;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getNombre() {
         return nombre;
     }
 
+    /**
+     *
+     * @return
+     */
     public float getPrecio() {
         return precio;
     }
 
+    /**
+     *
+     * @param id
+     */
     public void setId(int id) {
         this.id = id;
     }
 
+    /**
+     *
+     * @param nombre
+     */
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
 
+    /**
+     *
+     * @param precio
+     */
     public void setPrecio(float precio) {
         this.precio = precio;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public int hashCode() {
         int hash = 5;
@@ -56,6 +93,11 @@ public class Producto {
         return hash;
     }
 
+    /**
+     *
+     * @param obj
+     * @return
+     */
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {

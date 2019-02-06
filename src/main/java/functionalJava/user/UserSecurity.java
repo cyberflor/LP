@@ -19,8 +19,19 @@ import javax.naming.NamingException;
  */
 public class UserSecurity {
     
+    /**
+     *
+     */
     public UserSecurity(){}
 
+    /**
+     *
+     * @param rdbm
+     * @param user
+     * @param pass
+     * @param newEsign
+     * @return
+     */
     public Object[] setUserEsig(Rdbms rdbm, String user, String pass, String newEsign){
         
         try {
@@ -69,6 +80,13 @@ public class UserSecurity {
         }    
     }
     
+    /**
+     *
+     * @param rdbm
+     * @param user
+     * @param eSign
+     * @return
+     */
     public Object[] isValidESign(Rdbms rdbm, String user, String eSign){
         Object[] diagnoses = new Object[2];  
         diagnoses[0]=false;
@@ -100,6 +118,14 @@ public class UserSecurity {
         }
     }
 
+    /**
+     *
+     * @param rdbm
+     * @param user
+     * @param pass
+     * @param eSign
+     * @return
+     */
     public Object[] isValidESign(Rdbms rdbm, String user, String pass, String eSign){
         try {
             Object[] diagnoses = new Object[2];
@@ -119,6 +145,17 @@ public class UserSecurity {
         }
     }
     
+    /**
+     *
+     * @param user
+     * @param pass
+     * @return
+     * @throws ClassNotFoundException
+     * @throws IllegalAccessException
+     * @throws InstantiationException
+     * @throws SQLException
+     * @throws NamingException
+     */
     public Object[] isValidUserPassword(String user, String pass) throws ClassNotFoundException, IllegalAccessException, InstantiationException, SQLException, NamingException {            
         Object[] diagnoses = new Object[2];
         diagnoses[0]=false;

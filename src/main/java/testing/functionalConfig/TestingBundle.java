@@ -47,7 +47,7 @@ public class TestingBundle extends HttpServlet {
             Rdbms rdbm = new Rdbms();
             String testStatusReviewed = Parameter.getParameterBundle(schemaDataName.replace("\"", ""), "sampleAnalysis_statusReviewed");
             out.println(testStatusReviewed);
-            testStatusReviewed = Parameter.getParameterBundle(schemaDataName.replace("\"", ""), "sampleAnalysis_statusReviewed", "es");
+            testStatusReviewed = Parameter.getParameterBundleInConfigFile(schemaDataName.replace("\"", ""), "sampleAnalysis_statusReviewed", "es");
             out.println(testStatusReviewed);
         }
     }

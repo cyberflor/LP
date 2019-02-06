@@ -48,6 +48,7 @@ public class sopUserAPI extends HttpServlet {
         
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
+        request.setCharacterEncoding("UTF-8");        
     
         try (PrintWriter out = response.getWriter()) {
             String[] errObject = new String[]{"Servlet sampleAPI at " + request.getServletPath()};                        
@@ -57,7 +58,8 @@ public class sopUserAPI extends HttpServlet {
             if (finalToken==null) {
                 errObject = labArr.addValueToArray1D(errObject, "API Error Message: finalToken is one mandatory param for this API");                    
                 Object[] errMsg = labFrEnd.responseError(errObject, language, null);
-                response.sendError((int) errMsg[0], (String) errMsg[1]);    
+                response.sendError((int) errMsg[0], (String) errMsg[1]);   
+                rdbm.closeRdbms(); 
                 return ;
             }                    
 
@@ -76,7 +78,8 @@ public class sopUserAPI extends HttpServlet {
                 errObject = labArr.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
                 errObject = labArr.addValueToArray1D(errObject, "API Error Message: db User Name and Password not correct, connection to the database is not possible");                    
                 Object[] errMsg = labFrEnd.responseError(errObject, language, null);
-                response.sendError((int) errMsg[0], (String) errMsg[1]);    
+                response.sendError((int) errMsg[0], (String) errMsg[1]);  
+                rdbm.closeRdbms(); 
                 return ;               
             }            
         
@@ -86,6 +89,7 @@ public class sopUserAPI extends HttpServlet {
                 errObject = labArr.addValueToArray1D(errObject, "API Error Message: actionName is one mandatory param for this API");                    
                 Object[] errMsg = labFrEnd.responseError(errObject, language, null);
                 response.sendError((int) errMsg[0], (String) errMsg[1]);    
+                rdbm.closeRdbms(); 
                 return ;
             }           
 /*            String schemaPrefix = request.getParameter("schemaPrefix");
@@ -104,6 +108,7 @@ public class sopUserAPI extends HttpServlet {
                 if ("LABPLANET_FALSE".equalsIgnoreCase(allUserProcedurePrefix[0].toString())){
                     Object[] errMsg = labFrEnd.responseError(allUserProcedurePrefix, language, null);
                     response.sendError((int) errMsg[0], (String) errMsg[1]);    
+                    rdbm.closeRdbms(); 
                     return;
                 }
                 String[] fieldsToRetrieve = new String[]{"sop_id", "sop_name"};
@@ -147,7 +152,8 @@ public class sopUserAPI extends HttpServlet {
                 mySopsList.put("my_sops", mySops);
 
                 Response.ok().build();
-                response.getWriter().write(mySopsList.toString());                    
+                response.getWriter().write(mySopsList.toString());      
+                rdbm.closeRdbms(); 
                 return;
             case "MY_PENDING_SOPS":    
                 usProf = new UserProfile();

@@ -30,6 +30,11 @@ public class LabPLANETJson {
  */   
     String classVersion = "0.1";
 
+    /**
+     *
+     * @param diagn
+     * @return
+     */
     public static String convertToJSON(Object[] diagn) {
         String jsonStr ="{";
         
@@ -39,6 +44,12 @@ public class LabPLANETJson {
         jsonStr=jsonStr+"}";
         return jsonStr;
     }
+
+    /**
+     *
+     * @param normal_array
+     * @return
+     */
     public static JSONArray convertToJSON(String[] normal_array) {
         JSONArray json_array= new JSONArray();
         for (int i = 0; i < normal_array.length; i++) {
@@ -46,6 +57,12 @@ public class LabPLANETJson {
         }
         return json_array;
     }
+
+    /**
+     *
+     * @param res
+     * @return
+     */
     public static String convertToJSON(ResultSet res) {
         try {
             String jsonarrayf;
@@ -58,6 +75,7 @@ public class LabPLANETJson {
                 while (!res.isAfterLast()){
                     jsonarrayf = res.getString(1);
                     
+                    if (jsonarrayf==null){jsonarrayf="";}
                     Integer numchars = jsonarrayf.length();
                     String [] objarr = null;
                     

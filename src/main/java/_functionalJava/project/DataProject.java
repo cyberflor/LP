@@ -10,7 +10,7 @@ import LabPLANET.utilities.LabPLANETPlatform;
 import databases.DataDataIntegrity;
 import databases.Rdbms;
 import functionalJava.audit.SampleAudit;
-
+import java.util.Date;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.SQLException;
@@ -19,6 +19,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import functionalJava.sampleStructure.DataSample;
+
 
 /**
  *
@@ -43,15 +44,52 @@ public class DataProject extends DataSample{
     String schemaConfigName = "config";
     String tableName = "sample";    
 
+    /**
+     *
+     * @param grouperName
+     */
     public DataProject(String grouperName) {
         super(grouperName);
     }
 
-public Object[] createProjectDev(Rdbms rdbm, String schemaPrefix, String sampleTemplate, Integer sampleTemplateVersion, String[] sampleFieldName, Object[] sampleFieldValue, String userName, String userRole) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException{
+    /**
+     *
+     * @param rdbm
+     * @param schemaPrefix
+     * @param sampleTemplate
+     * @param sampleTemplateVersion
+     * @param sampleFieldName
+     * @param sampleFieldValue
+     * @param userName
+     * @param userRole
+     * @return
+     * @throws IllegalAccessException
+     * @throws IllegalArgumentException
+     * @throws InvocationTargetException
+     * @throws SQLException
+     */
+    public Object[] createProjectDev(Rdbms rdbm, String schemaPrefix, String sampleTemplate, Integer sampleTemplateVersion, String[] sampleFieldName, Object[] sampleFieldValue, String userName, String userRole) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException{
     Object[] diag = createProject(rdbm, schemaPrefix, sampleTemplate, sampleTemplateVersion, sampleFieldName, sampleFieldValue, userName, userRole, true);
     return diag;
 }
-public Object[] createProject(Rdbms rdbm, String schemaPrefix, String sampleTemplate, Integer sampleTemplateVersion, String[] sampleFieldName, Object[] sampleFieldValue, String userName, String userRole) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException{
+
+    /**
+     *
+     * @param rdbm
+     * @param schemaPrefix
+     * @param sampleTemplate
+     * @param sampleTemplateVersion
+     * @param sampleFieldName
+     * @param sampleFieldValue
+     * @param userName
+     * @param userRole
+     * @return
+     * @throws IllegalAccessException
+     * @throws IllegalArgumentException
+     * @throws InvocationTargetException
+     * @throws SQLException
+     */
+    public Object[] createProject(Rdbms rdbm, String schemaPrefix, String sampleTemplate, Integer sampleTemplateVersion, String[] sampleFieldName, Object[] sampleFieldValue, String userName, String userRole) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException{
     Object[] diag = createProject(rdbm, schemaPrefix, sampleTemplate, sampleTemplateVersion, sampleFieldName, sampleFieldValue, userName, userRole, false);
     return diag;
 }
@@ -239,7 +277,22 @@ Object[] createProject(Rdbms rdbm, String schemaPrefix, String projectTemplate, 
     return diagnoses; 
 }    
 
-public Object[] logProjectSample(Rdbms rdbm, String schemaPrefix, String projectTemplate, Integer projectTemplateVersion, String[] fieldName, Object[] fieldValue, String userName, String userRole, String projectName){
+    /**
+     *
+     * @param rdbm
+     * @param schemaPrefix
+     * @param projectTemplate
+     * @param projectTemplateVersion
+     * @param fieldName
+     * @param fieldValue
+     * @param userName
+     * @param userRole
+     * @param projectName
+     * @param appSessionId
+     * @param appSessionStartDate
+     * @return
+     */
+    public Object[] logProjectSample(Rdbms rdbm, String schemaPrefix, String projectTemplate, Integer projectTemplateVersion, String[] fieldName, Object[] fieldValue, String userName, String userRole, String projectName, Integer appSessionId){
     LabPLANETArray labArr = new LabPLANETArray();
     LabPLANETPlatform labPlat = new LabPLANETPlatform();
     
@@ -248,7 +301,7 @@ public Object[] logProjectSample(Rdbms rdbm, String schemaPrefix, String project
             DataSample ds = new DataSample("project");
             fieldName = labArr.addValueToArray1D(fieldName, "project");
             fieldValue = labArr.addValueToArray1D(fieldValue, projectName);
-            newProjSample = ds.logSample(rdbm, schemaPrefix, projectTemplate, projectTemplateVersion, fieldName, fieldValue, userName, userRole);
+            newProjSample = ds.logSample(rdbm, schemaPrefix, projectTemplate, projectTemplateVersion, fieldName, fieldValue, userName, userRole, appSessionId);
             /*if (!newProjSample[3].equalsIgnoreCase("FALSE")){
                 String schemaDataName = "data";
                 String schemaConfigName = "config";
@@ -269,8 +322,10 @@ public Object[] logProjectSample(Rdbms rdbm, String schemaPrefix, String project
     
 }
 
-
-public void createProjectName(){
+    /**
+     *
+     */
+    public void createProjectName(){
     DataSample prjSmp = new DataSample("project");
     
 }

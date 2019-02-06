@@ -24,9 +24,14 @@ public class UserProfile {
     String javaDocLineName = "";
 
     //String schemaDataName = "data";
-    String schemaConfigName = "app";
+    String schemaAppName = "app";
     
-
+    /**
+     *
+     * @param rdbm
+     * @param userInfoId
+     * @return
+     */
     public Object[] getAllUserProcedurePrefix (Rdbms rdbm, String userInfoId) {
             String tableName = "user_process";  
             
@@ -42,11 +47,17 @@ public class UserProfile {
             filterFieldValue[1]=true;
             filterFieldName[2]="proc_name is not null";            
             
-            Object[][] userProc =  rdbm.getRecordFieldsByFilter(rdbm, schemaConfigName, tableName, filterFieldName, filterFieldValue, fieldsToReturn);
+            Object[][] userProc =  rdbm.getRecordFieldsByFilter(rdbm, schemaAppName, tableName, filterFieldName, filterFieldValue, fieldsToReturn);
             return labArr.array2dTo1d(userProc);                         
     }
     
-        public Object[] getAppUserProfileFieldValues (Rdbms rdbm, String userInfoId) {
+    /**
+     *
+     * @param rdbm
+     * @param userInfoId
+     * @return
+     */
+    public Object[] getAppUserProfileFieldValues (Rdbms rdbm, String userInfoId) {
             String[] filterFieldName = new String[3];
             Object[] filterFieldValue = new Object[2];
             String[] fieldsToReturn = new String[1];
@@ -60,11 +71,18 @@ public class UserProfile {
             String tableName = "user_profile";  
             LabPLANETArray labArr = new LabPLANETArray();                          
             
-            Object[][] userProc =  rdbm.getRecordFieldsByFilter(rdbm, schemaConfigName, tableName, filterFieldName, filterFieldValue, fieldsToReturn);
+            Object[][] userProc =  rdbm.getRecordFieldsByFilter(rdbm, schemaAppName, tableName, filterFieldName, filterFieldValue, fieldsToReturn);
             return labArr.array2dTo1d(userProc);                         
         }
         
-        public Object[] getProcedureUserProfileFieldValues (Rdbms rdbm, String schemaPrefix, String userInfoId) {
+    /**
+     *
+     * @param rdbm
+     * @param schemaPrefix
+     * @param userInfoId
+     * @return
+     */
+    public Object[] getProcedureUserProfileFieldValues (Rdbms rdbm, String schemaPrefix, String userInfoId) {
             LabPLANETArray labArr = new LabPLANETArray();     
             String tableName = "person_profile";  
             String[] filterFieldName = new String[3];
@@ -83,7 +101,15 @@ public class UserProfile {
                     filterFieldName, filterFieldValue, new String[] {"role_name"});
             return labArr.array2dTo1d(userProc);                         
         }
-        public Object[] getProcedureUserProfileFieldValues (Rdbms rdbm, Object[] schemaPrefix, String userInfoId) {
+
+    /**
+     *
+     * @param rdbm
+     * @param schemaPrefix
+     * @param userInfoId
+     * @return
+     */
+    public Object[] getProcedureUserProfileFieldValues (Rdbms rdbm, Object[] schemaPrefix, String userInfoId) {
             String tableName = "user_profile";  
             LabPLANETArray labArr = new LabPLANETArray();      
             Object[] totalProcUserProfiles  = new Object[0];          

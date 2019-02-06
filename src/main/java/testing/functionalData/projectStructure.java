@@ -125,7 +125,7 @@ public class projectStructure extends HttpServlet {
                         fileContent = fileContent + "<td>"+projectName+", "+projectTemplate+", "+projectTemplateVersion.toString()+", "
                                 +configSpecTestingArray[i][4].toString()+", "+configSpecTestingArray[i][5].toString()+"</td>";                        
                         try {
-                            dataProject = prj.logProjectSample(rdbm, schemaPrefix, projectTemplate, projectTemplateVersion, fieldName, fieldValue, userName, userRole, projectName);
+                            dataProject = prj.logProjectSample(rdbm, schemaPrefix, projectTemplate, projectTemplateVersion, fieldName, fieldValue, userName, userRole, projectName, null);
                         } catch (IllegalArgumentException ex) {
                             Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
                         }

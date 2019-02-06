@@ -62,10 +62,6 @@
         <servlet-class>com.labplanet.servicios.ProdServicio</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>samplesToReceive</servlet-name>
-        <servlet-class>com.labplanet.servicios.frontend.samplesToReceive</servlet-class>
-    </servlet>
-    <servlet>
         <servlet-name>logSample</servlet-name>
         <servlet-class>com.labplanet.servicios.frontend.logSample</servlet-class>
     </servlet>
@@ -100,6 +96,10 @@
     <servlet>
         <servlet-name>sopUserAPIfrontend</servlet-name>
         <servlet-class>com.labplanet.servicios.app.sopUserAPIfrontend</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>tstDataBatchArraySequence</servlet-name>
+        <servlet-class>com.labplanet.servicios.testing.data.tstDataBatchArraySequence</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>DBActions</servlet-name>
@@ -165,10 +165,6 @@
         <url-pattern>/ProdServicio</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>samplesToReceive</servlet-name>
-        <url-pattern>/frontend/samplesToReceive</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
         <servlet-name>logSample</servlet-name>
         <url-pattern>/frontEnd/logSample</url-pattern>
     </servlet-mapping>
@@ -203,6 +199,10 @@
     <servlet-mapping>
         <servlet-name>sopUserAPIfrontend</servlet-name>
         <url-pattern>/frontEnd/sopUserAPIfrontend</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>tstDataBatchArraySequence</servlet-name>
+        <url-pattern>/tstDataBatchArraySequence</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

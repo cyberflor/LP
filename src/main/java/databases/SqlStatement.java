@@ -6,6 +6,7 @@
 package databases;
 
 import LabPLANET.utilities.LabPLANETArray;
+import java.util.HashMap;
 
 /**
  *
@@ -13,29 +14,48 @@ import LabPLANET.utilities.LabPLANETArray;
  */
 public class SqlStatement {
 
-    public String buildSqlStatement(String operation, String schemaName, String tableName, String[] whereFieldNames, Object[] whereFieldValues, String[] fieldsToRetrieve, String[] setFieldNames, Object[] setFieldValues, String[] fieldsToOrder, String[] fieldsToGroup) {
+    /**
+     *
+     * @param operation
+     * @param schemaName
+     * @param tableName
+     * @param whereFieldNames
+     * @param whereFieldValues
+     * @param fieldsToRetrieve
+     * @param setFieldNames
+     * @param setFieldValues
+     * @param fieldsToOrder
+     * @param fieldsToGroup
+     * @return
+     */
+    public HashMap<String, Object[]> buildSqlStatement(String operation, String schemaName, String tableName, String[] whereFieldNames, Object[] whereFieldValues, String[] fieldsToRetrieve, String[] setFieldNames, Object[] setFieldValues, String[] fieldsToOrder, String[] fieldsToGroup) {
+        
+        HashMap<String, Object[]> hm = new HashMap();        
+        
         LabPLANETArray labArr = new LabPLANETArray();
         String queryWhere = "";
         schemaName = schemaName.replace("\"", "");
         schemaName = "\"" + schemaName + "\"";
         tableName = tableName.replace("\"", "");
         tableName = "\"" + tableName + "\"";
-        Integer i = 1;
         Boolean containsInClause = false;
         Object[] whereFieldValuesNew = new Object[0];
         if (whereFieldNames != null) {
-            for (String fn : whereFieldNames) {
-                if (i > 1) {
+            //for (String fn : whereFieldNames) {
+            for (int iwhereFieldNames=0; iwhereFieldNames<whereFieldNames.length; iwhereFieldNames++){
+                String fn = whereFieldNames[iwhereFieldNames];
+                if (iwhereFieldNames > 0) {
                     queryWhere = queryWhere + " and ";
                 }
                 if (fn.toUpperCase().contains("NULL")) {
                     queryWhere = queryWhere + fn;
                 } else if (fn.toUpperCase().contains(" LIKE")) {
                     queryWhere = queryWhere + fn + " ? ";
+                    whereFieldValuesNew = labArr.addValueToArray1D(whereFieldValuesNew, whereFieldValues[iwhereFieldNames]);
                 } else if (fn.toUpperCase().contains(" IN")) {
                     String separator = inSeparator(fn);
                     containsInClause = true;
-                    String textSpecs = (String) whereFieldValues[i - 1];
+                    String textSpecs = (String) whereFieldValues[iwhereFieldNames];
                     String[] textSpecArray = textSpecs.split("\\" + separator);
                     //                         queryWhere = queryWhere + fn.replace(separator, "") + "(" ;
                     Integer posicINClause = fn.toUpperCase().indexOf("IN");
@@ -46,18 +66,18 @@ public class SqlStatement {
                     for (String f : textSpecArray) {
                         queryWhere = queryWhere + "?,";
                         whereFieldValuesNew = labArr.addValueToArray1D(whereFieldValuesNew, f);
-                        i++;
                     }
-                    for (Integer j = i; j <= whereFieldValues.length; j++) {
+/*                    for (Integer j = i; j <= whereFieldValues.length; j++) {
                         whereFieldValuesNew = labArr.addValueToArray1D(whereFieldValuesNew, whereFieldValues[j]);
                     }
+*/
                     queryWhere = queryWhere.substring(0, queryWhere.length() - 1);
                     queryWhere = queryWhere + ")";
                     whereFieldValues = whereFieldValuesNew;
                 } else {
                     queryWhere = queryWhere + fn + "=? ";
+                    whereFieldValuesNew = labArr.addValueToArray1D(whereFieldValuesNew, whereFieldValues[iwhereFieldNames]);
                 }
-                i++;
             }
         }
         String fieldsToRetrieveStr = "";
@@ -114,18 +134,28 @@ public class SqlStatement {
             case "UPDATE":
                 String updateSetSectionStr = "";
                 //String[] updateSetSection = labArr.joinTwo1DArraysInOneOf1DString(setFieldNames, setFieldValues, "=");
+                Object[] updateFieldValuesNew = null;
                 for (int iFields = 0; iFields < setFieldNames.length; iFields++) {
-                    updateSetSectionStr = updateSetSectionStr + setFieldNames[iFields] + "=?, ";
+                    updateSetSectionStr = updateSetSectionStr + setFieldNames[iFields] + "=?, ";                    
+                    updateFieldValuesNew= labArr.addValueToArray1D(updateFieldValuesNew, setFieldValues[iFields]);
                 }
                 updateSetSectionStr = updateSetSectionStr.substring(0, updateSetSectionStr.length() - 2);
                 query = "update " + schemaName + "." + tableName + " set " + updateSetSectionStr + " where " + queryWhere;
-                break;
+                updateFieldValuesNew= labArr.addValueToArray1D(updateFieldValuesNew, whereFieldValuesNew);
+                hm.put(query, updateFieldValuesNew);
+                return hm;                
             default:
                 break;
         }
-        return query;
+        hm.put(query, whereFieldValuesNew);
+        return hm;
     }
     
+    /**
+     *
+     * @param fn
+     * @return
+     */
     public String inSeparator(String fn){
         Integer posicINClause = fn.toUpperCase().indexOf("IN");
         String separator = fn;

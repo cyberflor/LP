@@ -22,7 +22,6 @@ import java.util.Scanner;
 import java.util.Set;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -31,7 +30,6 @@ import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
-import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -48,6 +46,11 @@ public class LabPLANETArray {
     String schemaConfigName = "config";    
     Rdbms rdbm = new Rdbms();           
    
+    /**
+     *
+     * @param zipcodelist
+     * @return
+     */
     public boolean duplicates(String[] zipcodelist){
       Set<String> lump = new HashSet<>();
       for (String i : zipcodelist)
@@ -58,7 +61,11 @@ public class LabPLANETArray {
       return false;
     }    
     
-    
+    /**
+     *
+     * @param zipcodelist
+     * @return
+     */
     public boolean duplicates(final int[] zipcodelist){
       Set<Integer> lump = new HashSet<>();
       for (int i : zipcodelist)
@@ -69,19 +76,28 @@ public class LabPLANETArray {
       return false;
     }    
 
+    /**
+     *
+     * @param arrayHeader
+     * @param array
+     * @param filename
+     * @param fieldsSeparator
+     * @return
+     * @throws IOException
+     */
     public Object[] arrayToFile (String[] arrayHeader, String[] array, String filename, String fieldsSeparator) throws IOException{
         Object[] diagnosis = new Object[0];
         BufferedWriter outputWriter = null;
         
         if (arrayHeader!=null){
-          for (int i = 0; i < arrayHeader.length; i++) {  
-              outputWriter.write(arrayHeader[i]+fieldsSeparator);
-              outputWriter.newLine();            
-          }
+            for (String arrayHeader1 : arrayHeader) {
+                outputWriter.write(arrayHeader1 + fieldsSeparator);
+                outputWriter.newLine();
+            }
         }
         outputWriter = new BufferedWriter(new FileWriter(filename));
-        for (int i = 0; i < array.length; i++) {
-            outputWriter.write(array[i]);
+        for (String array1 : array) {
+            outputWriter.write(array1);
             outputWriter.newLine();
         }
         outputWriter.flush();  
@@ -89,14 +105,22 @@ public class LabPLANETArray {
         return diagnosis;
     }
     
+    /**
+     *
+     * @param schemaName
+     * @param tableName
+     * @param fieldName
+     * @param fieldValue
+     * @return
+     */
     public Object[] encryptTableFieldArray(String schemaName, String tableName, String[] fieldName, Object[] fieldValue){
          Rdbms rdbm = new Rdbms();
          String key = "Bar12345Bar12345"; // 128 bit key
         LabPLANETPlatform labPlat = new LabPLANETPlatform();
         //? Should be by schemaPrefix? config or data???
         //schemaDataName = labPlat.buildSchemaName(schemaName, schemaDataName);  
-        //String fieldsEncrypted = rdbm.getParameterBundle(schemaDataName.replace("\"", ""), "encrypted_"+tableName);
-        schemaDataName = labPlat.buildSchemaName(schemaName, schemaName);  
+        //String fieldsEncrypted = rdbm.getParameterBundleInConfigFile(schemaDataName.replace("\"", ""), "encrypted_"+tableName);
+        schemaDataName = LabPLANETPlatform.buildSchemaName(schemaName, schemaName);  
         String fieldsEncrypted = Parameter.getParameterBundle(schemaName.replace("\"", ""), "encrypted_"+tableName);        
         String[] fieldsEncryptedArr = fieldsEncrypted.split("\\|");
         for (int iFields=0;iFields<fieldName.length;iFields++){
@@ -131,6 +155,14 @@ public class LabPLANETArray {
         return fieldValue;        
     }  
     
+    /**
+     *
+     * @param schemaName
+     * @param tableName
+     * @param fieldName
+     * @param fieldValue
+     * @return
+     */
     public Object[][] decryptTableFieldArray(String schemaName, String tableName, String[] fieldName, Object[][] fieldValue){
         String key = "Bar12345Bar12345"; // 128 bit key
         //LabPLANETPlatform labPlat = new LabPLANETPlatform();
@@ -169,6 +201,14 @@ public class LabPLANETArray {
         return fieldValue;        
     }    
 
+    /**
+     *
+     * @param schemaName
+     * @param tableName
+     * @param fieldName
+     * @param fieldValue
+     * @return
+     */
     public Object[] decryptTableFieldArray(String schemaName, String tableName, String[] fieldName, Object[] fieldValue){
         String key = "Bar12345Bar12345"; // 128 bit key
         //LabPLANETPlatform labPlat = new LabPLANETPlatform();
@@ -252,6 +292,13 @@ public class LabPLANETArray {
         return myObjectsArray;
         
     }
+
+    /**
+     *
+     * @param xfileLocation
+     * @param csvSeparator
+     * @return
+     */
     public String[][] convertCSVinArray(String xfileLocation, String csvSeparator){
         String[][] myArray = new String[0][0];
         String[] myArray1D = new String[0];
@@ -282,6 +329,12 @@ public class LabPLANETArray {
         return myArray;
     }
     
+    /**
+     *
+     * @param xfileLocation
+     * @param csvSeparator
+     * @return
+     */
     public String[][] convertCSVinArrayHomogeneous(String xfileLocation, String csvSeparator){
         String[][] myArray = new String[0][0];
         String[] myArray1D = new String[0];
@@ -384,6 +437,13 @@ public class LabPLANETArray {
         }                
        return array2d;
     }
+
+    /**
+     *
+     * @param array1d
+     * @param numColumns
+     * @return
+     */
     public Object[][] array1dTo2d(Object[] array1d, Integer numColumns){
         
         Integer numLines = array1d.length/numColumns;
@@ -634,7 +694,7 @@ public class LabPLANETArray {
            errorCode = "DataSample_FieldArraysDifferentSize";
            errorDetailVariables = addValueToArray1D(errorDetailVariables, Arrays.toString(arrayA));
            errorDetailVariables = addValueToArray1D(errorDetailVariables, Arrays.toString(arrayB));
-           return (String[]) labPlat.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);           
+           return (String[]) LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);           
         }else{
             diagnoses[0]="LABPLANET_TRUE";
         }    
@@ -657,7 +717,7 @@ public class LabPLANETArray {
            errorCode = "LabPLANETArray_getColumnFromArray2D_ColNotFound";
            errorDetailVariables = (String[]) addValueToArray1D(errorDetailVariables, array[0].length);
            errorDetailVariables = addValueToArray1D(errorDetailVariables, colNum.toString());
-           return (String[]) labPlat.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);           
+           return (String[]) LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);           
         }       
         for (Integer i=0;i<array.length;i++){
             diagnoses=addValueToArray1D(diagnoses, array[colNum][i]);
@@ -683,7 +743,7 @@ public class LabPLANETArray {
  * Converts one Object[] to String[]
  * 
  * {@link java.util.Arrays#copyOf}
- * @param obj Object
+     * @param objArray
  * @return String[]
  */    
     public static String[] ConvertObjectArrayToStringArray(Object[] objArray) {

@@ -7,6 +7,7 @@ package functionalJava.materialSpec;
 
 import LabPLANET.utilities.LabPLANETArray;
 import LabPLANET.utilities.LabPLANETPlatform;
+import java.math.BigDecimal;
 import java.util.Arrays;
 
 /**
@@ -24,6 +25,14 @@ public class ConfigSpecRule {
     String schemaConfigName = "config";
     String tableName = ""; 
 
+    /**
+     *
+     * @param schemaPrefix
+     * @param rule
+     * @param textSpec
+     * @param separator
+     * @return
+     */
     public Object[] specLimitIsCorrectQualitative(String schemaPrefix, String rule, String textSpec, String separator){
                 
         String schemaConfigName = "config";
@@ -117,6 +126,39 @@ public class ConfigSpecRule {
         return LabPLANETPlatform.trapErrorMessage(null, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);                                    
     }
 
+/**
+ * This method verify that the parameters provided to build one quantitative spec limit apply just one range are coherent accordingly to the different options:<br>
+ * Basically when both are not null then cannot be the same value even min cannot be greater than max.
+ * @param minSpec BigDecimal - The minimum value
+ * @param maxSpec BigDecimal - The maximum value
+ * Bundle parameters:
+ *          config-specLimits_MinAndMaxSpecBothMandatory, specLimits_quantitativeMinSpecSuccessfully, specLimits_quantitativeMaxSpecSuccessfully<br>
+ *          specLimits_quantitativeMinSpecMaxSpec_Successfully, specLimits_quantitativeMinSpecMaxSpec_MinSpecGreaterOrEqualToMaxSpec
+ * @return Object[] position 0 is a boolean to determine if the arguments are correct, when set to false then position 1 provides detail about the deficiency 
+ */
+    public Object[] specLimitIsCorrectQuantitative(BigDecimal minSpec, BigDecimal maxSpec){
+        LabPLANETArray labArr = new LabPLANETArray();
+
+        String errorCode = "";
+        Object[]  errorDetailVariables= new Object[0];        
+                
+        Object[] diagnoses = new Object[2];
+        
+        if ((minSpec==null) && (maxSpec==null)){
+            errorCode = "specLimits_MinAndMaxSpecBothMandatory"; return LabPLANETPlatform.trapErrorMessage(null, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);}                                               
+        if ((minSpec!=null) && (maxSpec==null)){
+            errorCode = "specLimits_quantitativeMinSpecSuccessfully"; return LabPLANETPlatform.trapErrorMessage(null, "LABPLANET_TRUE", classVersion, errorCode, errorDetailVariables);}                                    
+        if ((minSpec==null) && (maxSpec!=null)){
+            errorCode = "specLimits_quantitativeMaxSpecSuccessfully"; return LabPLANETPlatform.trapErrorMessage(null, "LABPLANET_TRUE", classVersion, errorCode, errorDetailVariables);}                                           
+        if (minSpec.compareTo(maxSpec)==1){
+            errorCode = "specLimits_quantitativeMinSpecMaxSpec_Successfully"; return LabPLANETPlatform.trapErrorMessage(null, "LABPLANET_TRUE", classVersion, errorCode, errorDetailVariables);}                                    
+        
+        errorCode = "specLimits_quantitativeMinSpecMaxSpec_MinSpecGreaterOrEqualToMaxSpec"; 
+        errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, minSpec.toString());        
+        errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, maxSpec.toString());
+        return LabPLANETPlatform.trapErrorMessage(null, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);                                    
+    }
+    
 /**
  * This method verify that the parameters provided to build one quantitative spec limit apply one double level range are coherent accordingly to the different options:<br>
  * Basically when both peers, min-max, are not null then cannot be the same value even min cannot be greater than max. At the same time

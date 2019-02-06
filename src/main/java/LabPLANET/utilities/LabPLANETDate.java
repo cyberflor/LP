@@ -21,6 +21,8 @@ public class LabPLANETDate {
  * @param days int - The number of days to be added
  * @return Date - Returns the new date in a Date format
  */
+    
+    
     public static Date addDays(Date date, int days)
     {
         Calendar cal = Calendar.getInstance();
@@ -57,6 +59,13 @@ public class LabPLANETDate {
         return cal.getTime();
     } 
     
+    /**
+     *
+     * @param startDate
+     * @param endDate
+     * @param dayOfWeek
+     * @return
+     */
     public Object[] getDaysInRange(Calendar startDate, Calendar endDate, String dayOfWeek){
         LabPLANETArray labArr = new LabPLANETArray();
         Object[] dt = new Object[0];
@@ -91,6 +100,15 @@ public class LabPLANETDate {
             startDate.add(Calendar.DAY_OF_MONTH, 7);
         }
         return  dt;                       
+    }
+    
+    /**
+     *
+     * @return
+     */
+    public Date getTimeStampLocalDate(){        
+        Calendar cal = Calendar.getInstance();
+        return cal.getTime();
     }
     
 }

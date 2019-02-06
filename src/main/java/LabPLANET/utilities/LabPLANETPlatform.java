@@ -6,6 +6,7 @@
 package LabPLANET.utilities;
 
 import databases.Rdbms;
+import databases.SqlStatement;
 import functionalJava.parameter.Parameter;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -31,8 +32,15 @@ public class LabPLANETPlatform {
 
     String classVersion = "0.1";
     
+    /**
+     *
+     * @param schemaPrefix
+     * @param actionName
+     * @return
+     */
     public Object[] procActionEnabled(String schemaPrefix, String actionName){
         
+        actionName = actionName.toUpperCase();
         Object[] diagnoses = new Object[6];
         String errorCode = ""; String errorDetail = "";
         Object[] errorDetailVariables = new Object[0];
@@ -53,6 +61,7 @@ public class LabPLANETPlatform {
             return trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);
         }else if(!labArr.valueInArray(procedureActions, actionName)){    
             errorCode = "userRoleActionEnabled_denied";
+            errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, actionName);
             errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, schemaPrefix);
             errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, Arrays.toString(procedureActions));
             return trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);            
@@ -64,6 +73,13 @@ public class LabPLANETPlatform {
         }    
     }    
     
+    /**
+     *
+     * @param schemaPrefix
+     * @param userRole
+     * @param actionName
+     * @return
+     */
     public Object[] procUserRoleActionEnabled(String schemaPrefix, String userRole, String actionName){
         Object[] diagnoses = new Object[6];
             LabPLANETArray labArr = new LabPLANETArray();
@@ -79,8 +95,8 @@ public class LabPLANETPlatform {
         }
         if ( (procedureActionsUserRoles.length==1 && "".equals(procedureActionsUserRoles[0])) ){
             errorCode = "userRoleActionEnabled_missedParameter";
+            errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, actionName);            
             errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, schemaPrefix);
-            //errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, actionName);            
             errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, procedureActionsUserRoles);                        
             return trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);        
         }else if(!labArr.valueInArray(procedureActionsUserRoles, userRole)){    
@@ -98,28 +114,89 @@ public class LabPLANETPlatform {
         }            
     }
     
-    public Boolean isEncryptedField(String schemaPrefix, String schemaSuffix, String tableName, String fieldName){
+    /**
+     *
+     * @param schemaName
+     * @param tableName
+     * @param fieldName
+     * @return
+     */
+    public Boolean isEncryptedField(String schemaName, String tableName, String fieldName){
         Boolean diagnoses = false;
-        if ((schemaPrefix==null) || (schemaSuffix==null) || (tableName==null) || (fieldName==null) ) {return diagnoses;}
+        if ((schemaName==null) || (tableName==null) || (fieldName==null) ) {return diagnoses;}
         
         Rdbms rdbm = new Rdbms();
         String parameterName = "encrypted_"+tableName;
-        String tableEncrytedFields = Parameter.getParameterBundle(schemaPrefix+"-"+schemaSuffix, parameterName);
+        schemaName = schemaName.replace("\"", "");
+        
+        if ( fieldName.indexOf(" ")>-1){fieldName=fieldName.substring(0, fieldName.indexOf(" "));}
+        String tableEncrytedFields = Parameter.getParameterBundle(schemaName, parameterName);
         if ( (tableEncrytedFields==null) ){return diagnoses;}
         if ( (tableEncrytedFields=="") ){return diagnoses;}        
         LabPLANETArray labArr = new LabPLANETArray();
         return labArr.valueInArray(tableEncrytedFields.split("\\|"), fieldName);        
     }
     
-    public HashMap<String, String> encryptEncryptableFields(String fieldName, String fieldValue){
-        HashMap<String, String> hm = new HashMap<>();
+    /**
+     *
+     * @param fieldName
+     * @param fieldValue
+     * @return
+     */
+    public HashMap<String, String> encryptEncryptableFieldsAddBoth(String fieldName, String fieldValue){    
+        return encryptEncryptableFields(false, fieldName, fieldValue);
+    }    
+
+    /**
+     *
+     * @param fieldName
+     * @param fieldValue
+     * @return
+     */
+    public HashMap<String, String> encryptEncryptableFieldsOverride(String fieldName, String fieldValue){    
+        return encryptEncryptableFields(true, fieldName, fieldValue);
+    }    
+    
+    private HashMap<String, String> encryptEncryptableFields(Boolean override, String fieldName, String fieldValue){        
+        HashMap<String, String> hm = new HashMap<>();        
         
+        if (fieldName.toUpperCase().indexOf("IN")==-1){
+            Object[] encStr = encryptString(fieldValue);
+            if (override){
+                fieldValue=encStr[1].toString();
+            }else{
+                fieldName=fieldName+" in|";       
+                fieldValue=fieldValue+"|"+encStr[1];
+            }
+        }else{
+            SqlStatement sql = new SqlStatement();
+            String separator = sql.inSeparator(fieldName);
+            String[] valuesArr = fieldValue.split(separator);
+            String valuesEncripted = "";
+            for (String fn: valuesArr){
+                Object[] encStr = encryptString(fn);
+                if (override){
+                    valuesEncripted = encStr[1]+separator;
+                }else{
+                    fieldValue=fieldValue+separator+encStr[1];
+                }                
+            }
+            if (valuesEncripted.length()>0){
+                valuesEncripted=valuesEncripted.substring(0, valuesEncripted.length()-2);
+                fieldValue=valuesEncripted;
+            }                    
+        }
         
         
         hm.put(fieldName, fieldValue);
         return hm;
     }
     
+    /**
+     *
+     * @param stringToEncrypt
+     * @return
+     */
     public Object[] encryptString(String stringToEncrypt){
         Object[] diagnoses = new Object[3];
         String key = "Bar12345Bar12345"; // 128 bit key
@@ -153,6 +230,11 @@ public class LabPLANETPlatform {
         }             
     }  
     
+    /**
+     *
+     * @param encryptedString
+     * @return
+     */
     public Object[] decryptString(String encryptedString){
         Object[] diagnoses = new Object[3];
         String key = "Bar12345Bar12345"; // 128 bit key
@@ -197,7 +279,6 @@ public class LabPLANETPlatform {
  * @param fields String[] - which are the properties being passed.
  * @param values Object[] - which are the values for the properties defined above
  * @param elementsDev StackTraceElement[] - Provides info from the context such as the ClassName + MethodName + LineNumber
- * @throws SQLException - For exception running sql queries.
  */
     public void addJavaClassDoc(Rdbms rdbm, String[] fields, Object[] values, StackTraceElement[] elementsDev) {
                 
@@ -604,7 +685,7 @@ public class LabPLANETPlatform {
  */
     public static Object[] trapErrorMessage(Rdbms rdbm, String evaluation, String classVersion, String errorCode, Object[] errorVariables) {
                 
-        Object[] fldValue = new Object[6];
+        Object[] fldValue = new Object[7];
         String errorDetail = "";
         Object[] errorDetailVariables = new Object[0];
         String className = Thread.currentThread().getStackTrace()[CLIENT_CODE_STACK_INDEX].getFileName(); 
@@ -613,8 +694,8 @@ public class LabPLANETPlatform {
         Integer lineNumber = Thread.currentThread().getStackTrace()[CLIENT_CODE_STACK_INDEX].getLineNumber(); 
         className = className.replace(".java", "");
         Boolean errorCodeFromBundle = true;
-        String errorCodeText = Parameter.getParameterBundle("LabPLANET", "errorTraping", className+"_"+errorCode, null);
-        if (errorCodeText.length()==0){errorCodeText = Parameter.getParameterBundle("LabPLANET", "errorTraping", errorCode, null);}
+        String errorCodeText = Parameter.getParameterBundle("LabPLANET", "errorTraping", null, className+"_"+errorCode, null);
+        if (errorCodeText.length()==0){errorCodeText = Parameter.getParameterBundle("LabPLANET", "errorTraping", null, errorCode, null);}
         if (errorCodeText.length()==0){errorCodeText = errorCode; errorCodeFromBundle=false;}
         
         if (!errorCodeFromBundle){
@@ -626,8 +707,8 @@ public class LabPLANETPlatform {
                 }
             }            
         }else{
-            errorDetail = Parameter.getParameterBundle("LabPLANET", "errorTraping", className+"_"+errorCode+"_detail", null);
-            if (errorDetail.length()==0){errorDetail = Parameter.getParameterBundle("LabPLANET", "errorTraping", errorCode+"_detail", null);}
+            errorDetail = Parameter.getParameterBundle("LabPLANET", "errorTraping", null, className+"_"+errorCode+"_detail", null);
+            if (errorDetail.length()==0){errorDetail = Parameter.getParameterBundle("LabPLANET", "errorTraping", null, errorCode+"_detail", null);}
             if (errorVariables!=null){
                 for (int iVarValue=1; iVarValue<=errorVariables.length; iVarValue++){
                     errorDetail = errorDetail.replace("<*"+String.valueOf(iVarValue)+"*>", errorVariables[iVarValue-1].toString());
@@ -638,12 +719,18 @@ public class LabPLANETPlatform {
         fldValue[1] = classFullName + "." + methodName;
         fldValue[2] = classVersion;
         fldValue[3] = "Code line " + lineNumber.toString();
-        fldValue[4] = errorCodeText;
-        fldValue[5] = errorDetail;
+        fldValue[4] = errorCode;
+        fldValue[5] = errorCodeText;
+        fldValue[6] = errorDetail;
 
          return fldValue;
   }
     
+    /**
+     *
+     * @param errorArray
+     * @return
+     */
     public JSONObject trapErrorMessageJSON(Object[] errorArray){
                 
         JSONObject errorJson = new JSONObject();
@@ -651,8 +738,9 @@ public class LabPLANETPlatform {
             errorJson.put("class", errorArray[1]);
             errorJson.put("classVersion", errorArray[2]);
             errorJson.put("Code line", errorArray[3]);
-            errorJson.put("errorCodeText", errorArray[4]);
-            errorJson.put("errorDetail", errorArray[5]);
+            errorJson.put("errorCode", errorArray[4]);
+            errorJson.put("errorCodeText", errorArray[5]);
+            errorJson.put("errorDetail", errorArray[6]);
         return errorJson;
     }
     

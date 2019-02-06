@@ -24,7 +24,14 @@ import javax.ws.rs.core.Response;
 @Path("/userRole")
 public class userRole {
     
-   @GET
+    /**
+     *
+     * @param usr
+     * @param pw
+     * @param userId
+     * @return
+     */
+    @GET
    @Path("/roleList/{user}-{pass}-{userId}")
    @Produces("application/json")       
     public Response userRoleRoleList(@PathParam("user")String usr, @PathParam("pass")String pw, @PathParam("userId")String userId){
@@ -54,7 +61,13 @@ public class userRole {
 
     }
 
-   @GET
+    /**
+     *
+     * @param usr
+     * @param pw
+     * @return
+     */
+    @GET
    @Path("/userProfile/{user}-{pass}")
    @Produces("application/json")       
     public Response userProfile(@PathParam("user")String usr, @PathParam("pass")String pw){

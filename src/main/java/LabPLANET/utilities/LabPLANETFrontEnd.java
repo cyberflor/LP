@@ -15,7 +15,7 @@ public class LabPLANETFrontEnd {
 
     /**
      *
-     * @param error
+     * @param errorStructure
      * @return
      */
     public Object[] responseError(Object[] errorStructure){
@@ -25,12 +25,20 @@ public class LabPLANETFrontEnd {
         response = labArr.addValueToArray1D(response, errorStructure[errorStructure.length-1].toString());        
         return response;
     }
+
+    /**
+     *
+     * @param errorStructure
+     * @param language
+     * @param schemaPrefix
+     * @return
+     */
     public Object[] responseError(Object[] errorStructure, String language, String schemaPrefix){
         LabPLANETArray labArr = new LabPLANETArray();
         Object[] response = new Object[0];
         response = labArr.addValueToArray1D(response, HttpServletResponse.SC_UNAUTHORIZED);
         
-        response = labArr.addValueToArray1D(response, errorStructure[errorStructure.length-1].toString() + " from labPLANETFrontEnd");        
+        response = labArr.addValueToArray1D(response, errorStructure[errorStructure.length-1].toString());        
         return response;
     }
 }

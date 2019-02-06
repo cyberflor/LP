@@ -17,11 +17,13 @@ import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+
 /**
  *
  * @author Administrator
  */
 public class UserSop {
+    
     
     String classVersion = "0.1";
 
@@ -31,11 +33,33 @@ public class UserSop {
 
     String tableName = "user_sop";  
     
+    /**
+     *
+     */
     public void UserSop(){}
 
+    /**
+     *
+     * @param rdbm
+     * @param schemaPrefixName
+     * @param userInfoId
+     * @param sopName
+     * @return
+     * @throws SQLException
+     */
     public Object[] userSopCertifiedBySopName(Rdbms rdbm, String schemaPrefixName, String userInfoId, String sopName ) throws SQLException{    
         return userSopCertifiedBySopInternalLogic(rdbm, schemaPrefixName, userInfoId, "sop_name", sopName);        
-    }
+        }
+
+    /**
+     *
+     * @param rdbm
+     * @param schemaPrefixName
+     * @param userInfoId
+     * @param sopId
+     * @return
+     * @throws SQLException
+     */
     public Object[] userSopCertifiedBySopId(Rdbms rdbm, String schemaPrefixName, String userInfoId, String sopId ) throws SQLException{
         return userSopCertifiedBySopInternalLogic(rdbm, schemaPrefixName, userInfoId, "sop_id", sopId);        
     }
@@ -102,17 +126,25 @@ public class UserSop {
         }               
     }
 
-    public Object[][] getNotCompletedUserSOP(Rdbms rdbm, String userInfoId, String schemapPrefixName, String[] fieldsToRetrieve) throws SQLException{
+    /**
+     *
+     * @param rdbm
+     * @param userInfoId
+     * @param schemaPrefixName
+     * @param fieldsToRetrieve
+     * @return
+     */
+    public Object[][] getNotCompletedUserSOP(Rdbms rdbm, String userInfoId, String schemaPrefixName, String[] fieldsToRetrieve) {
 
         LabPLANETArray labArr = new LabPLANETArray();
         String[] userSchemas = null;
-        if (schemapPrefixName.contains("ALL")){
+        if (schemaPrefixName.contains("ALL")){
             UserProfile usProf = new UserProfile();
             userSchemas = (String[]) usProf.getAllUserProcedurePrefix(rdbm, userInfoId);
         }
         else{
             userSchemas = new String[1];
-            userSchemas[0]=schemapPrefixName;
+            userSchemas[0]=schemaPrefixName;
         }
 
         String[] filterFieldName = new String[2];
@@ -145,9 +177,32 @@ public class UserSop {
 */        
     }
     
+    /**
+     *
+     * @param rdbm
+     * @param schemaPrefixName
+     * @param userInfoId
+     * @param sopName
+     * @param procedure
+     * @param procVersion
+     * @return
+     * @throws SQLException
+     */
     public Object[] _NotRequireduserSopCertifiedBySopName(Rdbms rdbm, String schemaPrefixName, String userInfoId, String sopName, String procedure, Integer procVersion ) throws SQLException{
         return _NotRequireduserSopCertifiedBySopInternalLogic(rdbm, schemaPrefixName, userInfoId, "sop_name", sopName, procedure, procVersion);        
     }
+
+    /**
+     *
+     * @param rdbm
+     * @param schemaPrefixName
+     * @param userInfoId
+     * @param sopId
+     * @param procedure
+     * @param procVersion
+     * @return
+     * @throws SQLException
+     */
     public Object[] _NotRequireduserSopCertifiedBySopId(Rdbms rdbm, String schemaPrefixName, String userInfoId, String sopId, String procedure, Integer procVersion ) throws SQLException{
         return _NotRequireduserSopCertifiedBySopInternalLogic(rdbm, schemaPrefixName, userInfoId, "sop_id", sopId, procedure, procVersion);
     }    
@@ -251,6 +306,16 @@ public class UserSop {
        
     // This function cannot be replaced by a single query through the rdbm because it run the query through the many procedures
     //      the user is involved on if so ....
+
+    /**
+     *
+     * @param rdbm
+     * @param filterFieldName
+     * @param filterFieldValue
+     * @param fieldsToReturn
+     * @param schemaPrefix
+     * @return
+     */
         
     public Object[][] getUserProfileFieldValues(Rdbms rdbm, String[] filterFieldName, Object[] filterFieldValue, String[] fieldsToReturn, String[] schemaPrefix){                
         String tableName = "user_sop";
@@ -341,15 +406,51 @@ public class UserSop {
             
     }
 
+    /**
+     *
+     * @param rdbm
+     * @param schemaName
+     * @param userInfoId
+     * @param sopId
+     * @return
+     */
     public Object[] addSopToUserById(Rdbms rdbm, String schemaName, String userInfoId, Integer sopId){
         return addSopToUserInternalLogic(rdbm, schemaName, userInfoId, "sop_id", sopId);
     }   
+
+    /**
+     *
+     * @param rdbm
+     * @param schemaName
+     * @param userInfoId
+     * @param sopId
+     * @return
+     */
     public Object[] addSopToUserById(Rdbms rdbm, String schemaName, String userInfoId, String sopId){
         return addSopToUserInternalLogic(rdbm, schemaName, userInfoId, "sop_id", sopId);
     }   
+
+    /**
+     *
+     * @param rdbm
+     * @param schemaName
+     * @param userInfoId
+     * @param sopName
+     * @return
+     */
     public Object[] addSopToUserByName(Rdbms rdbm, String schemaName, String userInfoId, String sopName){
         return addSopToUserInternalLogic(rdbm, schemaName, userInfoId, "sop_id", sopName);
     }    
+
+    /**
+     *
+     * @param rdbm
+     * @param schemaName
+     * @param userInfoId
+     * @param sopIdFieldName
+     * @param sopIdFieldValue
+     * @return
+     */
     public Object[] addSopToUserInternalLogic(Rdbms rdbm, String schemaName, String userInfoId, String sopIdFieldName, Object sopIdFieldValue){
         LabPLANETArray labArr = new LabPLANETArray();
         String schemaDataName = "data";
@@ -381,9 +482,22 @@ public class UserSop {
         }
     }
     
+    /**
+     *
+     * @param userInfoId
+     * @return
+     */
     public String[] _notRequiredgetUserSopFilter(String userInfoId){
         String[] theSops = null;        
         return theSops;
+    }
+    
+    public boolean isProcedureSopEnable(String procedureName){
+        String sopCertificationLevel = Parameter.getParameterBundle("config", procedureName, "procedure", "actionEnabledUserSopCertification", null);
+        if ("DISABLE".equalsIgnoreCase(sopCertificationLevel)) return false;
+        if ("DISABLED".equalsIgnoreCase(sopCertificationLevel)) return false;
+        if ("OFF".equalsIgnoreCase(sopCertificationLevel)) return false;
+        return !"".equalsIgnoreCase(sopCertificationLevel);
     }
     
 }

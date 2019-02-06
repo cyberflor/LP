@@ -23,6 +23,12 @@ public class Requirement {
     String schemaConfigName = "config";
     String tableName = "requirement"; 
     
+    /**
+     *
+     * @param rdbm
+     * @param schemaPrefix
+     * @return
+     */
     public Object[][] getProcedureBySchemaPrefix(Rdbms rdbm, String schemaPrefix){
                 
         String schemaName = "requirements";

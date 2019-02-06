@@ -23,6 +23,9 @@ public class UnitsOfMeasurement {
     Object[] javaDocValues = new Object[0];
     String javaDocLineName = "";    
     
+    /**
+     *
+     */
     public UnitsOfMeasurement(){
     }
 /**
@@ -132,6 +135,13 @@ public class UnitsOfMeasurement {
         return unitsList;        
     }
 
+    /**
+     *
+     * @param rdbm
+     * @param schemaPrefix
+     * @param family
+     * @return
+     */
     public String getFamilyBaseUnitName(Rdbms rdbm, String schemaPrefix, String family){
         String tableName = "units_of_measurement";                
         String schemaName = "config";

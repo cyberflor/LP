@@ -35,15 +35,74 @@ public class DataProjectScheduleAdhoc {
         }
     }
     
+    /**
+     *
+     */
     public enum itemsMeasurementType {
-        DAYS, MONTHS, YEARS;
+
+        /**
+         *
+         */
+        DAYS,
+
+        /**
+         *
+         */
+        MONTHS,
+
+        /**
+         *
+         */
+        YEARS;
     }
     
+    /**
+     *
+     */
     public enum recursiveRules{
-        MONDAYS, TUESDAYS, WEDNESDAYS, THURSDAYS, FRIDAYS, SATURDAYS, SUNDAYS;
+
+        /**
+         *
+         */
+        MONDAYS,
+
+        /**
+         *
+         */
+        TUESDAYS,
+
+        /**
+         *
+         */
+        WEDNESDAYS,
+
+        /**
+         *
+         */
+        THURSDAYS,
+
+        /**
+         *
+         */
+        FRIDAYS,
+
+        /**
+         *
+         */
+        SATURDAYS,
+
+        /**
+         *
+         */
+        SUNDAYS;
     }
     
-    
+    /**
+     *
+     * @param schedule_size
+     * @param itemsMeasurement
+     * @param startDay
+     */
     public void dataProjectSchedule (int schedule_size, String itemsMeasurement, Date startDay){
         //EnumUtils.isValidEnum(itemsMeasurementType.class, itemsMeasurement);
         this.itemsMeasurement =itemsMeasurement;
@@ -70,6 +129,14 @@ public class DataProjectScheduleAdhoc {
         
     }
 
+    /**
+     *
+     * @param rdbm
+     * @param schemaName
+     * @param pName
+     * @param projSchedId
+     * @return
+     */
     public List<dataProjectSchedule> getDataProjectSchedulers(Rdbms rdbm, String schemaName, String pName, int projSchedId) {
     	List<dataProjectSchedule> project= new ArrayList<>();
         String condition = "1 ";
@@ -87,6 +154,11 @@ public class DataProjectScheduleAdhoc {
         return project;    	    	
     }   
     
+    /**
+     *
+     * @param projectSchedInfo
+     * @return
+     */
     public List<dataProjectSchedule> setProjectSchedulerFromDb(Object[][] projectSchedInfo) {
         List<dataProjectSchedule> project= new ArrayList<>();
         
@@ -105,6 +177,16 @@ public class DataProjectScheduleAdhoc {
         return project;
     }  
 
+    /**
+     *
+     * @param rdbm
+     * @param schemaName
+     * @param calendarCode
+     * @param pName
+     * @param projSchedId
+     * @return
+     * @throws SQLException
+     */
     @SuppressWarnings("empty-statement")
     public Object[] importHolidaysCalendarSchedule(Rdbms rdbm, String schemaName, String calendarCode, String pName, Integer projSchedId) throws SQLException{
         
@@ -169,6 +251,16 @@ public class DataProjectScheduleAdhoc {
         return diagn;
     }
     
+    /**
+     *
+     * @param rdbm
+     * @param schemaName
+     * @param pName
+     * @param projSchedId
+     * @param fieldName
+     * @param fieldValue
+     * @return
+     */
     public Object[] addRecursiveSchedulePoint(Rdbms rdbm, String schemaName, String pName, Integer projSchedId, String[] fieldName, Object[] fieldValue){
         
         String tableName = "project_schedule";

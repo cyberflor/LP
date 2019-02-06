@@ -50,13 +50,25 @@ public class _RdbmsNEW {
     private Integer timeout;
     private String lastError = "";
 
+    /**
+     *
+     */
     public _RdbmsNEW() {
         //default query timeout
         this.timeout = 5;        
     }    
 
-
-    
+    /**
+     *
+     * @param user
+     * @param pass
+     * @return
+     * @throws ClassNotFoundException
+     * @throws IllegalAccessException
+     * @throws InstantiationException
+     * @throws SQLException
+     * @throws NamingException
+     */
     public Boolean startRdbms(String user, String pass) throws ClassNotFoundException, IllegalAccessException, InstantiationException, SQLException, NamingException{
         ResourceBundle prop = ResourceBundle.getBundle("parameter.config.config");
         String datasrc = prop.getString("datasource");
@@ -85,6 +97,10 @@ public class _RdbmsNEW {
     return getIsStarted();
     }
 
+    /**
+     *
+     * @throws SQLException
+     */
     public void closeRdbms() throws SQLException{
         if(getConnection()!=null){
             conn.close();
@@ -92,20 +108,49 @@ public class _RdbmsNEW {
             }
     }  
     
+    /**
+     *
+     * @return
+     */
     public Integer getTimeout() { return timeout;}
 
+    /**
+     *
+     * @param timeout
+     */
     public void setTimeout(Integer timeout) { this.timeout = timeout;}
 
+    /**
+     *
+     * @return
+     */
     public String getLastError(){return lastError;}
 
     private void setConnection(Connection con){ conn=con; }
     
+    /**
+     *
+     * @return
+     */
     public Connection getConnection(){ return conn; }
 
+    /**
+     *
+     * @return
+     */
     public Boolean getIsStarted() { return isStarted;}
     
     private void setIsStarted(Boolean isStart) { this.isStarted = isStart;}
 
+    /**
+     *
+     * @param rdbm
+     * @param schemaName
+     * @param tableName
+     * @param keyFieldName
+     * @param keyFieldValue
+     * @return
+     */
     public String[] existsRecord(_RdbmsNEW rdbm, String schemaName, String tableName, String keyFieldName, Object keyFieldValue){
         
         String[] diagnoses = new String[6];
@@ -152,6 +197,15 @@ public class _RdbmsNEW {
         }                    
     }
 
+    /**
+     *
+     * @param rdbm
+     * @param schemaName
+     * @param tableName
+     * @param keyFieldNames
+     * @param keyFieldValues
+     * @return
+     */
     public String[] existsRecord(_RdbmsNEW rdbm, String schemaName, String tableName, String[] keyFieldNames, Object[] keyFieldValues){
         
         String[] diagnoses = new String[6];
@@ -223,6 +277,16 @@ public class _RdbmsNEW {
         }                    
     }
 
+    /**
+     *
+     * @param rdbm
+     * @param schemaName
+     * @param tableName
+     * @param whereFieldNames
+     * @param whereFieldValues
+     * @param fieldsToRetrieve
+     * @return
+     */
     public Object[][] getRecordFieldsByFilter(_RdbmsNEW rdbm, String schemaName, String tableName, String[] whereFieldNames, Object[] whereFieldValues, String[] fieldsToRetrieve){
         
         Object[][] diagnoses = new Object[1][6];        
@@ -338,6 +402,16 @@ public class _RdbmsNEW {
         }                    
     }
 
+    /**
+     *
+     * @param rdbm
+     * @param schemaName
+     * @param tableName
+     * @param whereFieldNames
+     * @param whereFieldValues
+     * @param fieldsToRetrieve
+     * @return
+     */
     public Object[][] getRecordFieldsByFilter(_RdbmsNEW rdbm, String schemaName, String[] tableName, String[] whereFieldNames, Object[] whereFieldValues, String[] fieldsToRetrieve){
         
         Object[][] diagnoses = new Object[1][6];        
@@ -419,6 +493,17 @@ public class _RdbmsNEW {
         }                    
     }
 
+    /**
+     *
+     * @param rdbm
+     * @param schemaName
+     * @param tableName
+     * @param whereFieldNames
+     * @param whereFieldValues
+     * @param fieldsToRetrieve
+     * @param orderBy
+     * @return
+     */
     public Object[][] getRecordFieldsByFilter(_RdbmsNEW rdbm, String schemaName, String tableName, String[] whereFieldNames, Object[] whereFieldValues, String[] fieldsToRetrieve, String[] orderBy){
         
         Object[][] diagnoses = new Object[1][6];        
@@ -501,6 +586,15 @@ public class _RdbmsNEW {
         }                    
     }
 
+    /**
+     *
+     * @param rdbm
+     * @param schemaName
+     * @param tableName
+     * @param fieldNames
+     * @param fieldValues
+     * @return
+     */
     public String[] insertRecordInTable(_RdbmsNEW rdbm, String schemaName, String tableName, String[] fieldNames, Object[] fieldValues){
         try {
             
@@ -570,6 +664,18 @@ public class _RdbmsNEW {
         }
     }
     
+    /**
+     *
+     * @param rdbm
+     * @param schemaName
+     * @param tableName
+     * @param updateFieldNames
+     * @param updateFieldValues
+     * @param whereFieldNames
+     * @param whereFieldValues
+     * @return
+     * @throws SQLException
+     */
     public String[] updateRecordFieldsByFilter(_RdbmsNEW rdbm, String schemaName, String tableName, String[] updateFieldNames, Object[] updateFieldValues, String[] whereFieldNames, Object[] whereFieldValues) throws SQLException{
         
         String[] diagnoses = new String[6];        
@@ -660,6 +766,13 @@ public class _RdbmsNEW {
         }*/
     }    
 
+    /**
+     *
+     * @param consultaconinterrogaciones
+     * @param valoresinterrogaciones
+     * @return
+     * @throws SQLException
+     */
     public CachedRowSetImpl prepRdQuery(String consultaconinterrogaciones, Object [] valoresinterrogaciones) throws SQLException{
     //prepare statement para evitar sql injection
      Object[] filteredValoresConInterrogaciones = new Object[0];     
@@ -689,12 +802,26 @@ public class _RdbmsNEW {
     return crs; 
     }
     
-
+    /**
+     *
+     * @param consultaconinterrogaciones
+     * @param valoresinterrogaciones
+     * @return
+     * @throws SQLException
+     */
     public Integer prepUpQuery(String consultaconinterrogaciones, Object [] valoresinterrogaciones) throws SQLException{
         Integer reg =  prepUpQuery(consultaconinterrogaciones, valoresinterrogaciones, null);    
         return reg;
     }
     
+    /**
+     *
+     * @param consultaconinterrogaciones
+     * @param valoresinterrogaciones
+     * @param fieldtypes
+     * @return
+     * @throws SQLException
+     */
     public Integer prepUpQuery(String consultaconinterrogaciones, Object [] valoresinterrogaciones, Integer [] fieldtypes) throws SQLException{
         PreparedStatement prep=getConnection().prepareStatement(consultaconinterrogaciones);
 
@@ -708,6 +835,14 @@ public class _RdbmsNEW {
         return res; 
     }
     
+    /**
+     *
+     * @param consultaconinterrogaciones
+     * @param valoresinterrogaciones
+     * @param indexposition
+     * @return
+     * @throws SQLException
+     */
     public Integer prepUpQueryK(String consultaconinterrogaciones, Object [] valoresinterrogaciones, Integer indexposition) throws SQLException{
         Integer pk = 0;
         PreparedStatement prep=getConnection().prepareStatement(consultaconinterrogaciones, Statement.RETURN_GENERATED_KEYS);
@@ -725,6 +860,13 @@ public class _RdbmsNEW {
         return pk; 
     }
     
+    /**
+     *
+     * @param schema
+     * @param table
+     * @return
+     * @throws SQLException
+     */
     public String [] getTableFieldsArrayEj(String schema, String table) throws SQLException{
         String sq = "select array(SELECT column_name || ''  FROM information_schema.columns WHERE table_schema = ? AND table_name   = ?) fields";
         CachedRowSetImpl res = prepRdQuery(sq, new Object[]{schema, table});
@@ -734,6 +876,15 @@ public class _RdbmsNEW {
         return items;
     }
     
+    /**
+     *
+     * @param schema
+     * @param table
+     * @param separator
+     * @param addTableName
+     * @return
+     * @throws SQLException
+     */
     public String getTableFieldsArrayEj(String schema, String table, String separator, Boolean addTableName) throws SQLException{
         String sq = "select array(SELECT column_name || ''  FROM information_schema.columns WHERE table_schema = ? AND table_name   = ?) fields";
         CachedRowSetImpl res = prepRdQuery(sq, new Object[]{schema, table});
@@ -795,11 +946,23 @@ public class _RdbmsNEW {
         }     
     }
 
+    /**
+     *
+     * @param configFile
+     * @return
+     */
     public ResourceBundle getParameterBundle(String configFile){
         ResourceBundle prop = ResourceBundle.getBundle("parameter.config."+configFile);
         return prop;
     }
     
+    /**
+     *
+     * @param configFile
+     * @param parameterName
+     * @param language
+     * @return
+     */
     public String getParameterBundle(String configFile, String parameterName, String language){
         
         ResourceBundle prop = ResourceBundle.getBundle("parameter.config."+configFile+"_"+language); 
@@ -811,6 +974,12 @@ public class _RdbmsNEW {
         }    
     }        
 
+    /**
+     *
+     * @param configFile
+     * @param parameterName
+     * @return
+     */
     public String getParameterBundle(String configFile, String parameterName){
         
 
@@ -827,14 +996,28 @@ public class _RdbmsNEW {
         }    
     }        
 
+    /**
+     *
+     * @return
+     */
     public Date getLocalDate(){
         Date de = new java.sql.Date(System.currentTimeMillis());        
         return de;}
 
+    /**
+     *
+     * @return
+     */
     public Date getCurrentDate(){        
         Date de = new java.sql.Date(System.currentTimeMillis());        
         return de;}    
     
+    /**
+     *
+     * @param consulta
+     * @return
+     * @throws SQLException
+     */
     public CachedRowSetImpl readQuery(String consulta) throws SQLException{
     Statement sta=getConnection().createStatement();
     sta.setQueryTimeout(getTimeout());

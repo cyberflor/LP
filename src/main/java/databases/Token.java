@@ -44,6 +44,10 @@ public class Token {
         }
     }
     
+    /**
+     *
+     * @return
+     */
     public String[] tokenParamsList(){
         LabPLANETArray labArr = new LabPLANETArray();
         String[] diagnoses = new String[0];        
@@ -51,6 +55,8 @@ public class Token {
         diagnoses = labArr.addValueToArray1D(diagnoses, "userDBPassword");
         diagnoses = labArr.addValueToArray1D(diagnoses, "internalUserID");
         diagnoses = labArr.addValueToArray1D(diagnoses, "userRole");
+        diagnoses = labArr.addValueToArray1D(diagnoses, "appSessionId");
+        diagnoses = labArr.addValueToArray1D(diagnoses, "appSessionStartedDate");
         return diagnoses;
     }  
     
@@ -79,10 +85,21 @@ public class Token {
         }       
     }
     
+    /**
+     *
+     * @param token
+     * @return
+     */
     public String validateToken(String token){
         return isValidToken(token)[0].toString();
     }
     
+    /**
+     *
+     * @param token
+     * @param paramName
+     * @return
+     */
     public String validateToken(String token, String paramName){       
        Object[] tokenObj = isValidToken(token);
         
@@ -93,6 +110,12 @@ public class Token {
        return header1.asString();            
     }    
 
+    /**
+     *
+     * @param token
+     * @param paramName
+     * @return
+     */
     public String[] validateToken(String token, String[] paramName){
         LabPLANETArray labArr = new LabPLANETArray();
         String[] infoFromToken = new String[0];
@@ -104,13 +127,20 @@ public class Token {
         return infoFromToken;            
     }    
 
-    
-    
-    public String  createToken(String userDBId, String userDBPassword, String userId, String userRole){        
+    /**
+     *
+     * @param userDBId
+     * @param userDBPassword
+     * @param userId
+     * @param userRole
+     * @return
+     */
+    public String  createToken(String userDBId, String userDBPassword, String userId, String userRole, String appSessionId, String appSessionStartedDate){        
         Algorithm algorithm = Algorithm.HMAC256(KEY);
         Map <String, Object> myParams = new HashMap<String, Object>();
-        myParams.put("userDB", userDBId);        myParams.put("userDBPassword", userDBPassword);
-        myParams.put("internalUserID", userId);        myParams.put("userRole", userRole);
+        myParams.put("userDB", userDBId);                   myParams.put("userDBPassword", userDBPassword);
+        myParams.put("internalUserID", userId);             myParams.put("userRole", userRole);
+        myParams.put("appSessionId", appSessionId);  myParams.put("appSessionStartedDate", appSessionStartedDate);
         String token = JWT.create()
                 .withHeader(myParams)
                 .withIssuer(ISSUER)

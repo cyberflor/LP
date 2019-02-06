@@ -27,13 +27,21 @@ public class ProductoServicio {
     
     private static List<Producto> lista = ProductoDAO.getProductos();
 
-    
+    /**
+     *
+     * @return
+     */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getProductos(){
         return Response.ok(lista).build();        
     }
     
+    /**
+     *
+     * @param id
+     * @return
+     */
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -54,6 +62,12 @@ public class ProductoServicio {
 
     //@Path("/nuevo")
     //@Path("add")
+
+    /**
+     *
+     * @param producto
+     * @return
+     */
     @POST    
     @Consumes("application/json")
     @Produces("application/json")
@@ -73,6 +87,11 @@ public class ProductoServicio {
         return Response.ok(lista).build();
     }
     
+    /**
+     *
+     * @param id
+     * @return
+     */
     @DELETE
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)

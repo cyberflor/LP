@@ -33,16 +33,51 @@ public class _ConfigSamplingPlanForSpec {
     LabPLANETPlatform labPlat = new LabPLANETPlatform();
     LabPLANETArray labArr = new LabPLANETArray();
 
+    /**
+     *
+     * @param rdbm
+     * @param schemaPrefix
+     * @param userName
+     * @param userRole
+     * @param fieldsName
+     * @param fieldsValue
+     * @return
+     * @throws SQLException
+     */
     public Object[] newSamplingPlanDetailRecord(Rdbms rdbm, String schemaPrefix, String userName, String userRole, String[] fieldsName, Object[] fieldsValue) throws SQLException{
         diagnoses = newSamplingPlanDetailRecordDev(rdbm, schemaPrefix, userName, userRole, fieldsName, fieldsValue, false);
         return diagnoses;
     }
 
+    /**
+     *
+     * @param rdbm
+     * @param schemaPrefix
+     * @param userName
+     * @param userRole
+     * @param fieldsName
+     * @param fieldsValue
+     * @param devMode
+     * @return
+     * @throws SQLException
+     */
     public Object[] newSamplingPlanDetailRecord(Rdbms rdbm, String schemaPrefix, String userName, String userRole, String[] fieldsName, Object[] fieldsValue, Boolean devMode) throws SQLException{
         diagnoses = newSamplingPlanDetailRecordDev(rdbm, schemaPrefix, userName, userRole, fieldsName, fieldsValue, devMode);
         return diagnoses;
     }
         
+    /**
+     *
+     * @param rdbm
+     * @param schemaPrefix
+     * @param userName
+     * @param userRole
+     * @param fieldsName
+     * @param fieldsValue
+     * @param devMode
+     * @return
+     * @throws SQLException
+     */
     public Object[] newSamplingPlanDetailRecordDev(Rdbms rdbm, String schemaPrefix, String userName, String userRole, String[] fieldsName, Object[] fieldsValue, Boolean devMode) throws SQLException{
     if (devMode==true){
         StackTraceElement[] elementsDev = Thread.currentThread().getStackTrace();

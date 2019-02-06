@@ -16,6 +16,13 @@ public class DataDataIntegrity {
     
     Rdbms rdbm = new Rdbms();
 
+    /**
+     *
+     * @param schemaName
+     * @param tableName
+     * @param actionName
+     * @return
+     */
     public String[] getTableMandatoryFields(String schemaName, String tableName, String actionName){
         
         String[] myMandatoryFields = new String[0];
@@ -30,6 +37,13 @@ public class DataDataIntegrity {
         return myMandatoryFields;
     }
 
+    /**
+     *
+     * @param schemaName
+     * @param tableName
+     * @param actionName
+     * @return
+     */
     public String[] getTableFieldsDefaulValues(String schemaName, String tableName, String actionName){
         
         String[] myMandatoryFields = new String[0];
@@ -45,6 +59,13 @@ public class DataDataIntegrity {
         return myMandatoryFields;
     }    
 
+    /**
+     *
+     * @param schemaName
+     * @param tableName
+     * @param actionName
+     * @return
+     */
     public String[] getStructureSpecialFields(String schemaName, String tableName, String actionName){
         
         String[] myMandatoryFields = new String[0];
@@ -60,6 +81,13 @@ public class DataDataIntegrity {
         return myMandatoryFields;
     }        
     
+    /**
+     *
+     * @param schemaName
+     * @param tableName
+     * @param actionName
+     * @return
+     */
     public String[] getStructureSpecialFieldsFunction(String schemaName, String tableName, String actionName){
         
         String[] myMandatoryFields = new String[0];

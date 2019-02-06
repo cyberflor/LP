@@ -30,8 +30,16 @@ public class LabPLANETQualityAssurance {
 	
 //	 private static final boolean debug = true;
 
+    /**
+     *
+     */
+
     public LabPLANETQualityAssurance() {}	
 
+    /**
+     *
+     * @param directoryName
+     */
     public void listFilesAndFolders(String directoryName) {
             File directory = new File(directoryName);
             // get all the files from a directory
@@ -41,6 +49,10 @@ public class LabPLANETQualityAssurance {
             }
     }
 	
+    /**
+     *
+     * @return
+     */
     public Method[] getMethodsList() {
     	//Guru99MethodMetaData  guru99ClassVar  = new Guru99MethodMetaData  ();
     	Class  guru99ClassObjVar  = this.getClass();
@@ -48,6 +60,11 @@ public class LabPLANETQualityAssurance {
     	return guru99Method1;
     }
     
+    /**
+     *
+     * @param className
+     * @return
+     */
     public static Method[] getMethodsList(Class className) {
     	//Guru99MethodMetaData  guru99ClassVar  = new Guru99MethodMetaData  ();
     	//Class  guru99ClassObjVar  = className.getClass();
@@ -55,6 +72,12 @@ public class LabPLANETQualityAssurance {
     	return guru99Method1;
     }
     
+    /**
+     *
+     * @param jarName
+     * @param packageName
+     * @return
+     */
     public static List getClasseNamesInPackage(String jarName, String packageName){
         ArrayList classes = new ArrayList ();
 
@@ -83,6 +106,15 @@ public class LabPLANETQualityAssurance {
         return (List) classes;
     }
 
+    /**
+     *
+     * @param rdbm
+     * @param project
+     * @param pack
+     * @param clase
+     * @param metodo
+     * @return
+     */
     public static Object[] isJAvaDocException(Rdbms rdbm, String project, String pack, String clase, String metodo){        
         
         String schemaName = "requirements";
@@ -123,7 +155,11 @@ public class LabPLANETQualityAssurance {
         return diagn;
     }
     
-    
+    /**
+     *
+     * @return
+     * @throws ClassNotFoundException
+     */
     public static Object[][] javaDocChecker() throws ClassNotFoundException {
 
         LabPLANETArray labArr = new LabPLANETArray();

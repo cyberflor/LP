@@ -13,6 +13,12 @@ import databases.Rdbms;
  */
 public class ConfigRequirement {
     
+    /**
+     *
+     * @param rdbm
+     * @param procedure
+     * @param pVersion
+     */
     public void _getConfigObject2(Rdbms rdbm, String procedure, Integer pVersion){
     }
    /*

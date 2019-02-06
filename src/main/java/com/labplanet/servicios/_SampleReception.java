@@ -21,8 +21,8 @@ import javax.ws.rs.core.Response;
  *
  * @author Administrator
  */
-@Path("unReceivedSamples")
-public class SampleReception {
+@Path("unReceivedSamplesssssssssssss")
+public class _SampleReception {
     
     //Integer sampleId = 0;
     
@@ -60,8 +60,8 @@ public class SampleReception {
      * @return
      */
     @PUT
-    @Path("/{schema}/{user}/{userRole}/{sampleId}")
-    //@Consumes(MediaType.APPLICATION_JSON)
+    @Path("/{schema}/{user}/{userRole}")    
+    //@Produces(MediaType.APPLICATION_JSON)
     public Response receiveSample(@PathParam(
             "schema") String schemaPrefix, @PathParam("user") String userName, @PathParam("userRole") String userRole, @PathParam("sampleId") int sampleId){  
         DataSample smp = new DataSample("");

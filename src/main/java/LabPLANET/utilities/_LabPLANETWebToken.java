@@ -20,6 +20,15 @@ public class _LabPLANETWebToken {
  
  
 //Sample method to construct a JWT
+
+    /**
+     *
+     * @param id
+     * @param issuer
+     * @param subject
+     * @param ttlMillis
+     * @return
+     */
 public static String createJWT(String id, String issuer, String subject, long ttlMillis) {
  
     String getSecret = "LabPLANETConDosCojones";
@@ -54,6 +63,11 @@ public static String createJWT(String id, String issuer, String subject, long tt
 }    
 
 //Sample method to validate and read the JWT
+
+    /**
+     *
+     * @param jwt
+     */
 public static void parseJWT(String jwt) {
      String getSecret = "LabPLANETConDosCojones";
     //This line will throw an exception if it is not a signed JWS (as expected)

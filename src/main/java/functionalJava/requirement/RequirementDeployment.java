@@ -40,6 +40,16 @@ public class RequirementDeployment {
     
     // Originally 1196 lines
                                                                     //, String functionalArea, String values
+
+    /**
+     *
+     * @param rdbm
+     * @param procedure
+     * @param procVersion
+     * @return
+     * @throws SQLException
+     * @throws IOException
+     */
     @SuppressWarnings("ConvertToTryWithResources")
     public String _newRequirement (Rdbms rdbm, String procedure, Integer procVersion) throws SQLException, IOException {    
         String methodName = "newRequirement";
@@ -149,6 +159,14 @@ return "";
         return ermessage;
     }
    */ 
+
+    /**
+     *
+     * @param rdbm
+     * @param procName
+     * @param procVersion
+     */
+ 
     public void _deploymentNavigatorNavId (Rdbms rdbm, String procName, Integer procVersion){                       
         String methodName = "deploymentNavigatorNavId";
         Integer queryInsertNum=0;
@@ -216,6 +234,16 @@ return "";
         }catch(Exception ex)   {Logger.getLogger(Requirement.class.getName()).log(Level.SEVERE, null, ex);}
     }
 */
+
+    /**
+     *
+     * @param rdbm
+     * @param procName
+     * @param procVersion
+     * @param navId
+     * @param procCode
+     */
+
     public void _deploymentNavigatorNavTabId (Rdbms rdbm, String procName, Integer procVersion, Integer navId, String procCode){            
         Integer queryInsertNum=0;
         String navCode = "";
@@ -324,6 +352,21 @@ return "";
         
     } */
 
+    /**
+     *
+     * @param nodename
+     * @param rdbm
+     * @param privilege_id
+     * @param fathernode
+     * @param haschildren
+     * @param procedure
+     * @param version
+     * @param code
+     * @param sopName
+     * @param sopSection
+     * @return
+     * @throws SQLException
+     */
     public Integer createNav(String nodename, Rdbms rdbm, String privilege_id, Integer fathernode, Boolean haschildren, String procedure, Integer version, String code, String sopName, String sopSection) throws SQLException   {            
         StackTraceElement[] elements = Thread.currentThread().getStackTrace();
         String methodName = elements[1].getMethodName();
@@ -548,6 +591,13 @@ return "";
         fw.close();        
     }    
 
+    /**
+     *
+     * @param rdbm
+     * @param procName
+     * @param procVersion
+     * @throws SQLException
+     */
     public void addProcRolesAndPrivileges(Rdbms rdbm, String procName, Integer procVersion) throws SQLException{
     
         String methodName = "addProcRolesAndPrivileges";
@@ -862,6 +912,14 @@ return "";
         }
     }
 */
+
+    /**
+     *
+     * @param rdbm
+     * @param procedure
+     * @param pVersion
+     */
+
     public void _getConfigObject(Rdbms rdbm, String procedure, Integer pVersion){
     }
 /*

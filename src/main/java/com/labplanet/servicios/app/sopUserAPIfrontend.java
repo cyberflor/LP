@@ -5,6 +5,13 @@
  */
 package com.labplanet.servicios.app;
 
+import LabPLANET.utilities.LabPLANETArray;
+import LabPLANET.utilities.LabPLANETFrontEnd;
+import LabPLANET.utilities.LabPLANETRequest;
+import databases.Rdbms;
+import databases.Token;
+import functionalJava.sop.UserSop;
+import functionalJava.user.UserProfile;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
@@ -31,12 +38,63 @@ public class sopUserAPIfrontend extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
+         response.setContentType("application/json");
+         response.setCharacterEncoding("UTF-8");
+        
+         LabPLANETArray labArr = new LabPLANETArray();
+         LabPLANETRequest labReq = new LabPLANETRequest();
+         Rdbms rdbm = new Rdbms();
+         LabPLANETFrontEnd labFrEnd = new LabPLANETFrontEnd();
+         UserSop userSop = new UserSop();
+         
+         String language = "es";
+        
         try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
 
-                    JSONArray SopOptions = new JSONArray(); 
+                String[] errObject = new String[]{"Servlet sampleAPI at " + request.getServletPath()};     
+
+                String[] mandatoryParams = new String[]{"finalToken"};
+                mandatoryParams = labArr.addValueToArray1D(mandatoryParams, "finalToken");
+                Object[] areMandatoryParamsInResponse = labReq.areMandatoryParamsInApiRequest(request, mandatoryParams);                        
+                
+                String finalToken = request.getParameter("finalToken");                   
+
+                Token token = new Token();
+                String[] tokenParams = token.tokenParamsList();
+                String[] tokenParamsValues = token.validateToken(finalToken, tokenParams);
+
+                String dbUserName = tokenParamsValues[labArr.valuePosicInArray(tokenParams, "userDB")];
+                String dbUserPassword = tokenParamsValues[labArr.valuePosicInArray(tokenParams, "userDBPassword")];
+                String internalUserID = tokenParamsValues[labArr.valuePosicInArray(tokenParams, "internalUserID")];         
+                String userRole = tokenParamsValues[labArr.valuePosicInArray(tokenParams, "userRole")];                     
+
+                boolean isConnected = false;
+                isConnected = rdbm.startRdbms(dbUserName, dbUserPassword);
+                if (!isConnected){
+                    errObject = labArr.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
+                    errObject = labArr.addValueToArray1D(errObject, "API Error Message: db User Name and Password not correct, connection to the database is not possible");                    
+                    Object[] errMsg = labFrEnd.responseError(errObject, language, null);
+                    response.sendError((int) errMsg[0], (String) errMsg[1]);   
+                    rdbm.closeRdbms(); 
+                    return ;               
+                }
+               
+                UserProfile usProf = new UserProfile();
+                String[] allUserProcedurePrefix = labArr.ConvertObjectArrayToStringArray(usProf.getAllUserProcedurePrefix(rdbm, dbUserName));
+                if ("LABPLANET_FALSE".equalsIgnoreCase(allUserProcedurePrefix[0].toString())){
+                    Object[] errMsg = labFrEnd.responseError(allUserProcedurePrefix, language, null);
+                    response.sendError((int) errMsg[0], (String) errMsg[1]);   
+                    rdbm.closeRdbms();
+                    return;
+                }     
+                Integer numPendingSOPs = 0;
+                String[] fieldsToRetrieve = new String[]{"sop_id"};
+                for (String curProc: allUserProcedurePrefix){
+                    Object[][] userProcSops = userSop.getNotCompletedUserSOP(rdbm, internalUserID, curProc, fieldsToRetrieve);       
+                    if (!"LABPLANET_FALSE".equalsIgnoreCase(userProcSops[0][0].toString())){numPendingSOPs=numPendingSOPs+userProcSops.length;}
+                }
+                   JSONArray SopOptions = new JSONArray(); 
                     
                     //JSONObject sopElement = new JSONObject();
                     
@@ -57,6 +115,7 @@ public class sopUserAPIfrontend extends HttpServlet {
                     SopOption.put("window_url", "Modulo1/home.js");
                     SopOption.put("mode", "edit");
                     SopOption.put("branch_level", "level1");
+                    SopOption.put("badge", numPendingSOPs);
                     SopOption.put("type", "tree-list");
                     SopOptions.add(SopOption);
                     

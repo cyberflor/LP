@@ -11,8 +11,6 @@ import databases.Rdbms;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Arrays;
-import javax.json.Json;
-import javax.json.JsonObject;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -39,6 +37,7 @@ public class appHeaderAPI extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
+        request.setCharacterEncoding("UTF-8");
         
         String language = "en";
 
@@ -57,6 +56,7 @@ public class appHeaderAPI extends HttpServlet {
                 errObject = labArr.addValueToArray1D(errObject, "API Error Message: actionName and finalToken are mandatory params for this API");                    
                 Object[] errMsg = labFrEnd.responseError(errObject, language, null);
                 response.sendError((int) errMsg[0], (String) errMsg[1]);   
+                rdbm.closeRdbms(); 
                 return ;
             }                     
             switch (actionName.toUpperCase()){
@@ -109,13 +109,12 @@ public class appHeaderAPI extends HttpServlet {
                     Object[] errMsg = labFrEnd.responseError(errObject, language, null);
                     response.sendError((int) errMsg[0], (String) errMsg[1]);                   
                     rdbm.closeRdbms();
-                    return;                           
             }            
         }catch(Exception e){            
             String exceptionMessage = e.getMessage();           
             Object[] errMsg = labFrEnd.responseError(new String[]{exceptionMessage}, language, null);
-            response.sendError((int) errMsg[0], (String) errMsg[1]);              
-            return;
+            response.sendError((int) errMsg[0], (String) errMsg[1]); 
+            rdbm.closeRdbms(); 
         }                                       
     }
 

@@ -13,6 +13,11 @@ import java.util.ResourceBundle;
  */
 public class testingFileContentSections {
     
+    /**
+     *
+     * @param servletName
+     * @return
+     */
     public static String getHtmlStyleHeader(String servletName){
             String fileContent = "";
             fileContent = fileContent + "<!DOCTYPE html>" + "";

@@ -13,14 +13,6 @@ import databases.Token;
 import functionalJava.user.UserProfile;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.util.Arrays;
-import javax.json.Json;
-import javax.json.JsonArray;
-import javax.json.JsonArrayBuilder;
-import javax.json.JsonObject;
-import javax.json.JsonObjectBuilder;
-import javax.json.JsonWriter;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -29,6 +21,8 @@ import javax.ws.rs.core.Response;
 //import org.codehaus.jettison.json.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONArray;
+import functionalJava.sop.UserSop;
+
 /**
  *
  * @author Administrator
@@ -45,9 +39,13 @@ public class AppProcedureListAPI extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {   
+                response.setContentType("application/json");
+                response.setCharacterEncoding("UTF-8");
+                request.setCharacterEncoding("UTF-8");
 
             String language = "en";
-
+            String sopFieldName = "sop";
+            
             LabPLANETArray labArr = new LabPLANETArray();
             LabPLANETFrontEnd labFrEnd = new LabPLANETFrontEnd();
 
@@ -65,6 +63,7 @@ public class AppProcedureListAPI extends HttpServlet {
                 errObject = labArr.addValueToArray1D(errObject, "API Error Message: finalToken is one mandatory param for this API");                    
                 Object[] errMsg = labFrEnd.responseError(errObject, language, null);
                 response.sendError((int) errMsg[0], (String) errMsg[1]);    
+                rdbm.closeRdbms(); 
                 return ;
             }                    
 
@@ -84,6 +83,7 @@ public class AppProcedureListAPI extends HttpServlet {
                 errObject = labArr.addValueToArray1D(errObject, "API Error Message: db User Name and Password not correct, connection to the database is not possible");                    
                 Object[] errMsg = labFrEnd.responseError(errObject, language, null);
                 response.sendError((int) errMsg[0], (String) errMsg[1]);    
+                rdbm.closeRdbms(); 
                 return ;               
             }       
             
@@ -108,6 +108,11 @@ public class AppProcedureListAPI extends HttpServlet {
             procEventFldNameArray = labArr.addValueToArray1D(procEventFldNameArray, "branch_level");
             procEventFldNameArray = labArr.addValueToArray1D(procEventFldNameArray, "type");
             procEventFldNameArray = labArr.addValueToArray1D(procEventFldNameArray, "mode");
+            
+            Object[][] notCompletedUserSOP = null;
+            Object[] notCompletedUserSOP1D = null;
+                    
+            UserSop userSop = new UserSop();
             //Object[] procArray = new Object[0];
             JSONArray procedures = new JSONArray();     
             for (Object curProc: allUserProcedurePrefix){
@@ -126,17 +131,73 @@ public class AppProcedureListAPI extends HttpServlet {
                 //procArray = labArr.addValueToArray1D(procArray, curProc);
                 procedure.put("schemaPrefix", curProc);
                 
+                Boolean isProcedureSopEnable = userSop.isProcedureSopEnable((String) curProc);
+                if (!isProcedureSopEnable) procedure.put("SopCertification", "Disabled");                 
+                if (isProcedureSopEnable){
+                    notCompletedUserSOP = userSop.getNotCompletedUserSOP(rdbm, internalUserID, curProc.toString(), new String[]{"sop_name"});
+                    notCompletedUserSOP1D = labArr.array2dTo1d(notCompletedUserSOP);
+                    procEventFldNameArray = labArr.addValueToArray1D(procEventFldNameArray, sopFieldName);
+                }
+                
                 Object[][] procEvent = rdbm.getRecordFieldsByFilter(rdbm, curProc.toString()+"-config", "procedure_events", 
                         new String[]{"role_name"}, new String[]{rolName}, 
                         procEventFldNameArray, new String[]{"order_number"});
-                if (!"LABPLANET_FALSE".equalsIgnoreCase(procEvent[0][0].toString())){        
+                if (!"LABPLANET_FALSE".equalsIgnoreCase(procEvent[0][0].toString())){                                                
+                    
                     JSONArray procEvents = new JSONArray(); 
-                    for (int xProcEv=0; xProcEv<procEvent.length; xProcEv++){
+                    for (Object[] procEvent1 : procEvent) {
                         JSONObject procEventJson = new JSONObject();
-                        for (int yProcEv=0; yProcEv<procEvent[0].length; yProcEv++){
+                        for (int yProcEv = 0; yProcEv<procEvent[0].length; yProcEv++) {
                             //procArray = labArr.addValueToArray1D(procArray, procEvent[xProcEv][yProcEv]);
-                            procEventJson.put(procEventFldNameArray[yProcEv], procEvent[xProcEv][yProcEv]);
-                        }  
+                            procEventJson.put(procEventFldNameArray[yProcEv], procEvent1[yProcEv]);
+                        }
+                        Boolean userHasNotCompletedSOP = false;
+                        JSONObject procEventSopDetail = new JSONObject();
+                        String procEventSops = (String) procEvent1[labArr.valuePosicInArray(procEventFldNameArray, sopFieldName)];
+                        if (procEventSops==null){
+                            userHasNotCompletedSOP = false;
+                            procEventJson.put("sops_passed", true);
+                            procEventSopDetail.put("sop_list", "NO_SOPS");
+                            procEventSopDetail.put("sop_total", 0);
+                            procEventSopDetail.put("sop_total_completed", 0);
+                            procEventSopDetail.put("sop_total_not_completed", 0);
+                        }else{
+                            if ("".equals(procEventSops)){
+                                procEventJson.put("sops_passed", true);
+                                userHasNotCompletedSOP = false;
+                                procEventSopDetail.put("sop_list", "NO_SOPS");
+                                procEventSopDetail.put("sop_total", 0);
+                                procEventSopDetail.put("sop_total_completed", 0);
+                                procEventSopDetail.put("sop_total_not_completed", 0);
+                            }else{
+                                Object[] procEventSopsArr = procEventSops.split("\\|");
+                                String sopListStr = "";
+                                Integer sopTotalNotCompleted = 0;
+                                Integer sopTotalCompleted = 0;
+                                Integer sopTotal = 0;
+                                JSONObject procEventSopSummary = new JSONObject();   
+                                for (Object curProcEvSop: procEventSopsArr){
+                                    JSONObject procEventSopDetailJson = new JSONObject();   
+                                    sopTotal++;
+                                    procEventSopDetailJson.put("sop_name", curProcEvSop);
+                                    if (labArr.valuePosicInArray(notCompletedUserSOP1D, curProcEvSop)==-1) {
+                                        sopTotalNotCompleted++;
+                                        sopListStr=sopListStr+curProcEvSop.toString()+"*NO, ";
+                                        userHasNotCompletedSOP = true;
+                                        procEventSopDetailJson.put("sop_completed", false);
+                                    }else{
+                                        sopTotalCompleted++;
+                                        procEventSopDetailJson.put("sop_completed", true);
+                                    }
+                                    procEventSopSummary.put(sopTotal, procEventSopDetailJson);
+                                }
+                                procEventJson.put("sops_passed", !userHasNotCompletedSOP);
+                                procEventSopDetail.put("sop_total", sopTotal);
+                                procEventSopDetail.put("sop_total_completed", sopTotalCompleted);
+                                procEventSopDetail.put("sop_total_not_completed", sopTotalNotCompleted);
+                                procEventSopDetail.put("sop_list", procEventSopSummary);
+                            }
+                        }procEventJson.put("sops", procEventSopDetail);
                         procEvents.add(procEventJson);
                     }
                     procedure.put("definition", procEvents);

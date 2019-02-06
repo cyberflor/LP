@@ -113,6 +113,13 @@ public class treantTimeLine extends HttpServlet {
         return myJsonInString;
     }
         
+    /**
+     * This class has as purpose provide data from the sample audit to the frontEnt.
+     * @param request
+     * @param response
+     * @throws ServletException
+     * @throws IOException
+     */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");

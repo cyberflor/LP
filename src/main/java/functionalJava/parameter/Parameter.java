@@ -18,21 +18,23 @@ public class Parameter {
 
     /**
      *
-     * @param packageName
-     * @param configFile
+     * @param schemaName
+     * @param AreaName
      * @param parameterName
+     * @param language
      * @return
      **/
-    public static String getParameterBundle(String packageName, String configFile, String parameterName, String language) {
+    public static String getParameterBundle(String parameterFolder, String schemaName, String AreaName, String parameterName, String language) {
         ResourceBundle prop = null;
         FileWriter fw = null;
         String newEntry = "";
+        if (parameterFolder==null){parameterFolder="config";}
+        String filePath = "parameter."+parameterFolder+"."+schemaName;
+        if (AreaName!=null){filePath=filePath+"-"+AreaName;}
+        if (language != null) {filePath=filePath+"_" + language;}
+        
         try {
-            if (language == null) {
-                prop = ResourceBundle.getBundle("parameter." + packageName + "." + configFile);
-            } else {
-                prop = ResourceBundle.getBundle("parameter." + packageName + "." + configFile + "_" + language);
-            }
+            prop = ResourceBundle.getBundle(filePath);
             if (!prop.containsKey(parameterName)) {
                 return "";
             } else {
@@ -44,12 +46,15 @@ public class Parameter {
         }
     }
 
-    public static ResourceBundle getParameterBundle(String configFile) {
-        ResourceBundle prop = ResourceBundle.getBundle("parameter.config." + configFile);
-        return prop;
-    }
 
-    public static String getParameterBundle(String configFile, String parameterName, String language) {
+    /**
+     *
+     * @param configFile
+     * @param parameterName
+     * @param language
+     * @return
+     */
+    public static String getParameterBundleInConfigFile(String configFile, String parameterName, String language) {
         FileWriter fw = null;
         String newEntry = "";
         ResourceBundle prop = ResourceBundle.getBundle("parameter.config." + configFile + "_" + language);
@@ -61,6 +66,12 @@ public class Parameter {
         }
     }
 
+    /**
+     *
+     * @param configFile
+     * @param parameterName
+     * @return
+     */
     public static String getParameterBundle(String configFile, String parameterName) {
         FileWriter fw = null;
         String newEntry = "";
@@ -107,6 +118,14 @@ public class Parameter {
         fw.close();
     }
     
+    /**
+     *
+     * @param fileName
+     * @param entryName
+     * @param entryValue
+     * @return
+     * @throws Exception
+     */
     public String addTagInPropertiesFile(String fileName, String entryName, String entryValue) throws Exception{
 
         String methodName = "addTagInPropertiesFile";    
@@ -150,6 +169,11 @@ public class Parameter {
         return "Nothing done";
     }
 
+    /**
+     *
+     * @param fileName
+     * @return
+     */
     public File[] PropertiesFiles(String fileName){
 
         FileWriter fw = null;

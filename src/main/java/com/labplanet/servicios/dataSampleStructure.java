@@ -150,7 +150,7 @@ public class dataSampleStructure extends HttpServlet {
                             fileContent = fileContent +", ";
                             if (configSpecTestingArray[i][7]!=null)fileContent = fileContent + configSpecTestingArray[i][7].toString();
                             try {
-                                dataSample = smp.logSample(rdbm, schemaPrefix, sampleTemplate, sampleTemplateVersion, fieldName, fieldValue, userName, userRole);
+                                dataSample = smp.logSample(rdbm, schemaPrefix, sampleTemplate, sampleTemplateVersion, fieldName, fieldValue, userName, userRole, null, null);
                             } catch (IllegalArgumentException ex) {
                                 Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
                             }
@@ -159,7 +159,7 @@ public class dataSampleStructure extends HttpServlet {
                             if (configSpecTestingArray[i][5]!=null){sampleId = Integer.parseInt( (String) configSpecTestingArray[i][5]);}
                             fileContent = fileContent + "<td>sampleId, receiver</td>";
                             fileContent = fileContent + "<td>"+sampleId.toString()+"</td>";
-                            dataSample = smp.sampleReception(rdbm, schemaPrefix, userName, sampleId, userRole);
+                            dataSample = smp.sampleReception(rdbm, schemaPrefix, userName, sampleId, userRole, null);
                             break;       
                         case "CHANGESAMPLINGDATE":
                             Date newDate=null;

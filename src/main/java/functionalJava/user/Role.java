@@ -26,6 +26,13 @@ public class Role {
     
     Object[] diagnoses = new Object[7];
     
+    /**
+     *
+     * @param rdbm
+     * @param roleId
+     * @return
+     * @throws SQLException
+     */
     public Object[] createRole(Rdbms rdbm, String roleId) throws SQLException {        
                 
         if (roleId.toUpperCase().contains("ALL")){            
@@ -62,6 +69,15 @@ public class Role {
         }
     }    
     
+    /**
+     *
+     * @param rdbm
+     * @param privilegeId
+     * @param roleId
+     * @param procName
+     * @return
+     * @throws SQLException
+     */
     public Object[] addPrivilegeToRole(Rdbms rdbm, String privilegeId, String roleId, String procName) throws SQLException {
         String methodName = "addPrivilegeToRole";
         Integer id;      
@@ -121,6 +137,13 @@ public class Role {
     return diagnoses;
     }         
 
+    /**
+     *
+     * @param rdbm
+     * @param privilegeId
+     * @return
+     * @throws SQLException
+     */
     public Object[] createPrivilege(Rdbms rdbm, String privilegeId) throws SQLException {
 /*        String methodName = "createPrivilege";
         Integer id;                
@@ -146,6 +169,12 @@ public class Role {
         return diagnoses;
     }   
 
+    /**
+     *
+     * @param rdbm
+     * @param dbUserName
+     * @return
+     */
     public Object[][] getInternalUser(Rdbms rdbm, String dbUserName) {
         Object[][] recordFieldsByFilter = rdbm.getRecordFieldsByFilter(rdbm, "app", "users", new String[]{"user_name"}, new Object[]{dbUserName},
                 new String[]{"person_name"});        

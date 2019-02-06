@@ -19,7 +19,7 @@ import functionalJava.parameter.Parameter;
 import functionalJava.unitsOfMeasurement.UnitsOfMeasurement;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.sql.Date;
+import java.util.Date;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.ResourceBundle;
@@ -54,26 +54,86 @@ public class DataSample {
     SampleAudit smpAudit = new SampleAudit();
     String grouperName = "";
     
+    /**
+     *
+     * @param grouperName
+     */
     public DataSample(String grouperName){
         this.grouperName = grouperName;
     }
     
+    /**
+     *
+     * @param grouperName
+     */
     public void setSampleGrouper(String grouperName){this.grouperName=grouperName;}
+
+    /**
+     *
+     * @return
+     */
     public String getSampleGrouper(){return this.grouperName;}
 
-public void logSampleBySchedule(){}
+    /**
+     *
+     */
+    public void logSampleBySchedule(){}
 
-public Object[] logSampleDev(Rdbms rdbm, String schemaPrefix, String sampleTemplate, Integer sampleTemplateVersion, String[] sampleFieldName, Object[] sampleFieldValue, String userName, String userRole) {
-    Object[] diag = logSample(rdbm, schemaPrefix, sampleTemplate, sampleTemplateVersion, sampleFieldName, sampleFieldValue, userName, userRole, true);
+    /**
+     *
+     * @param rdbm
+     * @param schemaPrefix
+     * @param sampleTemplate
+     * @param sampleTemplateVersion
+     * @param sampleFieldName
+     * @param sampleFieldValue
+     * @param userName
+     * @param userRole
+     * @return
+     */
+    public Object[] logSampleDev(Rdbms rdbm, String schemaPrefix, String sampleTemplate, Integer sampleTemplateVersion, String[] sampleFieldName, Object[] sampleFieldValue, String userName, String userRole, Integer appSessionId) {
+        Object[] diag = logSample(rdbm, schemaPrefix, sampleTemplate, sampleTemplateVersion, sampleFieldName, sampleFieldValue, userName, userRole, appSessionId, true);
     return diag;
 }
 
-public Object[] logSample(Rdbms rdbm, String schemaPrefix, String sampleTemplate, Integer sampleTemplateVersion, String[] sampleFieldName, Object[] sampleFieldValue, String userName, String userRole) {
-    Object[] diag = logSample(rdbm, schemaPrefix, sampleTemplate, sampleTemplateVersion, sampleFieldName, sampleFieldValue, userName, userRole, false);
+    /**
+     *
+     * @param rdbm
+     * @param schemaPrefix
+     * @param sampleTemplate
+     * @param sampleTemplateVersion
+     * @param sampleFieldName
+     * @param sampleFieldValue
+     * @param userName
+     * @param userRole
+     * @param appSessionId
+     * @param appSessionStartDate
+     * @return
+     */
+    public Object[] logSample(Rdbms rdbm, String schemaPrefix, String sampleTemplate, Integer sampleTemplateVersion, String[] sampleFieldName, Object[] sampleFieldValue, String userName, String userRole, Integer appSessionId) {
+    Object[] diag = logSample(rdbm, schemaPrefix, sampleTemplate, sampleTemplateVersion, sampleFieldName, sampleFieldValue, userName, userRole, appSessionId, false);
     return diag;
 }
 
-Object[] logSample(Rdbms rdbm, String schemaPrefix, String sampleTemplate, Integer sampleTemplateVersion, String[] sampleFieldName, Object[] sampleFieldValue, String userName, String userRole, Boolean devMode) {
+    /**
+     *
+     * @param rdbm
+     * @param schemaPrefix
+     * @param sampleTemplate
+     * @param sampleTemplateVersion
+     * @param sampleFieldName
+     * @param sampleFieldValue
+     * @param userName
+     * @param userRole
+     * @param numSamplesToLog
+     * @return
+     */
+    public Object[] logSample(Rdbms rdbm, String schemaPrefix, String sampleTemplate, Integer sampleTemplateVersion, String[] sampleFieldName, Object[] sampleFieldValue, String userName, String userRole, Integer appSessionId, Integer numSamplesToLog) {
+    Object[] diag = logSample(rdbm, schemaPrefix, sampleTemplate, sampleTemplateVersion, sampleFieldName, sampleFieldValue, userName, userRole, appSessionId, false, numSamplesToLog);
+    return diag;
+}
+
+Object[] logSample(Rdbms rdbm, String schemaPrefix, String sampleTemplate, Integer sampleTemplateVersion, String[] sampleFieldName, Object[] sampleFieldValue, String userName, String userRole, Integer appSessionId, Boolean devMode) {
     
     LabPLANETArray labArr = new LabPLANETArray();
     
@@ -244,7 +304,7 @@ Object[] logSample(Rdbms rdbm, String schemaPrefix, String sampleTemplate, Integ
 
         smpAudit.sampleAuditAdd(rdbm, schemaPrefix, auditActionName, tableName, Integer.parseInt(diagnoses[6].toString()), 
                 Integer.parseInt(diagnoses[6].toString()), null, null, 
-                fieldsOnLogSample, userName, userRole);
+                fieldsOnLogSample, userName, userRole, appSessionId);
 
         return diagnoses;  
     }    
@@ -262,7 +322,206 @@ Object[] logSample(Rdbms rdbm, String schemaPrefix, String sampleTemplate, Integ
     return diagnoses; 
 }
 
-public Object[] sampleReception(Rdbms rdbm, String schemaPrefix, String userName, Integer sampleId, String userRole) {
+Object[] logSample(Rdbms rdbm, String schemaPrefix, String sampleTemplate, Integer sampleTemplateVersion, String[] sampleFieldName, Object[] sampleFieldValue, String userName, String userRole, Integer appSessionId, Boolean devMode, Integer numSamplesToLog) {
+    
+    LabPLANETArray labArr = new LabPLANETArray();
+    
+    LabPLANETPlatform labPlat = new LabPLANETPlatform();
+    
+    if (devMode==true){
+        StackTraceElement[] elementsDev = Thread.currentThread().getStackTrace();
+        javaDocLineName = "BEGIN";
+        javaDocFields = labArr.addValueToArray1D(javaDocFields, "line_name");
+        javaDocValues = labArr.addValueToArray1D(javaDocValues, javaDocLineName);
+        javaDocFields = labArr.addValueToArray1D(javaDocFields, "class_version");
+        javaDocValues = labArr.addValueToArray1D(javaDocValues, classVersion);
+        labPlat.addJavaClassDoc(rdbm, javaDocFields, javaDocValues, elementsDev);
+    }    
+    
+        String query = "";
+        tableName = "sample";
+        String actionName = "Insert";
+        String auditActionName = "LOG_SAMPLE";
+        
+        String schemaDataName = "data";
+        String schemaConfigName = "config";
+
+        schemaDataName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaDataName);    
+        schemaConfigName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaConfigName); 
+        
+        String sampleLevel = tableName;
+//        if (this.getSampleGrouper()!=null){sampleLevel=this.getSampleGrouper()+"_"+sampleLevel;}
+
+        mandatoryFields = labIntChecker.getTableMandatoryFields(schemaDataName, sampleLevel, actionName);
+        
+        String sampleStatusFirst = Parameter.getParameterBundle(schemaDataName.replace("\"", ""), sampleLevel+"_statusFirst");     
+
+        sampleFieldName = labArr.addValueToArray1D(sampleFieldName, "status");
+        sampleFieldValue = labArr.addValueToArray1D(sampleFieldValue, sampleStatusFirst);
+        // mandatoryFields = getSampleMandatoryFields();
+        
+    if (devMode==true){
+        StackTraceElement[] elementsDev = Thread.currentThread().getStackTrace();
+        javaDocLineName = "CHECK sampleFieldName and sampleFieldValue match in length";
+        javaDocFields = labArr.addValueToArray1D(javaDocFields, "line_name");
+        javaDocValues = labArr.addValueToArray1D(javaDocValues, javaDocLineName);
+        javaDocFields = labArr.addValueToArray1D(javaDocFields, "class_version");
+        javaDocValues = labArr.addValueToArray1D(javaDocValues, classVersion);
+        labPlat.addJavaClassDoc(rdbm, javaDocFields, javaDocValues, elementsDev);
+    }    
+    if (devMode==false){
+        diagnoses = labArr.checkTwoArraysSameLength(sampleFieldName, sampleFieldValue);
+        if (!"LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){
+           errorCode = "DataSample_FieldArraysDifferentSize";
+           errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, Arrays.toString(sampleFieldName));
+           errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, Arrays.toString(sampleFieldValue));
+           return LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);
+        }
+    }    
+    if (devMode==true){
+        StackTraceElement[] elementsDev = Thread.currentThread().getStackTrace();
+        javaDocLineName = "CHECK sampleFieldName and sampleFieldValue match in length";
+        javaDocFields = labArr.addValueToArray1D(javaDocFields, "line_name");
+        javaDocValues = labArr.addValueToArray1D(javaDocValues, javaDocLineName);
+        javaDocFields = labArr.addValueToArray1D(javaDocFields, "class_version");
+        javaDocValues = labArr.addValueToArray1D(javaDocValues, classVersion);
+        labPlat.addJavaClassDoc(rdbm, javaDocFields, javaDocValues, elementsDev);
+    }    
+    if (devMode==false){        
+        LabPLANETArray lpa = new LabPLANETArray();
+        if (lpa.duplicates(sampleFieldName)){
+           errorCode = "DataSample_FieldsDuplicated";
+           errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, Arrays.toString(sampleFieldName));
+           return LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);                      
+        }
+
+        // spec is not mandatory but when any of the fields involved is added to the parameters 
+        //  then it turns mandatory all the fields required for linking this entity.
+        Integer fieldIndexSpecCode = Arrays.asList(sampleFieldName).indexOf("spec_code");
+        Integer fieldIndexSpecCodeVersion = Arrays.asList(sampleFieldName).indexOf("spec_code_version");
+        Integer fieldIndexSpecVariationName = Arrays.asList(sampleFieldName).indexOf("spec_variation_name");
+        if ((fieldIndexSpecCode!=-1) || (fieldIndexSpecCodeVersion!=-1) || (fieldIndexSpecVariationName!=-1)){
+            mandatoryFields = labArr.addValueToArray1D(mandatoryFields, "spec_code");
+            mandatoryFields = labArr.addValueToArray1D(mandatoryFields, "spec_code_version");
+            mandatoryFields = labArr.addValueToArray1D(mandatoryFields, "spec_variation_name");
+        }
+
+        mandatoryFieldsValue = new Object[mandatoryFields.length];
+        String configCode = "";
+        String mandatoryFieldsMissing = "";
+        for (Integer inumLines=0;inumLines<mandatoryFields.length;inumLines++){
+            String currField = mandatoryFields[inumLines];
+            boolean contains = Arrays.asList(sampleFieldName).contains(currField.toLowerCase());
+            if (!contains){
+                Object[] sampleDefaultFieldValues = labIntChecker.getTableFieldsDefaulValues(schemaDataName, sampleLevel, actionName);                
+                
+                                
+                if (mandatoryFieldsMissing.length()>0){mandatoryFieldsMissing = mandatoryFieldsMissing + ",";}
+                mandatoryFieldsMissing = mandatoryFieldsMissing + currField;
+            }else{
+                Integer valuePosic = Arrays.asList(sampleFieldName).indexOf(currField);
+                mandatoryFieldsValue[inumLines] = sampleFieldValue[valuePosic]; 
+                if ("sample_config_code".equals(currField)){configCode = sampleFieldValue[Arrays.asList(sampleFieldName).indexOf(currField)].toString();}
+            }        
+        }            
+        if (mandatoryFieldsMissing.length()>0){
+           errorCode = "DataSample_MissingMandatoryFields";
+           errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, mandatoryFieldsMissing);
+           return LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);    
+        }               
+        
+        Object[] diagnosis = rdbm.existsRecord(rdbm, schemaConfigName, tableName, new String[]{"code","code_version"}, new Object[]{sampleTemplate, sampleTemplateVersion});
+        if ("LABPLANET_FALSE".equalsIgnoreCase(diagnosis[0].toString())){
+           errorCode = "DataSample_MissingConfigCode";
+           errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, sampleTemplate);
+           errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, sampleTemplateVersion);
+           errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, schemaConfigName);
+           errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, diagnosis[5]);
+           return LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);    
+        }
+        //String[] specialFields = getSpecialFields();
+        //String[] specialFieldsFunction = getSpecialFieldsFunction();
+        String[] specialFields = labIntChecker.getStructureSpecialFields(schemaDataName, sampleLevel+"_"+"sampleStructure", actionName);
+        String[] specialFieldsFunction = labIntChecker.getStructureSpecialFieldsFunction(schemaDataName, sampleLevel+"_"+"sampleStructure", actionName);
+        String specialFieldsCheck = "";
+        Integer specialFieldIndex = -1;
+        
+        for (Integer inumLines=0;inumLines<sampleFieldName.length;inumLines++){
+            String currField = tableName+"." + sampleFieldName[inumLines];
+            String currFieldValue = sampleFieldValue[inumLines].toString();
+            boolean contains = Arrays.asList(specialFields).contains(currField);
+            if (contains){                    
+                    specialFieldIndex = Arrays.asList(specialFields).indexOf(currField);
+                    String aMethod = specialFieldsFunction[specialFieldIndex];
+                    Method method = null;
+                    try {
+                        Class<?>[] paramTypes = {Rdbms.class, String[].class, String.class, String.class, Integer.class};
+                        method = getClass().getDeclaredMethod(aMethod, paramTypes);
+                    } catch (NoSuchMethodException | SecurityException ex) {
+                    }
+                    Object specialFunctionReturn=null;      
+                    try {
+                        specialFunctionReturn = method.invoke(this, rdbm, null, schemaPrefix, sampleTemplate, sampleTemplateVersion);
+                    } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+                        Logger.getLogger(DataSample.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    if (specialFunctionReturn.toString().contains("ERROR")){
+                        errorCode = "DataSample_SpecialFunctionReturnedERROR";
+                        errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, currField);
+                        errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, aMethod);
+                        errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, specialFunctionReturn.toString());
+                        return LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);                            
+                    } 
+            }
+        }
+        sampleFieldName = lpa.addValueToArray1D(sampleFieldName, "sample_config_code");    
+        sampleFieldValue = lpa.addValueToArray1D(sampleFieldValue, sampleTemplate);
+        sampleFieldName = lpa.addValueToArray1D(sampleFieldName, "sample_config_code_version");    
+        sampleFieldValue = lpa.addValueToArray1D(sampleFieldValue, sampleTemplateVersion); 
+        
+        if (this.getSampleGrouper().length()>0){tableName=this.getSampleGrouper()+"_"+tableName;}               
+        
+        for (int iNumSamplesToLog=0; iNumSamplesToLog<numSamplesToLog; iNumSamplesToLog++ ){        
+            diagnoses = rdbm.insertRecordInTable(rdbm, schemaDataName, tableName, sampleFieldName, sampleFieldValue);
+            if (!"LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){
+                errorCode = "DataSample_errorInsertingSampleRecord";
+                errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, diagnoses[diagnoses.length-2]);
+                return LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);
+            }        
+
+            Object[] fieldsOnLogSample = labArr.joinTwo1DArraysInOneOf1DString(sampleFieldName, sampleFieldValue, ":");
+            diagnoses = labArr.addValueToArray1D(diagnoses, diagnoses[diagnoses.length-1]);
+
+            smpAudit.sampleAuditAdd(rdbm, schemaPrefix, auditActionName, tableName, Integer.parseInt(diagnoses[diagnoses.length-1].toString()), 
+                    Integer.parseInt(diagnoses[diagnoses.length-1].toString()), null, null, 
+                    fieldsOnLogSample, userName, userRole, appSessionId);
+        }
+        return diagnoses;  
+    }    
+    if (devMode==true){
+        StackTraceElement[] elementsDev = Thread.currentThread().getStackTrace();
+        javaDocLineName = "END";
+        Integer specialFieldIndex = Arrays.asList(javaDocFields).indexOf("line_name");
+        if (specialFieldIndex==-1){
+            javaDocFields = labArr.addValueToArray1D(javaDocFields, "line_name");         javaDocValues = labArr.addValueToArray1D(javaDocValues, javaDocLineName);         
+        }else{    
+            javaDocValues[specialFieldIndex] = javaDocLineName;             
+        }
+        labPlat.addJavaClassDoc(rdbm, javaDocFields, javaDocValues, elementsDev);
+    }
+    return diagnoses; 
+}
+
+    /**
+     *
+     * @param rdbm
+     * @param schemaPrefix
+     * @param userName
+     * @param sampleId
+     * @param userRole
+     * @return
+     */
+    public Object[] sampleReception(Rdbms rdbm, String schemaPrefix, String userName, Integer sampleId, String userRole, Integer appSessionId) {
 
     String receptionStatus = "RECEIVED";
     String auditActionName = "SAMPLE_RECEPTION";
@@ -308,14 +567,25 @@ public Object[] sampleReception(Rdbms rdbm, String schemaPrefix, String userName
     
     diagnoses = rdbm.updateRecordFieldsByFilter(rdbm, schemaDataName, tableName, sampleFieldName, sampleFieldValue, 
                                             new String[] {"sample_id"}, new Object[]{sampleId});
-//    if ("LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){
-//        String[] fieldsForAudit = labArr.joinTwo1DArraysInOneOf1DString(sampleFieldName, sampleFieldValue, userName);
-//        smpAudit.sampleAuditAdd(rdbm, schemaPrefix, auditActionName, this.getSampleGrouper()+"_"+"sample", sampleId, sampleId, null, null, fieldsForAudit, userName, userRole);
-//    }    
+    if ("LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){
+        String[] fieldsForAudit = labArr.joinTwo1DArraysInOneOf1DString(sampleFieldName, sampleFieldValue, userName);
+        smpAudit.sampleAuditAdd(rdbm, schemaPrefix, auditActionName, this.getSampleGrouper()+"_"+"sample", sampleId, sampleId, null, null, fieldsForAudit, userName, userRole, appSessionId);
+    }    
     return diagnoses;
 }
 
-public Object[] changeSamplingDate(Rdbms rdbm, String schemaPrefix, String userName, Integer sampleId, Date newDate, String userRole) throws SQLException{
+    /**
+     *
+     * @param rdbm
+     * @param schemaPrefix
+     * @param userName
+     * @param sampleId
+     * @param newDate
+     * @param userRole
+     * @return
+     * @throws SQLException
+     */
+    public Object[] changeSamplingDate(Rdbms rdbm, String schemaPrefix, String userName, Integer sampleId, Date newDate, String userRole) throws SQLException{
 
     LabPLANETArray labArr = new LabPLANETArray();
     LabPLANETPlatform labPlat = new LabPLANETPlatform();
@@ -345,7 +615,18 @@ public Object[] changeSamplingDate(Rdbms rdbm, String schemaPrefix, String userN
     return diagnoses;
 }
 
-public Object[] sampleReceptionCommentAdd(Rdbms rdbm, String schemaPrefix, String userName, Integer sampleId, String comment, String userRole) throws SQLException{
+    /**
+     *
+     * @param rdbm
+     * @param schemaPrefix
+     * @param userName
+     * @param sampleId
+     * @param comment
+     * @param userRole
+     * @return
+     * @throws SQLException
+     */
+    public Object[] sampleReceptionCommentAdd(Rdbms rdbm, String schemaPrefix, String userName, Integer sampleId, String comment, String userRole) throws SQLException{
     LabPLANETPlatform labPlat = new LabPLANETPlatform();
     LabPLANETArray labArr = new LabPLANETArray();
 
@@ -375,7 +656,18 @@ public Object[] sampleReceptionCommentAdd(Rdbms rdbm, String schemaPrefix, Strin
     return diagnoses;
 }
 
-public Object[] sampleReceptionCommentRemove(Rdbms rdbm, String schemaPrefix, String userName, Integer sampleId, String comment, String userRole) throws SQLException{
+    /**
+     *
+     * @param rdbm
+     * @param schemaPrefix
+     * @param userName
+     * @param sampleId
+     * @param comment
+     * @param userRole
+     * @return
+     * @throws SQLException
+     */
+    public Object[] sampleReceptionCommentRemove(Rdbms rdbm, String schemaPrefix, String userName, Integer sampleId, String comment, String userRole) throws SQLException{
     LabPLANETArray labArr = new LabPLANETArray();
     LabPLANETPlatform labPlat = new LabPLANETPlatform();
     schemaDataName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaDataName); 
@@ -404,7 +696,17 @@ public Object[] sampleReceptionCommentRemove(Rdbms rdbm, String schemaPrefix, St
     return diagnoses;
 }
 
-public Object[] setSampleStartIncubationDateTime(Rdbms rdbm, String schemaPrefix, String userName, Integer sampleId, String userRole) throws SQLException{
+    /**
+     *
+     * @param rdbm
+     * @param schemaPrefix
+     * @param userName
+     * @param sampleId
+     * @param userRole
+     * @return
+     * @throws SQLException
+     */
+    public Object[] setSampleStartIncubationDateTime(Rdbms rdbm, String schemaPrefix, String userName, Integer sampleId, String userRole) throws SQLException{
     LabPLANETArray labArr = new LabPLANETArray();
 
     LabPLANETPlatform labPlat = new LabPLANETPlatform();
@@ -438,7 +740,17 @@ public Object[] setSampleStartIncubationDateTime(Rdbms rdbm, String schemaPrefix
     return diagnoses;
 }
 
-public Object[] setSampleEndIncubationDateTime(Rdbms rdbm, String schemaPrefix, String userName, Integer sampleId, String userRole) throws SQLException{
+    /**
+     *
+     * @param rdbm
+     * @param schemaPrefix
+     * @param userName
+     * @param sampleId
+     * @param userRole
+     * @return
+     * @throws SQLException
+     */
+    public Object[] setSampleEndIncubationDateTime(Rdbms rdbm, String schemaPrefix, String userName, Integer sampleId, String userRole) throws SQLException{
     LabPLANETArray labArr = new LabPLANETArray();
 
     LabPLANETPlatform labPlat = new LabPLANETPlatform();
@@ -481,11 +793,31 @@ public Object[] setSampleEndIncubationDateTime(Rdbms rdbm, String schemaPrefix, 
     return diagnoses;
 }
 
-public void _sampleAssignAnalyst(Rdbms rdbm, String schemaPrefix, String userName, Integer testId, String analyst, String userRole){
+    /**
+     *
+     * @param rdbm
+     * @param schemaPrefix
+     * @param userName
+     * @param testId
+     * @param analyst
+     * @param userRole
+     */
+    public void _sampleAssignAnalyst(Rdbms rdbm, String schemaPrefix, String userName, Integer testId, String analyst, String userRole){
 
 }
 
-public Object[] sampleAnalysisAssignAnalyst(Rdbms rdbm, String schemaPrefix, String userName, Integer testId, String newAnalyst, String userRole) throws SQLException{
+    /**
+     *
+     * @param rdbm
+     * @param schemaPrefix
+     * @param userName
+     * @param testId
+     * @param newAnalyst
+     * @param userRole
+     * @return
+     * @throws SQLException
+     */
+    public Object[] sampleAnalysisAssignAnalyst(Rdbms rdbm, String schemaPrefix, String userName, Integer testId, String newAnalyst, String userRole) throws SQLException{
 
     tableName = "sample_analysis";
     String auditActionName = "SAMPLE_ANALYSIS_ANALYST_ASSIGNMENT";
@@ -612,7 +944,18 @@ public Object[] sampleAnalysisAssignAnalyst(Rdbms rdbm, String schemaPrefix, Str
     return LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);           
 }
         
-public Object[] sampleAnalysisAddtoSample(Rdbms rdbm, String schemaPrefix, String userName, Integer sampleId, String[] fieldName, Object[] fieldValue, String userRole) { // throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException{
+    /**
+     *
+     * @param rdbm
+     * @param schemaPrefix
+     * @param userName
+     * @param sampleId
+     * @param fieldName
+     * @param fieldValue
+     * @param userRole
+     * @return
+     */
+    public Object[] sampleAnalysisAddtoSample(Rdbms rdbm, String schemaPrefix, String userName, Integer sampleId, String[] fieldName, Object[] fieldValue, String userRole) { // throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException{
 
     tableName = "_analysis";
     String actionName = "Insert";
@@ -667,7 +1010,7 @@ public Object[] sampleAnalysisAddtoSample(Rdbms rdbm, String schemaPrefix, Strin
 
 // set first status. Begin    
     
-    String firstStatus = "NOT_STARTED"; //rdbm.getParameterBundle(schemaDataName, "sampleAnalysis_statusFirst");      
+    String firstStatus = "NOT_STARTED"; //rdbm.getParameterBundleInConfigFile(schemaDataName, "sampleAnalysis_statusFirst");      
     Integer specialFieldIndex = Arrays.asList(fieldName).indexOf("status");
     if (specialFieldIndex==-1){
         fieldName = labArr.addValueToArray1D(fieldName,"status");
@@ -843,7 +1186,7 @@ public Object[] sampleAnalysisAddtoSample(Rdbms rdbm, String schemaPrefix, Strin
 // This is temporary !!!! ***************************************************************    
     specialFieldIndex = Arrays.asList(getResultFields).indexOf("status"); 
     if (specialFieldIndex == -1){        
-        firstStatus = "BLANK"; //rdbm.getParameterBundle(schemaDataName, "sampleAnalysis_statusFirst");    
+        firstStatus = "BLANK"; //rdbm.getParameterBundleInConfigFile(schemaDataName, "sampleAnalysis_statusFirst");    
         resultFieldRecords = labArr.addColumnToArray2D(resultFieldRecords, firstStatus);
         getResultFields = labArr.addValueToArray1D(getResultFields, "status");        
     }    
@@ -892,7 +1235,7 @@ public Object[] sampleAnalysisAddtoSample(Rdbms rdbm, String schemaPrefix, Strin
     String[] fieldsForAudit = labArr.joinTwo1DArraysInOneOf1DString(fieldName, fieldValue, ":");
     diagnoses = rdbm.insertRecordInTable(rdbm, schemaDataName, sampleLevel+"_analysis", fieldName, fieldValue);
     
-    Integer testId = Integer.parseInt(diagnoses[6].toString());
+    Integer testId = Integer.parseInt(diagnoses[diagnoses.length-1].toString());
     
     smpAudit.sampleAuditAdd(rdbm, schemaPrefix, auditActionName, sampleLevel+"_analysis", testId, sampleId, testId, null, fieldsForAudit, userName, userRole);
     
@@ -940,22 +1283,34 @@ public Object[] sampleAnalysisAddtoSample(Rdbms rdbm, String schemaPrefix, Strin
             diagnoses = rdbm.insertRecordInTable(rdbm, schemaDataName, sampleLevel+"_analysis_result", getResultFields, fieldVal);
 
             fieldsForAudit = labArr.joinTwo1DArraysInOneOf1DString(getResultFields, fieldVal, ":");
-            Integer resultId = Integer.parseInt(diagnoses[6].toString());
+            Integer resultId = Integer.parseInt(diagnoses[diagnoses.length-1].toString());
             smpAudit.sampleAuditAdd(rdbm, schemaPrefix, auditActionName, sampleLevel+"_analysis_result", resultId, sampleId, testId, resultId, fieldsForAudit, userName, userRole);
         }
     } 
     
     //String[] diagnoses2 = sampleAnalysisEvaluateStatus(rdbm, schemaPrefix, userName, sampleId, testId);
     Object[] diagnoses3 = sampleEvaluateStatus(rdbm, schemaPrefix, userName, sampleId, auditActionName, userRole);
-
+    if ("LABPLANET_FALSE".equalsIgnoreCase(diagnoses3[0].toString())){
+        return diagnoses3;
+    }
     errorCode = "DataSample_SampleAnalysisAddedSuccessfully";
     errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, "");
     errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, testId.toString());
     errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, schemaDataName);
-    return LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);       
+    return LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_TRUE", classVersion, errorCode, errorDetailVariables);       
 }
 
-public Object[] sampleEvaluateStatus(Rdbms rdbm, String schemaPrefix, String userName, Integer sampleId, String parentAuditAction, String userRole){ 
+    /**
+     *
+     * @param rdbm
+     * @param schemaPrefix
+     * @param userName
+     * @param sampleId
+     * @param parentAuditAction
+     * @param userRole
+     * @return
+     */
+    public Object[] sampleEvaluateStatus(Rdbms rdbm, String schemaPrefix, String userName, Integer sampleId, String parentAuditAction, String userRole){ 
     
     String auditActionName = "SAMPLE_EVALUATE_STATUS";
     if (parentAuditAction!=null){auditActionName = parentAuditAction + ":"+auditActionName;}
@@ -973,9 +1328,9 @@ public Object[] sampleEvaluateStatus(Rdbms rdbm, String schemaPrefix, String use
     String smpPrevStatus=""; String smpAnaNewStatus="";
     
     diagnoses =  rdbm.existsRecord(rdbm, schemaDataName, "sample_analysis", 
-                                        new String[]{"sample_id","status in "}, 
+                                        new String[]{"sample_id","status in|"}, 
                                         new Object[]{sampleId, "NOT_STARTED|STARTED|INCOMPLETE"});
-    if (diagnoses[3].toString().equalsIgnoreCase("LABPLANET_TRUE")){smpAnaNewStatus=sampleStatusIncomplete;}
+    if ("LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){smpAnaNewStatus=sampleStatusIncomplete;}
     else{smpAnaNewStatus=sampleStatusComplete;}
     
     diagnoses = rdbm.updateRecordFieldsByFilter(rdbm, schemaDataName, "sample", 
@@ -991,7 +1346,19 @@ public Object[] sampleEvaluateStatus(Rdbms rdbm, String schemaPrefix, String use
     return diagnoses;
 }
 
-public Object[] sampleAnalysisEvaluateStatus(Rdbms rdbm, String schemaPrefix, String userName, Integer sampleId, Integer testId, String parentAuditAction, String userRole) throws SQLException{
+    /**
+     *
+     * @param rdbm
+     * @param schemaPrefix
+     * @param userName
+     * @param sampleId
+     * @param testId
+     * @param parentAuditAction
+     * @param userRole
+     * @return
+     * @throws SQLException
+     */
+    public Object[] sampleAnalysisEvaluateStatus(Rdbms rdbm, String schemaPrefix, String userName, Integer sampleId, Integer testId, String parentAuditAction, String userRole){
     
    LabPLANETArray labArr = new LabPLANETArray();
    LabPLANETPlatform labPlat = new LabPLANETPlatform();
@@ -1004,7 +1371,6 @@ public Object[] sampleAnalysisEvaluateStatus(Rdbms rdbm, String schemaPrefix, St
 
     if (parentAuditAction!=null){auditActionName = parentAuditAction + ":"+auditActionName;}
     
-    ResourceBundle prop = Parameter.getParameterBundle(schemaDataName.replace("\"", ""));
     String sampleAnalysisStatusIncomplete = Parameter.getParameterBundle(schemaDataName.replace("\"", ""), "sampleAnalysis_statusIncomplete");
     String sampleAnalysisStatusComplete = Parameter.getParameterBundle(schemaDataName.replace("\"", ""), "sampleAnalysis_statusComplete");
    
@@ -1017,7 +1383,7 @@ public Object[] sampleAnalysisEvaluateStatus(Rdbms rdbm, String schemaPrefix, St
     if ("LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){smpAnaNewStatus=sampleAnalysisStatusIncomplete;}
     else{smpAnaNewStatus=sampleAnalysisStatusComplete;}
     
-    diagnoses = (String[]) rdbm.updateRecordFieldsByFilter(rdbm, schemaDataName, "sample_analysis", 
+    diagnoses = rdbm.updateRecordFieldsByFilter(rdbm, schemaDataName, "sample_analysis", 
             new String[]{"status"}, 
             new Object[]{smpAnaNewStatus},
             new String[]{"test_id"},
@@ -1031,7 +1397,21 @@ public Object[] sampleAnalysisEvaluateStatus(Rdbms rdbm, String schemaPrefix, St
     return diagnoses;
 }
 
-public Object[] sampleAnalysisResultEntry(Rdbms rdbm, String schemaPrefix, String userName, Integer resultId, Object resultValue, String userRole) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException{
+    /**
+     *
+     * @param rdbm
+     * @param schemaPrefix
+     * @param userName
+     * @param resultId
+     * @param resultValue
+     * @param userRole
+     * @return
+     * @throws IllegalAccessException
+     * @throws IllegalArgumentException
+     * @throws InvocationTargetException
+     * @throws SQLException
+     */
+    public Object[] sampleAnalysisResultEntry(Rdbms rdbm, String schemaPrefix, String userName, Integer resultId, Object resultValue, String userRole) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException{
 
     tableName = "sample_analysis_result";  
     String actionName = "Insert";
@@ -1111,8 +1491,9 @@ public Object[] sampleAnalysisResultEntry(Rdbms rdbm, String schemaPrefix, Strin
     String sampleSpecVariationName = null; String status = null; 
     if (sampleSpecData[0][0]!=null){
         if (!"LABPLANET_FALSE".equalsIgnoreCase(sampleSpecData[0][0].toString())){
-            sampleSpecCode = (String) sampleData[0][0]; sampleSpecCodeVersion = (Integer) sampleData[0][1];
-            sampleSpecVariationName = (String) sampleData[0][2]; status = (String) sampleData[0][3];        
+            sampleSpecCode = sampleSpecData[0][0].toString(); 
+            sampleSpecCodeVersion = Integer.valueOf(sampleSpecData[0][1].toString());
+            sampleSpecVariationName = sampleSpecData[0][2].toString(); status = sampleSpecData[0][3].toString();        
         }
     }
     Object[][] sampleRulesData = rdbm.getRecordFieldsByFilter(rdbm, schemaConfigName, "sample_rules", new String[]{"code", "code_version"}, new Object[]{sampleConfigCode, sampleConfigCodeVersion}, 
@@ -1206,7 +1587,10 @@ public Object[] sampleAnalysisResultEntry(Rdbms rdbm, String schemaPrefix, Strin
         new String[]{"code", "config_version", "variation_name", "analysis", "method_name","method_version","parameter"}, 
         new Object[]{sampleSpecCode, sampleSpecCodeVersion, sampleSpecVariationName, analysis, methodName, methodVersion, paramName}, 
         new String[]{"limit_id","rule_type","rule_variables", "limit_id", "uom", "uom_conversion_mode"});
-    if (!"LABPLANET_FALSE".equalsIgnoreCase(specLimits[0][0].toString())){
+    if ("LABPLANET_FALSE".equalsIgnoreCase(specLimits[0][0].toString())){
+        return labArr.array2dTo1d(specLimits);
+    }
+    if ( ("LABPLANET_FALSE".equalsIgnoreCase(specLimits[0][0].toString())) && ("Rdbms_NoRecordsFound".equalsIgnoreCase(specLimits[0][4].toString())) ){
         fieldsName = labArr.addValueToArray1D(fieldsName, "spec_eval");
         fieldsValue = labArr.addValueToArray1D(fieldsValue, specEvalNoSpecParamLimit);
         fieldsName = labArr.addValueToArray1D(fieldsName, "entered_by");
@@ -1423,7 +1807,18 @@ public Object[] sampleAnalysisResultEntry(Rdbms rdbm, String schemaPrefix, Strin
     }
 }
 
-       
+    /**
+     *
+     * @param rdbm
+     * @param schemaPrefix
+     * @param userName
+     * @param sampleId
+     * @param testId
+     * @param resultId
+     * @param userRole
+     * @return
+     * @throws SQLException
+     */
     public Object[] sampleResultReview(Rdbms rdbm, String schemaPrefix, String userName, Integer sampleId, Integer testId, Integer resultId, String userRole) throws SQLException{
         
         tableName = "sample_analysis_result";  
@@ -1433,7 +1828,6 @@ public Object[] sampleAnalysisResultEntry(Rdbms rdbm, String schemaPrefix, Strin
         schemaDataName = LabPLANETPlatform.buildSchemaName(schemaPrefix, "data");  
         schemaConfigName = LabPLANETPlatform.buildSchemaName(schemaPrefix, "config"); 
             
-        ResourceBundle prop = Parameter.getParameterBundle(schemaDataName.replace("\"", ""));
         String sampleAnalysisResultStatusCanceled = Parameter.getParameterBundle(schemaDataName.replace("\"", ""), "sampleAnalysisResult_statusCanceled");
         String sampleAnalysisResultStatusReviewed = Parameter.getParameterBundle(schemaDataName.replace("\"", ""), "sampleAnalysisResult_statusReviewed");
         String sampleAnalysisStatusCanceled = Parameter.getParameterBundle(schemaDataName.replace("\"", ""), "sampleAnalysis_statusCanceled");
@@ -1548,13 +1942,37 @@ public Object[] sampleAnalysisResultEntry(Rdbms rdbm, String schemaPrefix, Strin
         return diagnoses;
     }
     
-public void _sampleAnalysisResultReview(Rdbms rdbm, String schemaPrefix, String userName, Integer resultId){}
+    /**
+     *
+     * @param rdbm
+     * @param schemaPrefix
+     * @param userName
+     * @param resultId
+     */
+    public void _sampleAnalysisResultReview(Rdbms rdbm, String schemaPrefix, String userName, Integer resultId){}
 
-public void _sampleAnalysisReview(Rdbms rdbm, String schemaPrefix, String userName, Integer resultId){}
+    /**
+     *
+     * @param rdbm
+     * @param schemaPrefix
+     * @param userName
+     * @param resultId
+     */
+    public void _sampleAnalysisReview(Rdbms rdbm, String schemaPrefix, String userName, Integer resultId){}
 
-public void _sampleAnalysisResult(Rdbms rdbm, String schemaPrefix, String userName, Integer resultId){}
+    /**
+     *
+     * @param rdbm
+     * @param schemaPrefix
+     * @param userName
+     * @param resultId
+     */
+    public void _sampleAnalysisResult(Rdbms rdbm, String schemaPrefix, String userName, Integer resultId){}
     
-public void _groupSampleCreate(){}
+    /**
+     *
+     */
+    public void _groupSampleCreate(){}
 /*
 private Map getDefaultValuesTemplate(String schema, String tsample, String template) throws SQLException {
     
@@ -1592,6 +2010,17 @@ private Map getDefaultValuesTemplate(String schema, String tsample, String templ
     
     }
 */    
+
+    /**
+     *
+     * @param rdbm
+     * @param parameters
+     * @param schemaPrefix
+     * @param template
+     * @param templateVersion
+     * @return
+     */
+    
     public String specialFieldCheckSampleStatus(Rdbms rdbm, String[] parameters, String schemaPrefix, String template, Integer templateVersion){ //, String schemaPrefix, String analysisList){                        
 
         String myDiagnoses = "";        
@@ -1634,6 +2063,12 @@ private Map getDefaultValuesTemplate(String schema, String tsample, String templ
         return myDiagnoses;
     }
     
+    /**
+     *
+     * @param rdbm
+     * @param schemaPrefix
+     * @return
+     */
     public String specialFieldCheckSampleAnalysisMethod(Rdbms rdbm, String schemaPrefix){ //, String schemaPrefix, String analysisList){                        
 
         String myDiagnoses = "";       
@@ -1676,6 +2111,15 @@ private Map getDefaultValuesTemplate(String schema, String tsample, String templ
         return myDiagnoses;
     }
 
+    /**
+     *
+     * @param rdbm
+     * @param parameters
+     * @param schemaPrefix
+     * @param template
+     * @param templateVersion
+     * @return
+     */
     public String specialFieldCheckSampleAnalysisAnalyst(Rdbms rdbm, String[] parameters, String schemaPrefix, String template, Integer templateVersion){ //, String schemaPrefix, String analysisList){                        
 
         String myDiagnoses = "";        
@@ -1724,6 +2168,15 @@ private Map getDefaultValuesTemplate(String schema, String tsample, String templ
         return myDiagnoses;
     }
 
+    /**
+     *
+     * @param rdbm
+     * @param parameters
+     * @param schemaPrefix
+     * @param template
+     * @param templateVersion
+     * @return
+     */
     public String specialFieldCheckSampleSpecCode(Rdbms rdbm, String[] parameters, String schemaPrefix, String template, Integer templateVersion){ //, String schemaPrefix, String analysisList){                        
 
         String myDiagnoses = "";        
@@ -1755,6 +2208,18 @@ private Map getDefaultValuesTemplate(String schema, String tsample, String templ
         myDiagnoses = "SUCCESS"; //: Spec "+specCode+" with version "+specCodeVersion.toString()+" and variation "+specVariationName+" does not exist in schema"+schemaConfigName+". ERROR: "+diagnosis[5];
         return myDiagnoses;}
     
+    /**
+     *
+     * @param rdbm
+     * @param schemaPrefix
+     * @param userName
+     * @param sampleId
+     * @param testId
+     * @param resultId
+     * @param userRole
+     * @return
+     * @throws SQLException
+     */
     public Object[] sampleAnalysisResultCancel(Rdbms rdbm, String schemaPrefix, String userName, Integer sampleId, Integer testId, Integer resultId, String userRole) throws SQLException{
         
         tableName = "sample_analysis_result";  
@@ -1763,7 +2228,6 @@ private Map getDefaultValuesTemplate(String schema, String tsample, String templ
         schemaDataName = LabPLANETPlatform.buildSchemaName(schemaPrefix, "data");  
         schemaConfigName = LabPLANETPlatform.buildSchemaName(schemaPrefix, "config"); 
             
-        ResourceBundle prop = Parameter.getParameterBundle(schemaDataName.replace("\"", ""));
         String sampleAnalysisResultStatusCanceled = Parameter.getParameterBundle(schemaDataName.replace("\"", ""), "sampleAnalysisResult_statusCanceled");
         String sampleAnalysisResultStatusReviewed = Parameter.getParameterBundle(schemaDataName.replace("\"", ""), "sampleAnalysisResult_statusReviewed");
         String sampleAnalysisStatusCanceled = Parameter.getParameterBundle(schemaDataName.replace("\"", ""), "sampleAnalysis_statusCanceled");
@@ -1877,6 +2341,18 @@ private Map getDefaultValuesTemplate(String schema, String tsample, String templ
         return diagnoses;
     }
     
+    /**
+     *
+     * @param rdbm
+     * @param schemaPrefix
+     * @param userName
+     * @param sampleId
+     * @param testId
+     * @param resultId
+     * @param userRole
+     * @return
+     * @throws SQLException
+     */
     public Object[] sampleAnalysisResultUnCancel(Rdbms rdbm, String schemaPrefix, String userName, Integer sampleId, Integer testId, Integer resultId, String userRole) throws SQLException{
         
         tableName = "sample_analysis_result";  
@@ -1888,7 +2364,6 @@ private Map getDefaultValuesTemplate(String schema, String tsample, String templ
         schemaConfigName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaConfigName); 
             
 
-        ResourceBundle prop = Parameter.getParameterBundle(schemaDataName.replace("\"", ""));
         String sampleAnalysisResultStatusCanceled = Parameter.getParameterBundle(schemaDataName.replace("\"", ""), "sampleAnalysisResult_statusCanceled");
         String sampleAnalysisResultStatusReviewed = Parameter.getParameterBundle(schemaDataName.replace("\"", ""), "sampleAnalysisResult_statusReviewed");
         String sampleAnalysisStatusCanceled = Parameter.getParameterBundle(schemaDataName.replace("\"", ""), "sampleAnalysis_statusCanceled");
@@ -1997,6 +2472,18 @@ private Map getDefaultValuesTemplate(String schema, String tsample, String templ
         return diagnoses;
     }    
         
+    /**
+     *
+     * @param rdbm
+     * @param schemaPrefix
+     * @param userName
+     * @param sampleId
+     * @param testId
+     * @param resultId
+     * @param userRole
+     * @return
+     * @throws SQLException
+     */
     public Object[] sampleAnalysisResultCancelBack(Rdbms rdbm, String schemaPrefix, String userName, Integer sampleId, Integer testId, Integer resultId, String userRole) throws SQLException{
         
         tableName = "sample_analysis_result";  
@@ -2007,7 +2494,6 @@ private Map getDefaultValuesTemplate(String schema, String tsample, String templ
         schemaConfigName = LabPLANETPlatform.buildSchemaName(schemaPrefix, "config"); 
         String[] diagnoses = new String[6];
             
-        ResourceBundle prop = Parameter.getParameterBundle(schemaDataName.replace("\"", ""));
         String sampleAnalysisResultStatusCanceled = Parameter.getParameterBundle(schemaDataName.replace("\"", ""), "sampleAnalysisResult_statusCanceled");
         String sampleAnalysisResultStatusReviewed = Parameter.getParameterBundle(schemaDataName.replace("\"", ""), "sampleAnalysisResult_statusReviewed");
         String sampleAnalysisStatusCanceled = Parameter.getParameterBundle(schemaDataName.replace("\"", ""), "sampleAnalysis_statusCanceled");

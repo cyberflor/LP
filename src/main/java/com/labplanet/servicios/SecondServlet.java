@@ -33,6 +33,14 @@ public class SecondServlet extends HttpServlet {
      */
     private static List<Producto> lista = ProductoDAO.getProductos();
     
+    /**
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
     protected Response processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");

@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package _functionalJava.batch;
+package functionalJava.batch;
 
 import databases.Rdbms;
 import LabPLANET.utilities.LabPLANETArray;
@@ -30,6 +30,14 @@ public class DataBatch {
     
     Object[] diagnoses = new Object[7];    
     
+    /**
+     *
+     * @param rdbm
+     * @param schemaName
+     * @param transac
+     * @param batchArray
+     * @return
+     */
     public String dbCreateBatchArray(Rdbms rdbm, String schemaName, String transac, BatchArray batchArray)
     {
         String ermessage="";
@@ -55,7 +63,14 @@ public class DataBatch {
         
     }
 
-    public String dbCreateBatchArray(Rdbms rdbm, String schemaName, BatchArray batchArray)
+    /**
+     *
+     * @param rdbm
+     * @param schemaName
+     * @param batchArray
+     * @return
+     */
+    public Object[] dbCreateBatchArray(Rdbms rdbm, String schemaName, BatchArray batchArray)
     {
         String ermessage="";
         String functionResult = "Fail";
@@ -73,10 +88,20 @@ public class DataBatch {
                                                     + "array_num_cols, array_total_positions, array_total_objects"},
                                                 new Object [] {batchArray.getBatchName(), batchArray.getBatchTemplate(), batchArray.getBatchTemplateVersion(), batchArray.numRows,
                                                     + batchArray.numCols, batchArray.numTotalPositions, batchArray.numTotalObjects});
-        functionResult = "Added to the database";
-        return functionResult;        
+        //functionResult = "Added to the database";
+        return insertRecordInTable;        
     }
     
+    /**
+     *
+     * @param rdbm
+     * @param schemaName
+     * @param batchName
+     * @param fieldName
+     * @param fieldValue
+     * @return
+     * @throws SQLException
+     */
     public Integer dbUpdateBatchArray(Rdbms rdbm, String schemaName, String batchName, String fieldName, String fieldValue) throws SQLException{
         String ermessage="";
         String functionResult = "Fail";  

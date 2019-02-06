@@ -81,6 +81,12 @@ public class ConfigSpecStructure {
         return myMandatoryFields;
     }
     
+    /**
+     *
+     * @param rdbm
+     * @param parameters
+     * @return
+     */
     public String specialFieldCheckSpecAnalyses(Rdbms rdbm, String[] parameters){
                 
         String myDiagnoses = "";
@@ -122,6 +128,12 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
         return myDiagnoses;
     }
             
+    /**
+     *
+     * @param rdbm
+     * @param parameters
+     * @return
+     */
     public String specialFieldCheckSpecVariationNames(Rdbms rdbm, String[] parameters){
                 
         String myDiagnoses = "";
@@ -159,6 +171,13 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
         return myDiagnoses;
     }
 
+    /**
+     *
+     * @param rdbm
+     * @param schemaPrefix
+     * @return
+     * @throws SQLException
+     */
     public String specialFieldCheckSpecLimitsVariationName(Rdbms rdbm, String schemaPrefix) throws SQLException{ //, String schemaPrefix, String analysisList){                        
                 
         String analysesMissing = "";
@@ -197,6 +216,12 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
         return myDiagnoses;
     }
 
+    /**
+     *
+     * @param rdbm
+     * @param schemaPrefix
+     * @return
+     */
     public String specialFieldCheckSpecLimitsAnalysis(Rdbms rdbm, String schemaPrefix){ //, String schemaPrefix, String analysisList){                        
 
         String myDiagnoses = "";  
@@ -242,6 +267,12 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
         return myDiagnoses;
     }
     
+    /**
+     *
+     * @param rdbm
+     * @param schemaPrefix
+     * @return
+     */
     public String specialFieldCheckSpecLimitsRuleType(Rdbms rdbm, String schemaPrefix){ //, String schemaPrefix, String analysisList){                        
         
         String schemaName = "config";
@@ -297,10 +328,28 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
         return myDiagnoses;                    
     }
     
+    /**
+     *
+     * @param rdbm
+     * @param schemaPrefix
+     * @param code
+     * @return
+     */
     public Object[] _specRemove(Rdbms rdbm, String schemaPrefix, String code){
         return diagnoses;
     }
         
+    /**
+     *
+     * @param rdbm
+     * @param schemaPrefix
+     * @param specCode
+     * @param specCodeVersion
+     * @param specFieldName
+     * @param specFieldValue
+     * @return
+     * @throws SQLException
+     */
     public Object[] specUpdate(Rdbms rdbm, String schemaPrefix, String specCode, Integer specCodeVersion, String[] specFieldName, Object[] specFieldValue) throws SQLException{
         
         String schemaName = "config";        
@@ -409,6 +458,18 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
         return trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);
     }
 
+    /**
+     *
+     * @param rdbm
+     * @param schemaPrefix
+     * @param specFieldName
+     * @param specFieldValue
+     * @return
+     * @throws SQLException
+     * @throws IllegalAccessException
+     * @throws IllegalArgumentException
+     * @throws InvocationTargetException
+     */
     public Object[] specNew(Rdbms rdbm, String schemaPrefix, String[] specFieldName, Object[] specFieldValue ) throws SQLException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{                          
         String newCode = "";
         String schemaName = "config";
@@ -517,6 +578,13 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
         return (String[]) LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);                  
     }
     
+    /**
+     *
+     * @param rdbm
+     * @param schemaPrefix
+     * @param specCode
+     * @return
+     */
     public Object[] specVariationGetNamesList(Rdbms rdbm, String schemaPrefix, String specCode){
 
         String schemaName = "config";
@@ -588,6 +656,18 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
 */
     }
     
+    /**
+     *
+     * @param rdbm
+     * @param schemaPrefix
+     * @param specFieldName
+     * @param specFieldValue
+     * @return
+     * @throws SQLException
+     * @throws IllegalAccessException
+     * @throws IllegalArgumentException
+     * @throws InvocationTargetException
+     */
     public Object[] specLimitNew(Rdbms rdbm, String schemaPrefix, String[] specFieldName, Object[] specFieldValue ) throws SQLException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
                           
         String code = "";
