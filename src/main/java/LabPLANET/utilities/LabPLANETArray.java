@@ -63,21 +63,6 @@ public class LabPLANETArray {
     
     /**
      *
-     * @param zipcodelist
-     * @return
-     */
-    public boolean duplicates(final int[] zipcodelist){
-      Set<Integer> lump = new HashSet<>();
-      for (int i : zipcodelist)
-      {
-        if (lump.contains(i)) return true;
-        lump.add(i);
-      }
-      return false;
-    }    
-
-    /**
-     *
      * @param arrayHeader
      * @param array
      * @param filename

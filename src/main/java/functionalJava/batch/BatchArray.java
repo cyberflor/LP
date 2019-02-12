@@ -5,8 +5,17 @@
  */
 package functionalJava.batch;
 
+import LabPLANET.utilities.LPNulls;
+import LabPLANET.utilities.LabPLANETPlatform;
+import databases.Rdbms;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.sql.rowset.serial.SerialArray;
+import javax.sql.rowset.serial.SerialException;
 
 /**
  *
@@ -18,8 +27,8 @@ public class BatchArray extends Batch{
     public Integer numCols = 0; 
     public Integer numTotalObjects = 0;
     public String[][] batchPosic;    
-    public String[] linesName;
-    public String[] columnsName;
+    public Object[] linesName;
+    public Object[] columnsName;
 
     /**
      *  Creates one BatchArray object in memory
@@ -30,7 +39,28 @@ public class BatchArray extends Batch{
      * @param numRows
      * @param numCols
      */
-    public BatchArray(String batchTemplate, Integer batchTemplateVersion, String batchName, String creator, Integer numRows, Integer numCols){
+    public BatchArray(String batchTemplate, Integer batchTemplateVersion, String batchName, String creator, Integer numRows, Integer numCols, Object[] rowNames, Object[] colNames){
+        super(batchTemplate, batchTemplateVersion, batchName, creator);
+        
+        this.numRows = numRows;
+        this.numCols = numCols;
+        this.numTotalPositions = numRows * numCols;
+        this.numTotalObjects = 0;
+        this.columnsName = colNames;
+        this.linesName=rowNames;
+            
+        batchPosic = new String[numRows][numCols];            
+    }        
+    /**
+     *  Creates one BatchArray object in memory
+     * @param batchTemplate 
+     * @param batchTemplateVersion
+     * @param batchName
+     * @param creator
+     * @param numRows
+     * @param numCols
+     */
+    public BatchArray(Rdbms rdbm, String schemaName, String batchTemplate, Integer batchTemplateVersion, String batchName, String creator, Integer numRows, Integer numCols){
         super(batchTemplate, batchTemplateVersion, batchName, creator);
         
         this.numRows = numRows;
@@ -41,8 +71,19 @@ public class BatchArray extends Batch{
         batchPosic = new String[numRows][numCols]; 
         linesName = new String[numRows];
         columnsName = new String[numCols];
+        
+        setLinesName(null);
+        setColumnsName(null);
+//        this.linesName=linesName;
+//        this.columnsName=columnsName;
+        
+        Object[] dbCreateBatchArray = dbCreateBatchArray(rdbm, schemaName);
     }        
-
+/*
+    public BatchArray() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+*/
     /**
      * Give the total number of positions in one array. Example: 30x5 = 150.
      * @return Integer
@@ -65,13 +106,13 @@ public class BatchArray extends Batch{
      *  Get the given name for the lines
      * @return String[]
      */
-    public String[] getLinesName(){return this.linesName;}
+    public Object[] getLinesName(){return this.linesName;}
     
     /**
      * given the name for the columns
      * @return String[]
      */
-    public String[] getColumnsName(){return this.columnsName;}
+    public Object[] getColumnsName(){return this.columnsName;}
     
     /**
      * Set the lines name using the alphabet, then lines are named in the way of from a to the z.
@@ -90,10 +131,11 @@ public class BatchArray extends Batch{
                 linesName[inumLet]=currPrefix+alphabet[inumLetAlphabet];
                 inumLet++;
                 inumLetAlphabet++;
-            }
+            }            
         } else{
             if (this.linesName.length==names.length) linesName=names;
         }
+        this.linesName=linesName;
     }
 
     /**
@@ -110,8 +152,9 @@ public class BatchArray extends Batch{
                 inumLet++;
             }
         } else{
-            if (this.linesName.length==names.length) linesName=names;            
+            if (this.columnsName.length==names.length) columnsName=names;            
         }
+        this.columnsName=columnsName;
     }
     
     /**
@@ -190,5 +233,63 @@ public class BatchArray extends Batch{
             }            
         return foundPosic; //If not found, return null             
     }     
+    public Object[] dbCreateBatchArray(Rdbms rdbm, String schemaName)
+    {
+        String ermessage="";
+        String functionResult = "Fail";
+        String tableName = "batch_java";
+                 
+        //Integer td[][]= {{4, 17, 28, 38, 43, 58, 69, 77, 83}, {4, 12, 24, 35, 48, 55, 62, 73, 87}, {11,15, 22, 36, 46, 60, 67, 80, 84}};
+        List<String> singleDArray = new ArrayList<>();
+        for (String[] array :this.batchPosic) {         
+              singleDArray.addAll(Arrays.asList(array));
+        }       
+        String[] sd = singleDArray.toArray(new String[singleDArray.size()]);       
+        
+        schemaName = LabPLANETPlatform.buildSchemaName(schemaName, "data");
+        
+        Object[] insertRecordInTable = rdbm.insertRecordInTable(rdbm, schemaName, tableName, 
+                                                new String[]{"name", "template", "template_version", "array_num_rows",
+                                                     "array_num_cols", "array_total_positions", "array_total_objects",
+                                                    "array_lines_name", "array_columns_name"},
+                                                new Object [] {this.getBatchName(), this.getBatchTemplate(), this.getBatchTemplateVersion(), this.numRows,
+                                                    this.numCols, this.numTotalPositions, this.numTotalObjects,
+                                                    this.linesName, this.columnsName});
+        //functionResult = "Added to the database";
+        return insertRecordInTable;        
+    }   
+    public static BatchArray dbGetBatchArray(Rdbms rdbm, String schemaName, String batchName){
+        schemaName = LabPLANETPlatform.buildSchemaName(schemaName, "data");
+        String tableName = "batch_java";
+        Object[][] recordFieldsByFilter = rdbm.getRecordFieldsByFilter(rdbm, schemaName, tableName, 
+                new String[]{"name"}, new Object[]{batchName}, 
+                new String[]{"name", "template", "template_version", "operator" , "array_num_rows",
+                    "array_num_cols", "array_total_positions", "array_total_objects",
+                    "array_lines_name", "array_columns_name"}
+        );
+        if (!"LABPLANET_FALSE".equalsIgnoreCase(recordFieldsByFilter[0][0].toString())){                    
+            try {
+                SerialArray rowNames = (SerialArray) recordFieldsByFilter[0][8];
+                Object[] rowNamesArr = (Object[]) rowNames.getArray();
+                SerialArray colNames = (SerialArray) recordFieldsByFilter[0][8];
+                Object[] colNamesArr = (Object[]) colNames.getArray();                
                 
+                BatchArray bArray = new BatchArray(
+                        LPNulls.replaceNull(recordFieldsByFilter[0][1].toString()),
+                        (Integer) recordFieldsByFilter[0][2],  batchName,
+                        "",
+                        //(String) recordFieldsByFilter[0][3]==null ? "" : recordFieldsByFilter[0][3].toString(),
+                        //Integer.valueOf(LPNulls.replaceNull((String)recordFieldsByFilter[0][4])),
+                        (Integer) recordFieldsByFilter[0][4],
+                        (Integer) recordFieldsByFilter[0][5],
+                        (Object[]) rowNamesArr,
+                        (Object[]) colNamesArr );
+                
+                return bArray;
+            } catch (SerialException ex) {
+                Logger.getLogger(BatchArray.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return null;
+    }
 }

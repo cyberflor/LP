@@ -7,7 +7,7 @@ package functionalJava.unitsOfMeasurement;
 
 import databases.Rdbms;
 import LabPLANET.utilities.LabPLANETArray;
-import LabPLANET.utilities.LabPLANETNullValue;
+import LabPLANET.utilities.LPNulls;
 import LabPLANET.utilities.LabPLANETPlatform;
 import java.util.Arrays;
 
@@ -55,17 +55,17 @@ public class UnitsOfMeasurement {
         
         if (currentUnit==null){
             conversion = LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, "UnitsOfMeasurement_currentUnitsNotDefined",
-                        new Object[]{schemaPrefix,  "valueToConvert: "+valueToConvert+", : currentUnit"+LabPLANETNullValue.replaceNull(currentUnit)+", : newUnit"+LabPLANETNullValue.replaceNull(newUnit)});
+                        new Object[]{schemaPrefix,  "valueToConvert: "+valueToConvert+", : currentUnit"+LPNulls.replaceNull(currentUnit)+", : newUnit"+LPNulls.replaceNull(newUnit)});
             return conversion;
         }
         if (newUnit==null){
             conversion = LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, "UnitsOfMeasurement_newUnitsNotDefined",
-                        new Object[]{schemaPrefix,  "valueToConvert: "+valueToConvert+", : currentUnit"+LabPLANETNullValue.replaceNull(currentUnit)+", : newUnit"+LabPLANETNullValue.replaceNull(newUnit)});
+                        new Object[]{schemaPrefix,  "valueToConvert: "+valueToConvert+", : currentUnit"+LPNulls.replaceNull(currentUnit)+", : newUnit"+LPNulls.replaceNull(newUnit)});
             return conversion;
         }        
         if (newUnit.equals(currentUnit)){
             conversion = LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_TRUE", classVersion, "UnitsOfMeasurement_sameValueNotConverted",
-                        new Object[]{schemaPrefix,  "valueToConvert: "+valueToConvert+", : currentUnit"+LabPLANETNullValue.replaceNull(currentUnit)+", : newUnit"+LabPLANETNullValue.replaceNull(newUnit)});
+                        new Object[]{schemaPrefix,  "valueToConvert: "+valueToConvert+", : currentUnit"+LPNulls.replaceNull(currentUnit)+", : newUnit"+LPNulls.replaceNull(newUnit)});
             conversion = labArr.addValueToArray1D(conversion, valueToConvert);
             return conversion;
         }         
@@ -84,14 +84,14 @@ public class UnitsOfMeasurement {
         Integer newUnitFamilyFieldPosic = Arrays.asList(fieldsToGet).indexOf(familyFieldNameDataBase);                
         if ((currentUnitFamilyFieldPosic==-1) || (newUnitFamilyFieldPosic==-1) ){
             conversion = LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, "UnitsOfMeasurement_methodError_familyFieldNotAddedToTheQuery",
-                        new Object[]{familyFieldNameDataBase, Arrays.toString(fieldsToGet), schemaPrefix,  "valueToConvert: "+valueToConvert+", : currentUnit"+LabPLANETNullValue.replaceNull(currentUnit)+", : newUnit"+LabPLANETNullValue.replaceNull(newUnit)});
+                        new Object[]{familyFieldNameDataBase, Arrays.toString(fieldsToGet), schemaPrefix,  "valueToConvert: "+valueToConvert+", : currentUnit"+LPNulls.replaceNull(currentUnit)+", : newUnit"+LPNulls.replaceNull(newUnit)});
             return conversion;            
         }                        
         if (!currentUnitInfo[0][currentUnitFamilyFieldPosic].toString().equalsIgnoreCase(newUnitInfo[0][currentUnitFamilyFieldPosic].toString())){
             conversion = LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, "UnitsOfMeasurement_methodError_familyFieldNotAddedToTheQuery",
                         new Object[]{currentUnit , currentUnitInfo[0][currentUnitFamilyFieldPosic].toString(), 
                             newUnit, newUnitInfo[0][currentUnitFamilyFieldPosic].toString(), 
-                            schemaPrefix,  "valueToConvert: "+valueToConvert+", : currentUnit"+LabPLANETNullValue.replaceNull(currentUnit)+", : newUnit"+LabPLANETNullValue.replaceNull(newUnit)});
+                            schemaPrefix,  "valueToConvert: "+valueToConvert+", : currentUnit"+LPNulls.replaceNull(currentUnit)+", : newUnit"+LPNulls.replaceNull(newUnit)});
             return conversion; 
         }
         
@@ -101,7 +101,7 @@ public class UnitsOfMeasurement {
         
         conversion = LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_TRUE", classVersion, "UnitsOfMeasurement_convertedSuccesfully",
                         new Object[]{currentUnit , newUnitInfo, valueToConvert, valueConverted, schemaPrefix,
-                             "valueToConvert: "+valueToConvert+", : currentUnit"+LabPLANETNullValue.replaceNull(currentUnit)+", : newUnit"+LabPLANETNullValue.replaceNull(newUnit)});
+                             "valueToConvert: "+valueToConvert+", : currentUnit"+LPNulls.replaceNull(currentUnit)+", : newUnit"+LPNulls.replaceNull(newUnit)});
         conversion = labArr.addValueToArray1D(conversion, valueConverted);
         conversion = labArr.addValueToArray1D(conversion, newUnit);
         return conversion;

@@ -6,7 +6,7 @@
 package com.labplanet.servicios.testing.Platform;
 
 import LabPLANET.utilities.LabPLANETArray;
-import LabPLANET.utilities.LabPLANETNullValue;
+import LabPLANET.utilities.LPNulls;
 import LabPLANET.utilities.LabPLANETPlatform;
 import databases.Rdbms;
 import databases.SqlStatement;
@@ -171,14 +171,14 @@ public class DBActions extends HttpServlet {
                         dataSample2D = labArr.array1dTo2d(trapErrorMessage, trapErrorMessage.length);
                         break;
                 }        
-                LabPLANETNullValue labNull = new LabPLANETNullValue();
+                LPNulls labNull = new LPNulls();
                 if (dataSample2D[0].length==0){fileContent = fileContent + "<td>No content in the array dataSample2D returned for function "+functionBeingTested;}
                 if (dataSample2D[0].length>0){fileContent = fileContent + "<td>"+dataSample2D[0][0].toString();}
-                if (dataSample2D[0].length>1){fileContent = fileContent + ". "+LabPLANETNullValue.replaceNull((String) dataSample2D[0][1]);}
-                if (dataSample2D[0].length>2){fileContent = fileContent + ". "+LabPLANETNullValue.replaceNull((String) dataSample2D[0][2]);}
-                if (dataSample2D[0].length>3){fileContent = fileContent + ". "+LabPLANETNullValue.replaceNull((String) dataSample2D[0][3]);}
-                if (dataSample2D[0].length>4){fileContent = fileContent + ". "+LabPLANETNullValue.replaceNull((String) dataSample2D[0][4]);}                
-                if (dataSample2D[0].length>5){fileContent = fileContent + ". "+LabPLANETNullValue.replaceNull((String) dataSample2D[0][5]);}
+                if (dataSample2D[0].length>1){fileContent = fileContent + ". "+LPNulls.replaceNull((String) dataSample2D[0][1]);}
+                if (dataSample2D[0].length>2){fileContent = fileContent + ". "+LPNulls.replaceNull((String) dataSample2D[0][2]);}
+                if (dataSample2D[0].length>3){fileContent = fileContent + ". "+LPNulls.replaceNull((String) dataSample2D[0][3]);}
+                if (dataSample2D[0].length>4){fileContent = fileContent + ". "+LPNulls.replaceNull((String) dataSample2D[0][4]);}                
+                if (dataSample2D[0].length>5){fileContent = fileContent + ". "+LPNulls.replaceNull((String) dataSample2D[0][5]);}
                 if ( ("GETRECORDFIELDSBYFILTER".equalsIgnoreCase(functionBeingTested)) && (!"LABPLANET_FALSE".equalsIgnoreCase(dataSample2D[0][0].toString())) ){
                     fileContent = fileContent + "</td><td>"+Arrays.toString(dataSample2Din1D);
                 }

@@ -9,7 +9,7 @@ import databases.Rdbms;
 import functionalJava.analysis.UserMethod;
 import functionalJava.sampleStructure.DataSample;
 import LabPLANET.utilities.LabPLANETArray;
-import LabPLANET.utilities.LabPLANETNullValue;
+import LabPLANET.utilities.LPNulls;
 import LabPLANET.utilities.LabPLANETPlatform;
 import java.io.File;
 import java.io.FileWriter;
@@ -261,7 +261,7 @@ public class SampleStructure extends HttpServlet {
                 default:                
                     break;
             }
-            LabPLANETNullValue labNull = new LabPLANETNullValue();
+            LPNulls labNull = new LPNulls();
             if (functionBeingTested.equalsIgnoreCase("GETSAMPLEINFO")){
                 fileContent = fileContent + "<td>"+dataSample2D[0][0].toString();
                 fileContent = fileContent + ". "+labNull.replaceNull((String) dataSample2D[0][1]);

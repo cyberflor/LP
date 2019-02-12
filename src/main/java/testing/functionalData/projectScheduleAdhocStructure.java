@@ -8,7 +8,7 @@ package testing.functionalData;
 import databases.Rdbms;
 import functionalJava.analysis.UserMethod;
 import LabPLANET.utilities.LabPLANETArray;
-import LabPLANET.utilities.LabPLANETNullValue;
+import LabPLANET.utilities.LPNulls;
 import _functionalJava.project.DataProjectScheduleAdhoc;
 import java.io.File;
 import java.io.FileWriter;
@@ -135,12 +135,12 @@ public class projectScheduleAdhocStructure extends HttpServlet {
                         dataProject[2]="";dataProject[3]="";dataProject[4]="";dataProject[5]="";
                         break;
                 }
-                LabPLANETNullValue labNull = new LabPLANETNullValue();
+                LPNulls labNull = new LPNulls();
                 if (functionBeingTested.equalsIgnoreCase("GETSAMPLEINFO")){
                     fileContent = fileContent + "<td>"+dataSample2D[0][0].toString();
-                    fileContent = fileContent + ". "+LabPLANETNullValue.replaceNull((String) dataSample2D[0][1]);
-                    fileContent = fileContent + ". "+LabPLANETNullValue.replaceNull((String) dataSample2D[0][2]);
-                    fileContent = fileContent + ". "+LabPLANETNullValue.replaceNull((String) dataSample2D[0][3])+"</td>";
+                    fileContent = fileContent + ". "+LPNulls.replaceNull((String) dataSample2D[0][1]);
+                    fileContent = fileContent + ". "+LPNulls.replaceNull((String) dataSample2D[0][2]);
+                    fileContent = fileContent + ". "+LPNulls.replaceNull((String) dataSample2D[0][3])+"</td>";
 
                 }else{
                     fileContent = fileContent + "<td>"+dataProject[3].toString()+": "+dataProject[0].toString()+". "+dataProject[1].toString()+". "+dataProject[2].toString()+". "+dataProject[3].toString()+". "+dataProject[4].toString()+". "+dataProject[5].toString()+"</td>";

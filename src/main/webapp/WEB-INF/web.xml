@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app version="3.1" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
     <servlet>
-        <servlet-name>SecondServlet</servlet-name>
-        <servlet-class>com.labplanet.servicios.SecondServlet</servlet-class>
-    </servlet>
-    <servlet>
         <servlet-name>ProductoServicio</servlet-name>
         <servlet-class>com.labplanet.servicios.ProductoServicio</servlet-class>
     </servlet>
@@ -101,6 +97,10 @@
         <servlet-name>tstDataBatchArraySequence</servlet-name>
         <servlet-class>com.labplanet.servicios.testing.data.tstDataBatchArraySequence</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>batchAPI</servlet-name>
+        <servlet-class>com.labplanet.servicios.ModuleBatch.batchAPI</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>DBActions</servlet-name>
         <url-pattern>/testing/platform/DBActions</url-pattern>
@@ -140,10 +140,6 @@
         <url-pattern>/testing/data/dataSampleStructure</url-pattern>
     </servlet-mapping>
     <!--/// testing for the Data. End   -->
-    <servlet-mapping>
-        <servlet-name>SecondServlet</servlet-name>
-        <url-pattern>/SecondServlet</url-pattern>
-    </servlet-mapping>
     <servlet-mapping>
         <servlet-name>UT_moduleSample</servlet-name>
         <url-pattern>/UT_moduleSample</url-pattern>
@@ -203,6 +199,10 @@
     <servlet-mapping>
         <servlet-name>tstDataBatchArraySequence</servlet-name>
         <url-pattern>/tstDataBatchArraySequence</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>batchAPI</servlet-name>
+        <url-pattern>/moduleBatch/batchAPI</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

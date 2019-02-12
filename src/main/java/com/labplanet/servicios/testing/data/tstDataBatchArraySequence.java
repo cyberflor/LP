@@ -63,7 +63,7 @@ public class tstDataBatchArraySequence extends HttpServlet {
 
             System.out.println("Connected to the db: " + isConnected);
             
-            myBatchArray[0] = new BatchArray("tmpA", 1, batchName, currentUser,30, 5);                        
+            myBatchArray[0] = new BatchArray(rdbm, "oil-pl1", "tmpA", 1, batchName, currentUser,30, 5);                        
 
             fieldName[0] = "name";
             fieldValue[0] = batchName;
@@ -90,7 +90,6 @@ public class tstDataBatchArraySequence extends HttpServlet {
  //           dbObj.DBAction(rdbm);
             for (BatchArray mb: myBatchArray)
             {
-
                 fieldName = new String[1];
                 fieldValue = new Object[1];
                 fieldName[0] = "operator";
@@ -169,14 +168,14 @@ public class tstDataBatchArraySequence extends HttpServlet {
 //                dbObj.DBAction(rdbm);
                 
                 myBatchArray[0].setColumnsName(null);
-                String[] columnName = myBatchArray[0].getColumnsName();
+                Object[] columnName = myBatchArray[0].getColumnsName();
                 fieldName[1] = "array_columns_name";
                 fieldValue[1] = columnName;                
 //                dbObj = new DBTransac(rdbm, schemaName, currentUser, currentUSerRole, "Update",tableName, fieldName, fieldValue, keyFieldName, keyFieldValue);                                                                  
 //                dbObj.DBAction(rdbm);
 
                 myBatchArray[0].setLinesName(null);
-                String[] lineName = myBatchArray[0].getLinesName();
+                Object[] lineName = myBatchArray[0].getLinesName();
                 fieldName[2] = "array_lines_name";
                 fieldValue[2] = lineName;                
                 fieldName[3] = "array_total_objects";

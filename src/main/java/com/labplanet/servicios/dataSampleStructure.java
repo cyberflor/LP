@@ -6,7 +6,7 @@
 package com.labplanet.servicios;
 
 import LabPLANET.utilities.LabPLANETArray;
-import LabPLANET.utilities.LabPLANETNullValue;
+import LabPLANET.utilities.LPNulls;
 import LabPLANET.utilities.LabPLANETPlatform;
 import databases.Rdbms;
 import functionalJava.analysis.UserMethod;
@@ -330,18 +330,18 @@ public class dataSampleStructure extends HttpServlet {
                     }        
                 }    
             }
-            LabPLANETNullValue labNull = new LabPLANETNullValue();
+            LPNulls labNull = new LPNulls();
             if (functionBeingTested.equalsIgnoreCase("GETSAMPLEINFO")){
                 fileContent = fileContent + "<td>"+dataSample2D[0][0].toString();
-                fileContent = fileContent + ". "+LabPLANETNullValue.replaceNull((String) dataSample2D[0][1]);
+                fileContent = fileContent + ". "+LPNulls.replaceNull((String) dataSample2D[0][1]);
                 if (dataSample2D[0].length>2){
-                    fileContent = fileContent + ". "+LabPLANETNullValue.replaceNull((String) dataSample2D[0][2]);}
+                    fileContent = fileContent + ". "+LPNulls.replaceNull((String) dataSample2D[0][2]);}
                 if (dataSample2D[0].length>3){
-                    fileContent = fileContent + ". "+LabPLANETNullValue.replaceNull((String) dataSample2D[0][3]);}
+                    fileContent = fileContent + ". "+LPNulls.replaceNull((String) dataSample2D[0][3]);}
                 if (dataSample2D[0].length>4){
-                    fileContent = fileContent + ". "+LabPLANETNullValue.replaceNull((String) dataSample2D[0][4]);}                
+                    fileContent = fileContent + ". "+LPNulls.replaceNull((String) dataSample2D[0][4]);}                
                 if (dataSample2D[0].length>5){
-                    fileContent = fileContent + ". "+LabPLANETNullValue.replaceNull((String) dataSample2D[0][5])+"</td>";}
+                    fileContent = fileContent + ". "+LPNulls.replaceNull((String) dataSample2D[0][5])+"</td>";}
                 
             }else{
                 fileContent = fileContent + "<td>"+dataSample[0].toString()+". "+dataSample[1].toString()+". "+dataSample[2].toString()+". "+dataSample[3].toString()+". "+dataSample[4].toString()+". "+dataSample[5].toString()+"</td>";

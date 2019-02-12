@@ -6,10 +6,10 @@
 package LabPLANET.utilities; 
 
 /**
- * LabPLANETNullValue is a library for functions linked to the null db concept
+ * LPNulls is a library for functions linked to the null db concept
  * @author Fran Gomez
  */
-public class LabPLANETNullValue {
+public class LPNulls {
 /**
  * Ensure it is a value or a blank value instead of a null value.
  * @param input String
@@ -18,4 +18,7 @@ public class LabPLANETNullValue {
     public static String replaceNull(String input) {
       return input == null ? "" : input;
     }     
+    public static Object replaceNull(Object input) {
+      return input == null ? "" : input;
+    }        
 }
