@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.ResourceBundle;
 import javax.servlet.ServletException;
@@ -47,7 +48,7 @@ public class TestingUOMConversionTable extends HttpServlet {
         String userName=null;
 
         boolean isConnected = false;
-        isConnected = rdbm.startRdbms("labplanet", "LabPlanet");           
+        isConnected = rdbm.startRdbms("labplanet", "avecesllegaelmomento");           
         if (!isConnected){out.println("Connection to the database not established");return;}
 
 
@@ -55,7 +56,7 @@ public class TestingUOMConversionTable extends HttpServlet {
         Integer numTesting = 20;
         Integer inumTesting = 0;
         Object[][] configSpecTestingArray = new Object[numTesting][6]; 
-        float baseValue=0;
+        BigDecimal baseValue=BigDecimal.ZERO;
 
         configSpecTestingArray = labArr.convertCSVinArray(csvPathName, csvFileSeparator);        
                 
@@ -89,13 +90,13 @@ public class TestingUOMConversionTable extends HttpServlet {
             String schemaPrefix=null;
             String familyName=null;    
             String[] fieldsToRetrieve=null;
-            baseValue=1;            
+            baseValue=BigDecimal.ONE;            
             Object[][] dataSample = null;
 
             if (configSpecTestingArray[i][1]!=null){schemaPrefix = (String) configSpecTestingArray[i][1];}
             if (configSpecTestingArray[i][2]!=null){familyName = (String) configSpecTestingArray[i][2];}
             if (configSpecTestingArray[i][3]!=null){fieldsToRetrieve = (String[]) configSpecTestingArray[i][3].toString().split("\\|");}          
-            if (configSpecTestingArray[i][4]!=null){baseValue = (Float) Float.parseFloat(configSpecTestingArray[i][4].toString());}    
+            if (configSpecTestingArray[i][4]!=null){baseValue = new BigDecimal(configSpecTestingArray[i][4].toString());}    
             
             fileContent = fileContent + "<td>"+i+"</td><td>"+schemaPrefix+"</td><td>"+familyName+"</td><td>"+Arrays.toString(fieldsToRetrieve)+"</td><td>"+baseValue+"</td>";
             

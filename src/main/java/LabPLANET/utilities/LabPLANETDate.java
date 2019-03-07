@@ -106,7 +106,7 @@ public class LabPLANETDate {
      *
      * @return
      */
-    public Date getTimeStampLocalDate(){        
+    public static Date getTimeStampLocalDate(){        
         Calendar cal = Calendar.getInstance();
         return cal.getTime();
     }

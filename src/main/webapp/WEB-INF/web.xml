@@ -6,11 +6,7 @@
     </servlet>
     <servlet>
         <servlet-name>dataSampleStructure</servlet-name>
-        <servlet-class>com.labplanet.servicios.dataSampleStructure</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>UT_moduleSample</servlet-name>
-        <servlet-class>com.labplanet.servicios.UT_moduleSample</servlet-class>
+        <servlet-class>com.labplanet.servicios.testing.data.dataSampleStructure</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>DBQueries</servlet-name>
@@ -52,10 +48,6 @@
     <servlet>
         <servlet-name>TestingUOMFamilyTable</servlet-name>
         <servlet-class>com.labplanet.servicios.testing.config.TestingUOMFamilyTable</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>ProdServicio</servlet-name>
-        <servlet-class>com.labplanet.servicios.ProdServicio</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>logSample</servlet-name>
@@ -101,6 +93,14 @@
         <servlet-name>batchAPI</servlet-name>
         <servlet-class>com.labplanet.servicios.ModuleBatch.batchAPI</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>sampleAnalysisAPI</servlet-name>
+        <servlet-class>com.labplanet.servicios.ModuleSample.sampleAnalysisAPI</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>sampleAnalysisResultAPI</servlet-name>
+        <servlet-class>com.labplanet.servicios.ModuleSample.sampleAnalysisResultAPI</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>DBActions</servlet-name>
         <url-pattern>/testing/platform/DBActions</url-pattern>
@@ -141,10 +141,6 @@
     </servlet-mapping>
     <!--/// testing for the Data. End   -->
     <servlet-mapping>
-        <servlet-name>UT_moduleSample</servlet-name>
-        <url-pattern>/UT_moduleSample</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
         <servlet-name>DBQueries</servlet-name>
         <url-pattern>/DBQueries</url-pattern>
     </servlet-mapping>
@@ -155,10 +151,6 @@
     <servlet-mapping>
         <servlet-name>TestingUOMFamilyTable</servlet-name>
         <url-pattern>/testing/config/UOMFamilyTable</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>ProdServicio</servlet-name>
-        <url-pattern>/ProdServicio</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>logSample</servlet-name>
@@ -203,6 +195,14 @@
     <servlet-mapping>
         <servlet-name>batchAPI</servlet-name>
         <url-pattern>/moduleBatch/batchAPI</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>sampleAnalysisAPI</servlet-name>
+        <url-pattern>/moduleSample/sampleAnalysisAPI</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>sampleAnalysisResultAPI</servlet-name>
+        <url-pattern>/moduleSample/sampleAnalysisResultAPI</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

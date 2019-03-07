@@ -25,6 +25,7 @@ import javax.ws.rs.core.Response;
 import functionalJava.user.Role;
 import functionalJava.user.UserProfile;
 import java.util.Date;
+import java.util.ResourceBundle;
 import org.json.simple.JSONArray;
 //import com.google.gson.Gson;
 /**
@@ -49,8 +50,14 @@ public class authenticationAPI extends HttpServlet {
                 response.setContentType("application/json");
                 response.setCharacterEncoding("UTF-8");
                 request.setCharacterEncoding("UTF-8");
-        
-                String language = "en";
+
+                ResourceBundle prop = ResourceBundle.getBundle("parameter.config.config");
+                String frontendUrl = prop.getString("frontend_url");
+      
+                response.setHeader("Access-Control-Allow-Origin", frontendUrl);
+                response.setHeader("Access-Control-Allow-Methods", "GET");        
+      
+        String language = "en";
 
                 LabPLANETArray labArr = new LabPLANETArray();
                 LabPLANETFrontEnd labFrEnd = new LabPLANETFrontEnd();
@@ -113,7 +120,7 @@ public class authenticationAPI extends HttpServlet {
                     
                     Token token = new Token();
                     String internalUserStr = internalUser[0][0].toString();
-                    String myToken = token.createToken(dbUserName, dbUserPassword, internalUserStr, "Admin", "", "");                    
+                    String myToken = token.createToken(dbUserName, dbUserPassword, internalUserStr, "Admin", "", "", "");                    
                     
                     JsonObject json = Json.createObjectBuilder()
                             .add("userInfoId", internalUserStr)
@@ -243,9 +250,21 @@ if (1==1){
                     }
 }                    
                     LabPLANETDate labDate = new LabPLANETDate();
-                    Date nowLocalDate = labDate.getTimeStampLocalDate();
+                    Date nowLocalDate = LabPLANETDate.getTimeStampLocalDate();
                     
-                    String myFinalToken = token.createToken(userName, password, internalUserStr, userRole, sessionIdStr, nowLocalDate.toString());
+//                    Object[][] userEsignInfo = rdbm.getRecordFieldsByFilter(rdbm, "app", "users", new String[]{"user_name"}, new Object[]{userName}, new String[]{"e_sign"});
+                    Object[][] userEsignInfo = new Object[1][1];
+                    userEsignInfo[0][0]="mala";
+                    if ("LABPLANET_FALSE".equalsIgnoreCase(userEsignInfo[0][0].toString())){
+                        errObject = labArr.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
+                        errObject = labArr.addValueToArray1D(errObject, "API Error Message: eSign Info not available");                    
+                        Object[] errMsg = labFrEnd.responseError(errObject, language, null);
+                        response.sendError((int) errMsg[0], (String) errMsg[1]);        
+                        rdbm.closeRdbms(); 
+                        return ;                                                    
+                    }
+                    
+                    String myFinalToken = token.createToken(userName, password, internalUserStr, userRole, sessionIdStr, nowLocalDate.toString(), userEsignInfo[0][0].toString());
                     
                     json = Json.createObjectBuilder()
                             .add("finalToken", myFinalToken)

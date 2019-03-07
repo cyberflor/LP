@@ -7,7 +7,6 @@ package com.labplanet.servicios.ModuleSample;
 
 import LabPLANET.utilities.LabPLANETArray;
 import LabPLANET.utilities.LabPLANETFrontEnd;
-import LabPLANET.utilities.LabPLANETJson;
 import LabPLANET.utilities.LabPLANETPlatform;
 import com.sun.rowset.CachedRowSetImpl;
 import databases.Rdbms;
@@ -18,6 +17,7 @@ import java.io.PrintWriter;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.ResourceBundle;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -43,6 +43,12 @@ public class sampleAPIfrontend extends HttpServlet {
     
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+
+        ResourceBundle prop = ResourceBundle.getBundle("parameter.config.config");
+        String frontendUrl = prop.getString("frontend_url");
+
+        response.setHeader("Access-Control-Allow-Origin", frontendUrl);
+        response.setHeader("Access-Control-Allow-Methods", "GET");        
 
         String language = "en";
 
@@ -325,7 +331,7 @@ public class sampleAPIfrontend extends HttpServlet {
                     }
                     rdbm.closeRdbms();
                     return;         
-                case "GET_SAMPLE_ANALYSIS_RESULT_LIST":
+                case "GET_SAMPLE_ANALYSIS_LIST":
                     String sampleIdStr = request.getParameter("sampleId");                             
                     if ( (sampleIdStr==null) || (sampleIdStr.contains("undefined")) ) {
                         errObject = labArr.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
@@ -338,6 +344,42 @@ public class sampleAPIfrontend extends HttpServlet {
                     }                              
                     Integer sampleId = Integer.parseInt(sampleIdStr);       
                     
+                    String sampleAnalysisFieldToRetrieve = request.getParameter("sampleAnalysisFieldToRetrieve");  
+                    String[] sampleAnalysisFieldToRetrieveArr=  sampleAnalysisFieldToRetrieve.split("\\|");
+                    
+                    sortFieldsNameArr = null;
+                    sortFieldsName = request.getParameter("sortFieldsName"); 
+                    if (! ((sortFieldsName==null) || (sortFieldsName.contains("undefined"))) ) {
+                        sortFieldsNameArr = (String[]) sortFieldsName.split("\\|");                                    
+                    }else{   
+                        sortFieldsNameArr = labArr.addValueToArray1D(sortFieldsNameArr, "sample_id");
+                        sortFieldsNameArr = labArr.addValueToArray1D(sortFieldsNameArr, "test_id");                        
+                    }  
+                    myData = rdbm.getRecordFieldsByFilterJSON(rdbm, schemaPrefix+"-data", "sample_analysis",
+                            new String[]{"sample_id"},new Object[]{sampleId}, sampleAnalysisFieldToRetrieveArr, sortFieldsNameArr);
+                    rdbm.closeRdbms();
+                    if (myData.contains("LABPLANET_FALSE")){  
+                        Object[] errMsg = labFrEnd.responseError(new String[] {myData}, language, null);
+                        response.sendError((int) errMsg[0], (String) errMsg[1]);                            
+                    }else{
+                        Response.ok().build();
+                        response.getWriter().write(myData);           
+                    }
+                    
+                    rdbm.closeRdbms();
+                    return;                      
+                case "GET_SAMPLE_ANALYSIS_RESULT_LIST":
+                    sampleIdStr = request.getParameter("sampleId");                             
+                    if ( (sampleIdStr==null) || (sampleIdStr.contains("undefined")) ) {
+                        errObject = labArr.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
+                        errObject = labArr.addValueToArray1D(errObject, "sampleId="+request.getParameter("sampleId"));
+                        errObject = labArr.addValueToArray1D(errObject, "API Error Message: sampleId is one mandatory param and should be one integer value for this API");                    
+                        Object[] errMsg = labFrEnd.responseError(errObject, language, schemaPrefix);
+                        response.sendError((int) errMsg[0], (String) errMsg[1]);   
+                        rdbm.closeRdbms(); 
+                        return ;
+                    }                              
+                    sampleId = Integer.parseInt(sampleIdStr);                           
                     String resultFieldToRetrieve = request.getParameter("resultFieldToRetrieve");  
                     String[] resultFieldToRetrieveArr=  resultFieldToRetrieve.split("\\|");
                     String fieldName = "result_id";
@@ -365,8 +407,31 @@ public class sampleAPIfrontend extends HttpServlet {
                     }else{
                         Response.ok().build();
                         response.getWriter().write(myData);           
+                    }                    
+                    rdbm.closeRdbms();
+                    return;  
+                case "GET_SAMPLE_ANALYSIS_RESULT_SPECK":
+                    String resultIdStr = request.getParameter("result_id");
+                    if ( (resultIdStr==null) || (resultIdStr.contains("undefined")) ) {
+                        errObject = labArr.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
+                        errObject = labArr.addValueToArray1D(errObject, "sampleId="+request.getParameter("sampleId"));
+                        errObject = labArr.addValueToArray1D(errObject, "API Error Message: sampleId is one mandatory param and should be one integer value for this API");                    
+                        Object[] errMsg = labFrEnd.responseError(errObject, language, schemaPrefix);
+                        response.sendError((int) errMsg[0], (String) errMsg[1]);   
+                        rdbm.closeRdbms(); 
+                        return ;
                     }
-                    
+/*                    myData = rdbm.getRecordFieldsByFilterJSON(rdbm, schemaPrefix+"-data", "sample_analysis_result",
+                            new String[]{"sample_id"},new Object[]{resultIdStr}, resultFieldToRetrieveArr, sortFieldsNameArr);
+                    rdbm.closeRdbms();
+                    if (myData.contains("LABPLANET_FALSE")){  
+                        Object[] errMsg = labFrEnd.responseError(new String[] {myData}, language, null);
+                        response.sendError((int) errMsg[0], (String) errMsg[1]);                            
+                    }else{
+                        Response.ok().build();
+                        response.getWriter().write(myData);           
+                    }
+  */                  
                     rdbm.closeRdbms();
                     return;  
                 case "SAMPLE_ENTIRE_STRUCTURE":

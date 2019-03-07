@@ -66,21 +66,17 @@ public class DataSpec {
             errorVariables = labArr.addValueToArray1D(errorVariables, "Result");
             diagnoses =  LabPLANETPlatform.trapErrorMessage(null, "LABPLANET_FALSE", classVersion, errorCode, errorVariables);
             diagnoses = labArr.addValueToArray1D(diagnoses, "OUT_WRONG_RULE");
-            return diagnoses;
-            
-        }
+            return diagnoses;}               
         if (specRule==null || "".equals(specRule)){
             errorVariables = labArr.addValueToArray1D(errorVariables, "specRule");            
             diagnoses =  LabPLANETPlatform.trapErrorMessage(null, "LABPLANET_FALSE", classVersion, errorCode, errorVariables);
             diagnoses = labArr.addValueToArray1D(diagnoses, "OUT_WRONG_RULE");
-            return diagnoses;
-        }
+            return diagnoses;}        
         if (values==null || "".equals(values)){
             errorVariables = labArr.addValueToArray1D(errorVariables, "values");            
             diagnoses =  LabPLANETPlatform.trapErrorMessage(null, "LABPLANET_FALSE", classVersion, errorCode, errorVariables);
             diagnoses = labArr.addValueToArray1D(diagnoses, "OUT_WRONG_RULE");
-            return diagnoses;
-        }
+            return diagnoses;}        
         
         isCorrectTheSpec = matQualit.specLimitIsCorrectQualitative(schemaName, specRule, values, separator);
         if ("LABPLANET_FALSE".equalsIgnoreCase(isCorrectTheSpec[0].toString())){

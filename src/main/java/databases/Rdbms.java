@@ -8,6 +8,7 @@ package databases;
 import com.sun.rowset.CachedRowSetImpl;
 import LabPLANET.utilities.LabPLANETArray;
 import LabPLANET.utilities.LabPLANETPlatform;
+import java.math.BigDecimal;
 import java.sql.Array;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -785,7 +786,7 @@ public class Rdbms {
             return (Object[]) LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_TRUE", classVersion, errorCode, errorDetailVariables);   
         }else if(numr==-999){
             errorCode = "Rdbms_dtSQLException";
-            String ermessage="The database cannot perform this sql statement: Schema: "+schemaName+". Table: "+tableName+". Query: "+query+", By the filter "+ Arrays.toString(whereFieldValues);
+            String ermessage="The database cannot perform this sql statement: Schema: "+schemaName+". Table: "+tableName+". Query: "+query+", By the values "+ Arrays.toString(keyFieldValueNew);
             errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, ermessage);
             errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, query);
             return (Object[]) LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);   
@@ -809,11 +810,13 @@ public class Rdbms {
     //prepare statement para evitar sql injection
     LabPLANETArray labArr = new LabPLANETArray();        
     Object[] filteredValoresConInterrogaciones = new Object[0];     
-     
-     PreparedStatement prep=getConnection().prepareStatement(consultaconinterrogaciones);
-        prep.setQueryTimeout(getTimeout());
+//    PreparedStatement prep=new PreparedStatement();
+        PreparedStatement prepareStatement = conn.prepareStatement(consultaconinterrogaciones);
         
         try{
+            //PreparedStatement prep=getConnection().prepareStatement(consultaconinterrogaciones);
+            //Connection conn = prep.getConnection();
+            prepareStatement.setQueryTimeout(getTimeout());
             if (valoresinterrogaciones!=null){
                 for (Integer i=0;i<valoresinterrogaciones.length;i++){
                     Boolean addToFilter = true;
@@ -825,12 +828,13 @@ public class Rdbms {
                 }
             }
                 
-            buildPreparedStatement(filteredValoresConInterrogaciones, prep, null); 
-        }catch(SQLException er){//cuando se envia un array 
-
+            buildPreparedStatement(filteredValoresConInterrogaciones, prepareStatement, null); 
+        }catch(SQLException er){
+            String errMessage = er.getMessage();        
+            return new CachedRowSetImpl();
         }
         
-    ResultSet res = prep.executeQuery();
+    ResultSet res = prepareStatement.executeQuery();
     CachedRowSetImpl crs = new CachedRowSetImpl();
     crs.populate(res);
     
@@ -959,35 +963,81 @@ public class Rdbms {
             }else{
                clase = "null";    
             }
-            switch(clase){
-               case "class java.lang.Integer":
-                    prepsta.setInt(indexval, (Integer)obj);
-                    break;
-               case "class java.lang.Boolean":
-                    prepsta.setBoolean(indexval, (Boolean)obj);
-                    break;
-               case "class java.sql.Date":
-                    prepsta.setDate(indexval, (java.sql.Date) obj);
-                    break;
-               case "class java.util.Date":
-                   Date dt = (Date) obj;
-                   java.sql.Date sqlDate = new java.sql.Date(dt.getTime());                   
-                   prepsta.setDate(indexval, (java.sql.Date) sqlDate);
-                   break;
-               case "null":
-                   //prepsta.setNull(indexval, fieldtypes[numi]);
-                   prepsta.setNull(indexval, Types.VARCHAR);
-                   break; 
-               case "class json.Na"://to skip fields
-                   break;  
-               case "class [Ljava.lang.String;":
-                   Array array = conn.createArrayOf("VARCHAR", (Object []) obj);
-                   prepsta.setArray(indexval, array);
-                   break;
-               default:
-                   prepsta.setString(indexval, (String) obj);
-                   break; 
-           }           
+            
+            if (obj.toString().toLowerCase().contains("null")){                
+                String[] split = obj.toString().split("\\*");
+                clase = split[1];
+                switch(clase.toUpperCase()){
+                    case "INTEGER":
+                        clase = "class java.sql.Date";
+                        prepsta.setNull(indexval, Types.INTEGER);
+                        break;
+                    case "BIGDECIMAL":
+                        clase = "class java.sql.Date";
+                        prepsta.setNull(indexval, Types.NUMERIC);
+                        break;                        
+                    case "DATE":
+                        clase = "class java.sql.Date";
+                        prepsta.setNull(indexval, Types.DATE);
+                        break;
+                    case "STRING":
+                        clase = "class java.sql.Date";
+                        prepsta.setNull(indexval, Types.VARCHAR);
+                        break;
+                    case "BOOLEAN":
+                        clase = "class java.sql.Date";
+                        prepsta.setNull(indexval, Types.BOOLEAN);
+                        break;
+                    case "FLOAT":
+                        clase = "class java.sql.Date";
+                        prepsta.setNull(indexval, Types.FLOAT);
+                        break;                        
+                    default:
+                        break;
+                }
+                obj=null;
+            }else{
+                    switch(clase){
+                       case "class java.lang.Integer":
+                            prepsta.setInt(indexval, (Integer)obj);
+                            break;
+                       case "class java.math.BigDecimal":
+                            prepsta.setObject(indexval, (java.math.BigDecimal) obj, java.sql.Types.NUMERIC);                            
+                            break;                           
+                       case "class java.lang.Float":                           
+                            prepsta.setFloat(indexval, (Float)obj);
+                            break;
+                       case "class java.lang.Boolean":
+                            prepsta.setBoolean(indexval, (Boolean)obj);
+                            break;
+                       case "class java.sql.Date":
+                            prepsta.setDate(indexval, (java.sql.Date) obj);
+                            break;
+                       case "class java.util.Date":
+                           Date dt = (Date) obj;
+                           java.sql.Date sqlDate = null;
+                           if (obj!=null){                   
+                               sqlDate = new java.sql.Date(dt.getTime());
+                               prepsta.setDate(indexval, (java.sql.Date) sqlDate);
+                           }else{
+                               prepsta.setNull(indexval, Types.DATE);
+                           }                   
+                           break;
+                       case "null":
+                           //prepsta.setNull(indexval, fieldtypes[numi]);
+                           prepsta.setNull(indexval, Types.VARCHAR);
+                           break; 
+                       case "class json.Na"://to skip fields
+                           break;  
+                       case "class [Ljava.lang.String;":
+                           Array array = conn.createArrayOf("VARCHAR", (Object []) obj);
+                           prepsta.setArray(indexval, array);
+                           break;
+                       default:
+                           prepsta.setString(indexval, (String) obj);
+                           break; 
+                   }           
+            }
            if (!clase.equals("class json.Na")){
                indexval++;
            }
@@ -1052,10 +1102,10 @@ public class Rdbms {
         }
      }
 
-     public Connection createTransactionWithSavePoint(){
-        //conn.setAutoCommit(false);
+     public Connection createTransactionWithSavePoint(){        
         try {
-                this.savepoint = conn.setSavepoint();
+            conn.setAutoCommit(false);
+            this.savepoint = conn.setSavepoint();
         } catch (SQLException ex) {
             Logger.getLogger(Rdbms.class.getName()).log(Level.SEVERE, null, ex);
         }

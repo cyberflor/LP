@@ -72,9 +72,12 @@ public class UserSop {
         String actionEnabledUserSopCertification = Parameter.getParameterBundle(schemaConfigName, "actionEnabledUserSopCertification"); 
         
         UserProfile usProf = new UserProfile();
-        String[] userSchemas = (String[]) usProf.getAllUserProcedurePrefix(rdbm, userInfoId);
+        Object[] userSchemas = (Object[]) usProf.getAllUserProcedurePrefix(rdbm, userInfoId);
+        if ("LABPLANET_FALSE".equalsIgnoreCase(userSchemas[0].toString())){
+            return labArr.array1dTo2d(userSchemas, userSchemas.length);
+        }        
         Boolean schemaIsCorrect = false;
-        for (String us: userSchemas){
+        for (String us: (String[]) userSchemas){
             if (us.equalsIgnoreCase(schemaPrefixName)){schemaIsCorrect=true;break;}            
         }
         if (!schemaIsCorrect){
@@ -137,16 +140,19 @@ public class UserSop {
     public Object[][] getNotCompletedUserSOP(Rdbms rdbm, String userInfoId, String schemaPrefixName, String[] fieldsToRetrieve) {
 
         LabPLANETArray labArr = new LabPLANETArray();
-        String[] userSchemas = null;
+        Object[] userSchemas = null;
         if (schemaPrefixName.contains("ALL")){
             UserProfile usProf = new UserProfile();
-            userSchemas = (String[]) usProf.getAllUserProcedurePrefix(rdbm, userInfoId);
+            userSchemas = (Object[]) usProf.getAllUserProcedurePrefix(rdbm, userInfoId);
         }
         else{
             userSchemas = new String[1];
             userSchemas[0]=schemaPrefixName;
         }
 
+        if ("LABPLANET_FALSE".equalsIgnoreCase(userSchemas[0].toString())){
+            return labArr.array1dTo2d(userSchemas, userSchemas.length);
+        }
         String[] filterFieldName = new String[2];
         Object[] filterFieldValue = new Object[2];
         String[] fieldsToReturn = new String[0];
@@ -164,7 +170,7 @@ public class UserSop {
             fieldsToReturn = labArr.addValueToArray1D(fieldsToReturn, "sop_name");
         }
                 
-        Object[][] getUserProfileFieldValues = getUserProfileFieldValues(rdbm, filterFieldName, filterFieldValue, fieldsToReturn, userSchemas);   
+        Object[][] getUserProfileFieldValues = getUserProfileFieldValues(rdbm, filterFieldName, filterFieldValue, fieldsToReturn, (String[]) userSchemas);   
         return getUserProfileFieldValues;
 /*
         Integer numLines=getUserProfileFieldValues.length;

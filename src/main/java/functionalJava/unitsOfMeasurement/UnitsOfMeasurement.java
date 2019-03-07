@@ -9,6 +9,7 @@ import databases.Rdbms;
 import LabPLANET.utilities.LabPLANETArray;
 import LabPLANET.utilities.LPNulls;
 import LabPLANET.utilities.LabPLANETPlatform;
+import java.math.BigDecimal;
 import java.util.Arrays;
 
 /**
@@ -42,17 +43,9 @@ public class UnitsOfMeasurement {
  *                  - position 2 - the new units when converted or the current units when not converted
  *                  - position 3 - conclusion in a wording mode to provide further detail about what the method applied for this particular case
  */    
-    public Object[] convertValue(Rdbms rdbm, String schemaPrefix, Float valueToConvert, String currentUnit, String newUnit){
-
+    public Object[] twoUnitsInSameFamily(Rdbms rdbm, String schemaPrefix, BigDecimal valueToConvert, String currentUnit, String newUnit){
         Object[] conversion = new Object[6];
-        String tableName = "units_of_measurement";
-        String familyFieldNameDataBase = "measurement_family";
-        Float valueConverted = valueToConvert;
-        
-        String schemaName = "config";
         LabPLANETArray labArr = new LabPLANETArray();
-        schemaName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaName);
-        
         if (currentUnit==null){
             conversion = LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, "UnitsOfMeasurement_currentUnitsNotDefined",
                         new Object[]{schemaPrefix,  "valueToConvert: "+valueToConvert+", : currentUnit"+LPNulls.replaceNull(currentUnit)+", : newUnit"+LPNulls.replaceNull(newUnit)});
@@ -64,11 +57,16 @@ public class UnitsOfMeasurement {
             return conversion;
         }        
         if (newUnit.equals(currentUnit)){
-            conversion = LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_TRUE", classVersion, "UnitsOfMeasurement_sameValueNotConverted",
+            conversion = LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, "UnitsOfMeasurement_sameValueNotConverted",
                         new Object[]{schemaPrefix,  "valueToConvert: "+valueToConvert+", : currentUnit"+LPNulls.replaceNull(currentUnit)+", : newUnit"+LPNulls.replaceNull(newUnit)});
             conversion = labArr.addValueToArray1D(conversion, valueToConvert);
             return conversion;
-        }         
+        }    
+        String schemaName = "config";
+        String tableName = "units_of_measurement";
+        String familyFieldNameDataBase = "measurement_family";                
+        schemaName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaName);
+             
         String[] fieldsToGet = new String[]{"name", familyFieldNameDataBase, "is_base", "factor_value", "offset_value"};
         Object[][] currentUnitInfo = rdbm.getRecordFieldsByFilter(rdbm, schemaName, tableName, 
                  new String[]{"name"},  new Object[]{currentUnit}, fieldsToGet );
@@ -94,10 +92,67 @@ public class UnitsOfMeasurement {
                             schemaPrefix,  "valueToConvert: "+valueToConvert+", : currentUnit"+LPNulls.replaceNull(currentUnit)+", : newUnit"+LPNulls.replaceNull(newUnit)});
             return conversion; 
         }
+        conversion[0]="LABPLANET_TRUE";
+        return conversion;        
+    }
+    
+    public Object[] convertValue(Rdbms rdbm, String schemaPrefix, BigDecimal valueToConvert, String currentUnit, String newUnit){
         
-        valueConverted = valueConverted * ((float)newUnitInfo[0][3] / (float)currentUnitInfo[0][3]);
-        valueConverted = valueConverted + ((float)newUnitInfo[0][4] - (float)currentUnitInfo[0][4]);
-        valueConverted = Float.valueOf(String.format("%.10f",valueConverted));
+        Object[] unitsCompatible = twoUnitsInSameFamily(rdbm, schemaPrefix, valueToConvert, currentUnit, newUnit);
+        if ("LABPLANET_FALSE".equalsIgnoreCase(unitsCompatible[0].toString())){
+            return unitsCompatible;}
+        
+        Object[] conversion = new Object[6];
+        String tableName = "units_of_measurement";
+        String familyFieldNameDataBase = "measurement_family";
+        BigDecimal valueConverted = valueToConvert;
+        
+        String schemaName = "config";
+        LabPLANETArray labArr = new LabPLANETArray();
+        schemaName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaName);
+             
+        String[] fieldsToGet = new String[]{"name", familyFieldNameDataBase, "is_base", "factor_value", "offset_value"};
+        Object[][] currentUnitInfo = rdbm.getRecordFieldsByFilter(rdbm, schemaName, tableName, 
+                 new String[]{"name"},  new Object[]{currentUnit}, fieldsToGet );
+        Object[][] newUnitInfo = rdbm.getRecordFieldsByFilter(rdbm, schemaName, tableName, 
+                 new String[]{"name"},  new Object[]{newUnit}, fieldsToGet);
+        if ("LABPLANET_FALSE".equalsIgnoreCase(currentUnitInfo[0][0].toString())){
+            return conversion;            
+        }        
+        if ("LABPLANET_FALSE".equalsIgnoreCase(newUnitInfo[0][0].toString())){
+            return conversion;            
+        }
+        
+        //if (currentUnit.equalsIgnoreCase(newUnit)){return valueToConvert;}
+        
+        Integer currentUnitFamilyFieldPosic = Arrays.asList(fieldsToGet).indexOf(familyFieldNameDataBase);         
+        Integer newUnitFamilyFieldPosic = Arrays.asList(fieldsToGet).indexOf(familyFieldNameDataBase);                
+        if ((currentUnitFamilyFieldPosic==-1) || (newUnitFamilyFieldPosic==-1) ){
+            conversion = LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, "UnitsOfMeasurement_methodError_familyFieldNotAddedToTheQuery",
+                        new Object[]{familyFieldNameDataBase, Arrays.toString(fieldsToGet), schemaPrefix,  "valueToConvert: "+valueToConvert+", : currentUnit"+LPNulls.replaceNull(currentUnit)+", : newUnit"+LPNulls.replaceNull(newUnit)});
+            return conversion;            
+        }                        
+        if (!currentUnitInfo[0][currentUnitFamilyFieldPosic].toString().equalsIgnoreCase(newUnitInfo[0][currentUnitFamilyFieldPosic].toString())){
+            conversion = LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, "UnitsOfMeasurement_methodError_familyFieldNotAddedToTheQuery",
+                        new Object[]{currentUnit , currentUnitInfo[0][currentUnitFamilyFieldPosic].toString(), 
+                            newUnit, newUnitInfo[0][currentUnitFamilyFieldPosic].toString(), 
+                            schemaPrefix,  "valueToConvert: "+valueToConvert+", : currentUnit"+LPNulls.replaceNull(currentUnit)+", : newUnit"+LPNulls.replaceNull(newUnit)});
+            return conversion; 
+        }
+        BigDecimal currentUnitFactor = new BigDecimal(currentUnitInfo[0][3].toString());
+        BigDecimal newUnitFactor = new BigDecimal(newUnitInfo[0][3].toString());
+        BigDecimal currentUnitOffset = new BigDecimal(currentUnitInfo[0][4].toString());
+        BigDecimal newUnitOffset = new BigDecimal(newUnitInfo[0][4].toString());
+
+        newUnitFactor=newUnitFactor.divide(currentUnitFactor);
+        valueConverted=valueConverted.multiply(newUnitFactor);
+        newUnitOffset=newUnitOffset.add(currentUnitOffset.negate());
+        valueConverted=valueConverted.add(newUnitOffset);
+        
+        //valueConverted.add(new BigDecimal(  - new BigDecimal(currentUnitInfo[0][4].toString()) ));
+        //valueConverted = valueConverted * ((float)newUnitInfo[0][3] / (float)currentUnitInfo[0][3]);
+        //valueConverted = valueConverted + ((float)newUnitInfo[0][4] - (float)currentUnitInfo[0][4]);
+        //valueConverted = Float.valueOf(String.format("%.10f",valueConverted));
         
         conversion = LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_TRUE", classVersion, "UnitsOfMeasurement_convertedSuccesfully",
                         new Object[]{currentUnit , newUnitInfo, valueToConvert, valueConverted, schemaPrefix,

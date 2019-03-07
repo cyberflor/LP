@@ -22,6 +22,7 @@ import javax.ws.rs.core.Response;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONArray;
 import functionalJava.sop.UserSop;
+import java.util.ResourceBundle;
 
 /**
  *
@@ -42,6 +43,12 @@ public class AppProcedureListAPI extends HttpServlet {
                 response.setContentType("application/json");
                 response.setCharacterEncoding("UTF-8");
                 request.setCharacterEncoding("UTF-8");
+                
+                ResourceBundle prop = ResourceBundle.getBundle("parameter.config.config");
+                String frontendUrl = prop.getString("frontend_url");
+      
+                response.setHeader("Access-Control-Allow-Origin", frontendUrl);
+                response.setHeader("Access-Control-Allow-Methods", "GET");        
 
             String language = "en";
             String sopFieldName = "sop";

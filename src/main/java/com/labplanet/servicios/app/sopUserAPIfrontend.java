@@ -14,6 +14,7 @@ import functionalJava.sop.UserSop;
 import functionalJava.user.UserProfile;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ResourceBundle;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -40,6 +41,13 @@ public class sopUserAPIfrontend extends HttpServlet {
             throws ServletException, IOException {
          response.setContentType("application/json");
          response.setCharacterEncoding("UTF-8");
+
+        ResourceBundle prop = ResourceBundle.getBundle("parameter.config.config");
+        String frontendUrl = prop.getString("frontend_url");
+
+        response.setHeader("Access-Control-Allow-Origin", frontendUrl);
+        response.setHeader("Access-Control-Allow-Methods", "GET");        
+         
         
          LabPLANETArray labArr = new LabPLANETArray();
          LabPLANETRequest labReq = new LabPLANETRequest();

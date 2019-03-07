@@ -65,7 +65,7 @@ public class TestingConfigSop extends HttpServlet {
             Rdbms rdbm = new Rdbms();
             //DBTransac dbObj = null;          
             boolean isConnected = false;  
-            isConnected = rdbm.startRdbms("labplanet", "LabPlanet");
+            isConnected = rdbm.startRdbms("labplanet", "avecesllegaelmomento");
             
             String currentUser = "labplanet";
             Integer sopId = 1;

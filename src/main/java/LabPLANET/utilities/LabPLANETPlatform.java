@@ -13,7 +13,6 @@ import java.lang.reflect.Method;
 import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.HashMap;
 import javax.crypto.BadPaddingException;
@@ -21,7 +20,6 @@ import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
@@ -113,6 +111,88 @@ public class LabPLANETPlatform {
             return trapErrorMessage(rdbm, "LABPLANET_TRUE", classVersion, errorCode, errorDetailVariables);        
         }            
     }
+
+    /**
+     *
+     * @param schemaPrefix
+     * @param actionName
+     * @return
+     */
+    public Object[] procActionRequiresUserConfirmation(String schemaPrefix, String actionName){
+        
+        actionName = actionName.toUpperCase();
+        Object[] diagnoses = new Object[6];
+        String errorCode = ""; String errorDetail = "";
+        Object[] errorDetailVariables = new Object[0];
+        Rdbms rdbm = new Rdbms();
+        LabPLANETArray labArr = new LabPLANETArray();
+        String[] procedureActions = Parameter.getParameterBundle(schemaPrefix.replace("\"", "")+"-procedure", "verifyUserRequired").split("\\|");
+        
+        if (labArr.valueInArray(procedureActions, "ALL")){
+            errorCode = "VERIFY_USER_REQUIRED_BY_ALL";
+            errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, schemaPrefix);
+            errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, actionName);
+            return trapErrorMessage(rdbm, "LABPLANET_TRUE", classVersion, errorCode, errorDetailVariables);
+        }
+        if ( (procedureActions.length==1 && "".equals(procedureActions[0])) ){
+            errorCode = "verifyUserRequired_denied_ruleNotFound";
+            errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, schemaPrefix);
+            errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, Arrays.toString(procedureActions));
+            return trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);
+        }else if(!labArr.valueInArray(procedureActions, actionName)){    
+            errorCode = "verifyUserRequired_denied";
+            errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, actionName);
+            errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, schemaPrefix);
+            errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, Arrays.toString(procedureActions));
+            return trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);            
+        }else{
+            errorCode = "verifyUserRequired_enabled";
+            errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, schemaPrefix);
+            errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, actionName);
+            return trapErrorMessage(rdbm, "LABPLANET_TRUE", classVersion, errorCode, errorDetailVariables);               
+        }    
+    }    
+
+    /**
+     *
+     * @param schemaPrefix
+     * @param actionName
+     * @return
+     */
+    public Object[] procActionRequiresEsignConfirmation(String schemaPrefix, String actionName){
+        
+        actionName = actionName.toUpperCase();
+        Object[] diagnoses = new Object[6];
+        String errorCode = ""; String errorDetail = "";
+        Object[] errorDetailVariables = new Object[0];
+        Rdbms rdbm = new Rdbms();
+        LabPLANETArray labArr = new LabPLANETArray();
+        String[] procedureActions = Parameter.getParameterBundle(schemaPrefix.replace("\"", "")+"-procedure", "eSignRequired").split("\\|");
+        
+        if (labArr.valueInArray(procedureActions, "ALL")){
+            errorCode = "ESIGN_REQUIRED_BY_ALL";
+            errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, schemaPrefix);
+            errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, actionName);
+            return trapErrorMessage(rdbm, "LABPLANET_TRUE", classVersion, errorCode, errorDetailVariables);
+        }
+        if ( (procedureActions.length==1 && "".equals(procedureActions[0])) ){
+            errorCode = "eSignRequired_denied_ruleNotFound";
+            errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, schemaPrefix);
+            errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, Arrays.toString(procedureActions));
+            return trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);
+        }else if(!labArr.valueInArray(procedureActions, actionName)){    
+            errorCode = "eSignRequired_denied";
+            errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, actionName);
+            errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, schemaPrefix);
+            errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, Arrays.toString(procedureActions));
+            return trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);            
+        }else{
+            errorCode = "eSignRequired_enabled";
+            errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, schemaPrefix);
+            errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, actionName);
+            return trapErrorMessage(rdbm, "LABPLANET_TRUE", classVersion, errorCode, errorDetailVariables);               
+        }    
+    }    
     
     /**
      *
@@ -129,10 +209,10 @@ public class LabPLANETPlatform {
         String parameterName = "encrypted_"+tableName;
         schemaName = schemaName.replace("\"", "");
         
-        if ( fieldName.indexOf(" ")>-1){fieldName=fieldName.substring(0, fieldName.indexOf(" "));}
+        if ( fieldName.contains(" ")){fieldName=fieldName.substring(0, fieldName.indexOf(" "));}
         String tableEncrytedFields = Parameter.getParameterBundle(schemaName, parameterName);
         if ( (tableEncrytedFields==null) ){return diagnoses;}
-        if ( (tableEncrytedFields=="") ){return diagnoses;}        
+        if ( ("".equals(tableEncrytedFields)) ){return diagnoses;}        
         LabPLANETArray labArr = new LabPLANETArray();
         return labArr.valueInArray(tableEncrytedFields.split("\\|"), fieldName);        
     }
@@ -160,7 +240,7 @@ public class LabPLANETPlatform {
     private HashMap<String, String> encryptEncryptableFields(Boolean override, String fieldName, String fieldValue){        
         HashMap<String, String> hm = new HashMap<>();        
         
-        if (fieldName.toUpperCase().indexOf("IN")==-1){
+        if (!fieldName.toUpperCase().contains("IN")){
             Object[] encStr = encryptString(fieldValue);
             if (override){
                 fieldValue=encStr[1].toString();

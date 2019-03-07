@@ -3,12 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.labplanet.servicios;
+package com.labplanet.servicios.testing.data;
 
 import LabPLANET.utilities.LabPLANETArray;
 import LabPLANET.utilities.LPNulls;
 import LabPLANET.utilities.LabPLANETPlatform;
 import databases.Rdbms;
+import functionalJava.ChangeOfCustody.ChangeOfCustody;
 import functionalJava.analysis.UserMethod;
 import functionalJava.sampleStructure.DataSample;
 import java.io.File;
@@ -59,10 +60,14 @@ public class dataSampleStructure extends HttpServlet {
             response.setContentType("text/html;charset=UTF-8");
             UserMethod um = new UserMethod();
 
-            isConnected = rdbm.startRdbms("labplanet", "LabPlanet");
+            isConnected = rdbm.startRdbms("labplanet", "avecesllegaelmomento");
 
             String csvFileName = "dataSampleStructure.txt"; String csvFileSeparator=";";
             String csvPathName = "\\\\FRANCLOUD\\fran\\LabPlanet\\testingRepository\\"+csvFileName; 
+            //csvFileName = "DataSampleStructure.txt";  csvFileSeparator=";";
+            //csvPathName = "C:\\home\\TestingRepository\\"+csvFileName; 
+            
+            Integer appSessionId = null;
  
             Object[][] dataSample2D = new Object[1][6];
         
@@ -322,6 +327,104 @@ public class dataSampleStructure extends HttpServlet {
                             } catch (FileNotFoundException | NoSuchMethodException | ScriptException e) {
                             }
                             break;
+                        case "COC_STARTCHANGE":
+                            String custodianCandidate=null;
+                            if (configSpecTestingArray[i][5]!=null){sampleId = Integer.parseInt( (String) configSpecTestingArray[i][5]);}                            
+                            if (configSpecTestingArray[i][6]!=null){custodianCandidate = (String) configSpecTestingArray[i][6];}                            
+                            fileContent = fileContent + "<td>"+"sampleId, custodianCandidate"+"</td>";
+                            fileContent = fileContent + "<td>"+sampleId.toString()+", "+custodianCandidate+"</td>";
+                            ChangeOfCustody coc =  new ChangeOfCustody();
+                            dataSample = coc.cocStartChange(rdbm, schemaPrefix, "sample", "sample_id", sampleId, userName, 
+                                    custodianCandidate, userRole, null);
+                            break;
+                        case "COC_CONFIRMCHANGE":
+                            if (configSpecTestingArray[i][5]!=null){sampleId = Integer.parseInt( (String) configSpecTestingArray[i][5]);}    
+                            comment = "";
+                            if (configSpecTestingArray[i][6]!=null){comment =  (String) configSpecTestingArray[i][6];}    
+                            fileContent = fileContent + "<td>"+"sampleId, comment"+"</td>";
+                            fileContent = fileContent + "<td>"+sampleId.toString()+", "+comment+"</td>";
+                            
+                            coc =  new ChangeOfCustody();
+                            dataSample = coc.cocConfirmedChange(rdbm, schemaPrefix, "sample", "sample_id", sampleId, userName, 
+                                    comment, userRole, null);
+                            break;
+                        case "COC_ABORTCHANGE":
+                            if (configSpecTestingArray[i][5]!=null){sampleId = Integer.parseInt( (String) configSpecTestingArray[i][5]);}    
+                            comment = "";
+                            if (configSpecTestingArray[i][6]!=null){comment =  (String) configSpecTestingArray[i][6];}    
+                            fileContent = fileContent + "<td>"+"sampleId, comment"+"</td>";
+                            fileContent = fileContent + "<td>"+sampleId.toString()+", "+comment+"</td>";
+                            
+                            coc =  new ChangeOfCustody();
+                            dataSample = coc.cocAbortedChange(rdbm, schemaPrefix, "sample", "sample_id", sampleId, userName, 
+                                    comment, userRole, null);
+                            break;
+                        case "RESULT_CHANGE_UOM":
+                            resultId = 0;
+                            if (configSpecTestingArray[i][5]!=null){resultId = Integer.parseInt( (String) configSpecTestingArray[i][5]);}    
+                            String newUOM = "";
+                            if (configSpecTestingArray[i][6]!=null){newUOM =  (String) configSpecTestingArray[i][6];}    
+                            fileContent = fileContent + "<td>"+"sampleId, comment"+"</td>";
+                            fileContent = fileContent + "<td>"+resultId.toString()+", "+newUOM+"</td>";
+                                                        
+                            dataSample = smp.sarChangeUOM(rdbm, schemaPrefix, resultId, newUOM, userName, userRole);
+                            break;
+                        case "LOGALIQUOT":
+                            sampleId = 0;
+                            if (configSpecTestingArray[i][5]!=null){sampleId = Integer.parseInt( (String) configSpecTestingArray[i][5]);}    
+                            //sampleTemplate=null;
+                            //sampleTemplateVersion=null;
+                            //sampleTemplateInfo = configSpecTestingArray[i][6].toString().split("\\|");
+                            //sampleTemplate = sampleTemplateInfo[0];
+                            //sampleTemplateVersion = Integer.parseInt(sampleTemplateInfo[1]);
+                            if (configSpecTestingArray[i][7]!=null){
+                                fieldName = (String[]) configSpecTestingArray[i][7].toString().split("\\|");                        
+                            }              
+                            if (configSpecTestingArray[i][8]!=null){
+                                fieldValue = (Object[]) configSpecTestingArray[i][8].toString().split("\\|");
+                                fieldValue = labArr.convertStringWithDataTypeToObjectArray((String[]) fieldValue);
+                            }    
+                            fileContent = fileContent + "<td>sample_id, templateName, templateVersion, fieldNames, fieldValues</td>";
+                            fileContent = fileContent + "<td>"+sampleId.toString();//+", "+sampleTemplate+", "+sampleTemplateVersion.toString()+", ";
+                            if (configSpecTestingArray[i][7]!=null)fileContent = fileContent + configSpecTestingArray[i][7].toString();
+                            fileContent = fileContent +", ";
+                            if (configSpecTestingArray[i][8]!=null)fileContent = fileContent + configSpecTestingArray[i][8].toString();
+                            try {
+                                dataSample = smp.logSampleAliquot(rdbm, schemaPrefix, sampleId, 
+                                        // sampleTemplate, sampleTemplateVersion, 
+                                        fieldName, fieldValue, userName, userRole, appSessionId, false);                                                                
+                            } catch (IllegalArgumentException ex) {
+                                Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
+                            }
+                            break;                     
+                        case "LOGSUBALIQUOT":
+                            Integer aliquotId = 0;
+                            if (configSpecTestingArray[i][5]!=null){aliquotId = Integer.parseInt( (String) configSpecTestingArray[i][5]);}    
+                            //sampleTemplate=null;
+                            //sampleTemplateVersion=null;
+                            //sampleTemplateInfo = configSpecTestingArray[i][6].toString().split("\\|");
+                            //sampleTemplate = sampleTemplateInfo[0];
+                            //sampleTemplateVersion = Integer.parseInt(sampleTemplateInfo[1]);
+                            if (configSpecTestingArray[i][7]!=null){
+                                fieldName = (String[]) configSpecTestingArray[i][7].toString().split("\\|");                        
+                            }              
+                            if (configSpecTestingArray[i][8]!=null){
+                                fieldValue = (Object[]) configSpecTestingArray[i][8].toString().split("\\|");
+                                fieldValue = labArr.convertStringWithDataTypeToObjectArray((String[]) fieldValue);
+                            }    
+                            fileContent = fileContent + "<td>aliquot_Id, templateName, templateVersion, fieldNames, fieldValues</td>";
+                            fileContent = fileContent + "<td>"+aliquotId.toString();//+", "+sampleTemplate+", "+sampleTemplateVersion.toString()+", ";
+                            if (configSpecTestingArray[i][7]!=null)fileContent = fileContent + configSpecTestingArray[i][7].toString();
+                            fileContent = fileContent +", ";
+                            if (configSpecTestingArray[i][8]!=null)fileContent = fileContent + configSpecTestingArray[i][8].toString();
+                            try {
+                                dataSample = smp.logSampleSubAliquot(rdbm, schemaPrefix, aliquotId, 
+                                        // sampleTemplate, sampleTemplateVersion, 
+                                        fieldName, fieldValue, userName, userRole, appSessionId, false);                                                                
+                            } catch (IllegalArgumentException ex) {
+                                Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
+                            }
+                            break;                     
                         default:                       
                             dataSample[0] = (String) "function "+functionBeingTested+" not recognized";
                             dataSample[1] = ""; dataSample[2] = ""; dataSample[3] = ""; dataSample[4] = ""; dataSample[5] = ""; 
@@ -344,13 +447,12 @@ public class dataSampleStructure extends HttpServlet {
                     fileContent = fileContent + ". "+LPNulls.replaceNull((String) dataSample2D[0][5])+"</td>";}
                 
             }else{
-                fileContent = fileContent + "<td>"+dataSample[0].toString()+". "+dataSample[1].toString()+". "+dataSample[2].toString()+". "+dataSample[3].toString()+". "+dataSample[4].toString()+". "+dataSample[5].toString()+"</td>";
+                fileContent = fileContent + "<td>"+dataSample[0].toString()+". "+dataSample[1].toString()+". "+dataSample[2].toString()+". "+dataSample[3].toString()+". "+dataSample[4].toString()+". "+dataSample[dataSample.length-1].toString()+"</td>";
             }    
             fileContent = fileContent + "</tr>";
         }
         fileContent = fileContent + "</table>";        
         out.println(fileContent);
-
         csvPathName = csvPathName.replace(".txt", ".html");
         File file = new File(csvPathName);
             try (FileWriter fileWriter = new FileWriter(file)) {
@@ -358,15 +460,12 @@ public class dataSampleStructure extends HttpServlet {
                 fileWriter.write(fileContent);
                 fileWriter.flush();
             } 
-
         rdbm.closeRdbms();
-
         }   catch (SQLException|IOException ex) {
-            if (isConnected){rdbm.closeRdbms();}            
-                Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);   
-                fileContent = fileContent + "</table>";        
-                out.println(fileContent);     
-                
+            if (isConnected){rdbm.closeRdbms();}                        
+            Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);   
+            fileContent = fileContent + "</table>";        
+            out.println(fileContent);                     
         }
     }
 

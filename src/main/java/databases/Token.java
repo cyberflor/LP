@@ -57,6 +57,7 @@ public class Token {
         diagnoses = labArr.addValueToArray1D(diagnoses, "userRole");
         diagnoses = labArr.addValueToArray1D(diagnoses, "appSessionId");
         diagnoses = labArr.addValueToArray1D(diagnoses, "appSessionStartedDate");
+        diagnoses = labArr.addValueToArray1D(diagnoses, "eSign");
         return diagnoses;
     }  
     
@@ -135,12 +136,13 @@ public class Token {
      * @param userRole
      * @return
      */
-    public String  createToken(String userDBId, String userDBPassword, String userId, String userRole, String appSessionId, String appSessionStartedDate){        
+    public String  createToken(String userDBId, String userDBPassword, String userId, String userRole, String appSessionId, String appSessionStartedDate, String eSign){        
         Algorithm algorithm = Algorithm.HMAC256(KEY);
         Map <String, Object> myParams = new HashMap<String, Object>();
         myParams.put("userDB", userDBId);                   myParams.put("userDBPassword", userDBPassword);
         myParams.put("internalUserID", userId);             myParams.put("userRole", userRole);
         myParams.put("appSessionId", appSessionId);  myParams.put("appSessionStartedDate", appSessionStartedDate);
+        myParams.put("eSign", eSign); 
         String token = JWT.create()
                 .withHeader(myParams)
                 .withIssuer(ISSUER)

@@ -11,6 +11,7 @@ import functionalJava.unitsOfMeasurement.UnitsOfMeasurement;
 import LabPLANET.utilities.LabPLANETArray;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.math.BigDecimal;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -41,7 +42,7 @@ public class UnitsOfMeasurementConversion extends HttpServlet {
 
         boolean isConnected = false;
 
-        isConnected = rdbm.startRdbms("labplanet", "LabPlanet");           
+        isConnected = rdbm.startRdbms("labplanet", "avecesllegaelmomento");           
         if (!isConnected){out.println("Connection to the database not established");return;}
 
         LabPLANETArray labArr = new LabPLANETArray();
@@ -50,91 +51,91 @@ public class UnitsOfMeasurementConversion extends HttpServlet {
         Object[][] configSpecTestingArray = new Object[numTesting][6];
   
         if (inumTesting<numTesting){
-            String schemaPrefix="config";            float currentValue=11;
+            String schemaPrefix="config";            BigDecimal currentValue=new BigDecimal(11);
             String currentUOM="GR";                  String newUOM=null;                
             configSpecTestingArray[inumTesting][0]=schemaPrefix;            configSpecTestingArray[inumTesting][1]=currentValue;
             configSpecTestingArray[inumTesting][2]=currentUOM;              configSpecTestingArray[inumTesting][3]=newUOM;
             inumTesting++;
         }
         if (inumTesting<numTesting){
-            String schemaPrefix="config";            float currentValue=11;
+            String schemaPrefix="config";            BigDecimal currentValue=new BigDecimal(11);
             String currentUOM=null;                  String newUOM="GR";                
             configSpecTestingArray[inumTesting][0]=schemaPrefix;            configSpecTestingArray[inumTesting][1]=currentValue;
             configSpecTestingArray[inumTesting][2]=currentUOM;              configSpecTestingArray[inumTesting][3]=newUOM;
             inumTesting++;
         }
         if (inumTesting<numTesting){
-            String schemaPrefix="config";            float currentValue=11;
+            String schemaPrefix="config";           BigDecimal currentValue=new BigDecimal(11);
             String currentUOM="GR";                  String newUOM="GR";                
             configSpecTestingArray[inumTesting][0]=schemaPrefix;            configSpecTestingArray[inumTesting][1]=currentValue;
             configSpecTestingArray[inumTesting][2]=currentUOM;              configSpecTestingArray[inumTesting][3]=newUOM;
             inumTesting++;
         }
         if (inumTesting<numTesting){
-            String schemaPrefix="config";            float currentValue=11;
+            String schemaPrefix="config";           BigDecimal currentValue=new BigDecimal(11);
             String currentUOM="GR";                  String newUOM="KG";                
             configSpecTestingArray[inumTesting][0]=schemaPrefix;            configSpecTestingArray[inumTesting][1]=currentValue;
             configSpecTestingArray[inumTesting][2]=currentUOM;              configSpecTestingArray[inumTesting][3]=newUOM;
             inumTesting++;
         }
         if (inumTesting<numTesting){
-            String schemaPrefix="config";            float currentValue=11;
+            String schemaPrefix="config";          BigDecimal currentValue=new BigDecimal(11);
             String currentUOM="G";                   String newUOM="L";                
             configSpecTestingArray[inumTesting][0]=schemaPrefix;            configSpecTestingArray[inumTesting][1]=currentValue;
             configSpecTestingArray[inumTesting][2]=currentUOM;              configSpecTestingArray[inumTesting][3]=newUOM;
             inumTesting++;
         }
         if (inumTesting<numTesting){
-            String schemaPrefix="config";            float currentValue=11;
+            String schemaPrefix="config";            BigDecimal currentValue=new BigDecimal(11);
             String currentUOM="PCT-MASS_VOLUME-5C";  String newUOM="G";                
             configSpecTestingArray[inumTesting][0]=schemaPrefix;            configSpecTestingArray[inumTesting][1]=currentValue;
             configSpecTestingArray[inumTesting][2]=currentUOM;              configSpecTestingArray[inumTesting][3]=newUOM;
             inumTesting++;
         }
         if (inumTesting<numTesting){
-            String schemaPrefix="config";            float currentValue=11;
+            String schemaPrefix="config";            BigDecimal currentValue=new BigDecimal(11);
             String currentUOM="PCT-MASS_VOLUME-5C";  String newUOM="MG-N_L";                
             configSpecTestingArray[inumTesting][0]=schemaPrefix;            configSpecTestingArray[inumTesting][1]=currentValue;
             configSpecTestingArray[inumTesting][2]=currentUOM;              configSpecTestingArray[inumTesting][3]=newUOM;
             inumTesting++;
         }        
         if (inumTesting<numTesting){
-            String schemaPrefix="config";            float currentValue=11;
+            String schemaPrefix="config";           BigDecimal currentValue=new BigDecimal(11);
             String currentUOM="KG";                  String newUOM="G";
             configSpecTestingArray[inumTesting][0]=schemaPrefix;            configSpecTestingArray[inumTesting][1]=currentValue;
             configSpecTestingArray[inumTesting][2]=currentUOM;              configSpecTestingArray[inumTesting][3]=newUOM;
             inumTesting++;
         }       
         if (inumTesting<numTesting){
-            String schemaPrefix="config";            float currentValue=11;
+            String schemaPrefix="config";         BigDecimal currentValue=new BigDecimal(11);
             String currentUOM="G";                  String newUOM="KG";
             configSpecTestingArray[inumTesting][0]=schemaPrefix;            configSpecTestingArray[inumTesting][1]=currentValue;
             configSpecTestingArray[inumTesting][2]=currentUOM;              configSpecTestingArray[inumTesting][3]=newUOM;
             inumTesting++;
         }          
         if (inumTesting<numTesting){
-            String schemaPrefix="config";            float currentValue=1;
+            String schemaPrefix="config";        BigDecimal currentValue=new BigDecimal(1);
             String currentUOM="K";                  String newUOM="DEG-C";
             configSpecTestingArray[inumTesting][0]=schemaPrefix;            configSpecTestingArray[inumTesting][1]=currentValue;
             configSpecTestingArray[inumTesting][2]=currentUOM;              configSpecTestingArray[inumTesting][3]=newUOM;
             inumTesting++;
         }  
         if (inumTesting<numTesting){
-            String schemaPrefix="config";            float currentValue=1;
+            String schemaPrefix="config";        BigDecimal currentValue=new BigDecimal(1);
             String currentUOM="K";                  String newUOM="DEG-N";
             configSpecTestingArray[inumTesting][0]=schemaPrefix;            configSpecTestingArray[inumTesting][1]=currentValue;
             configSpecTestingArray[inumTesting][2]=currentUOM;              configSpecTestingArray[inumTesting][3]=newUOM;
             inumTesting++;
         }    
         if (inumTesting<numTesting){
-            String schemaPrefix="config";            float currentValue=1;
+            String schemaPrefix="config";            BigDecimal currentValue=new BigDecimal(1);
             String currentUOM="SECOND";                  String newUOM="DAY";
             configSpecTestingArray[inumTesting][0]=schemaPrefix;            configSpecTestingArray[inumTesting][1]=currentValue;
             configSpecTestingArray[inumTesting][2]=currentUOM;              configSpecTestingArray[inumTesting][3]=newUOM;
             inumTesting++;
         }
         if (inumTesting<numTesting){
-            String schemaPrefix="oil-pl1-config";            float currentValue=1;
+            String schemaPrefix="oil-pl1-config";         BigDecimal currentValue=new BigDecimal(1);
             String currentUOM="SECOND";                  String newUOM="DAY";
             configSpecTestingArray[inumTesting][0]=schemaPrefix;            configSpecTestingArray[inumTesting][1]=currentValue;
             configSpecTestingArray[inumTesting][2]=currentUOM;              configSpecTestingArray[inumTesting][3]=newUOM;
@@ -159,14 +160,14 @@ public class UnitsOfMeasurementConversion extends HttpServlet {
 
             userName=null;                
             String schemaPrefix=null;
-            float currentValue=0;    
+            BigDecimal currentValue=BigDecimal.ZERO;    
             String currentUOM=null;
             String newUOM=null;    
             
             Object[][] dataSample = null;
 
             if (configSpecTestingArray[i][0]!=null){schemaPrefix = (String) configSpecTestingArray[i][0];}
-            if (configSpecTestingArray[i][1]!=null){currentValue = (float) configSpecTestingArray[i][1];}
+            if (configSpecTestingArray[i][1]!=null){currentValue = (BigDecimal) configSpecTestingArray[i][1];}
             if (configSpecTestingArray[i][2]!=null){currentUOM = (String) configSpecTestingArray[i][2];}
             if (configSpecTestingArray[i][3]!=null){newUOM = (String) configSpecTestingArray[i][3];}
 

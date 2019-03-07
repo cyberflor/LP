@@ -9,7 +9,6 @@ package functionalJava.sampleStructure;
 //import java.util.HashMap;
 //import java.util.Map;
 import LabPLANET.utilities.LPNulls;
-import LabPLANET.utilities.LPParadigm;
 import databases.Rdbms;
 import functionalJava.analysis.UserMethod;
 import functionalJava.audit.SampleAudit;
@@ -35,7 +34,7 @@ import java.util.logging.Logger;
  *
  * @author Administrator
  */
-public class DataSample {
+public class DataSampleBck {
     String classVersion = "0.1";
     String errorCode ="";
     Object[] errorDetailVariables= new Object[0];
@@ -63,7 +62,7 @@ public class DataSample {
      *
      * @param grouperName
      */
-    public DataSample(String grouperName){
+    public DataSampleBck(String grouperName){
         this.grouperName = grouperName;
     }
     
@@ -143,7 +142,17 @@ Object[] logSample(Rdbms rdbm, String schemaPrefix, String sampleTemplate, Integ
     LabPLANETArray labArr = new LabPLANETArray();
     
     LabPLANETPlatform labPlat = new LabPLANETPlatform();
-        
+    
+    if (devMode==true){
+        StackTraceElement[] elementsDev = Thread.currentThread().getStackTrace();
+        javaDocLineName = "BEGIN";
+        javaDocFields = labArr.addValueToArray1D(javaDocFields, "line_name");
+        javaDocValues = labArr.addValueToArray1D(javaDocValues, javaDocLineName);
+        javaDocFields = labArr.addValueToArray1D(javaDocFields, "class_version");
+        javaDocValues = labArr.addValueToArray1D(javaDocValues, classVersion);
+        labPlat.addJavaClassDoc(rdbm, javaDocFields, javaDocValues, elementsDev);
+    }    
+    
         String query = "";
         tableName = "sample";
         String actionName = "Insert";
@@ -157,9 +166,7 @@ Object[] logSample(Rdbms rdbm, String schemaPrefix, String sampleTemplate, Integ
         
         String sampleLevel = tableName;
 //        if (this.getSampleGrouper()!=null){sampleLevel=this.getSampleGrouper()+"_"+sampleLevel;}
-        Object[] fieldNameValueArrayChecker = LPParadigm.fieldNameValueArrayChecker(rdbm, sampleFieldName, sampleFieldValue);
-        if (!"LABPLANET_TRUE".equalsIgnoreCase(fieldNameValueArrayChecker[0].toString())){return fieldNameValueArrayChecker;}        
-        
+
         mandatoryFields = labIntChecker.getTableMandatoryFields(schemaDataName, sampleLevel, actionName);
         
         String sampleStatusFirst = Parameter.getParameterBundle(schemaDataName.replace("\"", ""), sampleLevel+"_statusFirst");     
@@ -167,8 +174,41 @@ Object[] logSample(Rdbms rdbm, String schemaPrefix, String sampleTemplate, Integ
         sampleFieldName = labArr.addValueToArray1D(sampleFieldName, "status");
         sampleFieldValue = labArr.addValueToArray1D(sampleFieldValue, sampleStatusFirst);
         // mandatoryFields = getSampleMandatoryFields();
-            
+        
+    if (devMode==true){
+        StackTraceElement[] elementsDev = Thread.currentThread().getStackTrace();
+        javaDocLineName = "CHECK sampleFieldName and sampleFieldValue match in length";
+        javaDocFields = labArr.addValueToArray1D(javaDocFields, "line_name");
+        javaDocValues = labArr.addValueToArray1D(javaDocValues, javaDocLineName);
+        javaDocFields = labArr.addValueToArray1D(javaDocFields, "class_version");
+        javaDocValues = labArr.addValueToArray1D(javaDocValues, classVersion);
+        labPlat.addJavaClassDoc(rdbm, javaDocFields, javaDocValues, elementsDev);
+    }    
+    if (devMode==false){
+        diagnoses = labArr.checkTwoArraysSameLength(sampleFieldName, sampleFieldValue);
+        if (!"LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){
+           errorCode = "DataSample_FieldArraysDifferentSize";
+           errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, Arrays.toString(sampleFieldName));
+           errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, Arrays.toString(sampleFieldValue));
+           return LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);
+        }
+    }    
+    if (devMode==true){
+        StackTraceElement[] elementsDev = Thread.currentThread().getStackTrace();
+        javaDocLineName = "CHECK sampleFieldName and sampleFieldValue match in length";
+        javaDocFields = labArr.addValueToArray1D(javaDocFields, "line_name");
+        javaDocValues = labArr.addValueToArray1D(javaDocValues, javaDocLineName);
+        javaDocFields = labArr.addValueToArray1D(javaDocFields, "class_version");
+        javaDocValues = labArr.addValueToArray1D(javaDocValues, classVersion);
+        labPlat.addJavaClassDoc(rdbm, javaDocFields, javaDocValues, elementsDev);
+    }    
+    if (devMode==false){        
         LabPLANETArray lpa = new LabPLANETArray();
+        if (lpa.duplicates(sampleFieldName)){
+           errorCode = "DataSample_FieldsDuplicated";
+           errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, Arrays.toString(sampleFieldName));
+           return LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);                      
+        }
 
         // spec is not mandatory but when any of the fields involved is added to the parameters 
         //  then it turns mandatory all the fields required for linking this entity.
@@ -274,6 +314,19 @@ Object[] logSample(Rdbms rdbm, String schemaPrefix, String sampleTemplate, Integ
                 fieldsOnLogSample, userName, userRole, appSessionId);
 
         return diagnoses;  
+    }    
+    if (devMode==true){
+        StackTraceElement[] elementsDev = Thread.currentThread().getStackTrace();
+        javaDocLineName = "END";
+        Integer specialFieldIndex = Arrays.asList(javaDocFields).indexOf("line_name");
+        if (specialFieldIndex==-1){
+            javaDocFields = labArr.addValueToArray1D(javaDocFields, "line_name");         javaDocValues = labArr.addValueToArray1D(javaDocValues, javaDocLineName);         
+        }else{    
+            javaDocValues[specialFieldIndex] = javaDocLineName;             
+        }
+        labPlat.addJavaClassDoc(rdbm, javaDocFields, javaDocValues, elementsDev);
+    }
+    return diagnoses; 
 }
 
 Object[] logSample(Rdbms rdbm, String schemaPrefix, String sampleTemplate, Integer sampleTemplateVersion, String[] sampleFieldName, Object[] sampleFieldValue, String userName, String userRole, Integer appSessionId, Boolean devMode, Integer numSamplesToLog) {
@@ -281,7 +334,17 @@ Object[] logSample(Rdbms rdbm, String schemaPrefix, String sampleTemplate, Integ
     LabPLANETArray labArr = new LabPLANETArray();
     
     LabPLANETPlatform labPlat = new LabPLANETPlatform();
-        
+    
+    if (devMode==true){
+        StackTraceElement[] elementsDev = Thread.currentThread().getStackTrace();
+        javaDocLineName = "BEGIN";
+        javaDocFields = labArr.addValueToArray1D(javaDocFields, "line_name");
+        javaDocValues = labArr.addValueToArray1D(javaDocValues, javaDocLineName);
+        javaDocFields = labArr.addValueToArray1D(javaDocFields, "class_version");
+        javaDocValues = labArr.addValueToArray1D(javaDocValues, classVersion);
+        labPlat.addJavaClassDoc(rdbm, javaDocFields, javaDocValues, elementsDev);
+    }    
+    
         String query = "";
         tableName = "sample";
         String actionName = "Insert";
@@ -303,10 +366,41 @@ Object[] logSample(Rdbms rdbm, String schemaPrefix, String sampleTemplate, Integ
         sampleFieldName = labArr.addValueToArray1D(sampleFieldName, "status");
         sampleFieldValue = labArr.addValueToArray1D(sampleFieldValue, sampleStatusFirst);
         // mandatoryFields = getSampleMandatoryFields();
-        Object[] fieldNameValueArrayChecker = LPParadigm.fieldNameValueArrayChecker(rdbm, sampleFieldName, sampleFieldValue);
-        if (!"LABPLANET_TRUE".equalsIgnoreCase(fieldNameValueArrayChecker[0].toString())){return fieldNameValueArrayChecker;}        
         
+    if (devMode==true){
+        StackTraceElement[] elementsDev = Thread.currentThread().getStackTrace();
+        javaDocLineName = "CHECK sampleFieldName and sampleFieldValue match in length";
+        javaDocFields = labArr.addValueToArray1D(javaDocFields, "line_name");
+        javaDocValues = labArr.addValueToArray1D(javaDocValues, javaDocLineName);
+        javaDocFields = labArr.addValueToArray1D(javaDocFields, "class_version");
+        javaDocValues = labArr.addValueToArray1D(javaDocValues, classVersion);
+        labPlat.addJavaClassDoc(rdbm, javaDocFields, javaDocValues, elementsDev);
+    }    
+    if (devMode==false){
+        diagnoses = labArr.checkTwoArraysSameLength(sampleFieldName, sampleFieldValue);
+        if (!"LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){
+           errorCode = "DataSample_FieldArraysDifferentSize";
+           errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, Arrays.toString(sampleFieldName));
+           errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, Arrays.toString(sampleFieldValue));
+           return LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);
+        }
+    }    
+    if (devMode==true){
+        StackTraceElement[] elementsDev = Thread.currentThread().getStackTrace();
+        javaDocLineName = "CHECK sampleFieldName and sampleFieldValue match in length";
+        javaDocFields = labArr.addValueToArray1D(javaDocFields, "line_name");
+        javaDocValues = labArr.addValueToArray1D(javaDocValues, javaDocLineName);
+        javaDocFields = labArr.addValueToArray1D(javaDocFields, "class_version");
+        javaDocValues = labArr.addValueToArray1D(javaDocValues, classVersion);
+        labPlat.addJavaClassDoc(rdbm, javaDocFields, javaDocValues, elementsDev);
+    }    
+    if (devMode==false){        
         LabPLANETArray lpa = new LabPLANETArray();
+        if (lpa.duplicates(sampleFieldName)){
+           errorCode = "DataSample_FieldsDuplicated";
+           errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, Arrays.toString(sampleFieldName));
+           return LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);                      
+        }
 
         // spec is not mandatory but when any of the fields involved is added to the parameters 
         //  then it turns mandatory all the fields required for linking this entity.
@@ -427,8 +521,23 @@ Object[] logSample(Rdbms rdbm, String schemaPrefix, String sampleTemplate, Integ
             
             autoSampleAliquoting(rdbm, schemaPrefix, sampleId, userName, userRole, sampleFieldName, sampleFieldValue, "LOGGED", appSessionId, transactionId);
             
+            
+            
         }
         return diagnoses;  
+    }    
+    if (devMode==true){
+        StackTraceElement[] elementsDev = Thread.currentThread().getStackTrace();
+        javaDocLineName = "END";
+        Integer specialFieldIndex = Arrays.asList(javaDocFields).indexOf("line_name");
+        if (specialFieldIndex==-1){
+            javaDocFields = labArr.addValueToArray1D(javaDocFields, "line_name");         javaDocValues = labArr.addValueToArray1D(javaDocValues, javaDocLineName);         
+        }else{    
+            javaDocValues[specialFieldIndex] = javaDocLineName;             
+        }
+        labPlat.addJavaClassDoc(rdbm, javaDocFields, javaDocValues, elementsDev);
+    }
+    return diagnoses; 
 }
 
     /**
@@ -892,9 +1001,19 @@ Object[] logSample(Rdbms rdbm, String schemaPrefix, String sampleTemplate, Integ
             
     mandatoryFields = labIntChecker.getTableMandatoryFields(schemaDataName, sampleLevel+tableName, actionName);
 
-    Object[] fieldNameValueArrayChecker = LPParadigm.fieldNameValueArrayChecker(rdbm, fieldName, fieldValue);
-    if (!"LABPLANET_TRUE".equalsIgnoreCase(fieldNameValueArrayChecker[0].toString())){return fieldNameValueArrayChecker;}        
-    
+    if (fieldName.length!=fieldValue.length){
+            errorCode = "DataSample_FieldArraysDifferentSize";
+           errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, Arrays.toString(fieldName));
+           errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, Arrays.toString(fieldValue));
+           return LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);
+    }
+    LabPLANETArray lpa = new LabPLANETArray();
+    if (lpa.duplicates(fieldName)){
+           errorCode = "DataSample_FieldsDuplicated";
+           errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, Arrays.toString(fieldName));
+           return LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);   
+    }
+
     mandatoryFieldsValue = new Object[mandatoryFields.length];
     String mandatoryFieldsMissing = "";
     for (Integer inumLines=0;inumLines<mandatoryFields.length;inumLines++){
@@ -1135,6 +1254,7 @@ Object[] logSample(Rdbms rdbm, String schemaPrefix, String sampleTemplate, Integ
            errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, schemaDataName);
            return LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);   
     }
+    
         
     fieldName = labArr.addValueToArray1D(fieldName, "sample_id");
     fieldValue = labArr.addValueToArray1D(fieldValue, sampleId);    
@@ -2536,9 +2656,6 @@ private Map getDefaultValuesTemplate(String schema, String tsample, String templ
         Object[][] anaName = new Object[2][3];
         anaName[0][0] = "pH"; anaName[0][1] = "pH method"; anaName[0][2] = 1;
         anaName[1][0] = "LOD"; anaName[1][1] = "LOD Method"; anaName[1][2] = 1;
-
-        Object[] fieldNameValueArrayChecker = LPParadigm.fieldNameValueArrayChecker(rdbm, sampleFieldName, sampleFieldValue);
-        if (!"LABPLANET_TRUE".equalsIgnoreCase(fieldNameValueArrayChecker[0].toString())){return;}        
         
         for (Object[] anaName1 : anaName) {
             String[] fieldsName= new String[]{"analysis", "method_name", "method_version"};
@@ -2551,9 +2668,6 @@ private Map getDefaultValuesTemplate(String schema, String tsample, String templ
     }
     
     public void autoSampleAliquoting(Rdbms rdbm, String schemaPrefix, Integer sampleId, String userName, String userRole, String[] sampleFieldName, Object[] sampleFieldValue, String eventName, Integer appSessionId, Integer transactionId){
-        Object[] fieldNameValueArrayChecker = LPParadigm.fieldNameValueArrayChecker(rdbm, sampleFieldName, sampleFieldValue);
-        if (!"LABPLANET_TRUE".equalsIgnoreCase(fieldNameValueArrayChecker[0].toString())){return;}        
-        
     }
     
     public Object[] sarChangeUOM(Rdbms rdbm, String schemaPrefix, Integer resultId, String newUOM, String userName, String userRole){
@@ -2628,9 +2742,6 @@ public Object[] logSampleAliquot(Rdbms rdbm, String schemaPrefix, Integer sample
 
     String schemaDataName = "data";
     String schemaConfigName = "config";
-    
-    Object[] fieldNameValueArrayChecker = LPParadigm.fieldNameValueArrayChecker(rdbm, smpAliqFieldName, smpAliqFieldValue);
-    if (!"LABPLANET_TRUE".equalsIgnoreCase(fieldNameValueArrayChecker[0].toString())){return fieldNameValueArrayChecker;}        
 
     schemaDataName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaDataName);    
     schemaConfigName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaConfigName); 
@@ -2755,9 +2866,6 @@ public Object[] logSampleSubAliquot(Rdbms rdbm, String schemaPrefix, Integer ali
 
     schemaDataName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaDataName);    
     schemaConfigName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaConfigName); 
-    
-    Object[] fieldNameValueArrayChecker = LPParadigm.fieldNameValueArrayChecker(rdbm, smpSubAliqFieldName, smpSubAliqFieldValue);
-    if (!"LABPLANET_TRUE".equalsIgnoreCase(fieldNameValueArrayChecker[0].toString())){return fieldNameValueArrayChecker;}          
 
     Integer sampleId = 0;
     String[] mandatoryAliquotFields = new String[]{"sample_id"};
