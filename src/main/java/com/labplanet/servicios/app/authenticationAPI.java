@@ -239,7 +239,6 @@ if (1==1){
                         return ;                            
                     }
 }                    
-                    LabPLANETDate labDate = new LabPLANETDate();
                     Date nowLocalDate = LabPLANETDate.getTimeStampLocalDate();
                     
 //                    Object[][] userEsignInfo = Rdbms.getRecordFieldsByFilter(rdbm, "app", "users", new String[]{"user_name"}, new Object[]{userName}, new String[]{"e_sign"});

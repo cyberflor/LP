@@ -36,7 +36,9 @@ public class UserSop {
     /**
      *
      */
-    public void UserSop(){}
+    public void UserSop(){
+    // Not implemented yet
+    }
 
     /**
      *

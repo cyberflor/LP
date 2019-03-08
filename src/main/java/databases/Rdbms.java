@@ -78,7 +78,7 @@ public class Rdbms {
     public Boolean startRdbms(String user, String pass) {        
         
         try {        
-            Rdbms rdbms = new Rdbms();
+            //Rdbms rdbms = new Rdbms();
             ResourceBundle prop = ResourceBundle.getBundle("parameter.config.config");
             String datasrc = prop.getString("datasource");
             Integer to = Integer.valueOf(prop.getString("dbtimeout"));
@@ -193,8 +193,6 @@ public class Rdbms {
      * @return
      */
     public Object[] zzzexistsRecord(String schemaName, String tableName, String[] keyFieldName, Object keyFieldValue){
-        
-        String[] diagnoses = new String[6];
         String[] errorDetailVariables = new String[0];
         SqlStatement sql = new SqlStatement();        
         HashMap<String, Object[]> hmQuery = sql.buildSqlStatement("SELECT", schemaName, tableName,
@@ -238,11 +236,7 @@ public class Rdbms {
      * @return
      */
     public static Object[] existsRecord(String schemaName, String tableName, String[] keyFieldNames, Object[] keyFieldValues){
-        
-        String[] diagnoses = new String[6];
-        LabPLANETArray LabPLANETArray = new LabPLANETArray();       
         String[] errorDetailVariables = new String[0];
-        
         Object[] filteredValues = new Object[0];
         
         if (keyFieldNames.length==0){
@@ -332,9 +326,6 @@ public class Rdbms {
      * @return
      */
     public static String getRecordFieldsByFilterJSON(String schemaName, String tableName, String[] whereFieldNames, Object[] whereFieldValues, String[] fieldsToRetrieve, String[] fieldsSortBy){
-        
-        Object[][] diagnoses = new Object[1][6];                
-        LabPLANETArray LabPLANETArray = new LabPLANETArray();                 
         String[] errorDetailVariables = new String[0];        
         schemaName = LabPLANETPlatform.buildSchemaName(schemaName, "");
         
@@ -369,18 +360,10 @@ public class Rdbms {
                 } 
 */                
                 //query = "select row_to_json(t) from (" + query +") t";
-                if ( containsInClause ){
-                    res = Rdbms.prepRdQuery(query, keyFieldValueNew);
-                    res.last();
-                }else{
-                    res = Rdbms.prepRdQuery(query, keyFieldValueNew);
-                    res.last();
-                }                
+            res = Rdbms.prepRdQuery(query, keyFieldValueNew);
+            res.last();
             if (res.getRow()>0){
-                
-                boolean first = res.first();
                 String finalString = "";
-            
                 return res.getString(1);
             
 /*                if (1==1){                       
@@ -438,7 +421,6 @@ public class Rdbms {
     public static Object[][] getRecordFieldsByFilter(String schemaName, String tableName, String[] whereFieldNames, Object[] whereFieldValues, String[] fieldsToRetrieve){
         
         Object[][] diagnoses = new Object[1][7];                
-        LabPLANETArray LabPLANETArray = new LabPLANETArray();                 
         String[] errorDetailVariables = new String[0];        
         schemaName = LabPLANETPlatform.buildSchemaName(schemaName, "");
         
@@ -460,13 +442,8 @@ public class Rdbms {
         try{
             Boolean containsInClause = false;
             ResultSet res = null;
-            if ( containsInClause ){
-                res = Rdbms.prepRdQuery(query, keyFieldValueNew);
-                res.last();
-            }else{
-                res = Rdbms.prepRdQuery(query, keyFieldValueNew);
-                res.last();
-            }
+            res = Rdbms.prepRdQuery(query, keyFieldValueNew);
+            res.last();
         if (res.getRow()>0){
          Integer totalLines = res.getRow();
          res.first();
@@ -516,8 +493,6 @@ public class Rdbms {
     public static Object[][] getRecordFieldsByFilter(String schemaName, String[] tableName, String[] whereFieldNames, Object[] whereFieldValues, String[] fieldsToRetrieve){
         
         Object[][] diagnoses = new Object[1][6];        
-        LabPLANETArray LabPLANETArray = new LabPLANETArray();       
-        LabPLANETPlatform labPlat = new LabPLANETPlatform();   
         String[] errorDetailVariables = new String[0];        
         
         if (whereFieldNames.length==0){
@@ -602,8 +577,6 @@ public class Rdbms {
     public static Object[][] getRecordFieldsByFilter(String schemaName, String tableName, String[] whereFieldNames, Object[] whereFieldValues, String[] fieldsToRetrieve, String[] orderBy){
         
         Object[][] diagnoses = new Object[1][6];        
-        LabPLANETArray LabPLANETArray = new LabPLANETArray();       
-        LabPLANETPlatform labPlat = new LabPLANETPlatform();   
         String[] errorDetailVariables = new String[0];        
         
         if (whereFieldNames.length==0){
@@ -695,9 +668,6 @@ public class Rdbms {
     public static Object[] insertRecordInTable(String schemaName, String tableName, String[] fieldNames, Object[] fieldValues){
         // fieldValues = LabPLANETArray.encryptTableFieldArray(schemaName, tableName, fieldNames, fieldValues);
         String[] diagnoses = new String[7];
-        LabPLANETArray LabPLANETArray = new LabPLANETArray();       
-        LabPLANETPlatform labPlat = new LabPLANETPlatform();
-        LabPLANETArray LabPLANETArrayay = new LabPLANETArray();
         String[] errorDetailVariables = new String[0];        
 
         if (fieldNames.length==0){
@@ -767,8 +737,6 @@ public class Rdbms {
     public static Object[] updateRecordFieldsByFilter(String schemaName, String tableName, String[] updateFieldNames, Object[] updateFieldValues, String[] whereFieldNames, Object[] whereFieldValues) {
         
         String[] diagnoses = new String[6];        
-        LabPLANETArray LabPLANETArray = new LabPLANETArray();       
-        LabPLANETPlatform labPlat = new LabPLANETPlatform();  
         updateFieldValues = LabPLANETArray.decryptTableFieldArray(schemaName, tableName, updateFieldNames, (Object[]) updateFieldValues);        
         String[] errorDetailVariables = new String[0];        
        
@@ -819,7 +787,6 @@ public class Rdbms {
      */
     public  static CachedRowSetImpl prepRdQuery(String consultaconinterrogaciones, Object [] valoresinterrogaciones) throws SQLException{
     //prepare statement para evitar sql injection
-    LabPLANETArray LabPLANETArray = new LabPLANETArray();        
     Object[] filteredValoresConInterrogaciones = new Object[0];     
 //    PreparedStatement prep=new PreparedStatement();
         PreparedStatement prepareStatement = conn.prepareStatement(consultaconinterrogaciones);
@@ -841,14 +808,17 @@ public class Rdbms {
                 
             buildPreparedStatement(filteredValoresConInterrogaciones, prepareStatement, null); 
         }catch(SQLException er){
-            String errMessage = er.getMessage();        
+            String errMessage = er.getMessage();  
+            conn.close();            
             return new CachedRowSetImpl();
         }
         
     ResultSet res = prepareStatement.executeQuery();
-    CachedRowSetImpl crs = new CachedRowSetImpl();
-    crs.populate(res);
-    
+    CachedRowSetImpl crs =null;
+    try{
+        crs = new CachedRowSetImpl();
+        crs.populate(res);
+    }catch(Exception e){crs.close();}
     return crs; 
     }
     
@@ -926,7 +896,7 @@ public class Rdbms {
             return items;
         } catch (SQLException ex) {
             Logger.getLogger(Rdbms.class.getName()).log(Level.SEVERE, null, ex);
-            return null;
+            return new String[0];
         }
     }
     
@@ -1068,23 +1038,28 @@ public class Rdbms {
      * @return
      */
     public static Date getCurrentDate(){        
-        Date de = new java.sql.Date(System.currentTimeMillis());        
-        return de;}    
+        //By now this method returns the same value than the getLocalDate one.
+        //Date de = new java.sql.Date(System.currentTimeMillis());        
+        return getLocalDate();}    
     
     private static CachedRowSetImpl readQuery(String consulta) throws SQLException{
-    Statement sta=getConnection().createStatement();
-    sta.setQueryTimeout(rdbms.getTimeout());
-    
-    ResultSet res=null;
-            
-        if(!"".equals(consulta)){
-        res = sta.executeQuery(consulta);    
+        Statement sta=null;
+        CachedRowSetImpl crs = null;
+        try{
+            sta=getConnection().createStatement();
+            sta.setQueryTimeout(rdbms.getTimeout());    
+            ResultSet res=null;            
+            if(!"".equals(consulta)){
+                res = sta.executeQuery(consulta);    
+            }
+        crs = new CachedRowSetImpl();
+        crs.populate(res);    
+        return crs;    
+        }catch(Exception e){
+            sta.close();
+            crs.close();
         }
-        
-    CachedRowSetImpl crs = new CachedRowSetImpl();
-    crs.populate(res);
-    
-    return crs;    
+        return crs;
     }
     
     public Connection createTransaction(){

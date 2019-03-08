@@ -31,7 +31,6 @@ import testing.functionalData.testingFileContentSections;
  * @author Administrator
  */
 public class DBActions extends HttpServlet {
-    String classVersion = "0.1";
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      *
@@ -168,7 +167,6 @@ public class DBActions extends HttpServlet {
                             dataSample2D = LabPLANETArray.array1dTo2d(trapErrorMessage, trapErrorMessage.length);
                             break;
                     }        
-                    LPNulls labNull = new LPNulls();
                     if (dataSample2D[0].length==0){fileContent = fileContent + "<td>No content in the array dataSample2D returned for function "+functionBeingTested;}
                     if (dataSample2D[0].length>0){fileContent = fileContent + "<td>"+dataSample2D[0][0].toString();}
                     if (dataSample2D[0].length>1){fileContent = fileContent + ". "+LPNulls.replaceNull((String) dataSample2D[0][1]);}

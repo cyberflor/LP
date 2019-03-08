@@ -65,7 +65,6 @@ public class LabPLANETJson {
     public static String convertToJSON(ResultSet res) {
         try {
             String jsonarrayf;
-            jsonarrayf = null;
             String obj [] = null;
             boolean first = res.first();
             String finalString = "";
@@ -100,24 +99,16 @@ public class LabPLANETJson {
                             if (!fieldar.endsWith("}")){
                                 fieldarm += "},";
                             }
-                         
                             fieldarm =   fieldar; 
                             fieldarm = fieldarm.replace("\\\"", "\"");
-                            
-                            //fieldarm = fieldarm.replace("'gTr(", "gTr(");
-                            //fieldarm = fieldarm.replace(")'", ")");
                             
                             strarr[index] =  fieldarm;
                             finalString = finalString + "{"+fieldarm+"}";
                             if (index < strarr.length-1){finalString=finalString+",";}
                             index++;
                         }
-                        
                         objarr = strarr;
-                        
                     }
-                    
-                    obj = objarr;
                     res.next();
                 }} catch (SQLException ex) {
                     Logger.getLogger(LabPLANETJson.class.getName()).log(Level.SEVERE, null, ex);
@@ -160,7 +151,6 @@ public class LabPLANETJson {
                         try {
                             obj.put(resultSet.getMetaData().getColumnLabel(i + 1)
                                     .toLowerCase(), "");
-                            //return null;
                         } catch (JSONException ex1) {
                             Logger.getLogger(LabPLANETJson.class.getName()).log(Level.SEVERE, null, ex1);
                         }
@@ -187,12 +177,9 @@ public class LabPLANETJson {
  */   
     public static String [] _getJsonArrayFields(String table, String[] fields,String fieldPrefix) throws SQLException {
         String [] itt = table.split("\\.");
-        String tbl = itt[1];
-
-       String tableColumns = ""; //" and column_name = 'description' ";
-       
-//Convert this method by using the official Rdbms for queries
-return itt;       
+       String tableColumns = ""; //" and column_name = 'description' ";      
+        //Convert this method by using the official Rdbms for queries
+        return itt;       
     }
 /*       
        if (fields!=null)

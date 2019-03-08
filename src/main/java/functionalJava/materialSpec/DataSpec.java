@@ -54,11 +54,9 @@ public class DataSpec {
      * @return
      */
     public Object[] resultCheck(String schemaName, String result, String specRule, String values, String separator, String listName){
-      //  LabPLANETPlatform labPlat = new LabPLANETPlatform();        
         Object[] isCorrectTheSpec = new Object[2];
         Object[] diagnoses = new Object[2];
         ConfigSpecRule matQualit = new ConfigSpecRule();
-        LabPLANETArray LabPLANETArray = new LabPLANETArray();
         Object [] errorVariables = new Object[0];        
 
         String errorCode = "DataSpec_resultCheck_mandatoryFieldIsNull";        
@@ -218,8 +216,6 @@ public class DataSpec {
         Object[] isCorrectMinMaxSpec = new Object[2];
         Object[] diagnoses = new Object[7];
         ConfigSpecRule matQuant = new ConfigSpecRule();
-        LabPLANETArray LabPLANETArray = new LabPLANETArray();
-
         Object [] errorVariables = new Object[0];        
         
         if (result==null){
@@ -299,7 +295,6 @@ public class DataSpec {
         Object[] isCorrectMinMaxSpec = new Object[2];
         Object[] diagnoses = new Object[7];
         ConfigSpecRule matQuant = new ConfigSpecRule();
-        LabPLANETArray LabPLANETArray = new LabPLANETArray();
 
         Object [] errorVariables = new Object[0];        
         
@@ -366,7 +361,6 @@ public class DataSpec {
         ConfigSpecRule matQuant = new ConfigSpecRule();
         String errorCode = "";
         Object [] errorVariables = new Object[0]; 
-        LabPLANETArray LabPLANETArray = new LabPLANETArray();
 
         if (result==null){
                 errorCode = "DataSpec_resultCheck_mandatoryFieldIsNull";
@@ -509,7 +503,6 @@ public class DataSpec {
         ConfigSpecRule matQuant = new ConfigSpecRule();
         String errorCode = "";
         Object [] errorVariables = new Object[0]; 
-        LabPLANETArray LabPLANETArray = new LabPLANETArray();
 
         if (result==null){
                 errorCode = "DataSpec_resultCheck_mandatoryFieldIsNull";

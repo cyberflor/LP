@@ -27,8 +27,6 @@ import functionalJava.sampleStructure.DataSample;
  */
 public class DataProject extends DataSample{
 
-    Rdbms rdbms;
-    String lastError;
     Object[] diagnoses = new Object[7];
 
     String[] mandatoryFields = null;
@@ -42,7 +40,6 @@ public class DataProject extends DataSample{
 
     String schemaDataName = "data";
     String schemaConfigName = "config";
-    String tableName = "sample";    
 
     /**
      *
@@ -54,7 +51,6 @@ public class DataProject extends DataSample{
 
     /**
      *
-     * @param rdbm
      * @param schemaPrefix
      * @param sampleTemplate
      * @param sampleTemplateVersion
@@ -75,7 +71,6 @@ public class DataProject extends DataSample{
 
     /**
      *
-     * @param rdbm
      * @param schemaPrefix
      * @param sampleTemplate
      * @param sampleTemplateVersion
@@ -95,30 +90,28 @@ public class DataProject extends DataSample{
 }
 
 Object[] createProject( String schemaPrefix, String projectTemplate, Integer projectTemplateVersion, String[] sampleFieldName, Object[] sampleFieldValue, String userName, String userRole, Boolean devMode) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException{
-    LabPLANETArray labArr = new LabPLANETArray();
-    LabPLANETPlatform labPlat = new LabPLANETPlatform();
     DataDataIntegrity labIntChecker = new DataDataIntegrity();
 
     if (devMode==true){
         StackTraceElement[] elementsDev = Thread.currentThread().getStackTrace();
         javaDocLineName = "BEGIN";
-        javaDocFields = labArr.addValueToArray1D(javaDocFields, "line_name");
-        javaDocValues = labArr.addValueToArray1D(javaDocValues, javaDocLineName);
-        javaDocFields = labArr.addValueToArray1D(javaDocFields, "class_version");
-        javaDocValues = labArr.addValueToArray1D(javaDocValues, classVersion);
-        labPlat.addJavaClassDoc(javaDocFields, javaDocValues, elementsDev);
+        javaDocFields = LabPLANETArray.addValueToArray1D(javaDocFields, "line_name");
+        javaDocValues = LabPLANETArray.addValueToArray1D(javaDocValues, javaDocLineName);
+        javaDocFields = LabPLANETArray.addValueToArray1D(javaDocFields, "class_version");
+        javaDocValues = LabPLANETArray.addValueToArray1D(javaDocValues, classVersion);
+        LabPLANETPlatform.addJavaClassDoc(javaDocFields, javaDocValues, elementsDev);
     }    
     
         String query = "";
-        tableName = "project";
+        String tableName = "project";
         String actionName = "Insert";
         String auditActionName = "ADD_SAMPLE_ANALYSIS";                        
         
         String schemaDataName = "data";
         String schemaConfigName = "config";
         
-        schemaDataName = labPlat.buildSchemaName(schemaPrefix, schemaDataName);    
-        schemaConfigName = labPlat.buildSchemaName(schemaPrefix, schemaConfigName); 
+        schemaDataName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaDataName);    
+        schemaConfigName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaConfigName); 
         
         mandatoryFields = labIntChecker.getTableMandatoryFields(schemaDataName, this.getSampleGrouper()+"_"+tableName, actionName);
         
@@ -126,20 +119,20 @@ Object[] createProject( String schemaPrefix, String projectTemplate, Integer pro
     if (devMode==true){
         StackTraceElement[] elementsDev = Thread.currentThread().getStackTrace();
         javaDocLineName = "CHECK sampleFieldName and sampleFieldValue match in length";
-        javaDocFields = labArr.addValueToArray1D(javaDocFields, "line_name");
-        javaDocValues = labArr.addValueToArray1D(javaDocValues, javaDocLineName);
-        javaDocFields = labArr.addValueToArray1D(javaDocFields, "class_version");
-        javaDocValues = labArr.addValueToArray1D(javaDocValues, classVersion);
-        labPlat.addJavaClassDoc(javaDocFields, javaDocValues, elementsDev);
+        javaDocFields = LabPLANETArray.addValueToArray1D(javaDocFields, "line_name");
+        javaDocValues = LabPLANETArray.addValueToArray1D(javaDocValues, javaDocLineName);
+        javaDocFields = LabPLANETArray.addValueToArray1D(javaDocFields, "class_version");
+        javaDocValues = LabPLANETArray.addValueToArray1D(javaDocValues, classVersion);
+        LabPLANETPlatform.addJavaClassDoc(javaDocFields, javaDocValues, elementsDev);
     }    
     if (devMode==false){
-        diagnoses = labArr.checkTwoArraysSameLength(sampleFieldName, sampleFieldValue);
+        diagnoses = LabPLANETArray.checkTwoArraysSameLength(sampleFieldName, sampleFieldValue);
         if (sampleFieldName.length!=sampleFieldValue.length){
             StackTraceElement[] elements = Thread.currentThread().getStackTrace();
             diagnoses[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
             diagnoses[1]= classVersion;
             diagnoses[2]= "Code Line " + String.valueOf(elements[1].getLineNumber());   
-            diagnoses[3]="FALSE";
+            diagnoses[3]="LABPLANET_FALSE";
             diagnoses[4]="ERROR:Field names and values arrays with different length";
             diagnoses[5]="The values in FieldName are:"+ Arrays.toString(sampleFieldName)+". and in FieldValue are:"+Arrays.toString(sampleFieldValue);
             return diagnoses;
@@ -148,15 +141,14 @@ Object[] createProject( String schemaPrefix, String projectTemplate, Integer pro
     if (devMode==true){
         StackTraceElement[] elementsDev = Thread.currentThread().getStackTrace();
         javaDocLineName = "CHECK sampleFieldName and sampleFieldValue match in length";
-        javaDocFields = labArr.addValueToArray1D(javaDocFields, "line_name");
-        javaDocValues = labArr.addValueToArray1D(javaDocValues, javaDocLineName);
-        javaDocFields = labArr.addValueToArray1D(javaDocFields, "class_version");
-        javaDocValues = labArr.addValueToArray1D(javaDocValues, classVersion);
-        labPlat.addJavaClassDoc(javaDocFields, javaDocValues, elementsDev);
+        javaDocFields = LabPLANETArray.addValueToArray1D(javaDocFields, "line_name");
+        javaDocValues = LabPLANETArray.addValueToArray1D(javaDocValues, javaDocLineName);
+        javaDocFields = LabPLANETArray.addValueToArray1D(javaDocFields, "class_version");
+        javaDocValues = LabPLANETArray.addValueToArray1D(javaDocValues, classVersion);
+        LabPLANETPlatform.addJavaClassDoc(javaDocFields, javaDocValues, elementsDev);
     }    
     if (devMode==false){        
-        LabPLANETArray lpa = new LabPLANETArray();
-        if (lpa.duplicates(sampleFieldName)){
+        if (LabPLANETArray.duplicates(sampleFieldName)){
             StackTraceElement[] elements = Thread.currentThread().getStackTrace();
             diagnoses[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
             diagnoses[1]= classVersion;
@@ -173,9 +165,9 @@ Object[] createProject( String schemaPrefix, String projectTemplate, Integer pro
         Integer fieldIndexSpecCodeVersion = Arrays.asList(sampleFieldName).indexOf("spec_code_version");
         Integer fieldIndexSpecVariationName = Arrays.asList(sampleFieldName).indexOf("spec_variation_name");
         if ((fieldIndexSpecCode!=-1) || (fieldIndexSpecCodeVersion!=-1) || (fieldIndexSpecVariationName!=-1)){
-            mandatoryFields = labArr.addValueToArray1D(mandatoryFields, "spec_code");
-            mandatoryFields = labArr.addValueToArray1D(mandatoryFields, "spec_code_version");
-            mandatoryFields = labArr.addValueToArray1D(mandatoryFields, "spec_variation_name");
+            mandatoryFields = LabPLANETArray.addValueToArray1D(mandatoryFields, "spec_code");
+            mandatoryFields = LabPLANETArray.addValueToArray1D(mandatoryFields, "spec_code_version");
+            mandatoryFields = LabPLANETArray.addValueToArray1D(mandatoryFields, "spec_variation_name");
         }
 
         mandatoryFieldsValue = new Object[mandatoryFields.length];
@@ -250,14 +242,14 @@ Object[] createProject( String schemaPrefix, String projectTemplate, Integer pro
                     }                
             }
         }
-        sampleFieldName = lpa.addValueToArray1D(sampleFieldName, "config");    
-        sampleFieldValue = lpa.addValueToArray1D(sampleFieldValue, projectTemplate);
-        sampleFieldName = lpa.addValueToArray1D(sampleFieldName, "config_version");    
-        sampleFieldValue = lpa.addValueToArray1D(sampleFieldValue, projectTemplateVersion); 
+        sampleFieldName = LabPLANETArray.addValueToArray1D(sampleFieldName, "config");    
+        sampleFieldValue = LabPLANETArray.addValueToArray1D(sampleFieldValue, projectTemplate);
+        sampleFieldName = LabPLANETArray.addValueToArray1D(sampleFieldName, "config_version");    
+        sampleFieldValue = LabPLANETArray.addValueToArray1D(sampleFieldValue, projectTemplateVersion); 
 
         diagnoses = Rdbms.insertRecordInTable(schemaDataName, tableName, sampleFieldName, sampleFieldValue);
 
-        Object[] fieldsOnLogSample = labArr.joinTwo1DArraysInOneOf1DString(sampleFieldName, sampleFieldValue, ":");
+        Object[] fieldsOnLogSample = LabPLANETArray.joinTwo1DArraysInOneOf1DString(sampleFieldName, sampleFieldValue, ":");
 
         //smpAudit.sampleAuditAdd(rdbm, schemaPrefix, auditActionName, "sample", Integer.parseInt(diagnoses[6]), Integer.parseInt(diagnoses[6]), null, null, fieldsOnLogSample, userName, userRole);
 
@@ -268,18 +260,17 @@ Object[] createProject( String schemaPrefix, String projectTemplate, Integer pro
         javaDocLineName = "END";
         Integer specialFieldIndex = Arrays.asList(javaDocFields).indexOf("line_name");
         if (specialFieldIndex==-1){
-            javaDocFields = labArr.addValueToArray1D(javaDocFields, "line_name");         javaDocValues = labArr.addValueToArray1D(javaDocValues, javaDocLineName);         
+            javaDocFields = LabPLANETArray.addValueToArray1D(javaDocFields, "line_name");         javaDocValues = LabPLANETArray.addValueToArray1D(javaDocValues, javaDocLineName);         
         }else{    
             javaDocValues[specialFieldIndex] = javaDocLineName;             
         }
-        labPlat.addJavaClassDoc(javaDocFields, javaDocValues, elementsDev);
+        LabPLANETPlatform.addJavaClassDoc(javaDocFields, javaDocValues, elementsDev);
     }
     return diagnoses; 
 }    
 
     /**
      *
-     * @param rdbm
      * @param schemaPrefix
      * @param projectTemplate
      * @param projectTemplateVersion
@@ -289,18 +280,14 @@ Object[] createProject( String schemaPrefix, String projectTemplate, Integer pro
      * @param userRole
      * @param projectName
      * @param appSessionId
-     * @param appSessionStartDate
      * @return
      */
-    public Object[] logProjectSample( String schemaPrefix, String projectTemplate, Integer projectTemplateVersion, String[] fieldName, Object[] fieldValue, String userName, String userRole, String projectName, Integer appSessionId){
-    LabPLANETArray labArr = new LabPLANETArray();
-    LabPLANETPlatform labPlat = new LabPLANETPlatform();
-    
+    public Object[] logProjectSample( String schemaPrefix, String projectTemplate, Integer projectTemplateVersion, String[] fieldName, Object[] fieldValue, String userName, String userRole, String projectName, Integer appSessionId){    
     Object[] newProjSample = new Object[0];
         try {
             DataSample ds = new DataSample("project");
-            fieldName = labArr.addValueToArray1D(fieldName, "project");
-            fieldValue = labArr.addValueToArray1D(fieldValue, projectName);
+            fieldName = LabPLANETArray.addValueToArray1D(fieldName, "project");
+            fieldValue = LabPLANETArray.addValueToArray1D(fieldValue, projectName);
             newProjSample = ds.logSample(schemaPrefix, projectTemplate, projectTemplateVersion, fieldName, fieldValue, userName, userRole, appSessionId);
             /*if (!newProjSample[3].equalsIgnoreCase("FALSE")){
                 String schemaDataName = "data";

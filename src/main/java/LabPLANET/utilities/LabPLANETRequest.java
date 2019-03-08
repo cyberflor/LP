@@ -37,6 +37,6 @@ public class LabPLANETRequest {
     }
     
     public static void sendResponseMissingMandatories(){
-        
+        // Not implemented yet
     }
 }

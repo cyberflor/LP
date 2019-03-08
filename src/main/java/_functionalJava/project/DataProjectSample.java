@@ -12,15 +12,13 @@ import functionalJava.sampleStructure.DataSample;
  * @author Administrator
  */
 public class DataProjectSample extends DataSample{
-    
-    String tableName = "project_sample";
-
     /**
      *
      * @param grouperName
      */
     public DataProjectSample(String grouperName) {
         super(grouperName);
+        String tableName = "project_sample";            
     }
     
     

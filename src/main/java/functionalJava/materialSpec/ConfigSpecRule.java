@@ -46,8 +46,6 @@ public class ConfigSpecRule {
         expectedRules[3] = "NOTCONTAINS";
         expectedRules[4] = "ISONEOF";
         expectedRules[5] = "ISNOTONEOF";
-        LabPLANETArray LabPLANETArray = new LabPLANETArray();
-        LabPLANETPlatform labPlat = new LabPLANETPlatform();
         
         String schemaName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaConfigName);
         
@@ -104,12 +102,8 @@ public class ConfigSpecRule {
  * @return Object[] position 0 is a boolean to determine if the arguments are correct, when set to false then position 1 provides detail about the deficiency 
  */
     public Object[] specLimitIsCorrectQuantitative(Float minSpec, Float maxSpec){
-        LabPLANETArray LabPLANETArray = new LabPLANETArray();
-
         String errorCode = "";
         Object[]  errorDetailVariables= new Object[0];        
-                
-        Object[] diagnoses = new Object[2];
         
         if ((minSpec==null) && (maxSpec==null)){
             errorCode = "specLimits_MinAndMaxSpecBothMandatory"; return LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);}                                               
@@ -137,13 +131,9 @@ public class ConfigSpecRule {
  * @return Object[] position 0 is a boolean to determine if the arguments are correct, when set to false then position 1 provides detail about the deficiency 
  */
     public Object[] specLimitIsCorrectQuantitative(BigDecimal minSpec, BigDecimal maxSpec){
-        LabPLANETArray LabPLANETArray = new LabPLANETArray();
-
         String errorCode = "";
         Object[]  errorDetailVariables= new Object[0];        
                 
-        Object[] diagnoses = new Object[2];
-        
         if ((minSpec==null) && (maxSpec==null)){
             errorCode = "specLimits_MinAndMaxSpecBothMandatory"; return LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);}                                               
         if ((minSpec!=null) && (maxSpec==null)){
@@ -177,9 +167,6 @@ public class ConfigSpecRule {
     public Object[] specLimitIsCorrectQuantitative(Float minSpec, Float maxSpec, Float minControl1, Float maxControl1){
         String errorCode = "";
         Object[]  errorDetailVariables= new Object[0];        
-        Object[] diagnoses = new Object[2];
-        LabPLANETArray LabPLANETArray = new LabPLANETArray();
-        
         Object[] isCorrectMinMaxSpec = this.specLimitIsCorrectQuantitative(minSpec, maxSpec);
         if ("LABPLANET_FALSE".equalsIgnoreCase(isCorrectMinMaxSpec[0].toString())){
             return isCorrectMinMaxSpec;}

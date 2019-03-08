@@ -36,26 +36,24 @@ public class treantTimeLine extends HttpServlet {
     private String GetSampleAudit(String schemaName, String tableName, Integer sn){
         String myJsonInString = "";
         
-        LabPLANETArray labArr = new LabPLANETArray();
-        
         String[] whereFieldNames = new String[0];
-        whereFieldNames = labArr.addValueToArray1D(whereFieldNames, "sample_id");
-        whereFieldNames = labArr.addValueToArray1D(whereFieldNames, "transaction_id is not null");
+        whereFieldNames = LabPLANETArray.addValueToArray1D(whereFieldNames, "sample_id");
+        whereFieldNames = LabPLANETArray.addValueToArray1D(whereFieldNames, "transaction_id is not null");
 
         Object[] whereFieldValues = new Object[0];
-        whereFieldValues = labArr.addValueToArray1D(whereFieldValues, sn);
+        whereFieldValues = LabPLANETArray.addValueToArray1D(whereFieldValues, sn);
 
         String[] fieldsToRetrieve = new String[0];
-        fieldsToRetrieve = labArr.addValueToArray1D(fieldsToRetrieve, "transaction_id");  
-        fieldsToRetrieve = labArr.addValueToArray1D(fieldsToRetrieve, "audit_id"); 
-        fieldsToRetrieve = labArr.addValueToArray1D(fieldsToRetrieve, "action_name");        
-        fieldsToRetrieve = labArr.addValueToArray1D(fieldsToRetrieve, "sample_id");  
-        fieldsToRetrieve = labArr.addValueToArray1D(fieldsToRetrieve, "test_id");  
-        fieldsToRetrieve = labArr.addValueToArray1D(fieldsToRetrieve, "result_id");          
+        fieldsToRetrieve = LabPLANETArray.addValueToArray1D(fieldsToRetrieve, "transaction_id");  
+        fieldsToRetrieve = LabPLANETArray.addValueToArray1D(fieldsToRetrieve, "audit_id"); 
+        fieldsToRetrieve = LabPLANETArray.addValueToArray1D(fieldsToRetrieve, "action_name");        
+        fieldsToRetrieve = LabPLANETArray.addValueToArray1D(fieldsToRetrieve, "sample_id");  
+        fieldsToRetrieve = LabPLANETArray.addValueToArray1D(fieldsToRetrieve, "test_id");  
+        fieldsToRetrieve = LabPLANETArray.addValueToArray1D(fieldsToRetrieve, "result_id");          
 
         String[] orderBy = new String[0];
-        orderBy = labArr.addValueToArray1D(orderBy, "transaction_id");  
-        orderBy = labArr.addValueToArray1D(orderBy, "audit_id");        
+        orderBy = LabPLANETArray.addValueToArray1D(orderBy, "transaction_id");  
+        orderBy = LabPLANETArray.addValueToArray1D(orderBy, "audit_id");        
         
         Object[][] smpAuditRcd = Rdbms.getRecordFieldsByFilter(schemaName, tableName, whereFieldNames, whereFieldValues, fieldsToRetrieve, orderBy);
         
@@ -124,31 +122,28 @@ public class treantTimeLine extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
-              
-            
             if (Rdbms.getRdbms().startRdbms("labplanet", "LabPlanet")==null){
-                return;
-            }
+                return;}
             
             String schemaName = "\"oil-pl1-data-audit\"";
             String tableName = "sample";
             
             String csvFileName = "LabPLANETTimeLine.html"; String csvFileSeparator=";";
             String csvPathName = "\\\\FRANCLOUD\\fran\\LabPlanet\\SourceCode\\treant-js\\"+csvFileName; 
-            
-            Scanner scanIn = new Scanner(new BufferedReader(new FileReader(csvPathName)));
+            Scanner scanIn = null;
+            try{
+                scanIn = new Scanner(new BufferedReader(new FileReader(csvPathName)));
 
-            String myJsonInString = GetSampleAudit(schemaName, tableName, 12);
+                String myJsonInString = GetSampleAudit(schemaName, tableName, 12);
 
-            String fileContent = "";
-            while (scanIn.hasNextLine()){
-                String inputLine = scanIn.nextLine();
-                fileContent=fileContent+inputLine.replace("##NodeStructure##", myJsonInString);
-            }
-            out.println(fileContent);
-            
-            Rdbms.closeRdbms();
-
+                String fileContent = "";
+                while (scanIn.hasNextLine()){
+                    String inputLine = scanIn.nextLine();
+                    fileContent=fileContent+inputLine.replace("##NodeStructure##", myJsonInString);
+                }
+                out.println(fileContent);            
+                Rdbms.closeRdbms();                  
+            }catch(IOException e){scanIn.close();}
         }     
     }
      

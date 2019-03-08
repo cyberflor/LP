@@ -17,6 +17,7 @@ public class ConfigRequirement {
      * @param pVersion
      */
     public void _getConfigObject2( String procedure, Integer pVersion){
+        // Not implemented yet
     }
    /*
         try {

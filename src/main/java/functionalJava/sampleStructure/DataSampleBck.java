@@ -80,7 +80,9 @@ public class DataSampleBck {
     /**
      *
      */
-    public void logSampleBySchedule(){}
+    public void logSampleBySchedule(){
+    // Not implemented yet
+    }
 
     /**
      *
@@ -528,7 +530,7 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
         }else{    
             javaDocValues[specialFieldIndex] = javaDocLineName;             
         }
-        labPlat.addJavaClassDoc(javaDocFields, javaDocValues, elementsDev);
+        LabPLANETPlatform.addJavaClassDoc(javaDocFields, javaDocValues, elementsDev);
     }
     return diagnoses; 
 }
@@ -810,7 +812,9 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
      * @param analyst
      * @param userRole
      */
-    public void _sampleAssignAnalyst( String schemaPrefix, String userName, Integer testId, String analyst, String userRole){}
+    public void _sampleAssignAnalyst( String schemaPrefix, String userName, Integer testId, String analyst, String userRole){
+    // Not implemented yet
+    }
 
     /**
      *
@@ -1750,7 +1754,7 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
                 //return labPlat.trapErrorMessage("LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);                  
             }
             String specEval = (String) resSpecEvaluation[resSpecEvaluation.length-1];      String specEvalDetail = (String) resSpecEvaluation[resSpecEvaluation.length-2];
-            if (requiresUnitsConversion=true){specEvalDetail=specEvalDetail+ " in "+specUomName;}
+            if (requiresUnitsConversion==true){specEvalDetail=specEvalDetail+ " in "+specUomName;}
             
             fieldsName = LabPLANETArray.addValueToArray1D(fieldsName, "spec_eval");
             fieldsValue = LabPLANETArray.addValueToArray1D(fieldsValue, specEval);
@@ -1941,7 +1945,9 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
      * @param userName
      * @param resultId
      */
-    public void _sampleAnalysisResultReview( String schemaPrefix, String userName, Integer resultId){}
+    public void _sampleAnalysisResultReview( String schemaPrefix, String userName, Integer resultId){
+    // Not implemented yet
+    }
 
     /**
      *
@@ -1950,7 +1956,9 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
      * @param userName
      * @param resultId
      */
-    public void _sampleAnalysisReview( String schemaPrefix, String userName, Integer resultId){}
+    public void _sampleAnalysisReview( String schemaPrefix, String userName, Integer resultId){
+    // Not implemented yet
+    }
 
     /**
      *
@@ -1958,12 +1966,16 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
      * @param userName
      * @param resultId
      */
-    public void _sampleAnalysisResult( String schemaPrefix, String userName, Integer resultId){}
+    public void _sampleAnalysisResult( String schemaPrefix, String userName, Integer resultId){
+    // Not implemented yet
+    }
     
     /**
      *
      */
-    public void _groupSampleCreate(){}
+    public void _groupSampleCreate(){
+    // Not implemented yet
+    }
 /*
 private Map getDefaultValuesTemplate(String schema, String tsample, String template) throws SQLException {
     
@@ -2114,7 +2126,6 @@ private Map getDefaultValuesTemplate(String schema, String tsample, String templ
         String myDiagnoses = "";        
         String schemaConfigName = "config";
         
-        LabPLANETPlatform labPlat = new LabPLANETPlatform();       
         schemaConfigName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaConfigName); 
         
         if ( 1==1){
@@ -2170,7 +2181,6 @@ private Map getDefaultValuesTemplate(String schema, String tsample, String templ
         String myDiagnoses = "";        
         String schemaConfigName = "config";
         
-        LabPLANETPlatform labPlat = new LabPLANETPlatform();       
         schemaConfigName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaConfigName); 
 
         Integer specialFieldIndex = Arrays.asList(mandatoryFields).indexOf("spec_code");
@@ -2617,6 +2627,7 @@ private Map getDefaultValuesTemplate(String schema, String tsample, String templ
     }
     
     public void autoSampleAliquoting( String schemaPrefix, Integer sampleId, String userName, String userRole, String[] sampleFieldName, Object[] sampleFieldValue, String eventName, Integer appSessionId, Integer transactionId){
+        // Not implemented yet
     }
     
     public Object[] sarChangeUOM( String schemaPrefix, Integer resultId, String newUOM, String userName, String userRole){

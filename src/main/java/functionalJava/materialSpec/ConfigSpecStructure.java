@@ -23,19 +23,12 @@ import java.util.logging.Logger;
  * @author Fran Gomez
  */
 public class ConfigSpecStructure {
-
     Object[] diagnoses = new Object[6];
     String classVersion = "Class Version=0.1";
-    
     String[] mandatoryFields = new String[1];
     Object[] mandatoryFieldValue = new String[0];
-        
     String mandatoryFieldsMissing = "";
-    
-    LabPLANETArray LabPLANETArray = new LabPLANETArray();
-    LabPLANETPlatform labPlat = new LabPLANETPlatform();
 
-    
     private String[] getSpecialFields(){
         String[] mySpecialFields = new String[6];
         
@@ -475,12 +468,10 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
 
         mandatoryFields = getSpecMandatoryFields();
         
-        LabPLANETArray lpa = new LabPLANETArray();
-
-        String[] checkTwoArraysSameLength = lpa.checkTwoArraysSameLength(specFieldName, specFieldValue);
+        String[] checkTwoArraysSameLength = LabPLANETArray.checkTwoArraysSameLength(specFieldName, specFieldValue);
         if ("LABPLANET_FALSE".equalsIgnoreCase(checkTwoArraysSameLength[0])){return checkTwoArraysSameLength;}
 
-        if (lpa.duplicates(specFieldName)){
+        if (LabPLANETArray.duplicates(specFieldName)){
            errorCode = "DataSample_FieldsDuplicated";
            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, Arrays.toString(specFieldName));
            return (String[]) LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);                      
@@ -668,10 +659,7 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
         String errorCode="";
         Object[]  errorDetailVariables= new Object[0];
 
-        LabPLANETPlatform labPlat = new LabPLANETPlatform();
-        LabPLANETArray LabPLANETArray = new LabPLANETArray();
         schemaName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaName);
-
         mandatoryFields = getSpecLimitsMandatoryFields();
 
         String[] checkTwoArraysSameLength = LabPLANETArray.checkTwoArraysSameLength(specFieldName, specFieldValue);

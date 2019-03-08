@@ -7,6 +7,7 @@ package functionalJava.parameter;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
@@ -89,7 +90,7 @@ public class Parameter {
         }
     }
 
-    private void addTagInPropertiesFile(String fileName, String entryName, String entryValue, String testBackup) throws Exception{
+    private void addTagInPropertiesFile(String fileName, String entryName, String entryValue, String testBackup) throws IOException{
          
         FileWriter fw = null;
         String newEntry = "";
@@ -127,7 +128,7 @@ public class Parameter {
      * @return
      * @throws Exception
      */
-    public String addTagInPropertiesFile(String fileName, String entryName, String entryValue) throws Exception{
+    public String addTagInPropertiesFile(String fileName, String entryName, String entryValue) throws IOException{
 
         String methodName = "addTagInPropertiesFile";    
         FileWriter fw = null;

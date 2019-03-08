@@ -19,10 +19,9 @@ public class LabPLANETFrontEnd {
      * @return
      */
     public static Object[] responseError(Object[] errorStructure){
-        LabPLANETArray labArr = new LabPLANETArray();
         Object[] response = new Object[0];
-        response = labArr.addValueToArray1D(response, HttpServletResponse.SC_UNAUTHORIZED);
-        response = labArr.addValueToArray1D(response, errorStructure[errorStructure.length-1].toString());        
+        response = LabPLANETArray.addValueToArray1D(response, HttpServletResponse.SC_UNAUTHORIZED);
+        response = LabPLANETArray.addValueToArray1D(response, errorStructure[errorStructure.length-1].toString());        
         return response;
     }
 
@@ -34,11 +33,10 @@ public class LabPLANETFrontEnd {
      * @return
      */
     public static Object[] responseError(Object[] errorStructure, String language, String schemaPrefix){
-        LabPLANETArray labArr = new LabPLANETArray();
         Object[] response = new Object[0];
-        response = labArr.addValueToArray1D(response, HttpServletResponse.SC_UNAUTHORIZED);
+        response = LabPLANETArray.addValueToArray1D(response, HttpServletResponse.SC_UNAUTHORIZED);
         
-        response = labArr.addValueToArray1D(response, errorStructure[errorStructure.length-1].toString());        
+        response = LabPLANETArray.addValueToArray1D(response, errorStructure[errorStructure.length-1].toString());        
         return response;
     }
 }

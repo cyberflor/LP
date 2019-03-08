@@ -428,7 +428,6 @@ public class dataSampleStructure extends HttpServlet {
                     }        
                 }    
             }
-            LPNulls labNull = new LPNulls();
             if (functionBeingTested.equalsIgnoreCase("GETSAMPLEINFO")){
                 fileContent = fileContent + "<td>"+dataSample2D[0][0].toString();
                 fileContent = fileContent + ". "+LPNulls.replaceNull((String) dataSample2D[0][1]);

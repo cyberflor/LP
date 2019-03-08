@@ -53,7 +53,7 @@ public class appHeaderAPI extends HttpServlet {
             
             String actionName = request.getParameter("actionName");
             String finalToken = request.getParameter("finalToken");
-            if (actionName==null & finalToken==null) {
+            if (actionName==null && finalToken==null) {
                 errObject = LabPLANETArray.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
                 errObject = LabPLANETArray.addValueToArray1D(errObject, "API Error Message: actionName and finalToken are mandatory params for this API");                    
                 Object[] errMsg = LabPLANETFrontEnd.responseError(errObject, language, null);

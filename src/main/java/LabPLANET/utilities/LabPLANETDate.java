@@ -67,7 +67,6 @@ public class LabPLANETDate {
      * @return
      */
     public static Object[] getDaysInRange(Calendar startDate, Calendar endDate, String dayOfWeek){
-        LabPLANETArray labArr = new LabPLANETArray();
         Object[] dt = new Object[0];
         
         int dayOfWeekNum=-1;        
@@ -80,9 +79,9 @@ public class LabPLANETDate {
             case "FRIDAYS":dayOfWeekNum=5;break;
             case "SATURDAYS":dayOfWeekNum=6;break;
             default:
-                return null;
-                //dt = labArr.addValueToArray1D(dt,"FALSE");
-                //dt = labArr.addValueToArray1D(dt, "day of week "+dayOfWeek+" not recognized.");return dt;                
+                return new Object[0];
+                //dt = LabPLANETArray.addValueToArray1D(dt,"FALSE");
+                //dt = LabPLANETArray.addValueToArray1D(dt, "day of week "+dayOfWeek+" not recognized.");return dt;                
         }
         int startDateDayOfWeek = startDate.get(Calendar.DAY_OF_WEEK); int endDateDayOfWeek = endDate.get(Calendar.DAY_OF_WEEK);
         
@@ -96,7 +95,7 @@ public class LabPLANETDate {
         startDate.add(Calendar.DAY_OF_MONTH, daysToAdd);
         
         while (startDate.compareTo(endDate)<=0){
-            dt = labArr.addValueToArray1D(dt, startDate.getTime());
+            dt = LabPLANETArray.addValueToArray1D(dt, startDate.getTime());
             startDate.add(Calendar.DAY_OF_MONTH, 7);
         }
         return  dt;                       

@@ -28,10 +28,14 @@ public class DataProjectScheduleAdhoc {
     String itemsMeasurement; 
     Date FirstDay;
     Date endDay;
+    private static final String LB_FALSE = "LABPLANET_FALSE";
+    private static final String LB_TRUE = "LABPLANET_TRUE";
 
     private static class dataProjectSchedule {
 
+
         public dataProjectSchedule() {
+        // Not implemented yet            
         }
     }
     
@@ -196,22 +200,18 @@ public class DataProjectScheduleAdhoc {
         diagn[0] = ""; diagn[1] = ""; diagn[2] = ""; diagn[4] = ""; diagn[5] = "";
         diagn[3] = "FALSE";
         
-        LabPLANETPlatform labPlat = new LabPLANETPlatform();
-        LabPLANETArray labArr = new LabPLANETArray();
-        LabPLANETDate labDate = new LabPLANETDate();        
-        
         String schemaNameConfig = "config";LabPLANETPlatform.buildSchemaName(schemaName, "config");   
         String schemaNameData = LabPLANETPlatform.buildSchemaName(schemaName, "data");   
         
         Object[] existsRecord = Rdbms.existsRecord(schemaNameConfig, "holidays_calendar",  new String[]{"code", "active"}, new Object[]{calendarCode, true});
-        if ("LABPLANET_FALSE".equalsIgnoreCase(existsRecord[0].toString())){ return existsRecord;}     
+        if (LB_FALSE.equalsIgnoreCase(existsRecord[0].toString())){ return existsRecord;}     
 
         Object[][] holidaysCalendarDates = Rdbms.getRecordFieldsByFilter(schemaNameConfig, "holidays_calendar_date", 
                 new String[]{"code"}, new Object[]{calendarCode}, new String[]{"id", "date", "date", "date"});
-        if ("LABPLANET_FALSE".equalsIgnoreCase(holidaysCalendarDates[0][0].toString())){diagn[5]=holidaysCalendarDates[0][5];}
+        if (LB_FALSE.equalsIgnoreCase(holidaysCalendarDates[0][0].toString())){diagn[5]=holidaysCalendarDates[0][5];}
         
         existsRecord = Rdbms.existsRecord(schemaNameData, "project_schedule",  new String[]{"project", "id"}, new Object[]{pName, projSchedId});
-        if ("LABPLANET_FALSE".equalsIgnoreCase(existsRecord[0].toString())){ return existsRecord;}
+        if (LB_FALSE.equalsIgnoreCase(existsRecord[0].toString())){ return existsRecord;}
 
         Object[] newProjSchedRecursive=null;
         if (holidaysCalendarDates.length>0){
@@ -242,7 +242,7 @@ public class DataProjectScheduleAdhoc {
                     Object[] updateResult = Rdbms.updateRecordFieldsByFilter(schemaNameData, "project_schedule_item",
                             new String[]{"conflict", "conflict_detail"}, new Object[]{true, conflictDetail},
                             new String[]{"id"}, new Object[]{itemId.intValue()});
-                    if ("LABPLANET_FALSE".equalsIgnoreCase(updateResult[0].toString())){return updateResult;}                    
+                    if (LB_FALSE.equalsIgnoreCase(updateResult[0].toString())){return updateResult;}                    
                 }
             }                        
         }
@@ -267,22 +267,18 @@ public class DataProjectScheduleAdhoc {
         Object[] diagn = new String[6];
         diagn[0] = ""; diagn[1] = ""; diagn[2] = ""; diagn[4] = ""; diagn[5] = "";
         diagn[3] = "FALSE";
-        
-        LabPLANETPlatform labPlat = new LabPLANETPlatform();
-        LabPLANETArray labArr = new LabPLANETArray();
-        LabPLANETDate labDate = new LabPLANETDate();
-        
+                
         schemaName = LabPLANETPlatform.buildSchemaName(schemaName, "data");       
         Object[] existsRecord = Rdbms.existsRecord(schemaName, tableName,  new String[]{"project", "id"}, new Object[]{pName, projSchedId});
-        if ("LABPLANET_FALSE".equals(existsRecord[0].toString())){ return existsRecord;}
+        if (LB_FALSE.equals(existsRecord[0].toString())){ return existsRecord;}
         
         Calendar startDate = null; Calendar endDate = null;
         
-        if (labArr.valueInArray(fieldName, "start_date")){
-            startDate = (Calendar) fieldValue[labArr.valuePosicInArray(fieldName, "start_date")];
+        if (LabPLANETArray.valueInArray(fieldName, "start_date")){
+            startDate = (Calendar) fieldValue[LabPLANETArray.valuePosicInArray(fieldName, "start_date")];
         }
-        if (labArr.valueInArray(fieldName, "end_date")){
-            endDate = (Calendar) fieldValue[labArr.valuePosicInArray(fieldName, "end_date")];
+        if (LabPLANETArray.valueInArray(fieldName, "end_date")){
+            endDate = (Calendar) fieldValue[LabPLANETArray.valuePosicInArray(fieldName, "end_date")];
         }      
         Object[][] projectInfo = null;
         if (startDate==null || endDate==null){
@@ -310,15 +306,15 @@ public class DataProjectScheduleAdhoc {
         }
         String[] daysOfWeekArr = null;
         String daysOfWeek ="";
-        if (labArr.valueInArray(fieldName, "DAYOFWEEK")){
-            daysOfWeek = (String) fieldValue[labArr.valuePosicInArray(fieldName, "DAYOFWEEK")];
+        if (LabPLANETArray.valueInArray(fieldName, "DAYOFWEEK")){
+            daysOfWeek = (String) fieldValue[LabPLANETArray.valuePosicInArray(fieldName, "DAYOFWEEK")];
             //if ( daysOfWeek!=null){daysOfWeekArr = (String[]) daysOfWeek.split("\\*");}
         }
         
         
         String datesStr = "";
 
-        Object[] daysInRange = labDate.getDaysInRange(startDate, endDate, daysOfWeek);  
+        Object[] daysInRange = LabPLANETDate.getDaysInRange(startDate, endDate, daysOfWeek);  
         Object[] newProjSchedRecursive = null;
         if (daysInRange.length>0){
             newProjSchedRecursive = Rdbms.insertRecordInTable(schemaName, "project_schedule_recursive", 
@@ -341,10 +337,10 @@ public class DataProjectScheduleAdhoc {
             String[] fieldNames = new String[]{"project", "project_schedule_id", "project_sched_recursive_id", "date"};
             Object[] fieldValues = new Object[]{pName, projSchedId, projRecursiveId, daysInRange1};
             if ("LABPLANET_TRUE".equalsIgnoreCase(isHolidays[0].toString())){
-                fieldNames=labArr.addValueToArray1D(fieldNames, "conflict");
-                fieldNames=labArr.addValueToArray1D(fieldNames, "conflict_detail");
-                fieldValues=labArr.addValueToArray1D(fieldValues, true);
-                fieldValues=labArr.addValueToArray1D(fieldValues, conflictDetail);
+                fieldNames=LabPLANETArray.addValueToArray1D(fieldNames, "conflict");
+                fieldNames=LabPLANETArray.addValueToArray1D(fieldNames, "conflict_detail");
+                fieldValues=LabPLANETArray.addValueToArray1D(fieldValues, true);
+                fieldValues=LabPLANETArray.addValueToArray1D(fieldValues, conflictDetail);
             }         
             newProjSchedRecursive = Rdbms.insertRecordInTable(schemaName, "project_schedule_item", 
                     fieldNames,    

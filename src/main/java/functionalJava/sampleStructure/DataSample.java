@@ -81,7 +81,9 @@ public class DataSample {
     /**
      *
      */
-    public void logSampleBySchedule(){}
+    public void logSampleBySchedule(){
+        // Not implemented yet
+    }
 
     /**
      *
@@ -295,9 +297,6 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
         // mandatoryFields = getSampleMandatoryFields();
         Object[] fieldNameValueArrayChecker = LPParadigm.fieldNameValueArrayChecker(sampleFieldName, sampleFieldValue);
         if (!"LABPLANET_TRUE".equalsIgnoreCase(fieldNameValueArrayChecker[0].toString())){return fieldNameValueArrayChecker;}        
-        
-        LabPLANETArray lpa = new LabPLANETArray();
-
         // spec is not mandatory but when any of the fields involved is added to the parameters 
         //  then it turns mandatory all the fields required for linking this entity.
         Integer fieldIndexSpecCode = Arrays.asList(sampleFieldName).indexOf("spec_code");
@@ -377,16 +376,16 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
                     } 
             }
         }
-        sampleFieldName = lpa.addValueToArray1D(sampleFieldName, "sample_config_code");    
-        sampleFieldValue = lpa.addValueToArray1D(sampleFieldValue, sampleTemplate);
-        sampleFieldName = lpa.addValueToArray1D(sampleFieldName, "sample_config_code_version");    
-        sampleFieldValue = lpa.addValueToArray1D(sampleFieldValue, sampleTemplateVersion); 
+        sampleFieldName = LabPLANETArray.addValueToArray1D(sampleFieldName, "sample_config_code");    
+        sampleFieldValue = LabPLANETArray.addValueToArray1D(sampleFieldValue, sampleTemplate);
+        sampleFieldName = LabPLANETArray.addValueToArray1D(sampleFieldName, "sample_config_code_version");    
+        sampleFieldValue = LabPLANETArray.addValueToArray1D(sampleFieldValue, sampleTemplateVersion); 
         
         ChangeOfCustody coc = new ChangeOfCustody();
         Object[] changeOfCustodyEnable = coc.isChangeOfCustodyEnable(schemaDataName, tableName);
         if ("LABPLANET_TRUE".equalsIgnoreCase(changeOfCustodyEnable[0].toString())){
-            sampleFieldName = lpa.addValueToArray1D(sampleFieldName, "custodian");    
-            sampleFieldValue = lpa.addValueToArray1D(sampleFieldValue, userName);             
+            sampleFieldName = LabPLANETArray.addValueToArray1D(sampleFieldName, "custodian");    
+            sampleFieldValue = LabPLANETArray.addValueToArray1D(sampleFieldValue, userName);             
         }
         
         
@@ -695,8 +694,8 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
      * @param userRole
      */
     public void _sampleAssignAnalyst( String schemaPrefix, String userName, Integer testId, String analyst, String userRole){
-
-}
+        // Not implemented yet
+    }
 
     /**
      *
@@ -1621,7 +1620,8 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
                 //return labPlat.trapErrorMessage("LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);                  
             }
             String specEval = (String) resSpecEvaluation[resSpecEvaluation.length-1];      String specEvalDetail = (String) resSpecEvaluation[resSpecEvaluation.length-2];
-            if (requiresUnitsConversion=true){specEvalDetail=specEvalDetail+ " in "+specUomName;}
+            if (requiresUnitsConversion==true){
+                specEvalDetail=specEvalDetail+ " in "+specUomName;}
             
             fieldsName = LabPLANETArray.addValueToArray1D(fieldsName, "spec_eval");
             fieldsValue = LabPLANETArray.addValueToArray1D(fieldsValue, specEval);
@@ -1810,7 +1810,9 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
      * @param userName
      * @param resultId
      */
-    public void _sampleAnalysisResultReview( String schemaPrefix, String userName, Integer resultId){}
+    public void _sampleAnalysisResultReview( String schemaPrefix, String userName, Integer resultId){
+        // Not implemented yet
+    }
 
     /**
      *
@@ -1818,7 +1820,9 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
      * @param userName
      * @param resultId
      */
-    public void _sampleAnalysisReview( String schemaPrefix, String userName, Integer resultId){}
+    public void _sampleAnalysisReview( String schemaPrefix, String userName, Integer resultId){
+        // Not implemented yet
+    }
 
     /**
      *
@@ -1826,12 +1830,16 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
      * @param userName
      * @param resultId
      */
-    public void _sampleAnalysisResult( String schemaPrefix, String userName, Integer resultId){}
+    public void _sampleAnalysisResult( String schemaPrefix, String userName, Integer resultId){
+    // Not implemented yet
+    }
     
     /**
      *
      */
-    public void _groupSampleCreate(){}
+    public void _groupSampleCreate(){
+    // Not implemented yet
+    }
 /*
 private Map getDefaultValuesTemplate(String schema, String tsample, String template) throws SQLException {
     

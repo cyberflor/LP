@@ -11,8 +11,8 @@ package com.labplanet.modelo;
  */
 public class UserRole {
     
-    private int UserId;
-    private String UserRole;
+    private int userId;
+    private String userRoleName;
     
     /**
      *
@@ -27,8 +27,8 @@ public class UserRole {
      * @param nombre
      */
     public UserRole(int id, String nombre) {
-        this.UserId = id;
-        this.UserRole = nombre;        
+        this.userId = id;
+        this.userRoleName = nombre;        
     }
 
     /**
@@ -36,7 +36,7 @@ public class UserRole {
      * @return
      */
     public int getId() {
-        return UserId;
+        return userId;
     }
 
     /**
@@ -44,7 +44,7 @@ public class UserRole {
      * @return
      */
     public String getNombre() {
-        return UserRole;
+        return userRoleName;
     }
 
     /**
@@ -52,15 +52,15 @@ public class UserRole {
      * @param id
      */
     public void setId(int id) {
-        this.UserId = id;
+        this.userId = id;
     }
 
     /**
      *
      * @param nombre
      */
-    public void setUserRole(String nombre) {
-        this.UserRole = nombre;
+    public void setUserRoleName(String nombre) {
+        this.userRoleName = nombre;
     }
 
     /**
@@ -70,7 +70,7 @@ public class UserRole {
     @Override
     public int hashCode() {
         int hash = 5;
-        hash = 29 * hash + this.UserId;
+        hash = 29 * hash + this.userId;
         return hash;
     }
 
@@ -91,7 +91,7 @@ public class UserRole {
             return false;
         }
         final UserRole other = (UserRole) obj;
-        return this.UserId == other.UserId;
+        return this.userId == other.userId;
     }
             
     

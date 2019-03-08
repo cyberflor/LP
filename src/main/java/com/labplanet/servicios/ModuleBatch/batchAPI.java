@@ -32,6 +32,8 @@ import javax.ws.rs.core.Response;
  */
 public class batchAPI extends HttpServlet {
 
+    private static final String LB_FALSE = "LABPLANET_FALSE";
+
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      *
@@ -49,7 +51,7 @@ public class batchAPI extends HttpServlet {
         mandatoryParams = LabPLANETArray.addValueToArray1D(mandatoryParams, "actionName");
         mandatoryParams = LabPLANETArray.addValueToArray1D(mandatoryParams, "finalToken");
         Object[] areMandatoryParamsInResponse = LabPLANETRequest.areMandatoryParamsInApiRequest(request, mandatoryParams);
-        if ("LABPLANET_FALSE".equalsIgnoreCase(areMandatoryParamsInResponse[0].toString())){
+        if (LB_FALSE.equalsIgnoreCase(areMandatoryParamsInResponse[0].toString())){
             errObject = LabPLANETArray.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
             errObject = LabPLANETArray.addValueToArray1D(errObject, "API Error Message: There are mandatory params for this API method not being passed: "+areMandatoryParamsInResponse[1].toString());                    
             Object[] errMsg = LabPLANETFrontEnd.responseError(errObject, language, areMandatoryParamsInResponse[1].toString());
@@ -79,30 +81,30 @@ public class batchAPI extends HttpServlet {
             response.sendError((int) errMsg[0], (String) errMsg[1]);   
             Rdbms.closeRdbms(); 
             return ;               
-        }        
-        Connection con = Rdbms.createTransactionWithSavePoint();
-        if (con==null){
-             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "The Transaction cannot be created, the action should be aborted");
-             return;
-        }
-        Rdbms.setTransactionId(schemaPrefix);
+        }      
         //ResponseEntity<String121> responsew;        
         
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         request.setCharacterEncoding("UTF-8");
+        Connection con = null;
 
         try (PrintWriter out = response.getWriter()) {
+            con = Rdbms.createTransactionWithSavePoint();
+            if (con==null){
+                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "The Transaction cannot be created, the action should be aborted");
+                 return;}
+            Rdbms.setTransactionId(schemaPrefix);
 
             Object[] actionEnabled = LabPLANETPlatform.procActionEnabled(schemaPrefix, actionName);
-            if ("LABPLANET_FALSE".equalsIgnoreCase(actionEnabled[0].toString())){
+            if (LB_FALSE.equalsIgnoreCase(actionEnabled[0].toString())){
                 Object[] errMsg = LabPLANETFrontEnd.responseError(actionEnabled, language, schemaPrefix);
                 response.sendError((int) errMsg[0], (String) errMsg[1]);    
                 Rdbms.closeRdbms(); 
                 return ;               
             }            
             actionEnabled = LabPLANETPlatform.procUserRoleActionEnabled(schemaPrefix, userRole, actionName);
-            if ("LABPLANET_FALSE".equalsIgnoreCase(actionEnabled[0].toString())){            
+            if (LB_FALSE.equalsIgnoreCase(actionEnabled[0].toString())){            
                 Object[] errMsg = LabPLANETFrontEnd.responseError(actionEnabled, language, schemaPrefix);
                 response.sendError((int) errMsg[0], (String) errMsg[1]);    
                 Rdbms.closeRdbms(); 
@@ -120,7 +122,7 @@ public class batchAPI extends HttpServlet {
                     mandatoryParams = LabPLANETArray.addValueToArray1D(mandatoryParams, "numRows");
                     mandatoryParams = LabPLANETArray.addValueToArray1D(mandatoryParams, "numCols");
                     areMandatoryParamsInResponse = LabPLANETRequest.areMandatoryParamsInApiRequest(request, mandatoryParams);
-                    if ("LABPLANET_FALSE".equalsIgnoreCase(areMandatoryParamsInResponse[0].toString())){
+                    if (LB_FALSE.equalsIgnoreCase(areMandatoryParamsInResponse[0].toString())){
                         errObject = LabPLANETArray.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
                         errObject = LabPLANETArray.addValueToArray1D(errObject, "API Error Message: There are mandatory params for this API method not being passed: "+areMandatoryParamsInResponse[1].toString());                    
                         Object[] errMsg = LabPLANETFrontEnd.responseError(errObject, language, areMandatoryParamsInResponse[1].toString());
@@ -141,7 +143,7 @@ public class batchAPI extends HttpServlet {
                     break;
                 case "LOADBATCHARRAY":
                         mandatoryParams = new String[]{"batchName"};
-                        if ("LABPLANET_FALSE".equalsIgnoreCase(areMandatoryParamsInResponse[0].toString())){
+                        if (LB_FALSE.equalsIgnoreCase(areMandatoryParamsInResponse[0].toString())){
                             errObject = LabPLANETArray.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
                             errObject = LabPLANETArray.addValueToArray1D(errObject, "API Error Message: There are mandatory params for this API method not being passed: "+areMandatoryParamsInResponse[1].toString());                    
                             Object[] errMsg = LabPLANETFrontEnd.responseError(errObject, language, areMandatoryParamsInResponse[1].toString());
@@ -160,7 +162,7 @@ public class batchAPI extends HttpServlet {
                     Rdbms.closeRdbms();                    
                     return;                    
             }    
-            if ("LABPLANET_FALSE".equalsIgnoreCase(dataSample[0].toString())){  
+            if (LB_FALSE.equalsIgnoreCase(dataSample[0].toString())){  
                 Rdbms.rollbackWithSavePoint();
                 con.rollback();
                 con.setAutoCommit(true);
@@ -178,14 +180,13 @@ public class batchAPI extends HttpServlet {
                 con.rollback();
                 con.setAutoCommit(true);
             } catch (SQLException ex) {
-                Logger.getLogger(batchAPI.class.getName()).log(Level.SEVERE, null, ex);
-            }
+                Logger.getLogger(batchAPI.class.getName()).log(Level.SEVERE, null, ex);}        
             Rdbms.closeRdbms();                   
             errObject = new String[]{e.getMessage()};
             Object[] errMsg = LabPLANETFrontEnd.responseError(errObject, language, null);
-            response.sendError((int) errMsg[0], (String) errMsg[1]);           
-            
+            response.sendError((int) errMsg[0], (String) errMsg[1]);                       
         }
+        
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

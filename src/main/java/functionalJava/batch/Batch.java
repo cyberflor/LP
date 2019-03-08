@@ -145,7 +145,9 @@ public class Batch {
     /**
      *
      */
-    public void batchSampleCommentAdd(){} //Improve!!
+    public void batchSampleCommentAdd(){
+                // Not implemented yet
+    } //Improve!!
 
     /**
      *

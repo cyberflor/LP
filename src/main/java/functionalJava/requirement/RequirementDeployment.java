@@ -812,6 +812,7 @@ return "";
     }         
 
     private void _createDataBaseSchemas( String schemaNamePrefix){
+        // Not implemented yet
     }
 /*
         String methodName = "createDataBaseSchemas";
@@ -842,6 +843,7 @@ return "";
     }
 */
     private void _createDataBaseSchemaTable( String schemaNamePrefix, String procedure, Integer procVersion){
+        // Not implemented yet
     }
 /*    
         String methodName = "createDataBaseSchemaTable";
@@ -916,6 +918,7 @@ return "";
      */
 
     public void _getConfigObject( String procedure, Integer pVersion){
+        // Not implemented yet
     }
 /*
         String methodName = "RequirementConfigObjects-ProcessRequest";

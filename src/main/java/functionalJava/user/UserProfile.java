@@ -98,7 +98,6 @@ public class UserProfile {
      * @return
      */
     public Object[] getProcedureUserProfileFieldValues ( Object[] schemaPrefix, String userInfoId) {
-            String tableName = "user_profile";  
             Object[] totalProcUserProfiles  = new Object[0];          
             
             for (int iProcs=0; iProcs<schemaPrefix.length; iProcs++){

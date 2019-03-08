@@ -65,7 +65,6 @@ public class Token {
     }  
     
     private Object[] isValidToken(String token){
-        LabPLANETArray LabPLANETArray = new LabPLANETArray();
         Object[] diagnoses = new Object[0];
         Header header = Jwts.header();
         try {
@@ -121,7 +120,6 @@ public class Token {
      * @return
      */
     public String[] validateToken(String token, String[] paramName){
-        LabPLANETArray LabPLANETArray = new LabPLANETArray();
         String[] infoFromToken = new String[0];
         
         for (String pn: paramName){

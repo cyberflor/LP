@@ -12,7 +12,6 @@ import databases.Rdbms;
  * @author Administrator
  */
 public class _UserSession {
-    private String userId;
     private String dbUserId;
     private String userRole;
     private Boolean userSessionValidated=false;
@@ -42,7 +41,7 @@ public class _UserSession {
      *
      * @param dbUserId
      */
-    public void setUserId(String dbUserId) {
+    public void setDbUserId(String dbUserId) {
         this.dbUserId = dbUserId;
     }
 

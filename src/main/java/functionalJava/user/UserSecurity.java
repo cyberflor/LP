@@ -22,7 +22,9 @@ public class UserSecurity {
     /**
      *
      */
-    public UserSecurity(){}
+    public UserSecurity(){
+    // Not implemented yet
+    }
 
     /**
      *

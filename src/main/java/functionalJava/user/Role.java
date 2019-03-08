@@ -46,7 +46,6 @@ public class Role {
         }                
         diagnoses = Rdbms.insertRecordInTable("config", "role", new String[]{"role_id", "active"}, new Object[]{roleId, true });
            if ("LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){	
-            String newEntry = " for role " + roleId + ". Success, The record is created.";
             StackTraceElement[] elements = Thread.currentThread().getStackTrace();
             diagnoses[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
             diagnoses[1]= classVersion;
@@ -56,7 +55,6 @@ public class Role {
             diagnoses[5]=" for role " + roleId + ". Success, The record is created.";
             return diagnoses;            
         }else{
-            String newEntry = " for role " + roleId + ". Success, The record is created.";
             StackTraceElement[] elements = Thread.currentThread().getStackTrace();
             diagnoses[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
             diagnoses[1]= classVersion;
@@ -77,7 +75,6 @@ public class Role {
      * @throws SQLException
      */
     public Object[] addPrivilegeToRole( String privilegeId, String roleId, String procName) throws SQLException {
-        String methodName = "addPrivilegeToRole";
         Integer id;      
         Integer numRecords = 0;
 //        ResultSet resRole = null;

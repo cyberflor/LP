@@ -28,6 +28,7 @@ public class UnitsOfMeasurement {
      *
      */
     public UnitsOfMeasurement(){
+        // Not implemented yet
     }
 /**
  * Convert one value expressed in currentUnit to be expressed in newUnit. Notes: 
@@ -168,7 +169,6 @@ public class UnitsOfMeasurement {
  */
     public Object[][] getAllUnitsPerFamily( String schemaPrefix, String family, String[] fieldsToRetrieve ){
        
-        Object[][] unitsList = new Object[0][6];
         String tableName = "units_of_measurement";        
         String schemaName = "config";
         schemaName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaName);
@@ -178,7 +178,7 @@ public class UnitsOfMeasurement {
             return LabPLANETArray.array1dTo2d(conversion, conversion.length);
         }
       
-        unitsList = Rdbms.getRecordFieldsByFilter(schemaName, tableName, 
+        Object[][] unitsList = Rdbms.getRecordFieldsByFilter(schemaName, tableName, 
                  new String[]{"measurement_family"},  new Object[]{family}, fieldsToRetrieve, new String[]{"factor_value", "offset_value"});
         if ("LABPLANET_FALSE".equalsIgnoreCase(unitsList[0][0].toString())) return unitsList;            
         

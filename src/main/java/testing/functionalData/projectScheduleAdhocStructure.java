@@ -131,7 +131,6 @@ public class projectScheduleAdhocStructure extends HttpServlet {
                         dataProject[2]="";dataProject[3]="";dataProject[4]="";dataProject[5]="";
                         break;
                 }
-                LPNulls labNull = new LPNulls();
                 if (functionBeingTested.equalsIgnoreCase("GETSAMPLEINFO")){
                     fileContent = fileContent + "<td>"+dataSample2D[0][0].toString();
                     fileContent = fileContent + ". "+LPNulls.replaceNull((String) dataSample2D[0][1]);

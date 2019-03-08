@@ -141,6 +141,8 @@ public class eSign extends HttpServlet {
                     fileContent = fileContent + "<td>"+usrSecDiag[0].toString()+". "+usrSecDiag[1].toString()+". "+usrSecDiag[2].toString()+". "+usrSecDiag[3].toString()+". "+usrSecDiag[4].toString()+". "+usrSecDiag[5].toString()+"</td>";
                 }*/    
                 //fileContent = fileContent + "</tr>";
+            default:
+                fileContent = fileContent + "<td>"+functionBeingTested.toString().toUpperCase()+" not recognized by this API"+"</td>";                    
             }
         }    
         fileContent = fileContent + "</table>";        

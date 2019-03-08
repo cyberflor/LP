@@ -68,7 +68,6 @@ public class Sop {
      * @throws SQLException
      */
     public Object[] dbInsertSopId( String schemaPrefix, String userInfoId) throws SQLException{
-         LabPLANETArray labArr = new LabPLANETArray();
          String schemaConfigName = "config";
          schemaConfigName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaConfigName);
 //        schemaPrefix = "\""+schemaPrefix+"\"";
@@ -76,16 +75,16 @@ public class Sop {
         String[] fieldNames = new String[0];
         Object[] fieldValues = new Object[0];
         
-        fieldNames = labArr.addValueToArray1D(fieldNames, "sop_name");
-        fieldValues = labArr.addValueToArray1D(fieldValues, this.sopName);
-        fieldNames = labArr.addValueToArray1D(fieldNames, "sop_version");
-        fieldValues = labArr.addValueToArray1D(fieldValues, this.sopVersion);
-        fieldNames = labArr.addValueToArray1D(fieldNames, "sop_revision");
-        fieldValues = labArr.addValueToArray1D(fieldValues, this.sopRevision);
-        fieldNames = labArr.addValueToArray1D(fieldNames, "current_status");
-        fieldValues = labArr.addValueToArray1D(fieldValues, this.currentStatus);
-        fieldNames = labArr.addValueToArray1D(fieldNames, "added_by");
-        fieldValues = labArr.addValueToArray1D(fieldValues, userInfoId);
+        fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "sop_name");
+        fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, this.sopName);
+        fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "sop_version");
+        fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, this.sopVersion);
+        fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "sop_revision");
+        fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, this.sopRevision);
+        fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "current_status");
+        fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, this.currentStatus);
+        fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "added_by");
+        fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, userInfoId);
 
         Object[][] dbGetSopObjByName = this.dbGetSopObjByName(schemaPrefix, this.sopName, fieldNames);
         if ("LABPLANET_FALSE".equalsIgnoreCase(dbGetSopObjByName[0][0].toString())){        
@@ -156,14 +155,13 @@ public class Sop {
     public Object[] createSop( String schemaPrefix, String sopName) throws SQLException {
         String schemaConfigName = "config";
         schemaConfigName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaConfigName); 
-        LabPLANETArray labArr = new LabPLANETArray();
         String errorCode = "";        
         Object[] diagnoses = Rdbms.insertRecordInTable(schemaConfigName, "sop_meta_data", 
                             new String[]{"sop_name", "sop_version", "sop_revision"},
                             new Object[]{sopName, 1, 1});
         if ("LABPLANET_FALSE".equals(diagnoses[0].toString() )){
             errorCode = "Sop_SopMetaData_recordNotCreated";
-            String[] fieldForInserting = labArr.joinTwo1DArraysInOneOf1DString(new String[]{"sop_name", "sop_version", "sop_revision"}, new Object[]{sopName, 1, 1}, ":");
+            String[] fieldForInserting = LabPLANETArray.joinTwo1DArraysInOneOf1DString(new String[]{"sop_name", "sop_version", "sop_revision"}, new Object[]{sopName, 1, 1}, ":");
             LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, new Object[]{fieldForInserting, schemaConfigName} );
             return diagnoses;            
         }else{           

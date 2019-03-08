@@ -25,7 +25,6 @@ public class DataDataIntegrity {
     public String[] getTableMandatoryFields(String schemaName, String tableName, String actionName){
         
         String[] myMandatoryFields = new String[0];
-        LabPLANETPlatform labPlat = new LabPLANETPlatform();
         String schemaDataName = LabPLANETPlatform.buildSchemaName(schemaName, "data");
         
         String propertyEntryName = tableName+"_mandatoryFields"+actionName;        
@@ -44,9 +43,7 @@ public class DataDataIntegrity {
      * @return
      */
     public String[] getTableFieldsDefaulValues(String schemaName, String tableName, String actionName){
-        
         String[] myMandatoryFields = new String[0];
-        LabPLANETPlatform labPlat = new LabPLANETPlatform();
         String schemaDataName = LabPLANETPlatform.buildSchemaName(schemaName, "data");
         
         String propertyEntryName = tableName+"_fieldsDefaultValues"+actionName;        
@@ -66,9 +63,7 @@ public class DataDataIntegrity {
      * @return
      */
     public String[] getStructureSpecialFields(String schemaName, String tableName, String actionName){
-        
         String[] myMandatoryFields = new String[0];
-        LabPLANETPlatform labPlat = new LabPLANETPlatform();
         String schemaDataName = LabPLANETPlatform.buildSchemaName(schemaName, "data");
         
         String propertyEntryName = tableName+"_specialFields";        
@@ -88,9 +83,7 @@ public class DataDataIntegrity {
      * @return
      */
     public String[] getStructureSpecialFieldsFunction(String schemaName, String tableName, String actionName){
-        
         String[] myMandatoryFields = new String[0];
-        LabPLANETPlatform labPlat = new LabPLANETPlatform();
         String schemaDataName = LabPLANETPlatform.buildSchemaName(schemaName, "data");
         
         String propertyEntryName = tableName+"_specialFieldsFunction";        

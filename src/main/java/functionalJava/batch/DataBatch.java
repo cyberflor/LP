@@ -35,13 +35,11 @@ public class DataBatch {
      * @param batchArray
      * @return
      */
-    public String dbCreateBatchArray( String schemaName, String transac, BatchArray batchArray)
-    {
+    public String dbCreateBatchArray( String schemaName, String transac, BatchArray batchArray){
         String ermessage="";
         String functionResult = "Fail";
         String tableName = "batch_java";
 
-        
         //Integer td[][]= {{4, 17, 28, 38, 43, 58, 69, 77, 83}, {4, 12, 24, 35, 48, 55, 62, 73, 87}, {11,15, 22, 36, 46, 60, 67, 80, 84}};
         List<String> singleDArray = new ArrayList<>();
         for (String[] array :batchArray.batchPosic) {         

@@ -30,8 +30,6 @@ public class _ConfigSamplingPlanForSpec {
     String schemaConfigName = "config";
         
     String mandatoryFieldsMissing = ""; 
-    LabPLANETPlatform labPlat = new LabPLANETPlatform();
-    LabPLANETArray LabPLANETArray = new LabPLANETArray();
 
     /**
      *
@@ -77,6 +75,7 @@ public class _ConfigSamplingPlanForSpec {
      */
     public Object[] newSamplingPlanDetailRecordDev( String schemaPrefix, String userName, String userRole, String[] fieldsName, Object[] fieldsValue, Boolean devMode) throws SQLException{
     if (devMode==true){
+        LabPLANETPlatform labPlat = new LabPLANETPlatform();
         StackTraceElement[] elementsDev = Thread.currentThread().getStackTrace();
         javaDocLineName = "BEGIN";
         javaDocFields = LabPLANETArray.addValueToArray1D(javaDocFields, "line_name");         javaDocValues = LabPLANETArray.addValueToArray1D(javaDocValues, javaDocLineName);         
@@ -92,7 +91,7 @@ public class _ConfigSamplingPlanForSpec {
         javaDocLineName = "CHECK fieldsName and fieldsValue match in length";
         javaDocFields = LabPLANETArray.addValueToArray1D(javaDocFields, "line_name");         javaDocValues = LabPLANETArray.addValueToArray1D(javaDocValues, javaDocLineName);         
         javaDocFields = LabPLANETArray.addValueToArray1D(javaDocFields, "class_version");         javaDocValues = LabPLANETArray.addValueToArray1D(javaDocValues, classVersion);         
-        labPlat.addJavaClassDoc(javaDocFields, javaDocValues, elementsDev);
+        LabPLANETPlatform.addJavaClassDoc(javaDocFields, javaDocValues, elementsDev);
     }    
     if (devMode==false){
         diagnoses = LabPLANETArray.checkTwoArraysSameLength(fieldsName, fieldsValue);
@@ -103,11 +102,11 @@ public class _ConfigSamplingPlanForSpec {
         javaDocLineName = "CHECK MANDATORY FIELDS";
         javaDocFields = LabPLANETArray.addValueToArray1D(javaDocFields, "line_name");         javaDocValues = LabPLANETArray.addValueToArray1D(javaDocValues, javaDocLineName);         
         javaDocFields = LabPLANETArray.addValueToArray1D(javaDocFields, "class_version");         javaDocValues = LabPLANETArray.addValueToArray1D(javaDocValues, classVersion);         
-        labPlat.addJavaClassDoc(javaDocFields, javaDocValues, elementsDev);
+        LabPLANETPlatform.addJavaClassDoc(javaDocFields, javaDocValues, elementsDev);
     }  
     if (devMode==false){
         schemaDataName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaDataName);         
-        Object[][] mandatoryFieldsCheck = (Object[][]) labPlat.mandatoryFieldsCheck(schemaDataName, fieldsName, fieldsValue, tableName, actionName);                
+        Object[][] mandatoryFieldsCheck = (Object[][]) LabPLANETPlatform.mandatoryFieldsCheck(schemaDataName, fieldsName, fieldsValue, tableName, actionName);                
         if ("LABPLANET_FALSE".equalsIgnoreCase(mandatoryFieldsCheck[0][0].toString())){ return mandatoryFieldsCheck;}
         for (Integer i=0;i<mandatoryFieldsCheck[1].length;i++){
             if (mandatoryFieldsCheck[1][i]!=null){
@@ -128,10 +127,10 @@ public class _ConfigSamplingPlanForSpec {
         javaDocLineName = "CHECK CONFIG OBJECT EXISTS";
         javaDocFields = LabPLANETArray.addValueToArray1D(javaDocFields, "line_name");         javaDocValues = LabPLANETArray.addValueToArray1D(javaDocValues, javaDocLineName);         
         javaDocFields = LabPLANETArray.addValueToArray1D(javaDocFields, "class_version");         javaDocValues = LabPLANETArray.addValueToArray1D(javaDocValues, classVersion);         
-        labPlat.addJavaClassDoc(javaDocFields, javaDocValues, elementsDev);
+        LabPLANETPlatform.addJavaClassDoc(javaDocFields, javaDocValues, elementsDev);
     } 
     if (devMode==false){
-        diagnoses = labPlat.configObjectExists(schemaConfigName, fieldsName, fieldsValue, tableName);
+        diagnoses = LabPLANETPlatform.configObjectExists(schemaConfigName, fieldsName, fieldsValue, tableName);
         if ("LABPLANET_FALSE".equalsIgnoreCase(diagnoses[0].toString())){return diagnoses;}
     }
     if (devMode==true){
@@ -139,9 +138,10 @@ public class _ConfigSamplingPlanForSpec {
         javaDocLineName = "CHECK SPECIAL FIELDS";
         javaDocFields = LabPLANETArray.addValueToArray1D(javaDocFields, "line_name");         javaDocValues = LabPLANETArray.addValueToArray1D(javaDocValues, javaDocLineName);         
         javaDocFields = LabPLANETArray.addValueToArray1D(javaDocFields, "class_version");         javaDocValues = LabPLANETArray.addValueToArray1D(javaDocValues, classVersion);         
-        labPlat.addJavaClassDoc(javaDocFields, javaDocValues, elementsDev);
+        LabPLANETPlatform.addJavaClassDoc(javaDocFields, javaDocValues, elementsDev);
     }  
     if (devMode==false){
+        LabPLANETPlatform labPlat = new LabPLANETPlatform();
         diagnoses = labPlat.specialFieldsCheck(schemaDataName, fieldsName, fieldsValue, tableName, actionName);
         if ("LABPLANET_FALSE".equalsIgnoreCase(diagnoses[0].toString())){return diagnoses;}
     }
@@ -150,7 +150,7 @@ public class _ConfigSamplingPlanForSpec {
         javaDocLineName = "INSERT RECORD IN PROJECT TABLE";
         javaDocFields = LabPLANETArray.addValueToArray1D(javaDocFields, "line_name");         javaDocValues = LabPLANETArray.addValueToArray1D(javaDocValues, javaDocLineName);         
         javaDocFields = LabPLANETArray.addValueToArray1D(javaDocFields, "class_version");         javaDocValues = LabPLANETArray.addValueToArray1D(javaDocValues, classVersion);         
-        labPlat.addJavaClassDoc(javaDocFields, javaDocValues, elementsDev);
+        LabPLANETPlatform.addJavaClassDoc(javaDocFields, javaDocValues, elementsDev);
     }  
     if (devMode==false){
         diagnoses = Rdbms.insertRecordInTable(schemaDataName, tableName, fieldsName, fieldsValue);    
@@ -161,7 +161,7 @@ public class _ConfigSamplingPlanForSpec {
         javaDocLineName = "END";
         javaDocFields = LabPLANETArray.addValueToArray1D(javaDocFields, "line_name");         javaDocValues = LabPLANETArray.addValueToArray1D(javaDocValues, javaDocLineName);         
         javaDocFields = LabPLANETArray.addValueToArray1D(javaDocFields, "class_version");         javaDocValues = LabPLANETArray.addValueToArray1D(javaDocValues, classVersion);         
-        labPlat.addJavaClassDoc(javaDocFields, javaDocValues, elementsDev);
+        LabPLANETPlatform.addJavaClassDoc(javaDocFields, javaDocValues, elementsDev);
     }      
         return diagnoses;
     }
@@ -172,8 +172,8 @@ public class _ConfigSamplingPlanForSpec {
     
     private Integer samplingAlgorithmRootNplus1(Integer n){
 	double nthRoot =  nthroot(2, n, .001);      
-        nthRoot = nthRoot++;
-        return Integer.getInteger(String.valueOf(nthRoot));        
+        //nthRoot = nthRoot++;
+        return Integer.getInteger(String.valueOf(nthRoot++));        
     }
     
     private Integer samplingAlgorithmEachContainer(Integer val){

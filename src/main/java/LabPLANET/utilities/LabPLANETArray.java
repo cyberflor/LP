@@ -5,7 +5,6 @@
  */
 package LabPLANET.utilities;
 
-import databases.Rdbms;
 import functionalJava.parameter.Parameter;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -43,7 +42,8 @@ public class  LabPLANETArray {
         
     String schemaDataName = "data";
     String schemaConfigName = "config";    
-   
+    private static final String ENCRYPTION_KEY = "Bar12345Bar12345";
+    private static final String ENCRYPTED_PREFIX = "encrypted_";
     /**
      *
      * @param zipcodelist
@@ -70,22 +70,27 @@ public class  LabPLANETArray {
      */
     public static Object[] arrayToFile (String[] arrayHeader, String[] array, String filename, String fieldsSeparator) throws IOException{
         Object[] diagnosis = new Object[0];
-        BufferedWriter outputWriter = null;
         
-        if (arrayHeader!=null){
-            for (String arrayHeader1 : arrayHeader) {
-                outputWriter.write(arrayHeader1 + fieldsSeparator);
+        BufferedWriter outputWriter = null;
+        try{        
+            if (arrayHeader!=null){
+                for (String arrayHeader1 : arrayHeader) {
+                    outputWriter.write(arrayHeader1 + fieldsSeparator);
+                    outputWriter.newLine();
+                }
+            }
+            outputWriter = new BufferedWriter(new FileWriter(filename));
+            for (String array1 : array) {
+                outputWriter.write(array1);
                 outputWriter.newLine();
             }
+            outputWriter.flush();  
+            outputWriter.close();          
+            return diagnosis;        
+        }catch(IOException e){
+            outputWriter.close();
         }
-        outputWriter = new BufferedWriter(new FileWriter(filename));
-        for (String array1 : array) {
-            outputWriter.write(array1);
-            outputWriter.newLine();
-        }
-        outputWriter.flush();  
-        outputWriter.close();          
-        return diagnosis;
+        return diagnosis;  
     }
     
     /**
@@ -97,15 +102,9 @@ public class  LabPLANETArray {
      * @return
      */
     public static Object[] encryptTableFieldArray(String schemaName, String tableName, String[] fieldName, Object[] fieldValue){
-        String classVersion = "0.1";
-         String key = "Bar12345Bar12345"; // 128 bit key
-        LabPLANETPlatform labPlat = new LabPLANETPlatform();
+         String key = ENCRYPTION_KEY; // 128 bit key
         //? Should be by schemaPrefix? config or data???
-        //schemaDataName = labPlat.buildSchemaName(schemaName, schemaDataName);  
-        //String fieldsEncrypted = rdbm.getParameterBundleInConfigFile(schemaDataName.replace("\"", ""), "encrypted_"+tableName);
-        String schemaDataName = LabPLANETPlatform.buildSchemaName(schemaName, schemaName);  
-        String fieldsEncrypted = Parameter.getParameterBundle(schemaName.replace("\"", ""), "encrypted_"+tableName);        
-        String[] fieldsEncryptedArr = fieldsEncrypted.split("\\|");
+        String fieldsEncrypted = Parameter.getParameterBundle(schemaName.replace("\"", ""), ENCRYPTED_PREFIX+tableName);        
         for (int iFields=0;iFields<fieldName.length;iFields++){
             if (fieldsEncrypted.contains(fieldName[iFields])){
                 try{
@@ -147,11 +146,8 @@ public class  LabPLANETArray {
      * @return
      */
     public static Object[][] decryptTableFieldArray(String schemaName, String tableName, String[] fieldName, Object[][] fieldValue){
-        String key = "Bar12345Bar12345"; // 128 bit key
-        //LabPLANETPlatform labPlat = new LabPLANETPlatform();
-        //schemaDataName = labPlat.buildSchemaName(schemaName, schemaDataName);          
-        String fieldsEncrypted = Parameter.getParameterBundle(schemaName.replace("\"", ""), "encrypted_"+tableName);
-        String[] fieldsEncryptedArr = fieldsEncrypted.split("\\|");
+        String key = ENCRYPTION_KEY; //"Bar12345Bar12345"; // 128 bit key
+        String fieldsEncrypted = Parameter.getParameterBundle(schemaName.replace("\"", ""), ENCRYPTED_PREFIX+tableName);
         for (int iFields=0;iFields<fieldName.length;iFields++){
             if (fieldsEncrypted.contains(fieldName[iFields])){
                 try{                    
@@ -192,11 +188,8 @@ public class  LabPLANETArray {
      * @return
      */
     public static Object[] decryptTableFieldArray(String schemaName, String tableName, String[] fieldName, Object[] fieldValue){
-        String key = "Bar12345Bar12345"; // 128 bit key
-        //LabPLANETPlatform labPlat = new LabPLANETPlatform();
-        //schemaDataName = labPlat.buildSchemaName(schemaName, schemaDataName);          
-        String fieldsEncrypted = Parameter.getParameterBundle(schemaName.replace("\"", ""), "encrypted_"+tableName);
-        String[] fieldsEncryptedArr = fieldsEncrypted.split("\\|");
+        String key = ENCRYPTION_KEY;
+        String fieldsEncrypted = Parameter.getParameterBundle(schemaName.replace("\"", ""), ENCRYPTED_PREFIX+tableName);
         for (int iFields=0;iFields<fieldName.length;iFields++){
             if (fieldsEncrypted.contains(fieldName[iFields])){
                 try{                                        
@@ -253,13 +246,10 @@ public class  LabPLANETArray {
                         break;               
                     case "DATE":        
                         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-                        //DateFormat df = DateFormat.getDateInstance();
                         {
                             try {
                                 myObjectsArray[i]= format.parse((String) rowParse[0]);
-//                                myObjectsArray[i]= df.parse((String) rowParse[0]);
                             } catch (ParseException ex) {
-                                String errMessage = ex.getMessage();
                                 Logger.getLogger(LabPLANETArray.class.getName()).log(Level.SEVERE, null, ex);
                             }
                         }
@@ -296,6 +286,7 @@ public class  LabPLANETArray {
                 String[] inArray = inputLine.split(String.valueOf(csvSeparator));
                 if (inArray.length>columnsInCsv) {columnsInCsv = inArray.length;}
             }
+            scanIn.close();
             myArray = new String[numLines][columnsInCsv];    
             for (Integer inumLines=0;inumLines<numLines;inumLines++){                
                 String[] inArray = myArray1D[inumLines].split(String.valueOf(csvSeparator));
@@ -335,6 +326,8 @@ public class  LabPLANETArray {
                     }    
                 }
             }
+            scanIn.close();
+            if (columnsInCsv==0){columnsInCsv=1;}
             myArray = array1dTo2d(myArray1D, columnsInCsv);
             return myArray;
             
@@ -350,9 +343,6 @@ public class  LabPLANETArray {
  * @return String[]
  */
     public static String[] array2dTo1d(String[][] array2d){
-        //Object[] array1d = new Object[1];
-        //Integer numLines = 
-        //String[][] my2Darr = .....(something)......
         List<String> list;
         list = new ArrayList<>();
         for (String[] array2d1 : array2d) {
@@ -664,11 +654,9 @@ public class  LabPLANETArray {
  * @return String[6]. Position 3 FALSE/TRUE is the diagnostic.
  */    
     public static String[] checkTwoArraysSameLength(Object[] arrayA, Object[] arrayB){
-        String classVersion = "0.1";
     String errorCode = "";
     String[] errorDetailVariables = new String[0];
 
-        LabPLANETPlatform labPlat = new LabPLANETPlatform();
         String[] diagnoses = new String[6];
             StackTraceElement[] elements = Thread.currentThread().getStackTrace();
             diagnoses[0]= elements[1].getClassName() + "." + elements[1].getMethodName() + " called from " + elements[2].getMethodName();
@@ -690,8 +678,6 @@ public class  LabPLANETArray {
  * @return Object[]. Position 3 set to FALSE when not possible. 
  */    
     public static Object[] getColumnFromArray2D(Object[][] array, Integer colNum){
-        String classVersion = "0.1";
-        LabPLANETPlatform labPlat = new LabPLANETPlatform();
         Object[] diagnoses = new Object[0];
     String errorCode = "";
     String[] errorDetailVariables = new String[0];

@@ -32,6 +32,13 @@ import javax.ws.rs.core.Response;
  */
 public class sampleAnalysisResultAPI extends HttpServlet {
 
+    private static final String LB_FALSE = "LABPLANET_FALSE";
+    private static final String LB_TRUE = "LABPLANET_TRUE";
+    private static final String TABLENAME_SAMPLE = "SAMPLE";
+    private static final String TABLENAME_RESULT = "RESULT";
+    private static final String FIELDNAME_RESULT_KEY = "resultId";
+    private static final String OBJECT_LEVEL = "objectLevel";
+    private static final String MESSAGE_ERROR_STATUS_CODE = "Error Status Code: ";
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      *
@@ -42,7 +49,6 @@ public class sampleAnalysisResultAPI extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
         response.setContentType("text/html;charset=UTF-8");
         
         ResourceBundle prop = ResourceBundle.getBundle("parameter.config.config");
@@ -59,8 +65,8 @@ public class sampleAnalysisResultAPI extends HttpServlet {
         mandatoryParams = LabPLANETArray.addValueToArray1D(mandatoryParams, "finalToken");
                 
         Object[] areMandatoryParamsInResponse = LabPLANETRequest.areMandatoryParamsInApiRequest(request, mandatoryParams);
-        if ("LABPLANET_FALSE".equalsIgnoreCase(areMandatoryParamsInResponse[0].toString())){
-            errObject = LabPLANETArray.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
+        if (LB_FALSE.equalsIgnoreCase(areMandatoryParamsInResponse[0].toString())){
+            errObject = LabPLANETArray.addValueToArray1D(errObject, MESSAGE_ERROR_STATUS_CODE+HttpServletResponse.SC_BAD_REQUEST);
             errObject = LabPLANETArray.addValueToArray1D(errObject, "API Error Message: There are mandatory params for this API method not being passed: "+areMandatoryParamsInResponse[1].toString());                    
             Object[] errMsg = LabPLANETFrontEnd.responseError(errObject, language, areMandatoryParamsInResponse[1].toString());
             response.sendError((int) errMsg[0], (String) errMsg[1]);                
@@ -87,19 +93,19 @@ public class sampleAnalysisResultAPI extends HttpServlet {
         mandatoryParams = null;                        
 
         Object[] procActionRequiresUserConfirmation = LabPLANETPlatform.procActionRequiresUserConfirmation(schemaPrefix, functionBeingTested);
-        if ("LABPLANET_TRUE".equalsIgnoreCase(procActionRequiresUserConfirmation[0].toString())){     
+        if (LB_TRUE.equalsIgnoreCase(procActionRequiresUserConfirmation[0].toString())){     
             mandatoryParams = LabPLANETArray.addValueToArray1D(mandatoryParams, "userToVerify");    
             mandatoryParams = LabPLANETArray.addValueToArray1D(mandatoryParams, "passwordToVerify");    
         }
 
         Object[] procActionRequiresEsignConfirmation = LabPLANETPlatform.procActionRequiresEsignConfirmation(schemaPrefix, functionBeingTested);
-        if ("LABPLANET_TRUE".equalsIgnoreCase(procActionRequiresEsignConfirmation[0].toString())){                                                      
+        if (LB_TRUE.equalsIgnoreCase(procActionRequiresEsignConfirmation[0].toString())){                                                      
             mandatoryParams = LabPLANETArray.addValueToArray1D(mandatoryParams, "eSignToVerify");    
         }        
         if (mandatoryParams!=null){
             areMandatoryParamsInResponse = LabPLANETRequest.areMandatoryParamsInApiRequest(request, mandatoryParams);
-            if ("LABPLANET_FALSE".equalsIgnoreCase(areMandatoryParamsInResponse[0].toString())){
-                errObject = LabPLANETArray.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
+            if (LB_FALSE.equalsIgnoreCase(areMandatoryParamsInResponse[0].toString())){
+                errObject = LabPLANETArray.addValueToArray1D(errObject, MESSAGE_ERROR_STATUS_CODE+HttpServletResponse.SC_BAD_REQUEST);
                 errObject = LabPLANETArray.addValueToArray1D(errObject, "API Error Message: There are mandatory params for this API method not being passed: "+areMandatoryParamsInResponse[1].toString());                    
                 Object[] errMsg = LabPLANETFrontEnd.responseError(errObject, language, areMandatoryParamsInResponse[1].toString());
                 response.sendError((int) errMsg[0], (String) errMsg[1]);                
@@ -107,11 +113,11 @@ public class sampleAnalysisResultAPI extends HttpServlet {
             }     
         }
         
-        if ("LABPLANET_TRUE".equalsIgnoreCase(procActionRequiresUserConfirmation[0].toString())){    
+        if (LB_TRUE.equalsIgnoreCase(procActionRequiresUserConfirmation[0].toString())){    
             String userToVerify = request.getParameter("userToVerify");                   
             String passwordToVerify = request.getParameter("passwordToVerify");    
             if ( (!userToVerify.equalsIgnoreCase(dbUserName)) || (!passwordToVerify.equalsIgnoreCase(dbUserPassword)) ){
-                errObject = LabPLANETArray.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
+                errObject = LabPLANETArray.addValueToArray1D(errObject, MESSAGE_ERROR_STATUS_CODE+HttpServletResponse.SC_BAD_REQUEST);
                 errObject = LabPLANETArray.addValueToArray1D(errObject, "API Error Message: User Verification returned error, the user or the password are not correct.");                    
                 Object[] errMsg = LabPLANETFrontEnd.responseError(errObject, language, "");
                 response.sendError((int) errMsg[0], (String) errMsg[1]);                
@@ -119,10 +125,10 @@ public class sampleAnalysisResultAPI extends HttpServlet {
             }
         }
         
-        if ("LABPLANET_TRUE".equalsIgnoreCase(procActionRequiresEsignConfirmation[0].toString())){                                                      
+        if (LB_TRUE.equalsIgnoreCase(procActionRequiresEsignConfirmation[0].toString())){                                                      
             String eSignToVerify = request.getParameter("eSignToVerify");                   
             if (!eSignToVerify.equalsIgnoreCase(eSign)) {
-                errObject = LabPLANETArray.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
+                errObject = LabPLANETArray.addValueToArray1D(errObject, MESSAGE_ERROR_STATUS_CODE+HttpServletResponse.SC_BAD_REQUEST);
                 errObject = LabPLANETArray.addValueToArray1D(errObject, "API Error Message: eSign Verification returned error, the value is not correct.");                    
                 Object[] errMsg = LabPLANETFrontEnd.responseError(errObject, language, "");
                 response.sendError((int) errMsg[0], (String) errMsg[1]);                
@@ -130,7 +136,7 @@ public class sampleAnalysisResultAPI extends HttpServlet {
             }
         }
         if (Rdbms.getRdbms().startRdbms(dbUserName, dbUserPassword)==null){
-            errObject = LabPLANETArray.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
+            errObject = LabPLANETArray.addValueToArray1D(errObject, MESSAGE_ERROR_STATUS_CODE+HttpServletResponse.SC_BAD_REQUEST);
             errObject = LabPLANETArray.addValueToArray1D(errObject, "API Error Message: db User Name and Password not correct, connection to the database is not possible");                    
             Object[] errMsg = LabPLANETFrontEnd.responseError(errObject, language, schemaPrefix);
             response.sendError((int) errMsg[0], (String) errMsg[1]);   
@@ -153,14 +159,14 @@ public class sampleAnalysisResultAPI extends HttpServlet {
             /* TODO output your page here. You may use following sample code. */                     
 
             Object[] actionEnabled = LabPLANETPlatform.procActionEnabled(schemaPrefix, functionBeingTested);
-            if ("LABPLANET_FALSE".equalsIgnoreCase(actionEnabled[0].toString())){
+            if (LB_FALSE.equalsIgnoreCase(actionEnabled[0].toString())){
                 Object[] errMsg = LabPLANETFrontEnd.responseError(actionEnabled, language, schemaPrefix);
                 response.sendError((int) errMsg[0], (String) errMsg[1]);    
                 Rdbms.closeRdbms(); 
                 return ;               
             }            
             actionEnabled = LabPLANETPlatform.procUserRoleActionEnabled(schemaPrefix, userRole, functionBeingTested);
-            if ("LABPLANET_FALSE".equalsIgnoreCase(actionEnabled[0].toString())){            
+            if (LB_FALSE.equalsIgnoreCase(actionEnabled[0].toString())){            
                 Object[] errMsg = LabPLANETFrontEnd.responseError(actionEnabled, language, schemaPrefix);
                 response.sendError((int) errMsg[0], (String) errMsg[1]);    
                 Rdbms.closeRdbms(); 
@@ -172,11 +178,11 @@ public class sampleAnalysisResultAPI extends HttpServlet {
             
             switch (functionBeingTested.toUpperCase()){
                 case "ENTERRESULT":
-                    String[] mandatoryParamsAction = new String[]{"resultId"};
+                    String[] mandatoryParamsAction = new String[]{FIELDNAME_RESULT_KEY};
                     mandatoryParamsAction = LabPLANETArray.addValueToArray1D(mandatoryParamsAction, "rawValueResult");
                     areMandatoryParamsInResponse = LabPLANETRequest.areMandatoryParamsInApiRequest(request, mandatoryParamsAction);
-                    if ("LABPLANET_FALSE".equalsIgnoreCase(areMandatoryParamsInResponse[0].toString())){
-                        errObject = LabPLANETArray.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
+                    if (LB_FALSE.equalsIgnoreCase(areMandatoryParamsInResponse[0].toString())){
+                        errObject = LabPLANETArray.addValueToArray1D(errObject, MESSAGE_ERROR_STATUS_CODE+HttpServletResponse.SC_BAD_REQUEST);
                         errObject = LabPLANETArray.addValueToArray1D(errObject, "API Error Message: There are mandatory params for this API method not being passed: "+areMandatoryParamsInResponse[1].toString());                    
                         Object[] errMsg = LabPLANETFrontEnd.responseError(errObject, language, areMandatoryParamsInResponse[1].toString());
                         response.sendError((int) errMsg[0], (String) errMsg[1]);    
@@ -185,17 +191,17 @@ public class sampleAnalysisResultAPI extends HttpServlet {
                     }                                            
                     Integer resultId = 0;
                     String rawValueResult = "";
-                    String resultIdStr = request.getParameter("resultId");
+                    String resultIdStr = request.getParameter(FIELDNAME_RESULT_KEY);
                     resultId = Integer.parseInt(resultIdStr);       
                     rawValueResult = request.getParameter("rawValueResult");
                     dataSample = smp.sampleAnalysisResultEntry(schemaPrefix, internalUserID, resultId, rawValueResult, userRole);
                     break;              
                 case "REVIEWRESULT":
                     mandatoryParamsAction = new String[]{"objectId"};
-                    mandatoryParamsAction = LabPLANETArray.addValueToArray1D(mandatoryParamsAction, "objectLevel");
+                    mandatoryParamsAction = LabPLANETArray.addValueToArray1D(mandatoryParamsAction, OBJECT_LEVEL);
                     areMandatoryParamsInResponse = LabPLANETRequest.areMandatoryParamsInApiRequest(request, mandatoryParamsAction);
-                    if ("LABPLANET_FALSE".equalsIgnoreCase(areMandatoryParamsInResponse[0].toString())){
-                        errObject = LabPLANETArray.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
+                    if (LB_FALSE.equalsIgnoreCase(areMandatoryParamsInResponse[0].toString())){
+                        errObject = LabPLANETArray.addValueToArray1D(errObject, MESSAGE_ERROR_STATUS_CODE+HttpServletResponse.SC_BAD_REQUEST);
                         errObject = LabPLANETArray.addValueToArray1D(errObject, "API Error Message: There are mandatory params for this API method not being passed: "+areMandatoryParamsInResponse[1].toString());                    
                         Object[] errMsg = LabPLANETFrontEnd.responseError(errObject, language, areMandatoryParamsInResponse[1].toString());
                         response.sendError((int) errMsg[0], (String) errMsg[1]);    
@@ -205,19 +211,19 @@ public class sampleAnalysisResultAPI extends HttpServlet {
                     Integer objectId = 0;
                     String objectIdStr = request.getParameter("objectId");
                     objectId = Integer.parseInt(objectIdStr);     
-                    String objectLevel = request.getParameter("objectLevel");
+                    String objectLevel = request.getParameter(OBJECT_LEVEL);
                     Integer sampleId = null; Integer testId = null; resultId = null;
-                    if (objectLevel.equalsIgnoreCase("SAMPLE")){sampleId = objectId;}
+                    if (objectLevel.equalsIgnoreCase(TABLENAME_SAMPLE)){sampleId = objectId;}
                     if (objectLevel.equalsIgnoreCase("TEST")){testId = objectId;}
-                    if (objectLevel.equalsIgnoreCase("RESULT")){resultId = objectId;}
+                    if (objectLevel.equalsIgnoreCase(TABLENAME_RESULT)){resultId = objectId;}
                     dataSample = smp.sampleResultReview(schemaPrefix, internalUserID, sampleId, testId, resultId, userRole);
                     break;                       
                 case "CANCELRESULT":
                     mandatoryParamsAction = new String[]{"objectId"};
-                    mandatoryParamsAction = LabPLANETArray.addValueToArray1D(mandatoryParamsAction, "objectLevel");
+                    mandatoryParamsAction = LabPLANETArray.addValueToArray1D(mandatoryParamsAction, OBJECT_LEVEL);
                     areMandatoryParamsInResponse = LabPLANETRequest.areMandatoryParamsInApiRequest(request, mandatoryParamsAction);
-                    if ("LABPLANET_FALSE".equalsIgnoreCase(areMandatoryParamsInResponse[0].toString())){
-                        errObject = LabPLANETArray.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
+                    if (LB_FALSE.equalsIgnoreCase(areMandatoryParamsInResponse[0].toString())){
+                        errObject = LabPLANETArray.addValueToArray1D(errObject, MESSAGE_ERROR_STATUS_CODE+HttpServletResponse.SC_BAD_REQUEST);
                         errObject = LabPLANETArray.addValueToArray1D(errObject, "API Error Message: There are mandatory params for this API method not being passed: "+areMandatoryParamsInResponse[1].toString());                    
                         Object[] errMsg = LabPLANETFrontEnd.responseError(errObject, language, areMandatoryParamsInResponse[1].toString());
                         response.sendError((int) errMsg[0], (String) errMsg[1]);    
@@ -227,20 +233,20 @@ public class sampleAnalysisResultAPI extends HttpServlet {
                     objectId = 0;
                     objectIdStr = request.getParameter("objectId");
                     objectId = Integer.parseInt(objectIdStr);     
-                    objectLevel = request.getParameter("objectLevel");
+                    objectLevel = request.getParameter(OBJECT_LEVEL);
                         sampleId = null; testId = null; resultId = null;
-                        if (objectLevel.equalsIgnoreCase("SAMPLE")){sampleId = objectId;}
+                        if (objectLevel.equalsIgnoreCase(TABLENAME_SAMPLE)){sampleId = objectId;}
                         if (objectLevel.equalsIgnoreCase("TEST")){testId = objectId;}
-                        if (objectLevel.equalsIgnoreCase("RESULT")){resultId = objectId;}
+                        if (objectLevel.equalsIgnoreCase(TABLENAME_RESULT)){resultId = objectId;}
                         dataSample = smp.sampleAnalysisResultCancel(schemaPrefix, internalUserID, sampleId, testId, resultId, userRole);
                     break;   
                 case "UNREVIEWRESULT":   // No break then will take the same logic than the next one  
                 case "UNCANCELRESULT":
                     mandatoryParamsAction = new String[]{"objectId"};
-                    mandatoryParamsAction = LabPLANETArray.addValueToArray1D(mandatoryParamsAction, "objectLevel");
+                    mandatoryParamsAction = LabPLANETArray.addValueToArray1D(mandatoryParamsAction, OBJECT_LEVEL);
                     areMandatoryParamsInResponse = LabPLANETRequest.areMandatoryParamsInApiRequest(request, mandatoryParamsAction);
-                    if ("LABPLANET_FALSE".equalsIgnoreCase(areMandatoryParamsInResponse[0].toString())){
-                        errObject = LabPLANETArray.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
+                    if (LB_FALSE.equalsIgnoreCase(areMandatoryParamsInResponse[0].toString())){
+                        errObject = LabPLANETArray.addValueToArray1D(errObject, MESSAGE_ERROR_STATUS_CODE+HttpServletResponse.SC_BAD_REQUEST);
                         errObject = LabPLANETArray.addValueToArray1D(errObject, "API Error Message: There are mandatory params for this API method not being passed: "+areMandatoryParamsInResponse[1].toString());                    
                         Object[] errMsg = LabPLANETFrontEnd.responseError(errObject, language, areMandatoryParamsInResponse[1].toString());
                         response.sendError((int) errMsg[0], (String) errMsg[1]);    
@@ -250,40 +256,40 @@ public class sampleAnalysisResultAPI extends HttpServlet {
                     objectId = 0;
                     objectIdStr = request.getParameter("objectId");
                     objectId = Integer.parseInt(objectIdStr);     
-                    objectLevel = request.getParameter("objectLevel");
+                    objectLevel = request.getParameter(OBJECT_LEVEL);
                         sampleId = null; testId = null; resultId = null;
-                        if (objectLevel.equalsIgnoreCase("SAMPLE")){sampleId = objectId;}
+                        if (objectLevel.equalsIgnoreCase(TABLENAME_SAMPLE)){sampleId = objectId;}
                         if (objectLevel.equalsIgnoreCase("TEST")){testId = objectId;}
-                        if (objectLevel.equalsIgnoreCase("RESULT")){resultId = objectId;}
+                        if (objectLevel.equalsIgnoreCase(TABLENAME_RESULT)){resultId = objectId;}
                         dataSample = smp.sampleAnalysisResultUnCancel(schemaPrefix, internalUserID, sampleId, testId, resultId, userRole);
                     break;       
                 case "RESULT_CHANGE_UOM":
-                    mandatoryParamsAction = new String[]{"resultId"};
+                    mandatoryParamsAction = new String[]{FIELDNAME_RESULT_KEY};
                     mandatoryParamsAction = LabPLANETArray.addValueToArray1D(mandatoryParamsAction, "newUOM");
                     areMandatoryParamsInResponse = LabPLANETRequest.areMandatoryParamsInApiRequest(request, mandatoryParamsAction);
-                    if ("LABPLANET_FALSE".equalsIgnoreCase(areMandatoryParamsInResponse[0].toString())){
-                        errObject = LabPLANETArray.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
+                    if (LB_FALSE.equalsIgnoreCase(areMandatoryParamsInResponse[0].toString())){
+                        errObject = LabPLANETArray.addValueToArray1D(errObject, MESSAGE_ERROR_STATUS_CODE+HttpServletResponse.SC_BAD_REQUEST);
                         errObject = LabPLANETArray.addValueToArray1D(errObject, "API Error Message: There are mandatory params for this API method not being passed: "+areMandatoryParamsInResponse[1].toString());                    
                         Object[] errMsg = LabPLANETFrontEnd.responseError(errObject, language, areMandatoryParamsInResponse[1].toString());
                         response.sendError((int) errMsg[0], (String) errMsg[1]);    
                         Rdbms.closeRdbms(); 
                         return ;                
                     }                                            
-                    resultIdStr = request.getParameter("resultId");
+                    resultIdStr = request.getParameter(FIELDNAME_RESULT_KEY);
                     resultId = Integer.parseInt(resultIdStr);     
                     String newUOM = request.getParameter("newUOM");
                     dataSample = smp.sarChangeUOM(schemaPrefix, resultId, newUOM, internalUserID, userRole);
                     break;       
                 default:      
                     //errObject = frontEnd.APIHandler.actionNotRecognized(errObject, functionBeingTested, response);
-                    errObject = LabPLANETArray.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
+                    errObject = LabPLANETArray.addValueToArray1D(errObject, MESSAGE_ERROR_STATUS_CODE+HttpServletResponse.SC_BAD_REQUEST);
                     errObject = LabPLANETArray.addValueToArray1D(errObject, "API Error Message: actionName "+functionBeingTested+ " not recognized as an action by this API");                                                            
                     Object[] errMsg = LabPLANETFrontEnd.responseError(errObject, language, schemaPrefix);
                     response.sendError((int) errMsg[0], (String) errMsg[1]);    
                     Rdbms.closeRdbms();                    
                     return;                    
             }    
-            if ("LABPLANET_FALSE".equalsIgnoreCase(dataSample[0].toString())){  
+            if (LB_FALSE.equalsIgnoreCase(dataSample[0].toString())){  
                 Rdbms.rollbackWithSavePoint();
                 con.rollback();
                 con.setAutoCommit(true);
