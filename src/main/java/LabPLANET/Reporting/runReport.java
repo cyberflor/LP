@@ -11,7 +11,7 @@ package LabPLANET.Reporting;
  */
 public class runReport {
     
-    public static void runReport(){
+    public static void runReportInternal(){
 //        JasperReport JRpt = new JasperReport();
         
     }

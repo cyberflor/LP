@@ -5,7 +5,6 @@
  */
 package LabPLANET.utilities;
 
-import com.sun.rowset.CachedRowSetImpl;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Arrays;

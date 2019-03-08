@@ -5,6 +5,7 @@
  */
 package LabPLANET.utilities;
 
+import static LabPLANET.utilities.LabPLANETPlatform.LAB_FALSE;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.jar.JarEntry;
@@ -23,8 +24,6 @@ import java.io.IOException;
  */
 public class LabPLANETQualityAssurance {
 
-    private static final String LB_TRUE = "LABPLANET_TRUE";
-    private static final String LB_FALSE = "LABPLANET_FALSE";
     
     /**
      *
@@ -124,28 +123,28 @@ public class LabPLANETQualityAssurance {
         
                 
         Object[] existsRecord = Rdbms.existsRecord(schemaName, tableName, new String[]{fieldName_exceptionLevel,fieldName_objectName}, new Object[]{"project", project});
-        if (LB_TRUE.equalsIgnoreCase(existsRecord[0].toString())){
+        if (LabPLANETPlatform.LAB_TRUE.equalsIgnoreCase(existsRecord[0].toString())){
             diagn[0] = true;  
             diagn[1] = "Exception at project level for "+project;            
             return diagn;
         }
         
         existsRecord = Rdbms.existsRecord(schemaName, tableName, new String[]{fieldName_exceptionLevel,fieldName_objectName}, new Object[]{"package", pack});
-        if (LB_TRUE.equalsIgnoreCase(existsRecord[0].toString())){
+        if (LabPLANETPlatform.LAB_TRUE.equalsIgnoreCase(existsRecord[0].toString())){
             diagn[0] = true;  
             diagn[1] = "Exception at package level for "+pack;            
             return diagn;
         }
 
         existsRecord = Rdbms.existsRecord(schemaName, tableName, new String[]{fieldName_exceptionLevel,fieldName_objectName}, new Object[]{"class", clase});
-        if (LB_TRUE.equalsIgnoreCase(existsRecord[0].toString())){
+        if (LabPLANETPlatform.LAB_TRUE.equalsIgnoreCase(existsRecord[0].toString())){
             diagn[0] = true;  
             diagn[1] = "Exception at class level for "+clase;            
             return diagn;
         }
 
         existsRecord = Rdbms.existsRecord(schemaName, tableName, new String[]{fieldName_exceptionLevel,fieldName_objectName}, new Object[]{"method", metodo});
-        if (LB_TRUE.equalsIgnoreCase(existsRecord[0].toString())){
+        if (LabPLANETPlatform.LAB_TRUE.equalsIgnoreCase(existsRecord[0].toString())){
             diagn[0] = true;  
             diagn[1] = "Exception at method level for "+metodo;            
             return diagn;
@@ -277,7 +276,7 @@ public class LabPLANETQualityAssurance {
                         keyFieldValues = LabPLANETArray.addValueToArray1D(keyFieldValues, methodName);
                         Object[] existsRecord = Rdbms.existsRecord(schemaName, tableName, keyFieldNames, keyFieldValues);
                         
-                        if (LB_FALSE.equalsIgnoreCase(existsRecord[0].toString())){
+                        if (LabPLANETPlatform.LAB_FALSE.equalsIgnoreCase(existsRecord[0].toString())){
                             totalDiagnostic = LabPLANETArray.addValueToArray1D(totalDiagnostic, "ERROR: Not found any entry in "+tableName+" for this method.Database returned: "+existsRecord[5]);
                             break;
                         }

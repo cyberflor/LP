@@ -32,13 +32,6 @@ public class UserSop {
     String javaDocLineName = "";
 
     String tableName = "user_sop";  
-    
-    /**
-     *
-     */
-    public void UserSop(){
-    // Not implemented yet
-    }
 
     /**
      *

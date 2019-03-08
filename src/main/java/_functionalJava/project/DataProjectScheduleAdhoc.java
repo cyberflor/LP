@@ -28,8 +28,6 @@ public class DataProjectScheduleAdhoc {
     String itemsMeasurement; 
     Date FirstDay;
     Date endDay;
-    private static final String LB_FALSE = "LABPLANET_FALSE";
-    private static final String LB_TRUE = "LABPLANET_TRUE";
 
     private static class dataProjectSchedule {
 
@@ -204,14 +202,14 @@ public class DataProjectScheduleAdhoc {
         String schemaNameData = LabPLANETPlatform.buildSchemaName(schemaName, "data");   
         
         Object[] existsRecord = Rdbms.existsRecord(schemaNameConfig, "holidays_calendar",  new String[]{"code", "active"}, new Object[]{calendarCode, true});
-        if (LB_FALSE.equalsIgnoreCase(existsRecord[0].toString())){ return existsRecord;}     
+        if (LabPLANETPlatform.LAB_FALSE.equalsIgnoreCase(existsRecord[0].toString())){ return existsRecord;}     
 
         Object[][] holidaysCalendarDates = Rdbms.getRecordFieldsByFilter(schemaNameConfig, "holidays_calendar_date", 
                 new String[]{"code"}, new Object[]{calendarCode}, new String[]{"id", "date", "date", "date"});
-        if (LB_FALSE.equalsIgnoreCase(holidaysCalendarDates[0][0].toString())){diagn[5]=holidaysCalendarDates[0][5];}
+        if (LabPLANETPlatform.LAB_FALSE.equalsIgnoreCase(holidaysCalendarDates[0][0].toString())){diagn[5]=holidaysCalendarDates[0][5];}
         
         existsRecord = Rdbms.existsRecord(schemaNameData, "project_schedule",  new String[]{"project", "id"}, new Object[]{pName, projSchedId});
-        if (LB_FALSE.equalsIgnoreCase(existsRecord[0].toString())){ return existsRecord;}
+        if (LabPLANETPlatform.LAB_FALSE.equalsIgnoreCase(existsRecord[0].toString())){ return existsRecord;}
 
         Object[] newProjSchedRecursive=null;
         if (holidaysCalendarDates.length>0){
@@ -242,7 +240,7 @@ public class DataProjectScheduleAdhoc {
                     Object[] updateResult = Rdbms.updateRecordFieldsByFilter(schemaNameData, "project_schedule_item",
                             new String[]{"conflict", "conflict_detail"}, new Object[]{true, conflictDetail},
                             new String[]{"id"}, new Object[]{itemId.intValue()});
-                    if (LB_FALSE.equalsIgnoreCase(updateResult[0].toString())){return updateResult;}                    
+                    if (LabPLANETPlatform.LAB_FALSE.equalsIgnoreCase(updateResult[0].toString())){return updateResult;}                    
                 }
             }                        
         }
@@ -270,7 +268,7 @@ public class DataProjectScheduleAdhoc {
                 
         schemaName = LabPLANETPlatform.buildSchemaName(schemaName, "data");       
         Object[] existsRecord = Rdbms.existsRecord(schemaName, tableName,  new String[]{"project", "id"}, new Object[]{pName, projSchedId});
-        if (LB_FALSE.equals(existsRecord[0].toString())){ return existsRecord;}
+        if (LabPLANETPlatform.LAB_FALSE.equals(existsRecord[0].toString())){ return existsRecord;}
         
         Calendar startDate = null; Calendar endDate = null;
         

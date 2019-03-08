@@ -31,7 +31,6 @@ import java.util.ResourceBundle;
  */
 public class AppProcedureListAPI extends HttpServlet {
 
-    public static String LB_TRUE = "LABPLANET_TRUEX";
 /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      *
