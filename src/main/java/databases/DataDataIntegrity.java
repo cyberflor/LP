@@ -14,7 +14,6 @@ import functionalJava.parameter.Parameter;
  */
 public class DataDataIntegrity {
     
-    Rdbms rdbm = new Rdbms();
 
     /**
      *
@@ -27,7 +26,7 @@ public class DataDataIntegrity {
         
         String[] myMandatoryFields = new String[0];
         LabPLANETPlatform labPlat = new LabPLANETPlatform();
-        String schemaDataName = labPlat.buildSchemaName(schemaName, "data");
+        String schemaDataName = LabPLANETPlatform.buildSchemaName(schemaName, "data");
         
         String propertyEntryName = tableName+"_mandatoryFields"+actionName;        
         String propertyEntryValue = Parameter.getParameterBundle(schemaDataName.replace("\"", ""), propertyEntryName);        
@@ -48,7 +47,7 @@ public class DataDataIntegrity {
         
         String[] myMandatoryFields = new String[0];
         LabPLANETPlatform labPlat = new LabPLANETPlatform();
-        String schemaDataName = labPlat.buildSchemaName(schemaName, "data");
+        String schemaDataName = LabPLANETPlatform.buildSchemaName(schemaName, "data");
         
         String propertyEntryName = tableName+"_fieldsDefaultValues"+actionName;        
         
@@ -70,7 +69,7 @@ public class DataDataIntegrity {
         
         String[] myMandatoryFields = new String[0];
         LabPLANETPlatform labPlat = new LabPLANETPlatform();
-        String schemaDataName = labPlat.buildSchemaName(schemaName, "data");
+        String schemaDataName = LabPLANETPlatform.buildSchemaName(schemaName, "data");
         
         String propertyEntryName = tableName+"_specialFields";        
         
@@ -92,7 +91,7 @@ public class DataDataIntegrity {
         
         String[] myMandatoryFields = new String[0];
         LabPLANETPlatform labPlat = new LabPLANETPlatform();
-        String schemaDataName = labPlat.buildSchemaName(schemaName, "data");
+        String schemaDataName = LabPLANETPlatform.buildSchemaName(schemaName, "data");
         
         String propertyEntryName = tableName+"_specialFieldsFunction";        
         

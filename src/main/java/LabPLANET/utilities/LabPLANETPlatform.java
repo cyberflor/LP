@@ -5,7 +5,6 @@
  */
 package LabPLANET.utilities;
 
-import databases.Rdbms;
 import databases.SqlStatement;
 import functionalJava.parameter.Parameter;
 import java.lang.reflect.InvocationTargetException;
@@ -21,6 +20,7 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
 import org.json.simple.JSONObject;
+import databases.Rdbms;
 
 /**
  * LabPLANETPlatform is a library for methods solving topics that are specifically part of the LabPLANET Paradigm.
@@ -36,13 +36,12 @@ public class LabPLANETPlatform {
      * @param actionName
      * @return
      */
-    public Object[] procActionEnabled(String schemaPrefix, String actionName){
-        
+    public static Object[] procActionEnabled(String schemaPrefix, String actionName){
+        String classVersion="0.1";
         actionName = actionName.toUpperCase();
         Object[] diagnoses = new Object[6];
         String errorCode = ""; String errorDetail = "";
-        Object[] errorDetailVariables = new Object[0];
-        Rdbms rdbm = new Rdbms();
+        Object[] errorDetailVariables = new Object[0];        
         LabPLANETArray labArr = new LabPLANETArray();
         String[] procedureActions = Parameter.getParameterBundle(schemaPrefix.replace("\"", "")+"-procedure", "procedureActions").split("\\|");
         
@@ -50,24 +49,24 @@ public class LabPLANETPlatform {
             errorCode = "ACTION_ENABLED_BY_ALL";
             errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, schemaPrefix);
             errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, actionName);
-            return trapErrorMessage(rdbm, "LABPLANET_TRUE", classVersion, errorCode, errorDetailVariables);
+            return trapErrorMessage("LABPLANET_TRUE", errorCode, errorDetailVariables);
         }
         if ( (procedureActions.length==1 && "".equals(procedureActions[0])) ){
             errorCode = "userRoleActionEnabled_denied_ruleNotFound";
             errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, schemaPrefix);
             errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, Arrays.toString(procedureActions));
-            return trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);
+            return trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);
         }else if(!labArr.valueInArray(procedureActions, actionName)){    
             errorCode = "userRoleActionEnabled_denied";
             errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, actionName);
             errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, schemaPrefix);
             errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, Arrays.toString(procedureActions));
-            return trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);            
+            return trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);            
         }else{
             errorCode = "userRoleActionEnabled_enabled";
             errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, schemaPrefix);
             errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, actionName);
-            return trapErrorMessage(rdbm, "LABPLANET_TRUE", classVersion, errorCode, errorDetailVariables);               
+            return trapErrorMessage("LABPLANET_TRUE", errorCode, errorDetailVariables);               
         }    
     }    
     
@@ -78,37 +77,36 @@ public class LabPLANETPlatform {
      * @param actionName
      * @return
      */
-    public Object[] procUserRoleActionEnabled(String schemaPrefix, String userRole, String actionName){
+    public static Object[] procUserRoleActionEnabled(String schemaPrefix, String userRole, String actionName){
         Object[] diagnoses = new Object[6];
             LabPLANETArray labArr = new LabPLANETArray();
         String errorCode = ""; String errorDetail = "";
         Object[] errorDetailVariables = new Object[0];            
-        Rdbms rdbm = new Rdbms();        
         String[] procedureActionsUserRoles = Parameter.getParameterBundle(schemaPrefix.replace("\"", "")+"-procedure", "actionEnabled"+actionName).split("\\|");
         
         if (labArr.valueInArray(procedureActionsUserRoles, "ALL")){
             errorCode = "userRoleActionEnabled_ALL";
             errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, schemaPrefix);            
-            return trapErrorMessage(rdbm, "LABPLANET_TRUE", classVersion, errorCode, errorDetailVariables);                    
+            return trapErrorMessage("LABPLANET_TRUE", errorCode, errorDetailVariables);                    
         }
         if ( (procedureActionsUserRoles.length==1 && "".equals(procedureActionsUserRoles[0])) ){
             errorCode = "userRoleActionEnabled_missedParameter";
             errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, actionName);            
             errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, schemaPrefix);
             errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, procedureActionsUserRoles);                        
-            return trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);        
+            return trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);        
         }else if(!labArr.valueInArray(procedureActionsUserRoles, userRole)){    
             errorCode = "userRoleActionEnabled_roleNotIncluded";
             errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, schemaPrefix);
             errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, actionName);
             errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, userRole);
             errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, Arrays.toString(procedureActionsUserRoles));            
-            return trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);      
+            return trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);      
         }else{
             errorCode = "userRoleActionEnabled_enabled";
             errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, schemaPrefix);
             errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, actionName);
-            return trapErrorMessage(rdbm, "LABPLANET_TRUE", classVersion, errorCode, errorDetailVariables);        
+            return trapErrorMessage("LABPLANET_TRUE", errorCode, errorDetailVariables);        
         }            
     }
 
@@ -118,13 +116,12 @@ public class LabPLANETPlatform {
      * @param actionName
      * @return
      */
-    public Object[] procActionRequiresUserConfirmation(String schemaPrefix, String actionName){
+    public static Object[] procActionRequiresUserConfirmation(String schemaPrefix, String actionName){
         
         actionName = actionName.toUpperCase();
         Object[] diagnoses = new Object[6];
         String errorCode = ""; String errorDetail = "";
         Object[] errorDetailVariables = new Object[0];
-        Rdbms rdbm = new Rdbms();
         LabPLANETArray labArr = new LabPLANETArray();
         String[] procedureActions = Parameter.getParameterBundle(schemaPrefix.replace("\"", "")+"-procedure", "verifyUserRequired").split("\\|");
         
@@ -132,24 +129,24 @@ public class LabPLANETPlatform {
             errorCode = "VERIFY_USER_REQUIRED_BY_ALL";
             errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, schemaPrefix);
             errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, actionName);
-            return trapErrorMessage(rdbm, "LABPLANET_TRUE", classVersion, errorCode, errorDetailVariables);
+            return trapErrorMessage("LABPLANET_TRUE", errorCode, errorDetailVariables);
         }
         if ( (procedureActions.length==1 && "".equals(procedureActions[0])) ){
             errorCode = "verifyUserRequired_denied_ruleNotFound";
             errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, schemaPrefix);
             errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, Arrays.toString(procedureActions));
-            return trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);
+            return trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);
         }else if(!labArr.valueInArray(procedureActions, actionName)){    
             errorCode = "verifyUserRequired_denied";
             errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, actionName);
             errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, schemaPrefix);
             errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, Arrays.toString(procedureActions));
-            return trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);            
+            return trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);            
         }else{
             errorCode = "verifyUserRequired_enabled";
             errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, schemaPrefix);
             errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, actionName);
-            return trapErrorMessage(rdbm, "LABPLANET_TRUE", classVersion, errorCode, errorDetailVariables);               
+            return trapErrorMessage("LABPLANET_TRUE", errorCode, errorDetailVariables);               
         }    
     }    
 
@@ -159,13 +156,12 @@ public class LabPLANETPlatform {
      * @param actionName
      * @return
      */
-    public Object[] procActionRequiresEsignConfirmation(String schemaPrefix, String actionName){
+    public static Object[] procActionRequiresEsignConfirmation(String schemaPrefix, String actionName){
         
         actionName = actionName.toUpperCase();
         Object[] diagnoses = new Object[6];
         String errorCode = ""; String errorDetail = "";
         Object[] errorDetailVariables = new Object[0];
-        Rdbms rdbm = new Rdbms();
         LabPLANETArray labArr = new LabPLANETArray();
         String[] procedureActions = Parameter.getParameterBundle(schemaPrefix.replace("\"", "")+"-procedure", "eSignRequired").split("\\|");
         
@@ -173,24 +169,24 @@ public class LabPLANETPlatform {
             errorCode = "ESIGN_REQUIRED_BY_ALL";
             errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, schemaPrefix);
             errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, actionName);
-            return trapErrorMessage(rdbm, "LABPLANET_TRUE", classVersion, errorCode, errorDetailVariables);
+            return trapErrorMessage("LABPLANET_TRUE", errorCode, errorDetailVariables);
         }
         if ( (procedureActions.length==1 && "".equals(procedureActions[0])) ){
             errorCode = "eSignRequired_denied_ruleNotFound";
             errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, schemaPrefix);
             errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, Arrays.toString(procedureActions));
-            return trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);
+            return trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);
         }else if(!labArr.valueInArray(procedureActions, actionName)){    
             errorCode = "eSignRequired_denied";
             errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, actionName);
             errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, schemaPrefix);
             errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, Arrays.toString(procedureActions));
-            return trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);            
+            return trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);            
         }else{
             errorCode = "eSignRequired_enabled";
             errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, schemaPrefix);
             errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, actionName);
-            return trapErrorMessage(rdbm, "LABPLANET_TRUE", classVersion, errorCode, errorDetailVariables);               
+            return trapErrorMessage("LABPLANET_TRUE", errorCode, errorDetailVariables);               
         }    
     }    
     
@@ -201,11 +197,9 @@ public class LabPLANETPlatform {
      * @param fieldName
      * @return
      */
-    public Boolean isEncryptedField(String schemaName, String tableName, String fieldName){
+    public static Boolean isEncryptedField(String schemaName, String tableName, String fieldName){
         Boolean diagnoses = false;
         if ((schemaName==null) || (tableName==null) || (fieldName==null) ) {return diagnoses;}
-        
-        Rdbms rdbm = new Rdbms();
         String parameterName = "encrypted_"+tableName;
         schemaName = schemaName.replace("\"", "");
         
@@ -223,7 +217,7 @@ public class LabPLANETPlatform {
      * @param fieldValue
      * @return
      */
-    public HashMap<String, String> encryptEncryptableFieldsAddBoth(String fieldName, String fieldValue){    
+    public static HashMap<String, String> encryptEncryptableFieldsAddBoth(String fieldName, String fieldValue){    
         return encryptEncryptableFields(false, fieldName, fieldValue);
     }    
 
@@ -233,11 +227,11 @@ public class LabPLANETPlatform {
      * @param fieldValue
      * @return
      */
-    public HashMap<String, String> encryptEncryptableFieldsOverride(String fieldName, String fieldValue){    
+    public static HashMap<String, String> encryptEncryptableFieldsOverride(String fieldName, String fieldValue){    
         return encryptEncryptableFields(true, fieldName, fieldValue);
     }    
     
-    private HashMap<String, String> encryptEncryptableFields(Boolean override, String fieldName, String fieldValue){        
+    private static HashMap<String, String> encryptEncryptableFields(Boolean override, String fieldName, String fieldValue){        
         HashMap<String, String> hm = new HashMap<>();        
         
         if (!fieldName.toUpperCase().contains("IN")){
@@ -277,7 +271,7 @@ public class LabPLANETPlatform {
      * @param stringToEncrypt
      * @return
      */
-    public Object[] encryptString(String stringToEncrypt){
+    public static Object[] encryptString(String stringToEncrypt){
         Object[] diagnoses = new Object[3];
         String key = "Bar12345Bar12345"; // 128 bit key
         LabPLANETPlatform labPlat = new LabPLANETPlatform();
@@ -315,7 +309,7 @@ public class LabPLANETPlatform {
      * @param encryptedString
      * @return
      */
-    public Object[] decryptString(String encryptedString){
+    public static Object[] decryptString(String encryptedString){
         Object[] diagnoses = new Object[3];
         String key = "Bar12345Bar12345"; // 128 bit key
         //LabPLANETPlatform labPlat = new LabPLANETPlatform();
@@ -360,7 +354,7 @@ public class LabPLANETPlatform {
  * @param values Object[] - which are the values for the properties defined above
  * @param elementsDev StackTraceElement[] - Provides info from the context such as the ClassName + MethodName + LineNumber
  */
-    public void addJavaClassDoc(Rdbms rdbm, String[] fields, Object[] values, StackTraceElement[] elementsDev) {
+    public static void addJavaClassDoc(String[] fields, Object[] values, StackTraceElement[] elementsDev) {
                 
         String schemaName = "requirements";
         String tableName = "java_class_doc";
@@ -395,10 +389,10 @@ public class LabPLANETPlatform {
         if (specialFieldIndex==-1){return;}
         getFilterFldName = labArr.addValueToArray1D(getFilterFldName, currField);      getFilterFldValue = labArr.addValueToArray1D(getFilterFldValue, fldValue[specialFieldIndex]);     
         
-        String[] getFields = new String[] {"id","line","last_update_on","created_on"};
-        Object[][] diagnoses = rdbm.getRecordFieldsByFilter(rdbm, schemaName, tableName, getFilterFldName, getFilterFldValue, getFields);
+        String[] getFields = new String[] {"id","line","last_update_on","created_on"};        
+        Object[][] diagnoses = Rdbms.getRecordFieldsByFilter(schemaName, tableName, getFilterFldName, getFilterFldValue, getFields);
         if ("LABPLANET_FALSE".equalsIgnoreCase(diagnoses[0][0].toString())){        
-            Object[] diagnosesInsert = rdbm.insertRecordInTable(rdbm, schemaName, tableName, fldName, fldValue);
+            Object[] diagnosesInsert = Rdbms.insertRecordInTable(schemaName, tableName, fldName, fldValue);
             String diag = diagnosesInsert[3].toString();
         }else{
             String[] fieldsUpdate = new String[0];
@@ -407,7 +401,7 @@ public class LabPLANETPlatform {
             if (elementsDev[1].getLineNumber()!=(Integer) fldValue[Arrays.asList(fldName).indexOf(currField)]){
                 fieldsUpdate = labArr.addValueToArray1D(fieldsUpdate, currField);        fieldsUpdateValue = labArr.addValueToArray1D(fieldsUpdateValue, elementsDev[1].getLineNumber());                 
             }
-            if (fieldsUpdate.length>0){Object[] updateRecordFieldsByFilter = rdbm.updateRecordFieldsByFilter(rdbm, schemaName, tableName, fieldsUpdate, fieldsUpdateValue, getFilterFldName, getFilterFldValue);
+            if (fieldsUpdate.length>0){Object[] updateRecordFieldsByFilter = Rdbms.updateRecordFieldsByFilter(schemaName, tableName, fieldsUpdate, fieldsUpdateValue, getFilterFldName, getFilterFldValue);
 }
         }    
         
@@ -455,10 +449,9 @@ public class LabPLANETPlatform {
  * @param actionName. The action in the database INSERT/UPDATE/DELETE (lowercas preferred).
  * @return String[] All prerrequisite fields for all the fields added to the fieldNames input argument array, when position 3 is set to FALSE then the template is not found.
  */  
-    public Object[][] mandatoryFieldsCheck(String schemaName, String[] fieldNames, Object[] fieldValues, String tableName, String actionName){
+    public static Object[][] mandatoryFieldsCheck(String schemaName, String[] fieldNames, Object[] fieldValues, String tableName, String actionName){
         Object[][] diagnoses = new Object[3][6];
-        
-        Rdbms rdbm = new Rdbms();
+       
         LabPLANETArray labArr = new LabPLANETArray();
         String propertyName = tableName+"_mandatoryFields"+actionName;
         
@@ -522,7 +515,7 @@ public class LabPLANETPlatform {
         if (mandatoryFieldsMissing.length()>0){
             StackTraceElement[] elements = Thread.currentThread().getStackTrace();
             diagnoses[0][0]= elements[1].getClassName() + "." + elements[1].getMethodName();
-            diagnoses[0][1]= classVersion;
+            diagnoses[0][1]= "-999";
             diagnoses[0][2]= "Code Line " + String.valueOf(elements[1].getLineNumber());
             diagnoses[0][3]="FALSE";
             diagnoses[0][4]="ERROR:Missing Mandatory Fields";
@@ -553,10 +546,9 @@ public class LabPLANETPlatform {
  * @param actionName. The action in the database INSERT/UPDATE/DELETE (lowercas preferred).
  * @return String[] All prerrequisite fields for all the fields added to the fieldNames input argument array, when position 3 is set to FALSE then the template is not found.
  */   
-    public String[] mandatoryFieldsByDependency(String schemaName, String[] fieldNames, String tableName, String actionName){
+    public static String[] mandatoryFieldsByDependency(String schemaName, String[] fieldNames, String tableName, String actionName){
         String[] diagnoses = new String[6];
         
-        Rdbms rdbm = new Rdbms();
         LabPLANETArray labArr = new LabPLANETArray();
         String propertyName = tableName+"_fieldsAddingMandatory"+actionName;
         
@@ -608,7 +600,7 @@ public class LabPLANETPlatform {
  * @param tableName. Table where the template is stored in.
  * @return String[] when position 3 is set to FALSE then the template is not found.
  */   
-    public Object[] configObjectExists(Rdbms rdbm, String schemaName, String[] fieldNames, Object[] fieldValues, String tableName){
+    public static Object[] configObjectExists( String schemaName, String[] fieldNames, Object[] fieldValues, String tableName){
         LabPLANETArray labArr = new LabPLANETArray();
         String errorCode = ""; String errorDetail = "";
         Object[] errorDetailVariables = new Object[0];        
@@ -650,7 +642,7 @@ public class LabPLANETPlatform {
             }
                 
         }       
-        Object[] diagnosis = rdbm.existsRecord(rdbm, schemaName, configTableName, configTableKeyFieldName, configTableKeyFielValue);
+        Object[] diagnosis = Rdbms.existsRecord(schemaName, configTableName, configTableKeyFieldName, configTableKeyFielValue);
         if (!"LABPLANET_TRUE".equalsIgnoreCase(diagnosis[0].toString())){            
            String[] configTableFilter = labArr.joinTwo1DArraysInOneOf1DString(configTableKeyFieldName, configTableKeyFielValue, ":");
            errorCode = "LabPLANETPlatform_MissingTableConfigCode";
@@ -658,7 +650,7 @@ public class LabPLANETPlatform {
            errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, Arrays.toString(configTableFilter));
            errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, schemaName);
            errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, diagnosis[5]);
-           return (String[]) trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);
+           return (String[]) trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);
         }    
 
         
@@ -678,7 +670,7 @@ public class LabPLANETPlatform {
  * @param actionName - String - action being performed
  * @return String[] - Returns detailed info about the evaluation and where it ends, position 3 set to TRUE means all is ok otherwise FALSE.
  */    
-    public String[] specialFieldsCheck(Rdbms rdbm, String schemaName, String[] fieldNames, Object[] fieldValues, String tableName, String actionName){
+    public String[] specialFieldsCheck(String schemaName, String[] fieldNames, Object[] fieldValues, String tableName, String actionName){
         LabPLANETArray labArr = new LabPLANETArray();
         String errorCode = ""; String errorDetail = "";
         Object[] errorDetailVariables = new Object[0];        
@@ -707,26 +699,26 @@ public class LabPLANETPlatform {
                             method = getClass().getDeclaredMethod(aMethod, paramTypes);
                         } catch (NoSuchMethodException | SecurityException ex) {
                         }
-                        Object specialFunctionReturn = method.invoke(this, rdbm, fieldNames, fieldValues, schemaName);
+                        Object specialFunctionReturn = method.invoke(this, fieldNames, fieldValues, schemaName);
                         if (specialFunctionReturn.toString().contains("ERROR")){
                             errorCode = "LabPLANETPlatform_SpecialFunctionReturnedERROR";
                             errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, currField);
                             errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, aMethod);
                             errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, specialFunctionReturn.toString());                            
-                            return (String[]) trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);
+                            return (String[]) trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);
                         }
                     } catch (IllegalAccessException|IllegalArgumentException|InvocationTargetException ex) {
                             errorCode = "LabPLANETPlatform_SpecialFunctionCausedException";
                             errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, currField);
                             errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, ex.getCause());
                             errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, ex.getMessage());                            
-                            return (String[]) trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);                      
+                            return (String[]) trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);                      
                     }
             }
         }         
         errorCode = "LabPLANETPlatform_SpecialFunctionAllSuccess";
         errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, specialFieldName.replace("\\|", ", "));
-        return (String[]) trapErrorMessage(rdbm, "LABPLANET_TRUE", classVersion, errorCode, errorDetailVariables);                      
+        return (String[]) trapErrorMessage("LABPLANET_TRUE", errorCode, errorDetailVariables);                      
     }
 /**
  * Get Class Method Name dynamically for the method that call this method.
@@ -763,7 +755,7 @@ public class LabPLANETPlatform {
      * @param errorVariables
      * @return Object[]
  */
-    public static Object[] trapErrorMessage(Rdbms rdbm, String evaluation, String classVersion, String errorCode, Object[] errorVariables) {
+    public static Object[] trapErrorMessage(String evaluation, String errorCode, Object[] errorVariables) {
                 
         Object[] fldValue = new Object[7];
         String errorDetail = "";
@@ -797,7 +789,7 @@ public class LabPLANETPlatform {
         }
         fldValue[0] = evaluation; 
         fldValue[1] = classFullName + "." + methodName;
-        fldValue[2] = classVersion;
+        fldValue[2] = "-999";
         fldValue[3] = "Code line " + lineNumber.toString();
         fldValue[4] = errorCode;
         fldValue[5] = errorCodeText;
@@ -811,7 +803,7 @@ public class LabPLANETPlatform {
      * @param errorArray
      * @return
      */
-    public JSONObject trapErrorMessageJSON(Object[] errorArray){
+    public static JSONObject trapErrorMessageJSON(Object[] errorArray){
                 
         JSONObject errorJson = new JSONObject();
             errorJson.put("evaluation", errorArray[0]);

@@ -14,7 +14,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import functionalJava.batch.BatchArray;
-import functionalJava.batch.DataBatch;
 /**
  *
  * @author Administrator
@@ -47,11 +46,8 @@ public class tstDataBatchArraySequence extends HttpServlet {
             String[] keyFieldName = new String[1];
             Object[] keyFieldValue = new Object[1];                 
                        
-            Rdbms rdbm = new Rdbms();
    //         DBTransac dbObj = null;          
-            boolean isConnected = false;  
-
-            isConnected = rdbm.startRdbms("labplanet", "LabPlanet");
+            if (Rdbms.getRdbms().startRdbms("labplanet", "avecesllegaelmomento")==null){out.println("Connection to the database not established");return;}
 
             String batchName = "Batch 22";
 
@@ -61,9 +57,8 @@ public class tstDataBatchArraySequence extends HttpServlet {
 //            dbObj = new DBTransac(rdbm, schemaName, currentUser, currentUSerRole, "Delete",tableName, null, null, keyFieldName, keyFieldValue);           
 //            dbObj.DBAction(rdbm);
 
-            System.out.println("Connected to the db: " + isConnected);
             
-            myBatchArray[0] = new BatchArray(rdbm, "oil-pl1", "tmpA", 1, batchName, currentUser,30, 5);                        
+            myBatchArray[0] = new BatchArray("oil-pl1", "tmpA", 1, batchName, currentUser,30, 5);                        
 
             fieldName[0] = "name";
             fieldValue[0] = batchName;
@@ -79,8 +74,7 @@ public class tstDataBatchArraySequence extends HttpServlet {
             fieldValue[5] = 4;
                                 
             Object[][] batchContent = myBatchArray[0].getBatchContent();
-            LabPLANETArray lpa = new LabPLANETArray();
-            Object[] batchContent1d = lpa.array2dTo1d(batchContent);
+            Object[] batchContent1d = LabPLANETArray.array2dTo1d(batchContent);
             
             fieldName[5] = "array_content";
             fieldValue[5] = batchContent1d;            
@@ -112,7 +106,7 @@ public class tstDataBatchArraySequence extends HttpServlet {
                 String comment = mb.batchCommentOpen("OperA", "");
                 if (!comment.isEmpty())
                 {comment = comment + " (Comment created by:" + mb.getBatchCommentAuthor() + ") <br>";
-                };
+                }
                 
                 out.println("Batch Position length is: " + mb.numTotalPositions + " in a " + mb.numRows + " x " + mb.numCols + " array.<br>");
                 
@@ -140,10 +134,9 @@ public class tstDataBatchArraySequence extends HttpServlet {
                 
                 out.println("The Sample 4 was found in " + mb.searchStringContent("Sample 4").size() + " positions." + "<br>");
                 
-                for (Object al: mb.searchStringContent("Sample 4") )
-                {
+                mb.searchStringContent("Sample 4").forEach((al) -> {
                     System.out.println("    " + al + "<br>");
-                }
+                });
                 
                 out.println("The Sample 1 was found in " + mb.searchStringContent("Sample 1").size() + " positions." + "<br>");
                 
@@ -151,14 +144,13 @@ public class tstDataBatchArraySequence extends HttpServlet {
                 
                 out.println("The Sample 4 was found in " + mb.searchStringContent("Sample 4").size() + " positions." + "<br>");
                 
-                for (Object al: mb.searchStringContent("Sample 4") )
-                {
+                mb.searchStringContent("Sample 4").forEach((al) -> {
                     out.println("    " + al + "<br>");
-                }
+                });
                 batchContent = myBatchArray[0].getBatchContent();
                 
-                batchContent1d = lpa.array2dTo1d(batchContent);
-                Object[][] batchContent2d = lpa.array1dTo2d(batchContent1d, mb.numCols);
+                batchContent1d = LabPLANETArray.array2dTo1d(batchContent);
+                Object[][] batchContent2d = LabPLANETArray.array1dTo2d(batchContent1d, mb.numCols);
                                 
                 fieldName = new String[5];
                 fieldValue = new Object[5];

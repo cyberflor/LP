@@ -41,24 +41,19 @@ public class TestingUOMConversionTable extends HttpServlet {
     try (PrintWriter out = response.getWriter()) {
         response.setContentType("text/html;charset=UTF-8");
         ConfigSpecStructure configSpec = new ConfigSpecStructure();
-        Rdbms rdbm = new Rdbms();
         String csvFileName = "uom_familyConversionTable.txt"; String csvFileSeparator=";";
         String csvPathName = "\\\\FRANCLOUD\\fran\\LabPlanet\\testingRepository\\"+csvFileName;         
         
         String userName=null;
 
-        boolean isConnected = false;
-        isConnected = rdbm.startRdbms("labplanet", "avecesllegaelmomento");           
-        if (!isConnected){out.println("Connection to the database not established");return;}
+        if (Rdbms.getRdbms().startRdbms("labplanet", "avecesllegaelmomento")==null){out.println("Connection to the database not established");return;}
 
-
-        LabPLANETArray labArr = new LabPLANETArray();
         Integer numTesting = 20;
         Integer inumTesting = 0;
         Object[][] configSpecTestingArray = new Object[numTesting][6]; 
         BigDecimal baseValue=BigDecimal.ZERO;
 
-        configSpecTestingArray = labArr.convertCSVinArray(csvPathName, csvFileSeparator);        
+        configSpecTestingArray = LabPLANETArray.convertCSVinArray(csvPathName, csvFileSeparator);        
                 
         String fileContent = "";
         fileContent = fileContent + "<!DOCTYPE html><html><head>" + "";
@@ -103,11 +98,11 @@ public class TestingUOMConversionTable extends HttpServlet {
             
             UnitsOfMeasurement UOM = new UnitsOfMeasurement();
             
-            String baseUnitName = UOM.getFamilyBaseUnitName(rdbm, schemaPrefix, familyName);
+            String baseUnitName = UOM.getFamilyBaseUnitName(schemaPrefix, familyName);
             if (baseUnitName.length()==0){
                  fileContent = fileContent + "<td>"+"Nothing to convert with no units"+"</td>";                                
             }else{
-                Object[][] tableGet = UOM.getAllUnitsPerFamily(rdbm, schemaPrefix, familyName, fieldsToRetrieve);
+                Object[][] tableGet = UOM.getAllUnitsPerFamily(schemaPrefix, familyName, fieldsToRetrieve);
                 //fileContent = fileContent + "<td>"+i+"</td><td>"+schemaPrefix+"</td><td>"+familyName+"</td><td>"+Arrays.toString(fieldsToRetrieve)+"</td><td><b>"+baseValue+"</b></td>";
                 if ("LABPLANET_FALSE".equalsIgnoreCase(tableGet[0][0].toString())) {
                      fileContent = fileContent + "<td>"+tableGet[0][3].toString()+": "+tableGet[0][5].toString()+"</td>";                
@@ -116,7 +111,7 @@ public class TestingUOMConversionTable extends HttpServlet {
                      fileContent = fileContent + "<table id=\"scriptTable2\">"; 
                     for (Object[] tableGet1 : tableGet) {
                         fileContent = fileContent + "<tr>";
-                        Object[] newValue = UOM.convertValue(rdbm, schemaPrefix, baseValue, baseUnitName, (String) tableGet1[0]);
+                        Object[] newValue = UOM.convertValue(schemaPrefix, baseValue, baseUnitName, (String) tableGet1[0]);
                         if ("LABPLANET_FALSE".equalsIgnoreCase(newValue[0].toString())) {
                             fileContent = fileContent + "<td>Not Converted</td>"; 
                         }else{
@@ -140,7 +135,7 @@ public class TestingUOMConversionTable extends HttpServlet {
         fileWriter.flush();
         fileWriter.close();   
         
-        rdbm.closeRdbms();       
+        Rdbms.closeRdbms();       
     }             
 }
 

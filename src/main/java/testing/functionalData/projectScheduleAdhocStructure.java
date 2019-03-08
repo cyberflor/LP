@@ -45,11 +45,8 @@ public class projectScheduleAdhocStructure extends HttpServlet {
             
             response.setContentType("text/html;charset=UTF-8");
             UserMethod um = new UserMethod();
-
-            Rdbms rdbm = new Rdbms();            
-            boolean isConnected = false;
-            isConnected = rdbm.startRdbms("labplanet", "LabPlanet");
-            if (!isConnected){out.println("Connection to the database not established");return;}
+            
+        if (Rdbms.getRdbms().startRdbms("labplanet", "avecesllegaelmomento")==null){out.println("Connection to the database not established");return;}
             
             String csvFileName = "dataProjectScheduleAdhocStructure.txt"; String csvFileSeparator=";";
             String csvPathName = "\\\\FRANCLOUD\\fran\\LabPlanet\\testingRepository\\"+csvFileName; 
@@ -60,11 +57,10 @@ public class projectScheduleAdhocStructure extends HttpServlet {
             Integer numTesting = 1;
             Integer inumTesting = 0;
             Object[][] configSpecTestingArray = new Object[numTesting][6];
-            LabPLANETArray labArr = new LabPLANETArray();
             String userName="1"; 
             String userRole="oil1plant_analyst";
             
-            configSpecTestingArray = labArr.convertCSVinArray(csvPathName, csvFileSeparator);
+            configSpecTestingArray = LabPLANETArray.convertCSVinArray(csvPathName, csvFileSeparator);
 
             String fileContent="";
             fileContent = testingFileContentSections.getHtmlStyleHeader(this.getServletName());
@@ -100,12 +96,12 @@ public class projectScheduleAdhocStructure extends HttpServlet {
                         if (configSpecTestingArray[i][4]!=null){projSchedId = (Integer) Integer.parseInt(configSpecTestingArray[i][4].toString());}  
                         if (configSpecTestingArray[i][5]!=null){fieldName = (String[]) configSpecTestingArray[i][5].toString().split("\\|");} 
                         if (configSpecTestingArray[i][6]!=null){fieldValue = (String[]) configSpecTestingArray[i][6].toString().split("\\|");} 
-                        Object[] fieldValues = labArr.convertStringWithDataTypeToObjectArray((String[]) fieldValue);
+                        Object[] fieldValues = LabPLANETArray.convertStringWithDataTypeToObjectArray((String[]) fieldValue);
                         //fileContent = fileContent + "<td>projectName, projectScheduleId, fieldNames, fieldValues</td>";
                         fileContent = fileContent + "<td>"+projectName+"</td><td>"+projSchedId.toString()+"</td><td>"
                                 +configSpecTestingArray[i][5].toString()+"</td><td>"+configSpecTestingArray[i][6].toString()+"</td>";                        
                         try {
-                            dataProject = prjSched.addRecursiveSchedulePoint(rdbm, schemaPrefix, projectName, projSchedId, fieldName, fieldValues);
+                            dataProject = prjSched.addRecursiveSchedulePoint(schemaPrefix, projectName, projSchedId, fieldName, fieldValues);
                         } catch (IllegalArgumentException ex) {
                             Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
                         }
@@ -123,7 +119,7 @@ public class projectScheduleAdhocStructure extends HttpServlet {
                         fileContent = fileContent + "<td>"+projectName+"</td><td>"+projSchedId.toString()+"</td><td>"
                                 +configSpecTestingArray[i][5].toString()+"</td><td>"+configSpecTestingArray[i][6].toString()+"</td>";                        
                         try {
-                            dataProject = prjSched.importHolidaysCalendarSchedule(rdbm, schemaPrefix, calendarName, projectName, projSchedId);
+                            dataProject = prjSched.importHolidaysCalendarSchedule(schemaPrefix, calendarName, projectName, projSchedId);
                         } catch (IllegalArgumentException ex) {
                             Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
                         }
@@ -158,7 +154,7 @@ public class projectScheduleAdhocStructure extends HttpServlet {
             fileWriter.flush();
             fileWriter.close();   
 
-            rdbm.closeRdbms();
+            Rdbms.closeRdbms();
 
             }   catch (SQLException|IOException ex) {
                     Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);   

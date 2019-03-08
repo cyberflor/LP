@@ -66,7 +66,7 @@ public class LabPLANETDate {
      * @param dayOfWeek
      * @return
      */
-    public Object[] getDaysInRange(Calendar startDate, Calendar endDate, String dayOfWeek){
+    public static Object[] getDaysInRange(Calendar startDate, Calendar endDate, String dayOfWeek){
         LabPLANETArray labArr = new LabPLANETArray();
         Object[] dt = new Object[0];
         

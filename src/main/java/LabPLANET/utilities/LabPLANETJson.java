@@ -6,7 +6,6 @@
 package LabPLANET.utilities;
 
 import com.sun.rowset.CachedRowSetImpl;
-import databases.Rdbms;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Arrays;
@@ -137,7 +136,7 @@ public class LabPLANETJson {
      * @param resultSet
      * @return
      */
-    public JSONArray convertToJSON2(ResultSet resultSet) {
+    public static JSONArray convertToJSON2(ResultSet resultSet) {
         try {
             JSONArray jsonArray = new JSONArray();
             Integer totalLines = resultSet.getRow();
@@ -186,7 +185,7 @@ public class LabPLANETJson {
  * @return - String[] - Contains the data in a json structure way.
  * @throws SQLException -
  */   
-    public String [] _getJsonArrayFields(Rdbms rdbm, String table, String[] fields,String fieldPrefix) throws SQLException {
+    public static String [] _getJsonArrayFields(String table, String[] fields,String fieldPrefix) throws SQLException {
         String [] itt = table.split("\\.");
         String tbl = itt[1];
 

@@ -17,7 +17,7 @@ public class _UserSession {
     private String userRole;
     private Boolean userSessionValidated=false;
     private String rdbm;
-    private String token;
+    private final String token;
 
     /**
      *

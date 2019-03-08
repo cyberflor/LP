@@ -51,8 +51,6 @@ public class dataSampleStructure extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        Rdbms rdbm = new Rdbms();           
-        boolean isConnected = false;
 
         String fileContent = "";        
         try (PrintWriter out = response.getWriter()) {
@@ -60,7 +58,7 @@ public class dataSampleStructure extends HttpServlet {
             response.setContentType("text/html;charset=UTF-8");
             UserMethod um = new UserMethod();
 
-            isConnected = rdbm.startRdbms("labplanet", "avecesllegaelmomento");
+            if (Rdbms.getRdbms().startRdbms("labplanet", "avecesllegaelmomento")==null){out.println("Connection to the database not established");return;}
 
             String csvFileName = "dataSampleStructure.txt"; String csvFileSeparator=";";
             String csvPathName = "\\\\FRANCLOUD\\fran\\LabPlanet\\testingRepository\\"+csvFileName; 
@@ -74,9 +72,8 @@ public class dataSampleStructure extends HttpServlet {
             Integer numTesting = 1;
             Integer inumTesting = 0;
             Object[][] configSpecTestingArray = new Object[numTesting][6];
-            LabPLANETArray labArr = new LabPLANETArray();
             
-            configSpecTestingArray = labArr.convertCSVinArray(csvPathName, csvFileSeparator);            
+            configSpecTestingArray = LabPLANETArray.convertCSVinArray(csvPathName, csvFileSeparator);            
             
         fileContent = testingFileContentSections.getHtmlStyleHeader(this.getServletName());
             
@@ -97,7 +94,6 @@ public class dataSampleStructure extends HttpServlet {
             Object[] dataSample = new Object[6];
             String userName=null; 
             String userRole=null;
-            LabPLANETPlatform LabPlat = new LabPLANETPlatform();
             
             out.println("Line "+i.toString());
 
@@ -107,7 +103,7 @@ public class dataSampleStructure extends HttpServlet {
             if (configSpecTestingArray[i][4]!=null){functionBeingTested = (String) configSpecTestingArray[i][4];}
                         
             fileContent = fileContent + "<td>"+i+"</td><td>"+schemaPrefix+"</td><td>"+userName+"</td><td>"+userRole+"</td><td>"+functionBeingTested+"</td>";
-            Object[] actionEnabled = LabPlat.procActionEnabled(schemaPrefix, functionBeingTested);
+            Object[] actionEnabled = LabPLANETPlatform.procActionEnabled(schemaPrefix, functionBeingTested);
             if ("LABPLANET_FALSE".equalsIgnoreCase(actionEnabled[0].toString())){
                 if ("GETSAMPLEINFO".equalsIgnoreCase(functionBeingTested)){                
                         dataSample2D[0][0] = (String) actionEnabled[0];
@@ -121,7 +117,7 @@ public class dataSampleStructure extends HttpServlet {
                 //fileContent = fileContent + "<td>Action not allowed for the procedure "+schemaPrefix+"</td></tr>";
             }else{            
 
-                Object[] actionEnabledForRole = LabPlat.procUserRoleActionEnabled(schemaPrefix, userRole, functionBeingTested);
+                Object[] actionEnabledForRole = LabPLANETPlatform.procUserRoleActionEnabled(schemaPrefix, userRole, functionBeingTested);
                 if ("LABPLANET_FALSE".equalsIgnoreCase(actionEnabledForRole[0].toString())){
                     LabPLANETPlatform labPlat = new LabPLANETPlatform();
                     //StackTraceElement[] elementsDev = Thread.currentThread().getStackTrace();
@@ -147,7 +143,7 @@ public class dataSampleStructure extends HttpServlet {
                             }              
                             if (configSpecTestingArray[i][7]!=null){
                                 fieldValue = (Object[]) configSpecTestingArray[i][7].toString().split("\\|");
-                                fieldValue = labArr.convertStringWithDataTypeToObjectArray((String[]) fieldValue);
+                                fieldValue = LabPLANETArray.convertStringWithDataTypeToObjectArray((String[]) fieldValue);
                             }    
                             fileContent = fileContent + "<td>templateName, templateVersion, fieldNames, fieldValues</td>";
                             fileContent = fileContent + "<td>"+sampleTemplate+", "+sampleTemplateVersion.toString()+", ";
@@ -155,7 +151,7 @@ public class dataSampleStructure extends HttpServlet {
                             fileContent = fileContent +", ";
                             if (configSpecTestingArray[i][7]!=null)fileContent = fileContent + configSpecTestingArray[i][7].toString();
                             try {
-                                dataSample = smp.logSample(rdbm, schemaPrefix, sampleTemplate, sampleTemplateVersion, fieldName, fieldValue, userName, userRole, null, null);
+                                dataSample = smp.logSample(schemaPrefix, sampleTemplate, sampleTemplateVersion, fieldName, fieldValue, userName, userRole, null, null);
                             } catch (IllegalArgumentException ex) {
                                 Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
                             }
@@ -164,7 +160,7 @@ public class dataSampleStructure extends HttpServlet {
                             if (configSpecTestingArray[i][5]!=null){sampleId = Integer.parseInt( (String) configSpecTestingArray[i][5]);}
                             fileContent = fileContent + "<td>sampleId, receiver</td>";
                             fileContent = fileContent + "<td>"+sampleId.toString()+"</td>";
-                            dataSample = smp.sampleReception(rdbm, schemaPrefix, userName, sampleId, userRole, null);
+                            dataSample = smp.sampleReception(schemaPrefix, userName, sampleId, userRole, null);
                             break;       
                         case "CHANGESAMPLINGDATE":
                             Date newDate=null;
@@ -172,7 +168,7 @@ public class dataSampleStructure extends HttpServlet {
                             if (configSpecTestingArray[i][6]!=null){newDate =  Date.valueOf((String) configSpecTestingArray[i][6]);}
                             fileContent = fileContent + "<td>sampleId, userName, newDate</td>";
                             fileContent = fileContent + "<td>"+sampleId.toString()+", "+userName+newDate.toString()+"</td>";
-                            dataSample = smp.changeSamplingDate(rdbm, schemaPrefix, userName, sampleId, newDate, userRole);
+                            dataSample = smp.changeSamplingDate(schemaPrefix, userName, sampleId, newDate, userRole);
                             break;       
                         case "SAMPLINGCOMMENTADD":
                             String comment=null;
@@ -180,7 +176,7 @@ public class dataSampleStructure extends HttpServlet {
                             if (configSpecTestingArray[i][6]!=null){comment = (String) configSpecTestingArray[i][6];}
                             fileContent = fileContent + "<td>sampleId, userName, comment</td>";
                             fileContent = fileContent + "<td>"+sampleId+", "+userName+comment+"</td>";
-                            dataSample = smp.sampleReceptionCommentAdd(rdbm, schemaPrefix, userName, sampleId, comment, userRole);
+                            dataSample = smp.sampleReceptionCommentAdd(schemaPrefix, userName, sampleId, comment, userRole);
                             break;       
                         case "SAMPLINGCOMMENTREMOVE":
                             comment=null;
@@ -188,31 +184,31 @@ public class dataSampleStructure extends HttpServlet {
                             if (configSpecTestingArray[i][6]!=null){comment = (String) configSpecTestingArray[i][6];}
                             fileContent = fileContent + "<td>sampleId, userName, comment</td>";
                             fileContent = fileContent + "<td>"+sampleId+", "+userName+comment+"</td>";
-                            dataSample = smp.sampleReceptionCommentRemove(rdbm, schemaPrefix, userName, sampleId, comment, userRole);
+                            dataSample = smp.sampleReceptionCommentRemove(schemaPrefix, userName, sampleId, comment, userRole);
                             break;       
                         case "INCUBATIONSTART":
                             if (configSpecTestingArray[i][5]!=null){sampleId = Integer.parseInt( (String) configSpecTestingArray[i][5]);}
                             fileContent = fileContent + "<td>sampleId, userName</td>";
                             fileContent = fileContent + "<td>"+sampleId.toString()+", "+userName+"</td>";
-                            dataSample = smp.setSampleStartIncubationDateTime(rdbm, schemaPrefix, userName, sampleId, userRole);
+                            dataSample = smp.setSampleStartIncubationDateTime(schemaPrefix, userName, sampleId, userRole);
                             break;       
                         case "INCUBATIONEND":
                             if (configSpecTestingArray[i][5]!=null){sampleId = Integer.parseInt( (String) configSpecTestingArray[i][5]);}
                             fileContent = fileContent + "<td>sampleId, userName</td>";
                             fileContent = fileContent + "<td>"+sampleId.toString()+", "+userName+"</td>";
-                            dataSample = smp.setSampleEndIncubationDateTime(rdbm, schemaPrefix, userName, sampleId, userRole);
+                            dataSample = smp.setSampleEndIncubationDateTime(schemaPrefix, userName, sampleId, userRole);
                             break;       
                         case "SAMPLEANALYSISADD":
                             if (configSpecTestingArray[i][5]!=null){sampleId = Integer.parseInt( (String) configSpecTestingArray[i][5]);}
                             if (configSpecTestingArray[i][6]!=null){fieldName = (String[]) configSpecTestingArray[i][6].toString().split("\\|");}              
                             if (configSpecTestingArray[i][7]!=null){fieldValue = (Object[]) configSpecTestingArray[i][7].toString().split("\\|");}   
-                            fieldValue = labArr.convertStringWithDataTypeToObjectArray((String[]) fieldValue);
+                            fieldValue = LabPLANETArray.convertStringWithDataTypeToObjectArray((String[]) fieldValue);
                             try {                        
-                                fieldValue = labArr.convertStringWithDataTypeToObjectArray(configSpecTestingArray[i][7].toString().split("\\|"));
+                                fieldValue = LabPLANETArray.convertStringWithDataTypeToObjectArray(configSpecTestingArray[i][7].toString().split("\\|"));
                                 fileContent = fileContent + "<td>sampleId, userName, fieldNames, fieldValues</td>";
                                 fileContent = fileContent + "<td>"+sampleId.toString()+", "+userName+", "
                                     +configSpecTestingArray[i][6].toString()+", "+configSpecTestingArray[i][7].toString()+"</td>";                            
-                                dataSample = smp.sampleAnalysisAddtoSample(rdbm, schemaPrefix, userName, sampleId, fieldName, fieldValue, userRole);
+                                dataSample = smp.sampleAnalysisAddtoSample(schemaPrefix, userName, sampleId, fieldName, fieldValue, userRole);
                             } catch (IllegalArgumentException ex) {
                                 Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
                             }
@@ -225,7 +221,7 @@ public class dataSampleStructure extends HttpServlet {
                             fileContent = fileContent + "<td>resultId, userName, rawValueResult</td>";
                             fileContent = fileContent + "<td>"+resultId.toString()+", "+userName+", "+rawValueResult+"</td>";
                             try {
-                                dataSample = smp.sampleAnalysisResultEntry(rdbm, schemaPrefix, userName, resultId, rawValueResult, userRole);
+                                dataSample = smp.sampleAnalysisResultEntry(schemaPrefix, userName, resultId, rawValueResult, userRole);
                             } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
                                 Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
                             }
@@ -244,7 +240,7 @@ public class dataSampleStructure extends HttpServlet {
                                 if (objectLevel.equalsIgnoreCase("SAMPLE")){sampleId = objectId;}
                                 if (objectLevel.equalsIgnoreCase("TEST")){testId = objectId;}
                                 if (objectLevel.equalsIgnoreCase("RESULT")){resultId = objectId;}
-                                dataSample = smp.sampleResultReview(rdbm, schemaPrefix, userName, sampleId, testId, resultId, userRole);
+                                dataSample = smp.sampleResultReview(schemaPrefix, userName, sampleId, testId, resultId, userRole);
                             } catch (IllegalArgumentException ex) {
                                 Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
                             }
@@ -263,7 +259,7 @@ public class dataSampleStructure extends HttpServlet {
                                 if (objectLevel.equalsIgnoreCase("SAMPLE")){sampleId = objectId;}
                                 if (objectLevel.equalsIgnoreCase("TEST")){testId = objectId;}
                                 if (objectLevel.equalsIgnoreCase("RESULT")){resultId = objectId;}
-                                dataSample = smp.sampleAnalysisResultCancel(rdbm, schemaPrefix, userName, sampleId, testId, resultId, userRole);
+                                dataSample = smp.sampleAnalysisResultCancel(schemaPrefix, userName, sampleId, testId, resultId, userRole);
                             } catch (IllegalArgumentException ex) {
                                 Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
                             }
@@ -282,7 +278,7 @@ public class dataSampleStructure extends HttpServlet {
                                 if (objectLevel.equalsIgnoreCase("SAMPLE")){sampleId = objectId;}
                                 if (objectLevel.equalsIgnoreCase("TEST")){testId = objectId;}
                                 if (objectLevel.equalsIgnoreCase("RESULT")){resultId = objectId;}
-                                dataSample = smp.sampleAnalysisResultUnCancel(rdbm, schemaPrefix, userName, sampleId, testId, resultId, userRole);
+                                dataSample = smp.sampleAnalysisResultUnCancel(schemaPrefix, userName, sampleId, testId, resultId, userRole);
                             } catch (IllegalArgumentException ex) {
                                 Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
                             }
@@ -295,21 +291,20 @@ public class dataSampleStructure extends HttpServlet {
                             fileContent = fileContent + "<td>testId, userName, newAnalyst</td>";
                             fileContent = fileContent + "<td>"+testId.toString()+", "+userName+", "+newAnalyst+"</td>";
                             try {
-                                dataSample = smp.sampleAnalysisAssignAnalyst(rdbm, schemaPrefix, userName, testId, newAnalyst, userRole);
+                                dataSample = smp.sampleAnalysisAssignAnalyst(schemaPrefix, userName, testId, newAnalyst, userRole);
                             } catch (IllegalArgumentException ex) {
                                 Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
                             }
                             break;   
                         case "GETSAMPLEINFO":
                             String schemaDataName = "data";
-                            LabPLANETPlatform labPlat = new LabPLANETPlatform();
-                            schemaDataName = labPlat.buildSchemaName(schemaPrefix, schemaDataName);                     
+                            schemaDataName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaDataName);                     
                             if (configSpecTestingArray[i][5]!=null){sampleId = Integer.parseInt( (String) configSpecTestingArray[i][5]);}
                             String[] fieldsToGet = (configSpecTestingArray[i][6].toString().split("\\|"));                    
                                  fileContent = fileContent + "<td>"
                                          +configSpecTestingArray[i][6].toString()+"</td><td>"
                                          +sampleId.toString()+"</td>";                      
-                                 dataSample2D = rdbm.getRecordFieldsByFilter(rdbm, schemaDataName, "sample", new String[]{"sample_id"}, new Object[]{sampleId}, fieldsToGet);
+                                 dataSample2D = Rdbms.getRecordFieldsByFilter(schemaDataName, "sample", new String[]{"sample_id"}, new Object[]{sampleId}, fieldsToGet);
                             break;
                         case "ENTERRESULT_LOD":
                             ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
@@ -334,7 +329,7 @@ public class dataSampleStructure extends HttpServlet {
                             fileContent = fileContent + "<td>"+"sampleId, custodianCandidate"+"</td>";
                             fileContent = fileContent + "<td>"+sampleId.toString()+", "+custodianCandidate+"</td>";
                             ChangeOfCustody coc =  new ChangeOfCustody();
-                            dataSample = coc.cocStartChange(rdbm, schemaPrefix, "sample", "sample_id", sampleId, userName, 
+                            dataSample = coc.cocStartChange(schemaPrefix, "sample", "sample_id", sampleId, userName, 
                                     custodianCandidate, userRole, null);
                             break;
                         case "COC_CONFIRMCHANGE":
@@ -345,7 +340,7 @@ public class dataSampleStructure extends HttpServlet {
                             fileContent = fileContent + "<td>"+sampleId.toString()+", "+comment+"</td>";
                             
                             coc =  new ChangeOfCustody();
-                            dataSample = coc.cocConfirmedChange(rdbm, schemaPrefix, "sample", "sample_id", sampleId, userName, 
+                            dataSample = coc.cocConfirmedChange(schemaPrefix, "sample", "sample_id", sampleId, userName, 
                                     comment, userRole, null);
                             break;
                         case "COC_ABORTCHANGE":
@@ -356,7 +351,7 @@ public class dataSampleStructure extends HttpServlet {
                             fileContent = fileContent + "<td>"+sampleId.toString()+", "+comment+"</td>";
                             
                             coc =  new ChangeOfCustody();
-                            dataSample = coc.cocAbortedChange(rdbm, schemaPrefix, "sample", "sample_id", sampleId, userName, 
+                            dataSample = coc.cocAbortedChange(schemaPrefix, "sample", "sample_id", sampleId, userName, 
                                     comment, userRole, null);
                             break;
                         case "RESULT_CHANGE_UOM":
@@ -367,7 +362,7 @@ public class dataSampleStructure extends HttpServlet {
                             fileContent = fileContent + "<td>"+"sampleId, comment"+"</td>";
                             fileContent = fileContent + "<td>"+resultId.toString()+", "+newUOM+"</td>";
                                                         
-                            dataSample = smp.sarChangeUOM(rdbm, schemaPrefix, resultId, newUOM, userName, userRole);
+                            dataSample = smp.sarChangeUOM(schemaPrefix, resultId, newUOM, userName, userRole);
                             break;
                         case "LOGALIQUOT":
                             sampleId = 0;
@@ -382,7 +377,7 @@ public class dataSampleStructure extends HttpServlet {
                             }              
                             if (configSpecTestingArray[i][8]!=null){
                                 fieldValue = (Object[]) configSpecTestingArray[i][8].toString().split("\\|");
-                                fieldValue = labArr.convertStringWithDataTypeToObjectArray((String[]) fieldValue);
+                                fieldValue = LabPLANETArray.convertStringWithDataTypeToObjectArray((String[]) fieldValue);
                             }    
                             fileContent = fileContent + "<td>sample_id, templateName, templateVersion, fieldNames, fieldValues</td>";
                             fileContent = fileContent + "<td>"+sampleId.toString();//+", "+sampleTemplate+", "+sampleTemplateVersion.toString()+", ";
@@ -390,7 +385,7 @@ public class dataSampleStructure extends HttpServlet {
                             fileContent = fileContent +", ";
                             if (configSpecTestingArray[i][8]!=null)fileContent = fileContent + configSpecTestingArray[i][8].toString();
                             try {
-                                dataSample = smp.logSampleAliquot(rdbm, schemaPrefix, sampleId, 
+                                dataSample = smp.logSampleAliquot(schemaPrefix, sampleId, 
                                         // sampleTemplate, sampleTemplateVersion, 
                                         fieldName, fieldValue, userName, userRole, appSessionId, false);                                                                
                             } catch (IllegalArgumentException ex) {
@@ -410,7 +405,7 @@ public class dataSampleStructure extends HttpServlet {
                             }              
                             if (configSpecTestingArray[i][8]!=null){
                                 fieldValue = (Object[]) configSpecTestingArray[i][8].toString().split("\\|");
-                                fieldValue = labArr.convertStringWithDataTypeToObjectArray((String[]) fieldValue);
+                                fieldValue = LabPLANETArray.convertStringWithDataTypeToObjectArray((String[]) fieldValue);
                             }    
                             fileContent = fileContent + "<td>aliquot_Id, templateName, templateVersion, fieldNames, fieldValues</td>";
                             fileContent = fileContent + "<td>"+aliquotId.toString();//+", "+sampleTemplate+", "+sampleTemplateVersion.toString()+", ";
@@ -418,7 +413,7 @@ public class dataSampleStructure extends HttpServlet {
                             fileContent = fileContent +", ";
                             if (configSpecTestingArray[i][8]!=null)fileContent = fileContent + configSpecTestingArray[i][8].toString();
                             try {
-                                dataSample = smp.logSampleSubAliquot(rdbm, schemaPrefix, aliquotId, 
+                                dataSample = smp.logSampleSubAliquot(schemaPrefix, aliquotId, 
                                         // sampleTemplate, sampleTemplateVersion, 
                                         fieldName, fieldValue, userName, userRole, appSessionId, false);                                                                
                             } catch (IllegalArgumentException ex) {
@@ -460,9 +455,9 @@ public class dataSampleStructure extends HttpServlet {
                 fileWriter.write(fileContent);
                 fileWriter.flush();
             } 
-        rdbm.closeRdbms();
+        Rdbms.closeRdbms();
         }   catch (SQLException|IOException ex) {
-            if (isConnected){rdbm.closeRdbms();}                        
+            Rdbms.closeRdbms();
             Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);   
             fileContent = fileContent + "</table>";        
             out.println(fileContent);                     

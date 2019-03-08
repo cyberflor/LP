@@ -5,7 +5,6 @@
  */
 package testing.functionalConfig;
 
-import databases.Rdbms;
 import functionalJava.parameter.Parameter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -44,7 +43,6 @@ public class TestingBundle extends HttpServlet {
             out.println("</html>");
             
             String schemaDataName = "oil-pl1-data";
-            Rdbms rdbm = new Rdbms();
             String testStatusReviewed = Parameter.getParameterBundle(schemaDataName.replace("\"", ""), "sampleAnalysis_statusReviewed");
             out.println(testStatusReviewed);
             testStatusReviewed = Parameter.getParameterBundleInConfigFile(schemaDataName.replace("\"", ""), "sampleAnalysis_statusReviewed", "es");

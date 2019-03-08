@@ -26,17 +26,15 @@ public class UserSecurity {
 
     /**
      *
-     * @param rdbm
      * @param user
      * @param pass
      * @param newEsign
      * @return
      */
-    public Object[] setUserEsig(Rdbms rdbm, String user, String pass, String newEsign){
+    public Object[] setUserEsig( String user, String pass, String newEsign){
         
         try {
             Object[] diagnoses = new Object[2];
-            LabPLANETPlatform plat = new LabPLANETPlatform();
             diagnoses[0] = false;
             String schemaName = "config";
             String tableName = "user_info";
@@ -45,23 +43,23 @@ public class UserSecurity {
             if (pass==null || "null".equalsIgnoreCase(pass)){diagnoses[1]="password cannot be set to null, user has to be validated"; return diagnoses;}
             if (newEsign==null || "null".equalsIgnoreCase(newEsign)){diagnoses[1]="new word for eSign cannot be set to null"; return diagnoses;}
             
-            Object[] validUserPassword = isValidUserPassword(user, pass);
+            Object[] validUserPassword = _isValidUserPassword(user, pass);
             if (!(Boolean) validUserPassword[0]){
                 diagnoses[1] = "Invalid password for the user "+user;   
             }
 
-            Object[] userExists = rdbm.existsRecord(rdbm, schemaName, tableName, new String[]{"user_info_name"}, new String[]{user});
+            Object[] userExists = Rdbms.existsRecord(schemaName, tableName, new String[]{"user_info_name"}, new String[]{user});
             String diagn = userExists[0].toString();
             if ("LABPLANET_FALSE".equalsIgnoreCase(diagn)){
                 diagnoses[1] = userExists[5];           
                 return diagnoses;
             }
-            Object[] encrypted = plat.encryptString(newEsign);
+            Object[] encrypted = LabPLANETPlatform.encryptString(newEsign);
             if (!(Boolean) encrypted[0]){
                 diagnoses[1] = encrypted[1];           
                 return diagnoses;                
             }
-            Object[] updateRecordFieldsByFilter = rdbm.updateRecordFieldsByFilter(rdbm, schemaName, tableName, 
+            Object[] updateRecordFieldsByFilter = Rdbms.updateRecordFieldsByFilter(schemaName, tableName, 
                     new String[]{"esign_value"}, new Object[]{encrypted[1]}, 
                     new String[]{"user_info_name"}, new String[]{user});
             if ("LABPLANET_FALSE".equalsIgnoreCase(updateRecordFieldsByFilter[0].toString())){            
@@ -82,15 +80,13 @@ public class UserSecurity {
     
     /**
      *
-     * @param rdbm
      * @param user
      * @param eSign
      * @return
      */
-    public Object[] isValidESign(Rdbms rdbm, String user, String eSign){
+    public Object[] isValidESign( String user, String eSign){
         Object[] diagnoses = new Object[2];  
         diagnoses[0]=false;
-        LabPLANETPlatform plat = new LabPLANETPlatform();
         String schemaName = "config";
         String tableName = "user_info";
             
@@ -99,14 +95,14 @@ public class UserSecurity {
 
         
         Object[][] userExists;
-        userExists = rdbm.getRecordFieldsByFilter(rdbm, schemaName, tableName, new String[]{"user_info_name"}, new String[]{user}, new String[]{"user_info_name", "user_info_name", "user_info_name", "esign_value"});
+        userExists = Rdbms.getRecordFieldsByFilter(schemaName, tableName, new String[]{"user_info_name"}, new String[]{user}, new String[]{"user_info_name", "user_info_name", "user_info_name", "esign_value"});
         String diagn = (String) userExists[0][3];
         if (diagn.equalsIgnoreCase("FALSE")) {
             
             diagnoses[1] = userExists[0][5];           
             return diagnoses;
         }
-        Object[] decrypted = plat.decryptString((String) userExists[0][3]);
+        Object[] decrypted = LabPLANETPlatform.decryptString((String) userExists[0][3]);
         if (!(Boolean) decrypted[0]){
             diagnoses[1] = decrypted[1];           
             return diagnoses;                
@@ -120,21 +116,20 @@ public class UserSecurity {
 
     /**
      *
-     * @param rdbm
      * @param user
      * @param pass
      * @param eSign
      * @return
      */
-    public Object[] isValidESign(Rdbms rdbm, String user, String pass, String eSign){
+    public Object[] isValidESign( String user, String pass, String eSign){
         try {
             Object[] diagnoses = new Object[2];
             diagnoses[0]=false;
-            Object[] validUserPassword = isValidUserPassword(user, pass);
+            Object[] validUserPassword = _isValidUserPassword(user, pass);
             if (!(Boolean) validUserPassword[0]){
                 diagnoses[1] = "Invalid password for the user "+user;   
             }            
-            return isValidESign(rdbm, user, eSign);
+            return isValidESign(user, eSign);
             
         } catch (ClassNotFoundException|IllegalAccessException|InstantiationException|SQLException|NamingException ex) {
             Logger.getLogger(UserSecurity.class.getName()).log(Level.SEVERE, null, ex);
@@ -146,7 +141,8 @@ public class UserSecurity {
     }
     
     /**
-     *
+     * This method makes no sense once the Rdbms instance is created once by singleton pattern <br>
+     * This method would be replaced by checking user and password against the info in the  token
      * @param user
      * @param pass
      * @return
@@ -156,20 +152,19 @@ public class UserSecurity {
      * @throws SQLException
      * @throws NamingException
      */
-    public Object[] isValidUserPassword(String user, String pass) throws ClassNotFoundException, IllegalAccessException, InstantiationException, SQLException, NamingException {            
+    public Object[] _isValidUserPassword(String user, String pass) throws ClassNotFoundException, IllegalAccessException, InstantiationException, SQLException, NamingException {            
         Object[] diagnoses = new Object[2];
-        diagnoses[0]=false;
-        Rdbms rdbms = new Rdbms();
+        diagnoses[0]=false;        
         
-        Boolean startRdbms = rdbms.startRdbms( user, pass);        
-        if(startRdbms){
-            diagnoses[0] = true; diagnoses[1] = "The eSign password is correct"; 
+        if (Rdbms.getRdbms().startRdbms(user, pass)==null){
+            diagnoses[0] = false; diagnoses[1]="eSign incorrect for the user "+user;    
+            return diagnoses;
         }else{
-            diagnoses[0] = false; diagnoses[1]="eSign incorrect for the user "+user;               
+            diagnoses[0] = true; diagnoses[1] = "The eSign password is correct"; 
         }    
-        Connection connection = rdbms.getConnection();
+        Connection connection = Rdbms.getConnection();
         connection.close();
-        rdbms.closeRdbms();        
+        Rdbms.closeRdbms();        
         return diagnoses;
         
     }    

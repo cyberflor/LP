@@ -68,8 +68,8 @@ public class DataProject extends DataSample{
      * @throws InvocationTargetException
      * @throws SQLException
      */
-    public Object[] createProjectDev(Rdbms rdbm, String schemaPrefix, String sampleTemplate, Integer sampleTemplateVersion, String[] sampleFieldName, Object[] sampleFieldValue, String userName, String userRole) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException{
-    Object[] diag = createProject(rdbm, schemaPrefix, sampleTemplate, sampleTemplateVersion, sampleFieldName, sampleFieldValue, userName, userRole, true);
+    public Object[] createProjectDev( String schemaPrefix, String sampleTemplate, Integer sampleTemplateVersion, String[] sampleFieldName, Object[] sampleFieldValue, String userName, String userRole) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException{
+    Object[] diag = createProject(schemaPrefix, sampleTemplate, sampleTemplateVersion, sampleFieldName, sampleFieldValue, userName, userRole, true);
     return diag;
 }
 
@@ -89,12 +89,12 @@ public class DataProject extends DataSample{
      * @throws InvocationTargetException
      * @throws SQLException
      */
-    public Object[] createProject(Rdbms rdbm, String schemaPrefix, String sampleTemplate, Integer sampleTemplateVersion, String[] sampleFieldName, Object[] sampleFieldValue, String userName, String userRole) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException{
-    Object[] diag = createProject(rdbm, schemaPrefix, sampleTemplate, sampleTemplateVersion, sampleFieldName, sampleFieldValue, userName, userRole, false);
+    public Object[] createProject( String schemaPrefix, String sampleTemplate, Integer sampleTemplateVersion, String[] sampleFieldName, Object[] sampleFieldValue, String userName, String userRole) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException{
+    Object[] diag = createProject(schemaPrefix, sampleTemplate, sampleTemplateVersion, sampleFieldName, sampleFieldValue, userName, userRole, false);
     return diag;
 }
 
-Object[] createProject(Rdbms rdbm, String schemaPrefix, String projectTemplate, Integer projectTemplateVersion, String[] sampleFieldName, Object[] sampleFieldValue, String userName, String userRole, Boolean devMode) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException{
+Object[] createProject( String schemaPrefix, String projectTemplate, Integer projectTemplateVersion, String[] sampleFieldName, Object[] sampleFieldValue, String userName, String userRole, Boolean devMode) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException{
     LabPLANETArray labArr = new LabPLANETArray();
     LabPLANETPlatform labPlat = new LabPLANETPlatform();
     DataDataIntegrity labIntChecker = new DataDataIntegrity();
@@ -106,7 +106,7 @@ Object[] createProject(Rdbms rdbm, String schemaPrefix, String projectTemplate, 
         javaDocValues = labArr.addValueToArray1D(javaDocValues, javaDocLineName);
         javaDocFields = labArr.addValueToArray1D(javaDocFields, "class_version");
         javaDocValues = labArr.addValueToArray1D(javaDocValues, classVersion);
-        labPlat.addJavaClassDoc(rdbm, javaDocFields, javaDocValues, elementsDev);
+        labPlat.addJavaClassDoc(javaDocFields, javaDocValues, elementsDev);
     }    
     
         String query = "";
@@ -130,7 +130,7 @@ Object[] createProject(Rdbms rdbm, String schemaPrefix, String projectTemplate, 
         javaDocValues = labArr.addValueToArray1D(javaDocValues, javaDocLineName);
         javaDocFields = labArr.addValueToArray1D(javaDocFields, "class_version");
         javaDocValues = labArr.addValueToArray1D(javaDocValues, classVersion);
-        labPlat.addJavaClassDoc(rdbm, javaDocFields, javaDocValues, elementsDev);
+        labPlat.addJavaClassDoc(javaDocFields, javaDocValues, elementsDev);
     }    
     if (devMode==false){
         diagnoses = labArr.checkTwoArraysSameLength(sampleFieldName, sampleFieldValue);
@@ -152,7 +152,7 @@ Object[] createProject(Rdbms rdbm, String schemaPrefix, String projectTemplate, 
         javaDocValues = labArr.addValueToArray1D(javaDocValues, javaDocLineName);
         javaDocFields = labArr.addValueToArray1D(javaDocFields, "class_version");
         javaDocValues = labArr.addValueToArray1D(javaDocValues, classVersion);
-        labPlat.addJavaClassDoc(rdbm, javaDocFields, javaDocValues, elementsDev);
+        labPlat.addJavaClassDoc(javaDocFields, javaDocValues, elementsDev);
     }    
     if (devMode==false){        
         LabPLANETArray lpa = new LabPLANETArray();
@@ -207,7 +207,7 @@ Object[] createProject(Rdbms rdbm, String schemaPrefix, String projectTemplate, 
             diagnoses[5]="Mandatory fields not found: "+mandatoryFieldsMissing;
             return diagnoses;
         }        
-        Object[] diagnosis = rdbm.existsRecord(rdbm, schemaConfigName, tableName, new String[]{"config","config_version"}, new Object[]{projectTemplate, projectTemplateVersion});
+        Object[] diagnosis = Rdbms.existsRecord(schemaConfigName, tableName, new String[]{"config","config_version"}, new Object[]{projectTemplate, projectTemplateVersion});
         if (!"LABPLANET_TRUE".equalsIgnoreCase(diagnosis[0].toString())){	
             StackTraceElement[] elements = Thread.currentThread().getStackTrace();
             diagnoses[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
@@ -237,7 +237,7 @@ Object[] createProject(Rdbms rdbm, String schemaPrefix, String projectTemplate, 
                         method = getClass().getDeclaredMethod(aMethod, paramTypes);
                     } catch (NoSuchMethodException | SecurityException ex) {
                     }
-                    Object specialFunctionReturn = method.invoke(this, rdbm, null, schemaPrefix, projectTemplate, projectTemplateVersion);      
+                    Object specialFunctionReturn = method.invoke(this, null, schemaPrefix, projectTemplate, projectTemplateVersion);      
                     if (specialFunctionReturn.toString().contains("ERROR")){
                         StackTraceElement[] elements = Thread.currentThread().getStackTrace();
                         diagnoses[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
@@ -255,7 +255,7 @@ Object[] createProject(Rdbms rdbm, String schemaPrefix, String projectTemplate, 
         sampleFieldName = lpa.addValueToArray1D(sampleFieldName, "config_version");    
         sampleFieldValue = lpa.addValueToArray1D(sampleFieldValue, projectTemplateVersion); 
 
-        diagnoses = rdbm.insertRecordInTable(rdbm, schemaDataName, tableName, sampleFieldName, sampleFieldValue);
+        diagnoses = Rdbms.insertRecordInTable(schemaDataName, tableName, sampleFieldName, sampleFieldValue);
 
         Object[] fieldsOnLogSample = labArr.joinTwo1DArraysInOneOf1DString(sampleFieldName, sampleFieldValue, ":");
 
@@ -272,7 +272,7 @@ Object[] createProject(Rdbms rdbm, String schemaPrefix, String projectTemplate, 
         }else{    
             javaDocValues[specialFieldIndex] = javaDocLineName;             
         }
-        labPlat.addJavaClassDoc(rdbm, javaDocFields, javaDocValues, elementsDev);
+        labPlat.addJavaClassDoc(javaDocFields, javaDocValues, elementsDev);
     }
     return diagnoses; 
 }    
@@ -292,7 +292,7 @@ Object[] createProject(Rdbms rdbm, String schemaPrefix, String projectTemplate, 
      * @param appSessionStartDate
      * @return
      */
-    public Object[] logProjectSample(Rdbms rdbm, String schemaPrefix, String projectTemplate, Integer projectTemplateVersion, String[] fieldName, Object[] fieldValue, String userName, String userRole, String projectName, Integer appSessionId){
+    public Object[] logProjectSample( String schemaPrefix, String projectTemplate, Integer projectTemplateVersion, String[] fieldName, Object[] fieldValue, String userName, String userRole, String projectName, Integer appSessionId){
     LabPLANETArray labArr = new LabPLANETArray();
     LabPLANETPlatform labPlat = new LabPLANETPlatform();
     
@@ -301,7 +301,7 @@ Object[] createProject(Rdbms rdbm, String schemaPrefix, String projectTemplate, 
             DataSample ds = new DataSample("project");
             fieldName = labArr.addValueToArray1D(fieldName, "project");
             fieldValue = labArr.addValueToArray1D(fieldValue, projectName);
-            newProjSample = ds.logSample(rdbm, schemaPrefix, projectTemplate, projectTemplateVersion, fieldName, fieldValue, userName, userRole, appSessionId);
+            newProjSample = ds.logSample(schemaPrefix, projectTemplate, projectTemplateVersion, fieldName, fieldValue, userName, userRole, appSessionId);
             /*if (!newProjSample[3].equalsIgnoreCase("FALSE")){
                 String schemaDataName = "data";
                 String schemaConfigName = "config";

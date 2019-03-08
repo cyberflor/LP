@@ -6,12 +6,10 @@
 package LabPLANET.utilities;
 
 import java.lang.reflect.Method;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
-import javax.naming.NamingException;
 
 //import com.sun.xml.internal.bind.v2.schemagen.xmlschema.List;
 import java.util.List;
@@ -40,7 +38,7 @@ public class LabPLANETQualityAssurance {
      *
      * @param directoryName
      */
-    public void listFilesAndFolders(String directoryName) {
+    public static void listFilesAndFolders(String directoryName) {
             File directory = new File(directoryName);
             // get all the files from a directory
             File[] fList = directory.listFiles();
@@ -55,6 +53,7 @@ public class LabPLANETQualityAssurance {
      */
     public Method[] getMethodsList() {
     	//Guru99MethodMetaData  guru99ClassVar  = new Guru99MethodMetaData  ();
+                 
     	Class  guru99ClassObjVar  = this.getClass();
     	Method[] guru99Method1 = guru99ClassObjVar.getDeclaredMethods();
     	return guru99Method1;
@@ -108,14 +107,13 @@ public class LabPLANETQualityAssurance {
 
     /**
      *
-     * @param rdbm
      * @param project
      * @param pack
      * @param clase
      * @param metodo
      * @return
      */
-    public static Object[] isJAvaDocException(Rdbms rdbm, String project, String pack, String clase, String metodo){        
+    public static Object[] isJAvaDocException( String project, String pack, String clase, String metodo){        
         
         String schemaName = "requirements";
         String tableName = "java_class_doc_exception";
@@ -124,28 +122,28 @@ public class LabPLANETQualityAssurance {
         diagn[1] = "";
         
                 
-        Object[] existsRecord = rdbm.existsRecord(rdbm, schemaName, tableName, new String[]{"exception_level","object_name"}, new Object[]{"project", project});
+        Object[] existsRecord = Rdbms.existsRecord(schemaName, tableName, new String[]{"exception_level","object_name"}, new Object[]{"project", project});
         if ("LABPLANET_TRUE".equalsIgnoreCase(existsRecord[0].toString())){
             diagn[0] = true;  
             diagn[1] = "Exception at project level for "+project;            
             return diagn;
         }
         
-        existsRecord = rdbm.existsRecord(rdbm, schemaName, tableName, new String[]{"exception_level","object_name"}, new Object[]{"package", pack});
+        existsRecord = Rdbms.existsRecord(schemaName, tableName, new String[]{"exception_level","object_name"}, new Object[]{"package", pack});
         if ("LABPLANET_TRUE".equalsIgnoreCase(existsRecord[0].toString())){
             diagn[0] = true;  
             diagn[1] = "Exception at package level for "+pack;            
             return diagn;
         }
 
-        existsRecord = rdbm.existsRecord(rdbm, schemaName, tableName, new String[]{"exception_level","object_name"}, new Object[]{"class", clase});
+        existsRecord = Rdbms.existsRecord(schemaName, tableName, new String[]{"exception_level","object_name"}, new Object[]{"class", clase});
         if ("LABPLANET_TRUE".equalsIgnoreCase(existsRecord[0].toString())){
             diagn[0] = true;  
             diagn[1] = "Exception at class level for "+clase;            
             return diagn;
         }
 
-        existsRecord = rdbm.existsRecord(rdbm, schemaName, tableName, new String[]{"exception_level","object_name"}, new Object[]{"method", metodo});
+        existsRecord = Rdbms.existsRecord(schemaName, tableName, new String[]{"exception_level","object_name"}, new Object[]{"method", metodo});
         if ("LABPLANET_TRUE".equalsIgnoreCase(existsRecord[0].toString())){
             diagn[0] = true;  
             diagn[1] = "Exception at method level for "+metodo;            
@@ -213,9 +211,7 @@ public class LabPLANETQualityAssurance {
         fileNames = labArr.addValueToArray1D(fileNames, "LabPLANET.utilities.LabPLANETPlatform");
         fileNames = labArr.addValueToArray1D(fileNames, "LabPLANET.utilities.LabPLANETQualityAssurance");
 
-        Rdbms rdbm = new Rdbms();            
-        boolean isConnected = false;
-        isConnected = rdbm.startRdbms("labplanet", "LabPlanet");
+        Boolean isConnected = Rdbms.getRdbms().startRdbms("labplanet", "LabPlanet");       
 
 /*        totalDiagnosticHeader = labArr.addValueToArray1D(totalDiagnosticHeader, "project_name");
         totalDiagnosticHeader = labArr.addValueToArray1D(totalDiagnosticHeader, "package_name");
@@ -263,7 +259,7 @@ public class LabPLANETQualityAssurance {
                         totalDiagnostic = labArr.addValueToArray1D(totalDiagnostic, className);
                         totalDiagnostic = labArr.addValueToArray1D(totalDiagnostic, methodName);
                         
-                        Object[] isException = isJAvaDocException(rdbm, projectName, packsName, className, methodName);
+                        Object[] isException = isJAvaDocException(projectName, packsName, className, methodName);
                         if ((Boolean) isException[0]){
                             totalDiagnostic = labArr.addValueToArray1D(totalDiagnostic, "Declared as exception in java_doc_exception exceptions table by "+isException[1] );
                             break;
@@ -280,7 +276,7 @@ public class LabPLANETQualityAssurance {
                         keyFieldValues = labArr.addValueToArray1D(keyFieldValues, packsName);
                         keyFieldValues = labArr.addValueToArray1D(keyFieldValues, className);
                         keyFieldValues = labArr.addValueToArray1D(keyFieldValues, methodName);
-                        Object[] existsRecord = rdbm.existsRecord(rdbm, schemaName, tableName, keyFieldNames, keyFieldValues);
+                        Object[] existsRecord = Rdbms.existsRecord(schemaName, tableName, keyFieldNames, keyFieldValues);
                         
                         if ("LABPLANET_FALSE".equalsIgnoreCase(existsRecord[0].toString())){
                             totalDiagnostic = labArr.addValueToArray1D(totalDiagnostic, "ERROR: Not found any entry in "+tableName+" for this method.Database returned: "+existsRecord[5]);
@@ -289,7 +285,7 @@ public class LabPLANETQualityAssurance {
                         String[] fieldsToGet = new String[0];
                         fieldsToGet = labArr.addValueToArray1D(fieldsToGet, "line_name");      
                         fieldsToGet = labArr.addValueToArray1D(fieldsToGet, "line");
-                        Object[][] javaDocEntries = rdbm.getRecordFieldsByFilter(rdbm, schemaName, tableName, keyFieldNames, keyFieldValues, fieldsToGet, new String[] {"line"});
+                        Object[][] javaDocEntries = Rdbms.getRecordFieldsByFilter(schemaName, tableName, keyFieldNames, keyFieldValues, fieldsToGet, new String[] {"line"});
                         Object[] javaDocEntries1D = labArr.array2dTo1d(javaDocEntries, 0);
                         Object[] javaDocEntriesLineNumber = labArr.array2dTo1d(javaDocEntries, 1);
                         
@@ -300,7 +296,7 @@ public class LabPLANETQualityAssurance {
                         fieldsToGet = labArr.addValueToArray1D(fieldsToGet, "line_name");
                         String[] keyFieldNames2 = labArr.addValueToArray1D(keyFieldNames, "covered");
                         Object[] keyFieldValues2 = labArr.addValueToArray1D(keyFieldValues, false);
-                        Object[][] javaDocEntriesNotCovered = rdbm.getRecordFieldsByFilter(rdbm, schemaName, tableName, keyFieldNames2, keyFieldValues2, fieldsToGet, new String[] {"line"});
+                        Object[][] javaDocEntriesNotCovered = Rdbms.getRecordFieldsByFilter(schemaName, tableName, keyFieldNames2, keyFieldValues2, fieldsToGet, new String[] {"line"});
 
                         Boolean existMark = labArr.valueInArray(javaDocEntries1D, "BEGIN");       
                         if (!existMark){totalDiagnostic = labArr.addValueToArray1D(totalDiagnostic, "ERROR. lineName BEGIN is mandatory in the code and was not found.");break;}

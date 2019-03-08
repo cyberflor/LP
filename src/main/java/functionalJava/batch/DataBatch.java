@@ -6,8 +6,6 @@
 package functionalJava.batch;
 
 import databases.Rdbms;
-import LabPLANET.utilities.LabPLANETArray;
-import LabPLANET.utilities.LabPLANETPlatform;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,13 +30,12 @@ public class DataBatch {
     
     /**
      *
-     * @param rdbm
      * @param schemaName
      * @param transac
      * @param batchArray
      * @return
      */
-    public String dbCreateBatchArray(Rdbms rdbm, String schemaName, String transac, BatchArray batchArray)
+    public String dbCreateBatchArray( String schemaName, String transac, BatchArray batchArray)
     {
         String ermessage="";
         String functionResult = "Fail";
@@ -52,7 +49,7 @@ public class DataBatch {
         }       
         String[] sd = singleDArray.toArray(new String[singleDArray.size()]);       
 
-        Object[] insertRecordInTable = rdbm.insertRecordInTable(rdbm, schemaName, tableName, 
+        Object[] insertRecordInTable = Rdbms.insertRecordInTable(schemaName, tableName, 
                                                 new String[]{"name, template, template_version, array_num_rows,"
                                                     + "array_num_cols, array_total_positions, array_total_objects"},
                                                 new Object [] {batchArray.getBatchName(), batchArray.getBatchTemplate(), batchArray.getBatchTemplateVersion(), batchArray.numRows,
@@ -65,12 +62,11 @@ public class DataBatch {
 
     /**
      *
-     * @param rdbm
      * @param schemaName
      * @param batchArray
      * @return
      */
-    public Object[] dbCreateBatchArray(Rdbms rdbm, String schemaName, BatchArray batchArray)
+    public Object[] dbCreateBatchArray( String schemaName, BatchArray batchArray)
     {
         String ermessage="";
         String functionResult = "Fail";
@@ -83,7 +79,7 @@ public class DataBatch {
         }       
         String[] sd = singleDArray.toArray(new String[singleDArray.size()]);       
         
-        Object[] insertRecordInTable = rdbm.insertRecordInTable(rdbm, schemaName, tableName, 
+        Object[] insertRecordInTable = Rdbms.insertRecordInTable(schemaName, tableName, 
                                                 new String[]{"name, template, template_version, array_num_rows,"
                                                     + "array_num_cols, array_total_positions, array_total_objects"},
                                                 new Object [] {batchArray.getBatchName(), batchArray.getBatchTemplate(), batchArray.getBatchTemplateVersion(), batchArray.numRows,
@@ -94,7 +90,6 @@ public class DataBatch {
     
     /**
      *
-     * @param rdbm
      * @param schemaName
      * @param batchName
      * @param fieldName
@@ -102,13 +97,13 @@ public class DataBatch {
      * @return
      * @throws SQLException
      */
-    public Integer dbUpdateBatchArray(Rdbms rdbm, String schemaName, String batchName, String fieldName, String fieldValue) throws SQLException{
+    public Integer dbUpdateBatchArray( String schemaName, String batchName, String fieldName, String fieldValue) throws SQLException{
         String ermessage="";
         String functionResult = "Fail";  
         String tableName = "batch_java";
         Integer pk = 0;
        
-        Object[] diagnoses = rdbm.updateRecordFieldsByFilter(rdbm, schemaName, tableName, 
+        Object[] diagnoses = Rdbms.updateRecordFieldsByFilter(schemaName, tableName, 
                 new String[]{fieldName}, new Object[]{fieldValue}, 
                 new String[]{"name"}, new Object[]{batchName});
         pk = Integer.parseInt(diagnoses[6].toString());

@@ -46,51 +46,51 @@ public class ConfigSpecRule {
         expectedRules[3] = "NOTCONTAINS";
         expectedRules[4] = "ISONEOF";
         expectedRules[5] = "ISNOTONEOF";
-        LabPLANETArray labArr = new LabPLANETArray();
+        LabPLANETArray LabPLANETArray = new LabPLANETArray();
         LabPLANETPlatform labPlat = new LabPLANETPlatform();
         
         String schemaName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaConfigName);
         
         if ((rule==null) || (rule.length()==0)){
            errorCode = "specLimits_ruleMandatoryArgumentNull";
-           errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, schemaName);          
-           return LabPLANETPlatform.trapErrorMessage(null, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);}                                                
+           errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaName);          
+           return LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);}                                                
         if ((textSpec==null) || (textSpec.length()==0)){
             errorCode = "specLimits_textSpecMandatoryArgumentNull";
-            errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, schemaName);          
-            return LabPLANETPlatform.trapErrorMessage(null, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);}                                                
+            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaName);          
+            return LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);}                                                
         switch (rule.toUpperCase()){
-            case "EQUALTO":  errorCode = "specLimits_equalTo_Successfully"; return LabPLANETPlatform.trapErrorMessage(null, "LABPLANET_TRUE", classVersion, errorCode, errorDetailVariables);                          
-            case "NOTEQUALTO": errorCode = "specLimits_notEqualTo_Successfully"; return LabPLANETPlatform.trapErrorMessage(null, "LABPLANET_TRUE", classVersion, errorCode, errorDetailVariables);
-            case "CONTAINS": errorCode = "specLimits_contains_Successfully"; return LabPLANETPlatform.trapErrorMessage(null, "LABPLANET_TRUE", classVersion, errorCode, errorDetailVariables);          
-            case "NOTCONTAINS": errorCode = "specLimits_notContains_Successfully"; return LabPLANETPlatform.trapErrorMessage(null, "LABPLANET_TRUE", classVersion, errorCode, errorDetailVariables);          
+            case "EQUALTO":  errorCode = "specLimits_equalTo_Successfully"; return LabPLANETPlatform.trapErrorMessage("LABPLANET_TRUE", errorCode, errorDetailVariables);                          
+            case "NOTEQUALTO": errorCode = "specLimits_notEqualTo_Successfully"; return LabPLANETPlatform.trapErrorMessage("LABPLANET_TRUE", errorCode, errorDetailVariables);
+            case "CONTAINS": errorCode = "specLimits_contains_Successfully"; return LabPLANETPlatform.trapErrorMessage("LABPLANET_TRUE", errorCode, errorDetailVariables);          
+            case "NOTCONTAINS": errorCode = "specLimits_notContains_Successfully"; return LabPLANETPlatform.trapErrorMessage("LABPLANET_TRUE", errorCode, errorDetailVariables);          
             case "ISONEOF": 
                 if ((separator==null) || (separator.length()==0)){
                     errorCode = "specLimits_separatorMandatoryArgumentNull";
-                    errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, rule.toUpperCase());          
-                    errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, schemaName);          
-                    return LabPLANETPlatform.trapErrorMessage(null, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);}                       
+                    errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, rule.toUpperCase());          
+                    errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaName);          
+                    return LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);}                       
                 else{
                     String[] textSpecArray = textSpec.split(separator);
                     errorCode = "specLimits_isOneOf_Successfully";
-                    errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, textSpecArray.length);          
-                    return LabPLANETPlatform.trapErrorMessage(null, "LABPLANET_TRUE", classVersion, errorCode, errorDetailVariables);}                       
+                    errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, textSpecArray.length);          
+                    return LabPLANETPlatform.trapErrorMessage("LABPLANET_TRUE", errorCode, errorDetailVariables);}                       
             case "ISNOTONEOF": 
                 if ((separator==null) || (separator.length()==0)){
                     errorCode = "specLimits_separatorMandatoryArgumentNull";
-                    errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, rule.toUpperCase());          
-                    errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, schemaName);          
-                    return LabPLANETPlatform.trapErrorMessage(null, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);}    
+                    errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, rule.toUpperCase());          
+                    errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaName);          
+                    return LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);}    
                 else{
                     String[] textSpecArray = textSpec.split(separator);
                     errorCode = "specLimits_isNotOneOf_Successfully";
-                    errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, textSpecArray.length);          
-                    return LabPLANETPlatform.trapErrorMessage(null, "LABPLANET_TRUE", classVersion, errorCode, errorDetailVariables);}                          
+                    errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, textSpecArray.length);          
+                    return LabPLANETPlatform.trapErrorMessage("LABPLANET_TRUE", errorCode, errorDetailVariables);}                          
             default: 
                 errorCode = "specLimits_qualitativeRuleNotRecognized";
-                errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, rule);          
-                errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, Arrays.toString(expectedRules));          
-                return LabPLANETPlatform.trapErrorMessage(null, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);    
+                errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, rule);          
+                errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, Arrays.toString(expectedRules));          
+                return LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);    
         }
     }
 /**
@@ -104,7 +104,7 @@ public class ConfigSpecRule {
  * @return Object[] position 0 is a boolean to determine if the arguments are correct, when set to false then position 1 provides detail about the deficiency 
  */
     public Object[] specLimitIsCorrectQuantitative(Float minSpec, Float maxSpec){
-        LabPLANETArray labArr = new LabPLANETArray();
+        LabPLANETArray LabPLANETArray = new LabPLANETArray();
 
         String errorCode = "";
         Object[]  errorDetailVariables= new Object[0];        
@@ -112,18 +112,18 @@ public class ConfigSpecRule {
         Object[] diagnoses = new Object[2];
         
         if ((minSpec==null) && (maxSpec==null)){
-            errorCode = "specLimits_MinAndMaxSpecBothMandatory"; return LabPLANETPlatform.trapErrorMessage(null, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);}                                               
+            errorCode = "specLimits_MinAndMaxSpecBothMandatory"; return LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);}                                               
         if ((minSpec!=null) && (maxSpec==null)){
-            errorCode = "specLimits_quantitativeMinSpecSuccessfully"; return LabPLANETPlatform.trapErrorMessage(null, "LABPLANET_TRUE", classVersion, errorCode, errorDetailVariables);}                                    
+            errorCode = "specLimits_quantitativeMinSpecSuccessfully"; return LabPLANETPlatform.trapErrorMessage("LABPLANET_TRUE", errorCode, errorDetailVariables);}                                    
         if ((minSpec==null) && (maxSpec!=null)){
-            errorCode = "specLimits_quantitativeMaxSpecSuccessfully"; return LabPLANETPlatform.trapErrorMessage(null, "LABPLANET_TRUE", classVersion, errorCode, errorDetailVariables);}                                           
+            errorCode = "specLimits_quantitativeMaxSpecSuccessfully"; return LabPLANETPlatform.trapErrorMessage("LABPLANET_TRUE", errorCode, errorDetailVariables);}                                           
         if (minSpec<maxSpec){
-            errorCode = "specLimits_quantitativeMinSpecMaxSpec_Successfully"; return LabPLANETPlatform.trapErrorMessage(null, "LABPLANET_TRUE", classVersion, errorCode, errorDetailVariables);}                                    
+            errorCode = "specLimits_quantitativeMinSpecMaxSpec_Successfully"; return LabPLANETPlatform.trapErrorMessage("LABPLANET_TRUE", errorCode, errorDetailVariables);}                                    
         
         errorCode = "specLimits_quantitativeMinSpecMaxSpec_MinSpecGreaterOrEqualToMaxSpec"; 
-        errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, minSpec.toString());        
-        errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, maxSpec.toString());
-        return LabPLANETPlatform.trapErrorMessage(null, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);                                    
+        errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, minSpec.toString());        
+        errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, maxSpec.toString());
+        return LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);                                    
     }
 
 /**
@@ -137,7 +137,7 @@ public class ConfigSpecRule {
  * @return Object[] position 0 is a boolean to determine if the arguments are correct, when set to false then position 1 provides detail about the deficiency 
  */
     public Object[] specLimitIsCorrectQuantitative(BigDecimal minSpec, BigDecimal maxSpec){
-        LabPLANETArray labArr = new LabPLANETArray();
+        LabPLANETArray LabPLANETArray = new LabPLANETArray();
 
         String errorCode = "";
         Object[]  errorDetailVariables= new Object[0];        
@@ -145,18 +145,18 @@ public class ConfigSpecRule {
         Object[] diagnoses = new Object[2];
         
         if ((minSpec==null) && (maxSpec==null)){
-            errorCode = "specLimits_MinAndMaxSpecBothMandatory"; return LabPLANETPlatform.trapErrorMessage(null, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);}                                               
+            errorCode = "specLimits_MinAndMaxSpecBothMandatory"; return LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);}                                               
         if ((minSpec!=null) && (maxSpec==null)){
-            errorCode = "specLimits_quantitativeMinSpecSuccessfully"; return LabPLANETPlatform.trapErrorMessage(null, "LABPLANET_TRUE", classVersion, errorCode, errorDetailVariables);}                                    
+            errorCode = "specLimits_quantitativeMinSpecSuccessfully"; return LabPLANETPlatform.trapErrorMessage("LABPLANET_TRUE", errorCode, errorDetailVariables);}                                    
         if ((minSpec==null) && (maxSpec!=null)){
-            errorCode = "specLimits_quantitativeMaxSpecSuccessfully"; return LabPLANETPlatform.trapErrorMessage(null, "LABPLANET_TRUE", classVersion, errorCode, errorDetailVariables);}                                           
+            errorCode = "specLimits_quantitativeMaxSpecSuccessfully"; return LabPLANETPlatform.trapErrorMessage("LABPLANET_TRUE", errorCode, errorDetailVariables);}                                           
         if (minSpec.compareTo(maxSpec)==1){
-            errorCode = "specLimits_quantitativeMinSpecMaxSpec_Successfully"; return LabPLANETPlatform.trapErrorMessage(null, "LABPLANET_TRUE", classVersion, errorCode, errorDetailVariables);}                                    
+            errorCode = "specLimits_quantitativeMinSpecMaxSpec_Successfully"; return LabPLANETPlatform.trapErrorMessage("LABPLANET_TRUE", errorCode, errorDetailVariables);}                                    
         
         errorCode = "specLimits_quantitativeMinSpecMaxSpec_MinSpecGreaterOrEqualToMaxSpec"; 
-        errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, minSpec.toString());        
-        errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, maxSpec.toString());
-        return LabPLANETPlatform.trapErrorMessage(null, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);                                    
+        errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, minSpec.toString());        
+        errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, maxSpec.toString());
+        return LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);                                    
     }
     
 /**
@@ -178,63 +178,63 @@ public class ConfigSpecRule {
         String errorCode = "";
         Object[]  errorDetailVariables= new Object[0];        
         Object[] diagnoses = new Object[2];
-        LabPLANETArray labArr = new LabPLANETArray();
+        LabPLANETArray LabPLANETArray = new LabPLANETArray();
         
         Object[] isCorrectMinMaxSpec = this.specLimitIsCorrectQuantitative(minSpec, maxSpec);
         if ("LABPLANET_FALSE".equalsIgnoreCase(isCorrectMinMaxSpec[0].toString())){
             return isCorrectMinMaxSpec;}
                 
         if ((minControl1==null) && (maxControl1==null)){
-            errorCode = "specLimits_quantitativeMinSpecMaxSpec_Successfully"; return LabPLANETPlatform.trapErrorMessage(null, "LABPLANET_TRUE", classVersion, errorCode, errorDetailVariables);}                                            
+            errorCode = "specLimits_quantitativeMinSpecMaxSpec_Successfully"; return LabPLANETPlatform.trapErrorMessage("LABPLANET_TRUE", errorCode, errorDetailVariables);}                                            
         if ((minControl1!=null) && (minSpec==null)){
             errorCode = "specLimits_MinControlPresent_MinSpecMandatory"; 
-            errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, minControl1.toString());        
-            return LabPLANETPlatform.trapErrorMessage(null, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);}                                           
+            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, minControl1.toString());        
+            return LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);}                                           
         if ((maxControl1!=null) && (maxSpec==null)){
             errorCode = "specLimits_MaxControlPresent_MaxSpecMandatory"; 
-            errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, maxControl1.toString());      
-            return LabPLANETPlatform.trapErrorMessage(null, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);}                                    
+            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, maxControl1.toString());      
+            return LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);}                                    
         if (((minControl1!=null) && (maxControl1!=null)) && (minControl1>=maxControl1)){
-            errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, minControl1.toString());        
-            errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, maxControl1.toString());    
+            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, minControl1.toString());        
+            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, maxControl1.toString());    
             errorCode = "specLimits_minControlGreaterOrEqualToMaxControl"; 
-            return LabPLANETPlatform.trapErrorMessage(null, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);}                                    
+            return LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);}                                    
         if (((minControl1!=null) && (maxSpec!=null)) && (minControl1>=maxSpec)){
-            errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, minControl1.toString());        
-            errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, maxSpec.toString());    
+            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, minControl1.toString());        
+            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, maxSpec.toString());    
             errorCode = "specLimits_minControlGreaterOrEqualToMaxSpec"; 
-            return LabPLANETPlatform.trapErrorMessage(null, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);}                      
+            return LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);}                      
         if (((maxControl1!=null) && (minSpec!=null)) && (maxControl1<=minSpec)){
-            errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, maxControl1.toString());        
-            errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, minSpec.toString());    
+            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, maxControl1.toString());        
+            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, minSpec.toString());    
             errorCode = "specLimits_MaxControlLessThanOrEqualToMinSpec"; 
-            return LabPLANETPlatform.trapErrorMessage(null, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);}                      
+            return LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);}                      
         if (minControl1!=null){                        
             if (minControl1.compareTo(minSpec)<=0){
-                errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, minControl1.toString());        
-                errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, minSpec.toString());    
+                errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, minControl1.toString());        
+                errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, minSpec.toString());    
                 errorCode = "specLimits_MinControlLessThanOrEqualToMinSpec"; 
-                return LabPLANETPlatform.trapErrorMessage(null, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);                                      
+                return LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);                                      
             }else{
                 errorCode = "specLimits_quantitativeMinSpecMinControlMaxSpec_Successfully"; 
-                return LabPLANETPlatform.trapErrorMessage(null, "LABPLANET_TRUE", classVersion, errorCode, errorDetailVariables);   
+                return LabPLANETPlatform.trapErrorMessage("LABPLANET_TRUE", errorCode, errorDetailVariables);   
             }
         }                      
         if ((maxControl1!=null)){
             int comparison = 0;
             if (maxControl1.compareTo(maxSpec)>=0){
-                errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, maxControl1.toString());        
-                errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, maxSpec.toString()); 
+                errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, maxControl1.toString());        
+                errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, maxSpec.toString()); 
                 errorCode = "specLimits_MaxControlGreaterThanOrEqualToMaxSpec"; 
-                return LabPLANETPlatform.trapErrorMessage(null, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);                                   
+                return LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);                                   
             }else{
                 errorCode = "specLimits_quantitativeMinSpecMinControlMaxControlMaxSpec_Successfully"; 
-                return LabPLANETPlatform.trapErrorMessage(null, "LABPLANET_TRUE", classVersion, errorCode, errorDetailVariables);        
+                return LabPLANETPlatform.trapErrorMessage("LABPLANET_TRUE", errorCode, errorDetailVariables);        
             }    
         }
-        errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, minControl1.toString());        
-        errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, maxControl1.toString()); 
+        errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, minControl1.toString());        
+        errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, maxControl1.toString()); 
         errorCode = "specLimits_MinControlAndMaxControlOutOfLogicControl"; 
-        return LabPLANETPlatform.trapErrorMessage(null, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);              
+        return LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);              
     }    
 } 

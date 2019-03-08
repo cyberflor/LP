@@ -39,19 +39,17 @@ import java.util.logging.Logger;
  * @version 0.1
  */
 
-public class LabPLANETArray {
-    
-    String classVersion = "0.1";
+public class  LabPLANETArray {
+        
     String schemaDataName = "data";
     String schemaConfigName = "config";    
-    Rdbms rdbm = new Rdbms();           
    
     /**
      *
      * @param zipcodelist
      * @return
      */
-    public boolean duplicates(String[] zipcodelist){
+    public static boolean duplicates(String[] zipcodelist){
       Set<String> lump = new HashSet<>();
       for (String i : zipcodelist)
       {
@@ -70,7 +68,7 @@ public class LabPLANETArray {
      * @return
      * @throws IOException
      */
-    public Object[] arrayToFile (String[] arrayHeader, String[] array, String filename, String fieldsSeparator) throws IOException{
+    public static Object[] arrayToFile (String[] arrayHeader, String[] array, String filename, String fieldsSeparator) throws IOException{
         Object[] diagnosis = new Object[0];
         BufferedWriter outputWriter = null;
         
@@ -98,14 +96,14 @@ public class LabPLANETArray {
      * @param fieldValue
      * @return
      */
-    public Object[] encryptTableFieldArray(String schemaName, String tableName, String[] fieldName, Object[] fieldValue){
-         Rdbms rdbm = new Rdbms();
+    public static Object[] encryptTableFieldArray(String schemaName, String tableName, String[] fieldName, Object[] fieldValue){
+        String classVersion = "0.1";
          String key = "Bar12345Bar12345"; // 128 bit key
         LabPLANETPlatform labPlat = new LabPLANETPlatform();
         //? Should be by schemaPrefix? config or data???
         //schemaDataName = labPlat.buildSchemaName(schemaName, schemaDataName);  
         //String fieldsEncrypted = rdbm.getParameterBundleInConfigFile(schemaDataName.replace("\"", ""), "encrypted_"+tableName);
-        schemaDataName = LabPLANETPlatform.buildSchemaName(schemaName, schemaName);  
+        String schemaDataName = LabPLANETPlatform.buildSchemaName(schemaName, schemaName);  
         String fieldsEncrypted = Parameter.getParameterBundle(schemaName.replace("\"", ""), "encrypted_"+tableName);        
         String[] fieldsEncryptedArr = fieldsEncrypted.split("\\|");
         for (int iFields=0;iFields<fieldName.length;iFields++){
@@ -148,11 +146,10 @@ public class LabPLANETArray {
      * @param fieldValue
      * @return
      */
-    public Object[][] decryptTableFieldArray(String schemaName, String tableName, String[] fieldName, Object[][] fieldValue){
+    public static Object[][] decryptTableFieldArray(String schemaName, String tableName, String[] fieldName, Object[][] fieldValue){
         String key = "Bar12345Bar12345"; // 128 bit key
         //LabPLANETPlatform labPlat = new LabPLANETPlatform();
-        //schemaDataName = labPlat.buildSchemaName(schemaName, schemaDataName);  
-        Rdbms rdbm = new Rdbms();
+        //schemaDataName = labPlat.buildSchemaName(schemaName, schemaDataName);          
         String fieldsEncrypted = Parameter.getParameterBundle(schemaName.replace("\"", ""), "encrypted_"+tableName);
         String[] fieldsEncryptedArr = fieldsEncrypted.split("\\|");
         for (int iFields=0;iFields<fieldName.length;iFields++){
@@ -194,11 +191,10 @@ public class LabPLANETArray {
      * @param fieldValue
      * @return
      */
-    public Object[] decryptTableFieldArray(String schemaName, String tableName, String[] fieldName, Object[] fieldValue){
+    public static Object[] decryptTableFieldArray(String schemaName, String tableName, String[] fieldName, Object[] fieldValue){
         String key = "Bar12345Bar12345"; // 128 bit key
         //LabPLANETPlatform labPlat = new LabPLANETPlatform();
-        //schemaDataName = labPlat.buildSchemaName(schemaName, schemaDataName);  
-        Rdbms rdbm = new Rdbms();
+        //schemaDataName = labPlat.buildSchemaName(schemaName, schemaDataName);          
         String fieldsEncrypted = Parameter.getParameterBundle(schemaName.replace("\"", ""), "encrypted_"+tableName);
         String[] fieldsEncryptedArr = fieldsEncrypted.split("\\|");
         for (int iFields=0;iFields<fieldName.length;iFields++){
@@ -233,7 +229,7 @@ public class LabPLANETArray {
  * @param myStringsArray String[] - String containing the peers values*type.
  * @return Object[] - The same values expressed in the proper type.
  */
-    public Object[] convertStringWithDataTypeToObjectArray(String[] myStringsArray){
+    public static Object[] convertStringWithDataTypeToObjectArray(String[] myStringsArray){
         
         Object[] myObjectsArray = new Object[myStringsArray.length];
         
@@ -284,7 +280,7 @@ public class LabPLANETArray {
      * @param csvSeparator
      * @return
      */
-    public String[][] convertCSVinArray(String xfileLocation, String csvSeparator){
+    public static String[][] convertCSVinArray(String xfileLocation, String csvSeparator){
         String[][] myArray = new String[0][0];
         String[] myArray1D = new String[0];
         Scanner scanIn = null;
@@ -320,7 +316,7 @@ public class LabPLANETArray {
      * @param csvSeparator
      * @return
      */
-    public String[][] convertCSVinArrayHomogeneous(String xfileLocation, String csvSeparator){
+    public static String[][] convertCSVinArrayHomogeneous(String xfileLocation, String csvSeparator){
         String[][] myArray = new String[0][0];
         String[] myArray1D = new String[0];
         Scanner scanIn = null;
@@ -353,7 +349,7 @@ public class LabPLANETArray {
  * @param array2d String[][]
  * @return String[]
  */
-    public String[] array2dTo1d(String[][] array2d){
+    public static String[] array2dTo1d(String[][] array2d){
         //Object[] array1d = new Object[1];
         //Integer numLines = 
         //String[][] my2Darr = .....(something)......
@@ -372,7 +368,7 @@ public class LabPLANETArray {
  * @param array2d Object[][]
  * @return Object[]
  */ 
-    public Object[] array2dTo1d(Object[][] array2d){
+    public static Object[] array2dTo1d(Object[][] array2d){
         //Object[] array1d = new Object[1];
         //Integer numLines = 
         //String[][] my2Darr = .....(something)......
@@ -393,7 +389,7 @@ public class LabPLANETArray {
  * @param colNum Integer
  * @return Object[]
  */
-    public Object[] array2dTo1d(Object[][] array2d, Integer colNum){
+    public static Object[] array2dTo1d(Object[][] array2d, Integer colNum){
         Object[] array1d = new Object[0];
         for (Integer iLine=0;iLine<array2d.length;iLine++) {
            array1d = addValueToArray1D(array1d, array2d[iLine][colNum]); 
@@ -407,7 +403,7 @@ public class LabPLANETArray {
  * @param numColumns Integer
  * @return String[][]
  */    
-    public String[][] array1dTo2d(String[] array1d, Integer numColumns){
+    public static String[][] array1dTo2d(String[] array1d, Integer numColumns){
         
         Integer numLines = array1d.length/numColumns;
         String[][] array2d = new String[numLines][numColumns];        
@@ -429,7 +425,7 @@ public class LabPLANETArray {
      * @param numColumns
      * @return
      */
-    public Object[][] array1dTo2d(Object[] array1d, Integer numColumns){
+    public static Object[][] array1dTo2d(Object[] array1d, Integer numColumns){
         
         Integer numLines = array1d.length/numColumns;
         Object[][] array2d = new Object[numLines][numColumns];        
@@ -450,7 +446,7 @@ public class LabPLANETArray {
  * @param value Object
  * @return boolean
  */
-    public boolean valueInArray(Object[] array, Object value){
+    public static boolean valueInArray(Object[] array, Object value){
         boolean diagnoses = false;
         Integer specialFieldIndex = Arrays.asList(array).indexOf(value);
         if (specialFieldIndex!=-1){return true;}
@@ -463,7 +459,7 @@ public class LabPLANETArray {
  * @param value Object
  * @return boolean
  */
-    public Integer valuePosicInArray(Object[] array, Object value){        
+    public static Integer valuePosicInArray(Object[] array, Object value){        
         boolean diagnoses = false;
         Integer specialFieldIndex = Arrays.asList(array).indexOf(value);
         if (specialFieldIndex!=-1){return specialFieldIndex;}
@@ -476,7 +472,7 @@ public class LabPLANETArray {
  * @param newValue Object
  * @return Object[] 
  */    
-    public Object[] addValueToArray1D(Object[] array, Object newValue){
+    public static Object[] addValueToArray1D(Object[] array, Object newValue){
         Integer arrayLen = 0;
         if (array==null){
             arrayLen = 0;
@@ -499,7 +495,7 @@ public class LabPLANETArray {
  * @param newValue Calendar
  * @return Calendar[] 
  */    
-    public Calendar[] addCalendarValueToCalendarArray1D(Calendar[] array, Calendar newValue){
+    public static Calendar[] addCalendarValueToCalendarArray1D(Calendar[] array, Calendar newValue){
         Calendar[] newArray = new Calendar[array.length+1];
         
         for (Integer i=0;i<array.length;i++){
@@ -515,7 +511,7 @@ public class LabPLANETArray {
  * @param newValues Object[]
  * @return Object[] 
  */    
-    public Object[] addValueToArray1D(Object[] array, Object[] newValues){
+    public static Object[] addValueToArray1D(Object[] array, Object[] newValues){
         Integer arrayLen = 0;
         if (array==null){
             arrayLen = 0;
@@ -543,7 +539,7 @@ public class LabPLANETArray {
  * @param newValues String[]
  * @return String[] 
  */ 
-    public String[] addValueToArray1D(String[] array, String[] newValues){
+    public static String[] addValueToArray1D(String[] array, String[] newValues){
         Integer arrayLen = 0;
         if (array==null){
             arrayLen = 0;
@@ -571,7 +567,7 @@ public class LabPLANETArray {
  * @param newValue String
  * @return String[] 
  */  
-    public String[] addValueToArray1D(String[] array, String newValue){
+    public static String[] addValueToArray1D(String[] array, String newValue){
         Integer arrayLen = 0;
         if (array==null){
             arrayLen = 0;
@@ -595,7 +591,7 @@ public class LabPLANETArray {
  * @param newValue Object
  * @return Object[][]  
  */
-    public Object[][] setColumnValueToArray2D(Object[][] array, Integer col, Object newValue){
+    public static Object[][] setColumnValueToArray2D(Object[][] array, Integer col, Object newValue){
         
         //Object[][] newArray = new Object[array.length][array[0].length];
         for (Object[] array1 : array) {
@@ -611,7 +607,7 @@ public class LabPLANETArray {
  * @param newValue Object
  * @return  Object[][]
  */    
-    public Object[][] addColumnToArray2D(Object[][] array, Object newValue){
+    public static Object[][] addColumnToArray2D(Object[][] array, Object newValue){
         
         Object[][] newArray = new Object[array.length][array[0].length+1];
         
@@ -631,7 +627,7 @@ public class LabPLANETArray {
  * @param separator String
  * @return String[]
  */
-    public String[] joinTwo1DArraysInOneOf1DString (Object[] arrayOne, Object[] arrayTwo, String separator){
+    public static String[] joinTwo1DArraysInOneOf1DString (Object[] arrayOne, Object[] arrayTwo, String separator){
         String[] newArray = new String[0];
         
         Integer arrOneLength = arrayOne.length;
@@ -667,7 +663,8 @@ public class LabPLANETArray {
  * @param arrayB Object[]
  * @return String[6]. Position 3 FALSE/TRUE is the diagnostic.
  */    
-    public String[] checkTwoArraysSameLength(Object[] arrayA, Object[] arrayB){
+    public static String[] checkTwoArraysSameLength(Object[] arrayA, Object[] arrayB){
+        String classVersion = "0.1";
     String errorCode = "";
     String[] errorDetailVariables = new String[0];
 
@@ -679,7 +676,7 @@ public class LabPLANETArray {
            errorCode = "DataSample_FieldArraysDifferentSize";
            errorDetailVariables = addValueToArray1D(errorDetailVariables, Arrays.toString(arrayA));
            errorDetailVariables = addValueToArray1D(errorDetailVariables, Arrays.toString(arrayB));
-           return (String[]) LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);           
+           return (String[]) LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);           
         }else{
             diagnoses[0]="LABPLANET_TRUE";
         }    
@@ -692,7 +689,8 @@ public class LabPLANETArray {
  * @param colNum Integer
  * @return Object[]. Position 3 set to FALSE when not possible. 
  */    
-    public Object[] getColumnFromArray2D(Object[][] array, Integer colNum){
+    public static Object[] getColumnFromArray2D(Object[][] array, Integer colNum){
+        String classVersion = "0.1";
         LabPLANETPlatform labPlat = new LabPLANETPlatform();
         Object[] diagnoses = new Object[0];
     String errorCode = "";
@@ -702,7 +700,7 @@ public class LabPLANETArray {
            errorCode = "LabPLANETArray_getColumnFromArray2D_ColNotFound";
            errorDetailVariables = (String[]) addValueToArray1D(errorDetailVariables, array[0].length);
            errorDetailVariables = addValueToArray1D(errorDetailVariables, colNum.toString());
-           return (String[]) LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);           
+           return (String[]) LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);           
         }       
         for (Integer i=0;i<array.length;i++){
             diagnoses=addValueToArray1D(diagnoses, array[colNum][i]);

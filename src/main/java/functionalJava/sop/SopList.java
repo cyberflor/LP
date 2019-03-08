@@ -115,13 +115,11 @@ public class SopList {
     
     /**
      *
-     * @param rdbm
      * @param schemaPrefix
      * @param userInfoId
      * @return
      */
-    public Object[] dbInsertSopList(Rdbms rdbm, String schemaPrefix, String userInfoId){
-        LabPLANETArray labArr = new LabPLANETArray();    
+    public Object[] dbInsertSopList( String schemaPrefix, String userInfoId){
         String schemaConfigName = "config";     
         schemaConfigName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaConfigName);
 
@@ -129,19 +127,19 @@ public class SopList {
         String[] fieldNames = new String[0];
         Object[] fieldValues = new Object[0];
         
-        fieldNames = labArr.addValueToArray1D(fieldNames, "name");
-        fieldValues = labArr.addValueToArray1D(fieldValues, this.sopListName);
-        fieldNames = labArr.addValueToArray1D(fieldNames, "version");
-        fieldValues = labArr.addValueToArray1D(fieldValues, this.sopListVersion);
-        fieldNames = labArr.addValueToArray1D(fieldNames, "revision");
-        fieldValues = labArr.addValueToArray1D(fieldValues, this.sopListRevision);
-        fieldNames = labArr.addValueToArray1D(fieldNames, "status");
-        fieldValues = labArr.addValueToArray1D(fieldValues, this.sopListStatus);
-        fieldNames = labArr.addValueToArray1D(fieldNames, "added_by");
-        fieldValues = labArr.addValueToArray1D(fieldValues, userInfoId);
+        fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "name");
+        fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, this.sopListName);
+        fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "version");
+        fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, this.sopListVersion);
+        fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "revision");
+        fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, this.sopListRevision);
+        fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "status");
+        fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, this.sopListStatus);
+        fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "added_by");
+        fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, userInfoId);
         
         //requires added_on        
-        Object[] diagnoses = rdbm.insertRecordInTable(rdbm, schemaConfigName, tableName, fieldNames, fieldValues);
+        Object[] diagnoses = Rdbms.insertRecordInTable(schemaConfigName, tableName, fieldNames, fieldValues);
         
         return diagnoses;
         
@@ -149,21 +147,20 @@ public class SopList {
     
     /**
      *
-     * @param rdbm
      * @param schemaPrefix
      * @param sopAssigned
      * @return
      * @throws SQLException
      */
-    public Object[] dbUpdateSopListSopAssigned(Rdbms rdbm, String schemaPrefix, String[] sopAssigned) throws SQLException{    
+    public Object[] dbUpdateSopListSopAssigned( String schemaPrefix, String[] sopAssigned) throws SQLException{    
         String schemaConfigName = "config";     
         schemaConfigName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaConfigName);
-        Object[] diagnoses = rdbm.updateRecordFieldsByFilter(rdbm, schemaConfigName, tableName, 
+        Object[] diagnoses = Rdbms.updateRecordFieldsByFilter(schemaConfigName, tableName, 
                                         new String[]{"sop_assigned"}, new Object[]{this.sopListId}, 
                                         new String[]{"sop_list_id"}, new Object[]{sopAssigned});
         if ("LABPLANET_FALSE".equalsIgnoreCase(diagnoses[0].toString())) return diagnoses;
         String errorCode = "SopList_SopAssignedToSopList";
-        LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, new Object[]{sopAssigned, this.sopListId, schemaConfigName} );
+        LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, new Object[]{sopAssigned, this.sopListId, schemaConfigName} );
         return diagnoses;        
     }   
     
@@ -188,21 +185,20 @@ public class SopList {
      * @return
      */
     public Object[] sopPositionIntoSopListLabPLANET(String sopId){
-        LabPLANETArray labArr = new LabPLANETArray();
         Object[] diagnoses = new Object[0];
         String[] currSopAssignedValue = getSopListSopAssigned();
         Integer arrayPosic = currSopAssignedValue.length;
         for (Integer i=0;i<arrayPosic;i++){
             if (currSopAssignedValue[i] == null ? sopId == null : currSopAssignedValue[i].equals(sopId)){ 
-                diagnoses = LabPLANETPlatform.trapErrorMessage(null, "LABPLANET_TRUE", classVersion, "SOP FOUND IN SOP LIST", 
+                diagnoses = LabPLANETPlatform.trapErrorMessage("LABPLANET_TRUE", "SOP FOUND IN SOP LIST", 
                         new Object[]{"SOP <*1*> found in SOP List <*2*> in position <*3>", sopId, currSopAssignedValue, i});
-                diagnoses = labArr.addValueToArray1D(diagnoses, i);
+                diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, i);
                 return diagnoses;
             }
         }
-        diagnoses = LabPLANETPlatform.trapErrorMessage(null, "LABPLANET_TRUE", classVersion, "SOP NOT FOUND IN SOP LIST", 
+        diagnoses = LabPLANETPlatform.trapErrorMessage("LABPLANET_TRUE", "SOP NOT FOUND IN SOP LIST", 
                 new Object[]{"SOP <*1*> NOT found in SOP List <*2*>", sopId, currSopAssignedValue});
-        diagnoses = labArr.addValueToArray1D(diagnoses, -1);
+        diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, -1);
         return diagnoses;
     }    
     
@@ -224,7 +220,7 @@ public class SopList {
             newArray[arrayPosic++] = sopId;
             setSopListSopAssigned(newArray);
         }    
-        diagnoses = LabPLANETPlatform.trapErrorMessage(null, "LABPLANET_TRUE", classVersion, "SopList_SopAssignedToSopList", 
+        diagnoses = LabPLANETPlatform.trapErrorMessage("LABPLANET_TRUE", "SopList_SopAssignedToSopList", 
                 new Object[]{sopId, Arrays.toString(currSopAssignedValue),""});
         return diagnoses;
     }

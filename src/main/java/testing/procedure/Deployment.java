@@ -47,20 +47,18 @@ public class Deployment extends HttpServlet {
             out.println("</body>");
             out.println("</html>");
         
-            Rdbms rdbm = new Rdbms();            
-            boolean isConnected = false;
-            isConnected = rdbm.startRdbms("labplanet", "LabPlanet");
+        if (Rdbms.getRdbms().startRdbms("labplanet", "avecesllegaelmomento")==null){out.println("Connection to the database not established");return;}
 
             RequirementDeployment reqDep = new RequirementDeployment();
             String procedure = "sampleA"; 
             Integer procVersion = 1;
             try {                
-                String log = reqDep._newRequirement(rdbm, procedure, procVersion);
+                String log = reqDep._newRequirement(procedure, procVersion);
                 out.println(log);
             } catch (SQLException ex) {
                 Logger.getLogger(Deployment.class.getName()).log(Level.SEVERE, null, ex);
             }
-            rdbm.closeRdbms();
+            Rdbms.closeRdbms();
         }    
     }
 

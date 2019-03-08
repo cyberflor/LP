@@ -5,7 +5,6 @@
  */
 package LabPLANET.utilities;
 
-import databases.Rdbms;
 import java.util.Arrays;
 
 /**
@@ -15,7 +14,7 @@ import java.util.Arrays;
 public class LPParadigm {
     
     
-    public static Object[] fieldNameValueArrayChecker (Rdbms rdbm, String[] fName, Object[] fValue){
+    public static Object[] fieldNameValueArrayChecker (String[] fName, Object[] fValue){
         String classVersion = "0.1";
         Object[] diagnoses = null;
         String errorCode ="";
@@ -27,13 +26,13 @@ public class LPParadigm {
            errorCode = "DataSample_FieldArraysDifferentSize";
            errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, Arrays.toString(fName));
            errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, Arrays.toString(fValue));
-           return LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);
+           return LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);
         }
         
         if (labArr.duplicates(fName)){
            errorCode = "DataSample_FieldsDuplicated";
            errorDetailVariables = labArr.addValueToArray1D(errorDetailVariables, Arrays.toString(fName));
-           return LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);                      
+           return LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);                      
         }        
         
         labArr=null;

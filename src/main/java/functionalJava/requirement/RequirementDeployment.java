@@ -51,7 +51,7 @@ public class RequirementDeployment {
      * @throws IOException
      */
     @SuppressWarnings("ConvertToTryWithResources")
-    public String _newRequirement (Rdbms rdbm, String procedure, Integer procVersion) throws SQLException, IOException {    
+    public String _newRequirement ( String procedure, Integer procVersion) throws SQLException, IOException {    
         String methodName = "newRequirement";
         
         Integer queryInsertNum=0;
@@ -71,7 +71,7 @@ return "";
                 
         Integer pVersion = procVersion;
 
-        Object[][] procedureInfo = rdbm.getRecordFieldsByFilter(rdbm, "requirements", "procedure", new String[]{"name", "version"}, new Object[]{procedure, pVersion}, new String[]{"schema_prefix", "name", "version", "name", "version"});
+        Object[][] procedureInfo = Rdbms.getRecordFieldsByFilter("requirements", "procedure", new String[]{"name", "version"}, new Object[]{procedure, pVersion}, new String[]{"schema_prefix", "name", "version", "name", "version"});
         
         if (procedureInfo[0][3].toString().equalsIgnoreCase("FALSE")){
             return "ERROR: Error getting schema from procedure record. Error: "+procedureInfo[0][5].toString();
@@ -82,7 +82,7 @@ return "";
         newEntry = d+" createDataBaseSchemas. Begin" + d;
             try {requirementsLogEntry(methodName, newEntry,null);
             } catch (IOException ex) { Logger.getLogger(Requirement.class.getName()).log(Level.SEVERE, null, ex);}            
-        createDataBaseSchemas(rdbm, schemaPrefix);        
+        createDataBaseSchemas(schemaPrefix);        
             d = new Date();
         newEntry = d+" createDataBaseSchemas. End" + d;
             try {requirementsLogEntry(methodName, newEntry,null);
@@ -92,7 +92,7 @@ return "";
         newEntry = d+" createDataBaseTable. Begin" + d;
             try {requirementsLogEntry(methodName, newEntry,null);
             } catch (IOException ex) { Logger.getLogger(Requirement.class.getName()).log(Level.SEVERE, null, ex);}            
-        createDataBaseSchemaTable(rdbm, schemaPrefix, procedure, procVersion);        
+        createDataBaseSchemaTable(schemaPrefix, procedure, procVersion);        
             d = new Date();
         newEntry = d+" createDataBaseTable. End" + d;
             try {requirementsLogEntry(methodName, newEntry,null);
@@ -106,7 +106,7 @@ return "";
         newEntry = d+" addProcRolesAndPrivileges. Begin" + d;
             try {requirementsLogEntry(methodName, newEntry,null);
             } catch (IOException ex) { Logger.getLogger(Requirement.class.getName()).log(Level.SEVERE, null, ex);}            
-        addProcRolesAndPrivileges(rdbm, procedure, pVersion); 
+        addProcRolesAndPrivileges(procedure, pVersion); 
             d = new Date();
         newEntry = d+" addProcRolesAndPrivileges. End" + d;
             try {requirementsLogEntry(methodName, newEntry,null);
@@ -116,7 +116,7 @@ return "";
         newEntry = d+" deploymentNavigatorNavId. Begin" + d;
             try {requirementsLogEntry(methodName, newEntry,null);
             } catch (IOException ex) {Logger.getLogger(Requirement.class.getName()).log(Level.SEVERE, null, ex);}        
-        deploymentNavigatorNavId(rdbm, procedure, pVersion);
+        deploymentNavigatorNavId(procedure, pVersion);
             d = new Date();
         newEntry = d+" deploymentNavigatorNavId. End" + d;
             try {requirementsLogEntry(methodName, newEntry,null);
@@ -126,7 +126,7 @@ return "";
         newEntry = d+" add SOP. Begin..." + d;
             try {requirementsLogEntry(methodName, newEntry,null);
             } catch (IOException ex) {Logger.getLogger(Requirement.class.getName()).log(Level.SEVERE, null, ex);}              
-        addSop(rdbm, procedure, pVersion, schemaPrefix+"-config");
+        addSop(procedure, pVersion, schemaPrefix+"-config");
             d = new Date();
         newEntry = d+" add SOP. End..." + d;
             try {requirementsLogEntry(methodName, newEntry,null);
@@ -136,7 +136,7 @@ return "";
         newEntry = d+" RequirementConfigObjects. Begin..." + d;
             try {requirementsLogEntry(methodName, newEntry,null);
             } catch (IOException ex) {Logger.getLogger(Requirement.class.getName()).log(Level.SEVERE, null, ex);}        
-        getConfigObject(rdbm, procedure, pVersion);
+        getConfigObject(procedure, pVersion);
             d = new Date();
         newEntry = d+" RequirementConfigObjects. End..." + d;
             try {requirementsLogEntry(methodName, newEntry,null);
@@ -146,7 +146,7 @@ return "";
         newEntry = d+" adding UserSOP. Begin..." + d;
             try {requirementsLogEntry(methodName, newEntry,null);
             } catch (IOException ex) {Logger.getLogger(Requirement.class.getName()).log(Level.SEVERE, null, ex);}                
-        addUserSop(rdbm, procedure, pVersion,schemaPrefix);
+        addUserSop(procedure, pVersion,schemaPrefix);
             d = new Date();
         newEntry = d+" adding UserSOP. End..." + d;
             try {requirementsLogEntry(methodName, newEntry,null);
@@ -162,12 +162,11 @@ return "";
 
     /**
      *
-     * @param rdbm
      * @param procName
      * @param procVersion
      */
  
-    public void _deploymentNavigatorNavId (Rdbms rdbm, String procName, Integer procVersion){                       
+    public void _deploymentNavigatorNavId ( String procName, Integer procVersion){                       
         String methodName = "deploymentNavigatorNavId";
         Integer queryInsertNum=0;
         Integer rootNode = 0;
@@ -178,7 +177,7 @@ return "";
     }
 /*        String codeName = "OIL-PL1";
 
-        Object[][] procUserReqBranchesInfo = rdbm.getRecordFieldsByFilter(rdbm, schemaRequirements, "procedure_user_requirements", 
+        Object[][] procUserReqBranchesInfo = Rdbms.getRecordFieldsByFilter(schemaRequirements, "procedure_user_requirements", 
                                                 new String[]{"procedure", "version", "branch_need", "code is not null", "active", "in_scope", "in_system"}, 
                                                 new Object [] {procName, procVersion, true, true, true, true}, 
                                                 new String[]{"code", "name", "roles", "widget_action_priv_name", "sop_name", "sop_section"});
@@ -190,7 +189,7 @@ return "";
 
             // Create the root node for the procedure being deployed.    
             if(contProcUserReqBranches>0){
-                Object[][] procNavInfo = rdbm.getRecordFieldsByFilter(rdbm, schemaRequirements, "procedure", 
+                Object[][] procNavInfo = Rdbms.getRecordFieldsByFilter(schemaRequirements, "procedure", 
                                                     new String[]{"name", "version"}, 
                                                     new Object [] {procName, procVersion}, 
                                                     new String[]{"navigation_node_name", "navigation_icon_name", "name", "version"});                    
@@ -228,7 +227,7 @@ return "";
                 logEntry = param.addTagInPropertiesFile("userview", navCode, navTagValue);
                 requirementsLogEntry(navCode, logEntry,5);                    
 
-                deploymentNavigatorNavTabId (rdbm, procName, procVersion, newBranch, procCode);    
+                deploymentNavigatorNavTabId (procName, procVersion, newBranch, procCode);    
             }                     
         }catch(SQLException er){ermessage = er.getErrorCode()+er.getLocalizedMessage()+er.getCause();
         }catch(Exception ex)   {Logger.getLogger(Requirement.class.getName()).log(Level.SEVERE, null, ex);}
@@ -237,14 +236,13 @@ return "";
 
     /**
      *
-     * @param rdbm
      * @param procName
      * @param procVersion
      * @param navId
      * @param procCode
      */
 
-    public void _deploymentNavigatorNavTabId (Rdbms rdbm, String procName, Integer procVersion, Integer navId, String procCode){            
+    public void _deploymentNavigatorNavTabId ( String procName, Integer procVersion, Integer navId, String procCode){            
         Integer queryInsertNum=0;
         String navCode = "";
         Integer navTabId = 0;
@@ -278,7 +276,7 @@ return "";
                         + "    and catw.widget_name = prurs.widget || '-BASE' "
                         + "  order by prurs.widget ";            
 
-            ResultSet res = rdbm.prepRdQuery(query, new Object [] {procName, procVersion, true, true, true, procCode, procCode}); //Ahora no toma los hijos.
+            ResultSet res = Rdbms.prepRdQuery(query, new Object [] {procName, procVersion, true, true, true, procCode, procCode}); //Ahora no toma los hijos.
             res.last();
             Integer i;
             i = res.getRow();
@@ -325,11 +323,11 @@ return "";
                 
                 if(navTabId>0){    
                     // Build the Widget-BASE part. Begin
-                    Object[][] resComp = rdbm.getRecordFieldsByFilter(rdbm, schemaRequirements, "module_catalog_widget", 
+                    Object[][] resComp = Rdbms.getRecordFieldsByFilter(schemaRequirements, "module_catalog_widget", 
                                     new String[]{"module_id", "module_version", "module_revision", "widget_name"}, 
                                     new Object [] {catw_module_id, catw_module_version, catw_module_revision, catw_widget_nameBase}, 
                                     new String[]{"region", "xtype", "header", "footer", "preload", "tbar", "bbar", "item", "sql", "item_json", "norder", "description", "close_header"});
-                    Boolean formCreated = createNavTabComp(rdbm, navId, navTabId, procName, procVersion, procCode, catw_widget_name, catw_widget_nameBase, catw_module_id, catw_module_version, catw_module_revision, prurs_widget_fields, prurs_schema_name, prurs_table_name, sopName, sopSection );
+                    Boolean formCreated = createNavTabComp(navId, navTabId, procName, procVersion, procCode, catw_widget_name, catw_widget_nameBase, catw_module_id, catw_module_version, catw_module_revision, prurs_widget_fields, prurs_schema_name, prurs_table_name, sopName, sopSection );
                     if (prurs_widget_fields!=null){
                         String[] prurs_widget_fieldsArr = prurs_widget_fields.split(",");
                         for (String fd: prurs_widget_fieldsArr)
@@ -355,7 +353,6 @@ return "";
     /**
      *
      * @param nodename
-     * @param rdbm
      * @param privilege_id
      * @param fathernode
      * @param haschildren
@@ -367,7 +364,7 @@ return "";
      * @return
      * @throws SQLException
      */
-    public Integer createNav(String nodename, Rdbms rdbm, String privilege_id, Integer fathernode, Boolean haschildren, String procedure, Integer version, String code, String sopName, String sopSection) throws SQLException   {            
+    public Integer createNav(String nodename,  String privilege_id, Integer fathernode, Boolean haschildren, String procedure, Integer version, String code, String sopName, String sopSection) throws SQLException   {            
         StackTraceElement[] elements = Thread.currentThread().getStackTrace();
         String methodName = elements[1].getMethodName();
 
@@ -377,15 +374,15 @@ return "";
         Role rol = new Role();
 
         if (privilege_id.equalsIgnoreCase(procedure+"_null")){
-            Object[] diagnoses = rdbm.existsRecord(rdbm, schemaConfigName, "privilege", 
+            Object[] diagnoses = Rdbms.existsRecord(schemaConfigName, "privilege", 
                     new String[]{"privilege_id"}, new Object[]{procedure});
             if ( !"LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){
-                diagnoses = rol.createPrivilege(rdbm, procedure);
+                diagnoses = rol.createPrivilege(procedure);
                 try {
                     requirementsLogEntry(methodName, (String) diagnoses[6], 3);
                 } catch (IOException ex) {Logger.getLogger(Requirement.class.getName()).log(Level.SEVERE, null, ex);}                    
             }
-            diagnoses = rol.addPrivilegeToRole(rdbm, procedure, "ALL", procedure);
+            diagnoses = rol.addPrivilegeToRole(procedure, "ALL", procedure);
             try {
                 requirementsLogEntry(methodName, (String) diagnoses[6], 3);
             } catch (IOException ex) {Logger.getLogger(Requirement.class.getName()).log(Level.SEVERE, null, ex);}                    
@@ -395,7 +392,7 @@ return "";
         privilege_id = privilege_id.trim();
         privilege_id = privilege_id.replace(" ", "");
 
-        Object[] diagnoses = rdbm.insertRecordInTable(rdbm, "config", "nav", 
+        Object[] diagnoses = Rdbms.insertRecordInTable("config", "nav", 
                                     new String[]{"privilege_id", "has_children", "show_in_menu", "father_nav_id", "procedure", "proc_version", "proc_code", "sop_name", "sop_section"}, 
                                     new Object[]{privilege_id, haschildren, true, fathernode, procedure, version, code, sopName, sopSection});
         if ("LABPLANET_FALSE".equalsIgnoreCase(diagnoses[0].toString())){
@@ -408,7 +405,7 @@ return "";
             Integer pk=0;
 
             if (!haschildren){
-                rdbm.updateRecordFieldsByFilter(rdbm, "config", "nav", 
+                Rdbms.updateRecordFieldsByFilter("config", "nav", 
                         new String[]{"header", "close_header", "footer"}, 
                         new Object []{"{id:'nav-"+numr+"', xtype:'tabpanel', title:gTr('paramView','"+nodename+"'), closable:true, activeTab:0, items:[","]", "}"}, 
                         new String[]{"nav_id"}, new Object []{numr});
@@ -423,7 +420,7 @@ return "";
         return created;
     }
 
-    private Integer createNavTab(String subtabname, Rdbms rdbm, Integer navId, String glypname, String procName, Integer procVersion, String procCode, String sopName, String sopSection) throws SQLException     {
+    private Integer createNavTab(String subtabname,  Integer navId, String glypname, String procName, Integer procVersion, String procCode, String sopName, String sopSection) throws SQLException     {
         StackTraceElement[] elements = Thread.currentThread().getStackTrace();
         String methodName = elements[1].getMethodName();
         
@@ -431,7 +428,7 @@ return "";
         Integer numr = 0;
         String newEntry = "";
         
-        Object[] diagnoses = rdbm.insertRecordInTable(rdbm, "config", "nav_tab", 
+        Object[] diagnoses = Rdbms.insertRecordInTable("config", "nav_tab", 
                                     new String[]{"nav_id", "has_child", "procedure", "proc_version", "proc_code", "sop_name", "sop_section"}, 
                                     new Object[]{navId, false, procName, procVersion, procCode, sopName, sopSection});
         if ("LABPLANET_FALSE".equalsIgnoreCase(diagnoses[0].toString())){
@@ -446,7 +443,7 @@ return "";
             try {requirementsLogEntry(methodName, newEntry,3);
             } catch (IOException ex) {Logger.getLogger(Requirement.class.getName()).log(Level.SEVERE, null, ex);}
 
-            diagnoses = rdbm.updateRecordFieldsByFilter(rdbm, "config", "nav_tab", 
+            diagnoses = Rdbms.updateRecordFieldsByFilter("config", "nav_tab", 
                     new String[]{"header", "close_header", "footer"}, 
                     new Object []{"{title:gTr('paramView', '"+subtabname+"'), xtype:'container', id:'nav-"+navId+"_"+numr+"', glyph:'"+glypname+"', closable:true, activeTab:0, bodyPadding:5,fieldDefaults:{labelAlign:'left',labelWidth:120,anchor:'100%'},items:[", "]", "}"}, 
                     new String[]{"nav_tab_id"}, new Object []{numr});            
@@ -454,7 +451,7 @@ return "";
         return numr;
     }
     
-    private Boolean _createNavTabComp(Rdbms rdbm, Integer navId, Integer navTabId, String procName, Integer procVersion, String procCode, String catw_widget_name, String catw_widget_nameBase, Integer catw_module_id, Integer catw_module_version, Integer catw_module_revision, String prurs_widget_fields, String prurs_schema_name, String prurs_table_name, String sopName, String sopSection ) throws SQLException    {   
+    private Boolean _createNavTabComp( Integer navId, Integer navTabId, String procName, Integer procVersion, String procCode, String catw_widget_name, String catw_widget_nameBase, Integer catw_module_id, Integer catw_module_version, Integer catw_module_revision, String prurs_widget_fields, String prurs_schema_name, String prurs_table_name, String sopName, String sopSection ) throws SQLException    {   
         StackTraceElement[] elements = Thread.currentThread().getStackTrace();
         String methodName = elements[1].getMethodName();
 
@@ -466,7 +463,7 @@ return "";
         return false;
     }        
 /*    
-        Object[][] resComp = rdbm.getRecordFieldsByFilter(rdbm, schemaRequirements, "module_catalog_widget", 
+        Object[][] resComp = Rdbms.getRecordFieldsByFilter(schemaRequirements, "module_catalog_widget", 
                 new String[]{"module_id", "module_version", "module_revision", "widget_name"}, 
                 new Object [] {catw_module_id, catw_module_version, catw_module_revision, catw_widget_nameBase}, 
                 new String[]{"region", "xtype", "header", "footer", "preload", "tbar", "bbar", "item", "sql", "item_json", "norder", "description", "close_header"});
@@ -483,7 +480,7 @@ return "";
             String[] fieldsArr = null;
             Integer navTabCompId = 0;
 
-            Object[] diagnoses = rdbm.insertRecordInTable(rdbm, "config", "nav_tab_comp", 
+            Object[] diagnoses = Rdbms.insertRecordInTable("config", "nav_tab_comp", 
                         new String[]{"nav_id", "nav_tab_id", "region", "xtype", "sql", "header", "footer", "close_header", "procedure", "proc_version", "proc_code", "widget_name", "sop_name", "sop_section"}, 
                         new Object[]{navId, navTabId, region, xtype, sql, header, footer, closeHeader, procName, procVersion, procCode, catw_widget_nameBase, sopName, sopSection });
             if (diagnoses[3].toString().equalsIgnoreCase("FALSE")){navTabCompId=0;}
@@ -504,10 +501,10 @@ return "";
                 String fieldPrefix = procName.toLowerCase()+ "_" + procCode.toLowerCase().replace("-", "")+ "_" + catw_widget_nameBase.toLowerCase().replace("-", "");
                 LabPLANETJson labJson = new LabPLANETJson();
                 
-                if (fieldsArr==null){items = labJson.getJsonArrayFields(rdbm, tableName, null, fieldPrefix);}
-                else{items = labJson.getJsonArrayFields(rdbm, tableName, fieldsArr, fieldPrefix);}                   
+                if (fieldsArr==null){items = labJson.getJsonArrayFields(tableName, null, fieldPrefix);}
+                else{items = labJson.getJsonArrayFields(tableName, fieldsArr, fieldPrefix);}                   
 
-                rdbm.updateRecordFieldsByFilter(rdbm, "config", "nav_tab_comp", 
+                Rdbms.updateRecordFieldsByFilter("config", "nav_tab_comp", 
                         new String[]{"item", "sql"}, new Object[]{items, tableName}, 
                         new String[]{"nav_tab_comp_id"}, new Object[]{navTabCompId});
 
@@ -528,7 +525,7 @@ return "";
                     + "     and catw.tbar is not null ";
                 catw_widget_name = catw_widget_name.replace("-BASE", "");
 
-                ResultSet resButAdhoc = rdbm.prepRdQuery(query, new Object [] {procName, procVersion, true, true, true, catw_widget_name, procCode, catw_module_id, catw_module_version, catw_module_revision, catw_widget_nameBase});  
+                ResultSet resButAdhoc = Rdbms.prepRdQuery(query, new Object [] {procName, procVersion, true, true, true, catw_widget_name, procCode, catw_module_id, catw_module_version, catw_module_revision, catw_widget_nameBase});  
 
                 resButAdhoc.last();            
 
@@ -555,7 +552,7 @@ return "";
                 String upn = "update config.nav_tab_comp set bbar = ?" //, bbar = ?"
                            + " where nav_tab_comp_id = ?";
 
-               // pk = rdbm.prepUpQuery(upn, new Object []{bbar, navTabCompId});
+               // pk = Rdbms.prepUpQuery(upn, new Object []{bbar, navTabCompId});
 
                 if (pk > 0){
                 created = true;    
@@ -593,17 +590,16 @@ return "";
 
     /**
      *
-     * @param rdbm
      * @param procName
      * @param procVersion
      * @throws SQLException
      */
-    public void addProcRolesAndPrivileges(Rdbms rdbm, String procName, Integer procVersion) throws SQLException{
+    public void addProcRolesAndPrivileges( String procName, Integer procVersion) throws SQLException{
     
         String methodName = "addProcRolesAndPrivileges";
         Role rol = new Role();
 
-        Object[][] procUserReqInfo = rdbm.getRecordFieldsByFilter(rdbm, "requirements", "procedure_user_requirements", 
+        Object[][] procUserReqInfo = Rdbms.getRecordFieldsByFilter("requirements", "procedure_user_requirements", 
                 new String[]{"procedure", "version", "active", "in_scope", "in_system"}, new Object [] {procName, procVersion, true, true, true}, 
                 new String[]{"code, name", "roles", "widget_action_priv_name", "order_number", "id"},
                 new String[]{"order_number", "id"});
@@ -633,10 +629,10 @@ return "";
                     r = procName + "_" + r;
                     r = r.replace(" ", "").replace("\n", "");
 
-                    Object[] diagnoses = rdbm.existsRecord(rdbm, schemaConfigName, "role", 
+                    Object[] diagnoses = Rdbms.existsRecord(schemaConfigName, "role", 
                             new String[]{"role_id"}, new Object[]{r});
                     if ("LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){                  
-                        diagnoses = rol.createRole(rdbm, r);
+                        diagnoses = rol.createRole(r);
                         try {
                             requirementsLogEntry(methodName, diagnoses[6].toString(), 3);
                         } catch (IOException ex) {Logger.getLogger(Requirement.class.getName()).log(Level.SEVERE, null, ex);}                    
@@ -649,10 +645,10 @@ return "";
                 for (String pr: priv){
                     pr = procName + "_" + pr;
                     pr = pr.replace(" ", "").replace("\n", "");
-                    Object[] diagnoses = rdbm.existsRecord(rdbm, "config", "privilege", 
+                    Object[] diagnoses = Rdbms.existsRecord("config", "privilege", 
                             new String[]{"privilege_id"}, new Object[]{pr});
                     if ("LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){
-                        diagnoses = rol.createPrivilege(rdbm, pr);
+                        diagnoses = rol.createPrivilege(pr);
                         try {
                             requirementsLogEntry(methodName, diagnoses[6].toString(), 3);
                         } catch (IOException ex) {Logger.getLogger(Requirement.class.getName()).log(Level.SEVERE, null, ex);}                    
@@ -668,11 +664,11 @@ return "";
                             if (r.toUpperCase().contains("ALL")){
                                 //r = r;
                             }
-                            diagnoses = rdbm.existsRecord(rdbm, "config", "role_privilege", 
+                            diagnoses = Rdbms.existsRecord("config", "role_privilege", 
                                     new String[]{"privilege_id"}, new Object[]{pr + "," + r} );
                             if ("LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){                      
 
-                                diagnoses = rol.addPrivilegeToRole(rdbm, pr, r, procName);
+                                diagnoses = rol.addPrivilegeToRole(pr, r, procName);
                                 try {
                                     requirementsLogEntry(methodName, diagnoses[6].toString(), 3);
                                 } catch (IOException ex) {Logger.getLogger(Requirement.class.getName()).log(Level.SEVERE, null, ex);}                    
@@ -685,14 +681,14 @@ return "";
         }
     }     
 
-    private void addSop(Rdbms rdbm, String procName, Integer procVersion, String schemaName) throws SQLException{
+    private void addSop( String procName, Integer procVersion, String schemaName) throws SQLException{
 
         String methodName = "addSop";
         Sop sop = new Sop();
         
         String sopList = "";
 
-        Object[][] procUseReqInfo = rdbm.getRecordFieldsByFilter(rdbm, "requirements", "procedure_user_requirements", 
+        Object[][] procUseReqInfo = Rdbms.getRecordFieldsByFilter("requirements", "procedure_user_requirements", 
                                             new String[]{"procedure", "version", "code is not null", "active", "in_scope", "in_system"}, 
                                             new Object[]{procName, procVersion, "", true, true, true}, 
                                             new String[]{"code", "name", "sop_name", "sop_section", "widget_action_priv_name", "schema_name"}, 
@@ -721,19 +717,19 @@ return "";
                 String[] sopNames = sopName.split(",");
                 for (String sp: sopNames){
                     if (!sopList.contains(sp)){
-                        Object[] diagnoses = rdbm.existsRecord(rdbm, schemaName, "sop_meta_data", 
+                        Object[] diagnoses = Rdbms.existsRecord(schemaName, "sop_meta_data", 
                                 new String[]{"sop_name"}, new Object[]{sp});
                         if ("LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){
-                            diagnoses = sop.createSop(rdbm, schemaName, sp);
+                            diagnoses = sop.createSop(schemaName, sp);
                             sopList = sopList + sp + "|";                             
                             }                        
                     }
                     if (sopSectionName!=null){
                        if (!sopList.contains(sopSectionName)){
-                            Object[] diagnoses = sop.createSop(rdbm, schemaName, sp+"-"+sopSectionName);
+                            Object[] diagnoses = sop.createSop(schemaName, sp+"-"+sopSectionName);
                              sopList = sopList + sp+"-"+sopSectionName + "|";                            
-                             diagnoses = sop.updateSop(rdbm, schemaName, sp, "has_child", "true", "boolean");
-                             diagnoses = sop.updateSop(rdbm, schemaName, sopSectionName, "parent_sop", sp, "text");
+                             diagnoses = sop.updateSop(schemaName, sp, "has_child", "true", "boolean");
+                             diagnoses = sop.updateSop(schemaName, sopSectionName, "parent_sop", sp, "text");
                              sopList = sopList + sp+"-"+sopSectionName + "|";                         
                         }                        
                     }    
@@ -742,13 +738,13 @@ return "";
         }
     }         
 
-    private void addUserSop(Rdbms rdbm, String procName, Integer procVersion, String schemaName) throws SQLException{
+    private void addUserSop( String procName, Integer procVersion, String schemaName) throws SQLException{
 
         String methodName = "addUserSop";
         String newEntry = "";
         String sopList = "";
         
-        Object[][] procUserReqInfo = rdbm.getRecordFieldsByFilter(rdbm, schemaName, tableName, 
+        Object[][] procUserReqInfo = Rdbms.getRecordFieldsByFilter(schemaName, tableName, 
                         new String[]{"procedure", "version", "code is not null", "active", "in_scope", "in_system"}, 
                         new Object[]{procName, procVersion, "", true, true, true}, 
                         new String[]{"code", "name", "sop_name", "sop_section", "roles", "schema_name schema_name"}, 
@@ -777,13 +773,13 @@ return "";
                 String[] sopNames = sopName.split(",");
                 for (String sp: sopNames){
                     if (sopSectionName!=null){sp = sp+"-"+sopSectionName;}  
-                    Object[] diagnoses = rdbm.existsRecord(rdbm, schemaName+"-config", "sop_meta_data", 
+                    Object[] diagnoses = Rdbms.existsRecord(schemaName+"-config", "sop_meta_data", 
                             new String[]{"sop_name"}, new Object[]{sp});
                     if ("LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){                  
                         if (role!=null){
                             String[] roles = role.split(",");
                             for (String r: roles){         
-                                Object[][] userProfileInfo = rdbm.getRecordFieldsByFilter(rdbm, schemaName, tableName, 
+                                Object[][] userProfileInfo = Rdbms.getRecordFieldsByFilter(schemaName, tableName, 
                                                 new String[]{"role_id"}, 
                                                 new Object[]{procName+"_"+r}, 
                                                 new String[]{"user_info_id", "user_info_id", "user_info_id", "user_info_id"});
@@ -798,7 +794,7 @@ return "";
                                     UserSop usSop=new UserSop();
                                     String userInfoId = (String) userProfileInfo[icontUser][0];
 
-                                    Object[] newSopUser = usSop.addSopToUserByName(rdbm, schemaName+"-data", userInfoId, sopName);
+                                    Object[] newSopUser = usSop.addSopToUserByName(schemaName+"-data", userInfoId, sopName);
                                     
                                     newEntry = icontUser+"/"+contUser+"  "+newSopUser[newSopUser.length-1].toString();
                                     try {requirementsLogEntry(methodName, newEntry,4);
@@ -815,16 +811,16 @@ return "";
         }
     }         
 
-    private void _createDataBaseSchemas(Rdbms rdbm, String schemaNamePrefix){
+    private void _createDataBaseSchemas( String schemaNamePrefix){
     }
 /*
         String methodName = "createDataBaseSchemas";
         String newEntry = "";
         String[] schemaNames = new String[0];
         
-        schemaNames = labArr.addValueToArray1D(schemaNames, "config");
-        schemaNames = labArr.addValueToArray1D(schemaNames, "data");        
-        schemaNames = labArr.addValueToArray1D(schemaNames, "data-audit"); 
+        schemaNames = LabPLANETArray.addValueToArray1D(schemaNames, "config");
+        schemaNames = LabPLANETArray.addValueToArray1D(schemaNames, "data");        
+        schemaNames = LabPLANETArray.addValueToArray1D(schemaNames, "data-audit"); 
 
         for (String fn:schemaNames){
             String configSchemaName = schemaNamePrefix+"-"+fn;
@@ -837,7 +833,7 @@ return "";
             configSchemaName = labPlat.buildSchemaName(configSchemaName, fn);
             String configSchemaScript = "CREATE SCHEMA "+configSchemaName+"  AUTHORIZATION postgres;";     
             try {
-                rdbm.prepUpQuery(configSchemaScript, null);
+                Rdbms.prepUpQuery(configSchemaScript, null);
             } catch (SQLException ex) {
                 Logger.getLogger(RequirementDeployment.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -845,7 +841,7 @@ return "";
 
     }
 */
-    private void _createDataBaseSchemaTable(Rdbms rdbm, String schemaNamePrefix, String procedure, Integer procVersion){
+    private void _createDataBaseSchemaTable( String schemaNamePrefix, String procedure, Integer procVersion){
     }
 /*    
         String methodName = "createDataBaseSchemaTable";
@@ -853,7 +849,7 @@ return "";
         tableName = "procedure_db_structure_table";   
         String fieldTableName = "procedure_db_structure_table_fields";   
         
-        Object[][] procTableStructure = rdbm.getRecordFieldsByFilter(rdbm, "requirements", tableName, 
+        Object[][] procTableStructure = Rdbms.getRecordFieldsByFilter("requirements", tableName, 
                 new String[]{"procedure", "version", "active"}, new Object[]{procedure, procVersion, true}, 
                 new String[]{"schema_name", "table_name", "script", "mandatory"});
         for (Integer iTableCont=0; iTableCont<procTableStructure.length;iTableCont++){
@@ -872,7 +868,7 @@ return "";
             currTableScript = currTableScript.replace("<tableName>", currTableName);
             
             if (currTableScript.toUpperCase().contains("<CUSTOMFIELDS>")){
-                Object[][] procTableFieldStructure = rdbm.getRecordFieldsByFilter(rdbm, "requirements", fieldTableName, 
+                Object[][] procTableFieldStructure = Rdbms.getRecordFieldsByFilter("requirements", fieldTableName, 
                         new String[]{"procedure", "version", "active", "schema_name", "table_name"}, new Object[]{procedure, procVersion, true, currSchemaName, currTableName}, 
                         new String[]{"field_name", "mandatory", "field_type", "field_type", "field_size", "nullable"});
                 if (procTableFieldStructure[0][3].toString().equalsIgnoreCase("FALSE")){
@@ -892,7 +888,7 @@ return "";
                 }        
             }            
             try {
-                rdbm.prepUpQuery(currTableScript, null);
+                Rdbms.prepUpQuery(currTableScript, null);
                 try {
                     requirementsLogEntry(methodName, "Created table "+currTableName+" in schema "+currSchemaName+".  Script: "+currTableScript,2);
                 } catch (IOException ex2) {Logger.getLogger(RequirementDeployment.class.getName()).log(Level.SEVERE, null, ex2);}
@@ -915,12 +911,11 @@ return "";
 
     /**
      *
-     * @param rdbm
      * @param procedure
      * @param pVersion
      */
 
-    public void _getConfigObject(Rdbms rdbm, String procedure, Integer pVersion){
+    public void _getConfigObject( String procedure, Integer pVersion){
     }
 /*
         String methodName = "RequirementConfigObjects-ProcessRequest";
@@ -928,7 +923,7 @@ return "";
         Integer id =0;           
         Requirement req = new Requirement();
 
-        Object[][] procConfigObjInfo = rdbm.getRecordFieldsByFilter(rdbm, schemaDataName, tableName, 
+        Object[][] procConfigObjInfo = Rdbms.getRecordFieldsByFilter(schemaDataName, tableName, 
                         new String[]{"procedure", "version", "active", "ready"}, 
                         new Object[]{procedure, pVersion, true, true}, 
                         new String[]{"schema_name", "table_name", "object_name", "field_name_1", "field_value_1", "field_name_2", "field_value_2"}, 
@@ -955,11 +950,11 @@ return "";
 
             String foreignTableName = "user_info";
 
-            Object[] diagnoses = rdbm.existsRecord(rdbm, "config", foreignTableName, 
+            Object[] diagnoses = Rdbms.existsRecord("config", foreignTableName, 
                     new String[]{fieldName1}, new Object[]{fieldValue1});
             if ("LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){
                 schemaName = labPlat.buildSchemaName(schemaName, schemaName);
-                diagnoses = rdbm.insertRecordInTable(rdbm, schemaName, foreignTableName, new String[]{"user_info_id"}, new Object[]{fieldValue1});
+                diagnoses = Rdbms.insertRecordInTable(schemaName, foreignTableName, new String[]{"user_info_id"}, new Object[]{fieldValue1});
                 id = Integer.parseInt(diagnoses[6].toString());
             }
             else{newEntry = " The "+foreignTableName+" " + fieldValue1 + " already exist";}   
@@ -967,11 +962,11 @@ return "";
             } catch (IOException ex1) {Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex1);}
 
             foreignTableName = "role";
-            diagnoses = rdbm.existsRecord(rdbm, "config", foreignTableName, 
+            diagnoses = Rdbms.existsRecord("config", foreignTableName, 
                     new String[]{fieldName2}, new Object[]{fieldValue2});
             if ("LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){         
                 schemaName = labPlat.buildSchemaName(schemaName, schemaName);
-                diagnoses = rdbm.insertRecordInTable(rdbm, schemaName, foreignTableName, new String[]{"user_info_id"}, new Object[]{fieldValue1});
+                diagnoses = Rdbms.insertRecordInTable(schemaName, foreignTableName, new String[]{"user_info_id"}, new Object[]{fieldValue1});
                 id = Integer.parseInt(diagnoses[6].toString());
             }
             else{newEntry = " The "+foreignTableName+" " + fieldValue2 + " already exist";}   
@@ -980,13 +975,13 @@ return "";
 
             //user role    
             Integer userRoleCount = 0;
-            diagnoses = rdbm.existsRecord(rdbm, "config", foreignTableName, new String[]{fieldName1, fieldName2}, new Object[]{fieldValue1, fieldValue2});
+            diagnoses = Rdbms.existsRecord("config", foreignTableName, new String[]{fieldName1, fieldName2}, new Object[]{fieldValue1, fieldValue2});
             if ("LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){                                
                 schemaName = "\"" + schemaName + "\"";
                 if ( userRoleCount==0){
                     try{                
                         String query="select count(role_id) as cont from config.user_profile";                                                
-                        ResultSet res = rdbm.prepRdQuery(query, new Object [] {});
+                        ResultSet res = Rdbms.prepRdQuery(query, new Object [] {});
                         res.first();
                         userRoleCount = res.getInt("cont");
                     } catch (SQLException ex) {
@@ -995,7 +990,7 @@ return "";
                 }
                 userRoleCount++;
 
-                diagnoses = rdbm.insertRecordInTable(rdbm, schemaName, tableName, 
+                diagnoses = Rdbms.insertRecordInTable(schemaName, tableName, 
                         new String[]{fieldName1, fieldName2, "user_profile_id"}, new Object[]{fieldValue1, fieldValue2, userRoleCount});
                 id = Integer.parseInt(diagnoses[6].toString());
             }    

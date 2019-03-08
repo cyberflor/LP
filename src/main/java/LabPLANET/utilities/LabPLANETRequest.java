@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class LabPLANETRequest {
 
-    public Object[] areMandatoryParamsInApiRequest(HttpServletRequest request, String[] paramNames){        
+    public static Object[] areMandatoryParamsInApiRequest(HttpServletRequest request, String[] paramNames){        
         LabPLANETArray labArr = new LabPLANETArray();
         Object [] diagnoses = null;        
         String paramsNotPresent = "";
@@ -36,7 +36,7 @@ public class LabPLANETRequest {
         }
     }
     
-    public void sendResponseMissingMandatories(){
+    public static void sendResponseMissingMandatories(){
         
     }
 }

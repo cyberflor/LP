@@ -8,7 +8,6 @@ package testing.functionalConfig;
 import databases.Rdbms;
 import functionalJava.materialSpec.ConfigSpecStructure;
 import functionalJava.unitsOfMeasurement.UnitsOfMeasurement;
-import LabPLANET.utilities.LabPLANETArray;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
@@ -36,16 +35,14 @@ public class UnitsOfMeasurementConversion extends HttpServlet {
     try (PrintWriter out = response.getWriter()) {
         response.setContentType("text/html;charset=UTF-8");
         ConfigSpecStructure configSpec = new ConfigSpecStructure();
-        Rdbms rdbm = new Rdbms();
+
         
         String userName=null;
 
         boolean isConnected = false;
 
-        isConnected = rdbm.startRdbms("labplanet", "avecesllegaelmomento");           
-        if (!isConnected){out.println("Connection to the database not established");return;}
+        if (Rdbms.getRdbms().startRdbms("labplanet", "avecesllegaelmomento")==null){out.println("Connection to the database not established");return;}
 
-        LabPLANETArray labArr = new LabPLANETArray();
         Integer numTesting = 20;
         Integer inumTesting = 0;
         Object[][] configSpecTestingArray = new Object[numTesting][6];
@@ -175,7 +172,7 @@ public class UnitsOfMeasurementConversion extends HttpServlet {
 
             UnitsOfMeasurement UOM = new UnitsOfMeasurement();
             
-            Object[] convDiagnoses = UOM.convertValue(rdbm, schemaPrefix, currentValue, currentUOM, newUOM);
+            Object[] convDiagnoses = UOM.convertValue(schemaPrefix, currentValue, currentUOM, newUOM);
             if ("LABPLANET_FALSE".equalsIgnoreCase(convDiagnoses[0].toString())) {
                  out.println("<td>"+convDiagnoses[0].toString()+": "+convDiagnoses[3].toString()+"</td>");                
             }else{
@@ -189,7 +186,7 @@ public class UnitsOfMeasurementConversion extends HttpServlet {
         }
 
         out.println("</table>");        
-        rdbm.closeRdbms();       
+        Rdbms.closeRdbms();       
 
     }    
 }

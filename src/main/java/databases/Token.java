@@ -13,8 +13,12 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Header;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.SignatureException;
+import io.jsonwebtoken.UnsupportedJwtException;
 import java.util.HashMap;
 import java.util.Map;
 import javax.xml.bind.DatatypeConverter;
@@ -39,7 +43,7 @@ public class Token {
             System.out.println("Expiration: " + claims.getExpiration());
             
             return true;
-        }catch (Exception e){
+        }catch (ExpiredJwtException | MalformedJwtException | SignatureException | UnsupportedJwtException | IllegalArgumentException e){
             return false;
         }
     }
@@ -49,20 +53,19 @@ public class Token {
      * @return
      */
     public String[] tokenParamsList(){
-        LabPLANETArray labArr = new LabPLANETArray();
         String[] diagnoses = new String[0];        
-        diagnoses = labArr.addValueToArray1D(diagnoses, "userDB");
-        diagnoses = labArr.addValueToArray1D(diagnoses, "userDBPassword");
-        diagnoses = labArr.addValueToArray1D(diagnoses, "internalUserID");
-        diagnoses = labArr.addValueToArray1D(diagnoses, "userRole");
-        diagnoses = labArr.addValueToArray1D(diagnoses, "appSessionId");
-        diagnoses = labArr.addValueToArray1D(diagnoses, "appSessionStartedDate");
-        diagnoses = labArr.addValueToArray1D(diagnoses, "eSign");
+        diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, "userDB");
+        diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, "userDBPassword");
+        diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, "internalUserID");
+        diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, "userRole");
+        diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, "appSessionId");
+        diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, "appSessionStartedDate");
+        diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, "eSign");
         return diagnoses;
     }  
     
     private Object[] isValidToken(String token){
-        LabPLANETArray labArr = new LabPLANETArray();
+        LabPLANETArray LabPLANETArray = new LabPLANETArray();
         Object[] diagnoses = new Object[0];
         Header header = Jwts.header();
         try {
@@ -76,12 +79,12 @@ public class Token {
             
             // Check that the fields in the header are present, not just verify that the token construction is ok.
             
-            diagnoses = labArr.addValueToArray1D(diagnoses, true);
-            diagnoses = labArr.addValueToArray1D(diagnoses, jwt);
+            diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, true);
+            diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, jwt);
             return diagnoses;
             
         } catch (JWTVerificationException exception){
-            diagnoses = labArr.addValueToArray1D(diagnoses, false);
+            diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, false);
             return diagnoses;
         }       
     }
@@ -118,12 +121,12 @@ public class Token {
      * @return
      */
     public String[] validateToken(String token, String[] paramName){
-        LabPLANETArray labArr = new LabPLANETArray();
+        LabPLANETArray LabPLANETArray = new LabPLANETArray();
         String[] infoFromToken = new String[0];
         
         for (String pn: paramName){
             String paramValue = validateToken(token, pn);
-            infoFromToken = labArr.addValueToArray1D(infoFromToken, paramValue);
+            infoFromToken = LabPLANETArray.addValueToArray1D(infoFromToken, paramValue);
         }
         return infoFromToken;            
     }    
@@ -134,11 +137,14 @@ public class Token {
      * @param userDBPassword
      * @param userId
      * @param userRole
+     * @param appSessionId
+     * @param appSessionStartedDate
+     * @param eSign
      * @return
      */
     public String  createToken(String userDBId, String userDBPassword, String userId, String userRole, String appSessionId, String appSessionStartedDate, String eSign){        
         Algorithm algorithm = Algorithm.HMAC256(KEY);
-        Map <String, Object> myParams = new HashMap<String, Object>();
+        Map <String, Object> myParams = new HashMap<>();
         myParams.put("userDB", userDBId);                   myParams.put("userDBPassword", userDBPassword);
         myParams.put("internalUserID", userId);             myParams.put("userRole", userRole);
         myParams.put("appSessionId", appSessionId);  myParams.put("appSessionStartedDate", appSessionStartedDate);

@@ -40,25 +40,18 @@ public class UnitsOfMeasurement_familyTable extends HttpServlet {
     try (PrintWriter out = response.getWriter()) {
         response.setContentType("text/html;charset=UTF-8");
         ConfigSpecStructure configSpec = new ConfigSpecStructure();
-        Rdbms rdbm = new Rdbms();
         String csvFileName = "uom_familyTable.txt"; String csvFileSeparator=";";
         String csvPathName = "\\\\FRANCLOUD\\fran\\LabPlanet\\testingRepository\\"+csvFileName; 
         
         String userName=null;
 
-        boolean isConnected = false;
+        if (Rdbms.getRdbms().startRdbms("labplanet", "avecesllegaelmomento")==null){out.println("Connection to the database not established");return;}
 
-        isConnected = rdbm.startRdbms("labplanet", "LabPlanet");           
-        if (!isConnected){out.println("Connection to the database not established");return;}
-
-
-
-        LabPLANETArray labArr = new LabPLANETArray();
         Integer numTesting = 20;
         Integer inumTesting = 0;
         Object[][] configSpecTestingArray = new Object[numTesting][6]; 
                 
-        configSpecTestingArray = labArr.convertCSVinArray(csvPathName, csvFileSeparator);
+        configSpecTestingArray = LabPLANETArray.convertCSVinArray(csvPathName, csvFileSeparator);
 
         /* TODO output your page here. You may use following sample code. */
         String fileContent = "";
@@ -102,7 +95,7 @@ public class UnitsOfMeasurement_familyTable extends HttpServlet {
 
                 UnitsOfMeasurement UOM = new UnitsOfMeasurement();
 
-                Object[][] tableGet = UOM.getAllUnitsPerFamily(rdbm, schemaPrefix, familyName, fieldsToRetrieve);
+                Object[][] tableGet = UOM.getAllUnitsPerFamily(schemaPrefix, familyName, fieldsToRetrieve);
 
                 fileContent = fileContent + "<td>"+i+"</td><td>"+schemaPrefix+"</td><td>"+familyName+"</td><td>"+Arrays.toString(fieldsToRetrieve)+"</td><td><b>"+tableGet.length+"</b></td>";
                 if ("LABPLANET_FALSE".equalsIgnoreCase(tableGet[0][0].toString())) {
@@ -145,7 +138,7 @@ public class UnitsOfMeasurement_familyTable extends HttpServlet {
         fileWriter.close();        
         
         
-        rdbm.closeRdbms();       
+        Rdbms.closeRdbms();       
     }            
 }
 

@@ -33,7 +33,7 @@ public class treantTimeLine extends HttpServlet {
      */
 
     @SuppressWarnings("empty-statement")
-    private String GetSampleAudit(Rdbms rdbm, String schemaName, String tableName, Integer sn){
+    private String GetSampleAudit(String schemaName, String tableName, Integer sn){
         String myJsonInString = "";
         
         LabPLANETArray labArr = new LabPLANETArray();
@@ -57,7 +57,7 @@ public class treantTimeLine extends HttpServlet {
         orderBy = labArr.addValueToArray1D(orderBy, "transaction_id");  
         orderBy = labArr.addValueToArray1D(orderBy, "audit_id");        
         
-        Object[][] smpAuditRcd = rdbm.getRecordFieldsByFilter(rdbm, schemaName, tableName, whereFieldNames, whereFieldValues, fieldsToRetrieve, orderBy);
+        Object[][] smpAuditRcd = Rdbms.getRecordFieldsByFilter(schemaName, tableName, whereFieldNames, whereFieldValues, fieldsToRetrieve, orderBy);
         
         myJsonInString = myJsonInString +" text: { name: \"Parent node\" },"
 			+"children: ["; 
@@ -124,10 +124,11 @@ public class treantTimeLine extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
+              
             
-            Rdbms rdbm = new Rdbms();            
-            boolean isConnected = false;
-            isConnected = rdbm.startRdbms("labplanet", "LabPlanet");
+            if (Rdbms.getRdbms().startRdbms("labplanet", "LabPlanet")==null){
+                return;
+            }
             
             String schemaName = "\"oil-pl1-data-audit\"";
             String tableName = "sample";
@@ -137,7 +138,7 @@ public class treantTimeLine extends HttpServlet {
             
             Scanner scanIn = new Scanner(new BufferedReader(new FileReader(csvPathName)));
 
-            String myJsonInString = GetSampleAudit(rdbm, schemaName, tableName, 12);
+            String myJsonInString = GetSampleAudit(schemaName, tableName, 12);
 
             String fileContent = "";
             while (scanIn.hasNextLine()){
@@ -146,7 +147,7 @@ public class treantTimeLine extends HttpServlet {
             }
             out.println(fileContent);
             
-            rdbm.closeRdbms();
+            Rdbms.closeRdbms();
 
         }     
     }

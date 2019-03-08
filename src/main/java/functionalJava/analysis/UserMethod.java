@@ -5,9 +5,9 @@
  */
 package functionalJava.analysis;
 
-import databases.Rdbms;
 import LabPLANET.utilities.LabPLANETArray;
 import LabPLANET.utilities.LabPLANETPlatform;
+import databases.Rdbms;
 import functionalJava.parameter.Parameter;
 
 /**
@@ -17,7 +17,7 @@ import functionalJava.parameter.Parameter;
 public class UserMethod {
 
     String classVersion = "0.1";
-    LabPLANETArray labArr = new LabPLANETArray();
+    
     LabPLANETPlatform labPlat = new LabPLANETPlatform();
     String[] javaDocFields = new String[0];
     Object[] javaDocValues = new Object[0];
@@ -36,7 +36,6 @@ public class UserMethod {
  *  userMethodCertificate_notAssigned, userMethodCertificate_inactive, userMethodCertificate_certified.
  * Parameter Bundle: 
  *      config-userMethodCertificate_notAssigned, userMethodCertificate_inactive, userMethodCertificate_certified
- * @param rdbm Rdbms - Database Communication channel
  * @param schemaPrefix String - Procedure name
  * @param analysis String - Analysis name
  * @param methodName String - Method Name
@@ -44,13 +43,13 @@ public class UserMethod {
  * @param userName String User name
  * @return String - The certification level
  */    
-    public String userMethodCertificationLevel(Rdbms rdbm, String schemaPrefix, String analysis, String methodName, Integer methodVersion, String userName){
+    public String userMethodCertificationLevel( String schemaPrefix, String analysis, String methodName, Integer methodVersion, String userName){
 
         String diagnostic = "";
         String tableName = "user_method";
         
-        schemaDataName = labPlat.buildSchemaName(schemaPrefix, schemaDataName);  
-        schemaConfigName = labPlat.buildSchemaName(schemaPrefix, schemaConfigName);   
+        schemaDataName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaDataName);  
+        schemaConfigName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaConfigName);   
         
         String userMethodNotAssigned = Parameter.getParameterBundle(schemaConfigName, "userMethodCertificate_notAssigned");
         String userMethodInactive = Parameter.getParameterBundle(schemaConfigName, "userMethodCertificate_inactive");
@@ -60,21 +59,21 @@ public class UserMethod {
         Object[] whereFieldValue = new Object[0];
         String[] getFieldName = new String[0];
         
-        whereFieldName = labArr.addValueToArray1D(whereFieldName, "user_id");
-        whereFieldValue = labArr.addValueToArray1D(whereFieldValue, userName);
-        whereFieldName = labArr.addValueToArray1D(whereFieldName, "analysis");
-        whereFieldValue = labArr.addValueToArray1D(whereFieldValue, analysis);
-        whereFieldName = labArr.addValueToArray1D(whereFieldName, "method_name");
-        whereFieldValue = labArr.addValueToArray1D(whereFieldValue, methodName);
-        whereFieldName = labArr.addValueToArray1D(whereFieldName, "method_version");
-        whereFieldValue = labArr.addValueToArray1D(whereFieldValue, methodVersion);
+        whereFieldName = LabPLANETArray.addValueToArray1D(whereFieldName, "user_id");
+        whereFieldValue = LabPLANETArray.addValueToArray1D(whereFieldValue, userName);
+        whereFieldName = LabPLANETArray.addValueToArray1D(whereFieldName, "analysis");
+        whereFieldValue = LabPLANETArray.addValueToArray1D(whereFieldValue, analysis);
+        whereFieldName = LabPLANETArray.addValueToArray1D(whereFieldName, "method_name");
+        whereFieldValue = LabPLANETArray.addValueToArray1D(whereFieldValue, methodName);
+        whereFieldName = LabPLANETArray.addValueToArray1D(whereFieldName, "method_version");
+        whereFieldValue = LabPLANETArray.addValueToArray1D(whereFieldValue, methodVersion);
         
-        getFieldName = labArr.addValueToArray1D(getFieldName, "active");
-        getFieldName = labArr.addValueToArray1D(getFieldName, "train_interval");
-        getFieldName = labArr.addValueToArray1D(getFieldName, "last_training_on");
-        getFieldName = labArr.addValueToArray1D(getFieldName, "last_analysis_on");
+        getFieldName = LabPLANETArray.addValueToArray1D(getFieldName, "active");
+        getFieldName = LabPLANETArray.addValueToArray1D(getFieldName, "train_interval");
+        getFieldName = LabPLANETArray.addValueToArray1D(getFieldName, "last_training_on");
+        getFieldName = LabPLANETArray.addValueToArray1D(getFieldName, "last_analysis_on");
         
-        Object[][] userMethodData = rdbm.getRecordFieldsByFilter(rdbm, schemaDataName, tableName, whereFieldName, whereFieldValue, getFieldName);
+        Object[][] userMethodData = Rdbms.getRecordFieldsByFilter(schemaDataName, tableName, whereFieldName, whereFieldValue, getFieldName);
         if ("LABPLANET_FALSE".equals(userMethodData[0][0].toString())){return userMethodNotAssigned;}    
         
         Boolean userMethodActive = (Boolean) userMethodData[0][0];

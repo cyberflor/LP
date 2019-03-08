@@ -36,16 +36,11 @@ public class DbQueries extends HttpServlet {
     try (PrintWriter out = response.getWriter()) {
         response.setContentType("text/html;charset=UTF-8");
         ConfigSpecStructure configSpec = new ConfigSpecStructure();
-        Rdbms rdbm = new Rdbms();
         
         String userName=null;
 
-        boolean isConnected = false;
-        
-        isConnected = rdbm.startRdbms("labplanet", "LabPlanet");           
-        if (!isConnected){out.println("Connection to the database not established");return;}
+        if (Rdbms.getRdbms().startRdbms("labplanet", "avecesllegaelmomento")==null){out.println("Connection to the database not established");return;}
 
-        LabPLANETArray labArr = new LabPLANETArray();
         Integer numTesting = 20;
         Integer inumTesting = 0;
         Object[][] configSpecTestingArray = new Object[numTesting][6];
@@ -56,10 +51,10 @@ public class DbQueries extends HttpServlet {
             String[] fieldToRetrieve= new String[0];
             String schemaPrefix="config";
             String tableName="analysis_method";
-            fieldToRetrieve = labArr.addValueToArray1D(fieldToRetrieve, "analysis");
-            fieldToRetrieve = labArr.addValueToArray1D(fieldToRetrieve, "analysis");
-            fieldToRetrieve = labArr.addValueToArray1D(fieldToRetrieve, "analysis");
-            fieldToRetrieve = labArr.addValueToArray1D(fieldToRetrieve, "analysis");
+            fieldToRetrieve = LabPLANETArray.addValueToArray1D(fieldToRetrieve, "analysis");
+            fieldToRetrieve = LabPLANETArray.addValueToArray1D(fieldToRetrieve, "analysis");
+            fieldToRetrieve = LabPLANETArray.addValueToArray1D(fieldToRetrieve, "analysis");
+            fieldToRetrieve = LabPLANETArray.addValueToArray1D(fieldToRetrieve, "analysis");
             configSpecTestingArray[inumTesting][0]=schemaPrefix;
             configSpecTestingArray[inumTesting][1]=tableName;
             configSpecTestingArray[inumTesting][2]=userName;
@@ -74,12 +69,12 @@ public class DbQueries extends HttpServlet {
             String[] fieldToRetrieve= new String[0];
             String schemaPrefix="config";
             String tableName="analysis_method";
-            fieldName = labArr.addValueToArray1D(fieldName, "analysis");
-            fieldValue = labArr.addValueToArray1D(fieldValue, "pH");
-            fieldToRetrieve = labArr.addValueToArray1D(fieldToRetrieve, "analysis");
-            fieldToRetrieve = labArr.addValueToArray1D(fieldToRetrieve, "analysis");
-            fieldToRetrieve = labArr.addValueToArray1D(fieldToRetrieve, "analysis");
-            fieldToRetrieve = labArr.addValueToArray1D(fieldToRetrieve, "analysis");
+            fieldName = LabPLANETArray.addValueToArray1D(fieldName, "analysis");
+            fieldValue = LabPLANETArray.addValueToArray1D(fieldValue, "pH");
+            fieldToRetrieve = LabPLANETArray.addValueToArray1D(fieldToRetrieve, "analysis");
+            fieldToRetrieve = LabPLANETArray.addValueToArray1D(fieldToRetrieve, "analysis");
+            fieldToRetrieve = LabPLANETArray.addValueToArray1D(fieldToRetrieve, "analysis");
+            fieldToRetrieve = LabPLANETArray.addValueToArray1D(fieldToRetrieve, "analysis");
             configSpecTestingArray[inumTesting][0]=schemaPrefix;
             configSpecTestingArray[inumTesting][1]=tableName;
             configSpecTestingArray[inumTesting][2]=userName;
@@ -95,12 +90,12 @@ public class DbQueries extends HttpServlet {
             String[] fieldToRetrieve= new String[0];
             String schemaPrefix="oil-pl1-config";
             String tableName="analysis_method_params";
-            fieldName = labArr.addValueToArray1D(fieldName, "analysis");
-            fieldValue = labArr.addValueToArray1D(fieldValue, "pH");
-            fieldToRetrieve = labArr.addValueToArray1D(fieldToRetrieve, "analysis");
-            fieldToRetrieve = labArr.addValueToArray1D(fieldToRetrieve, "analysis");
-            fieldToRetrieve = labArr.addValueToArray1D(fieldToRetrieve, "analysis");
-            fieldToRetrieve = labArr.addValueToArray1D(fieldToRetrieve, "analysis");            
+            fieldName = LabPLANETArray.addValueToArray1D(fieldName, "analysis");
+            fieldValue = LabPLANETArray.addValueToArray1D(fieldValue, "pH");
+            fieldToRetrieve = LabPLANETArray.addValueToArray1D(fieldToRetrieve, "analysis");
+            fieldToRetrieve = LabPLANETArray.addValueToArray1D(fieldToRetrieve, "analysis");
+            fieldToRetrieve = LabPLANETArray.addValueToArray1D(fieldToRetrieve, "analysis");
+            fieldToRetrieve = LabPLANETArray.addValueToArray1D(fieldToRetrieve, "analysis");            
             configSpecTestingArray[inumTesting][0]=schemaPrefix;
             configSpecTestingArray[inumTesting][1]=tableName;
             configSpecTestingArray[inumTesting][2]=userName;
@@ -115,12 +110,12 @@ public class DbQueries extends HttpServlet {
             String[] fieldToRetrieve= new String[0];
             String schemaPrefix="oil-pl1-config";
             String tableName="zzzzzzanalysis_method_paramszzzzzz";
-            fieldName = labArr.addValueToArray1D(fieldName, "analysis");
-            fieldValue = labArr.addValueToArray1D(fieldValue, "pH");
-            fieldToRetrieve = labArr.addValueToArray1D(fieldToRetrieve, "analysis");
-            fieldToRetrieve = labArr.addValueToArray1D(fieldToRetrieve, "analysis");
-            fieldToRetrieve = labArr.addValueToArray1D(fieldToRetrieve, "analysis");
-            fieldToRetrieve = labArr.addValueToArray1D(fieldToRetrieve, "analysis");            
+            fieldName = LabPLANETArray.addValueToArray1D(fieldName, "analysis");
+            fieldValue = LabPLANETArray.addValueToArray1D(fieldValue, "pH");
+            fieldToRetrieve = LabPLANETArray.addValueToArray1D(fieldToRetrieve, "analysis");
+            fieldToRetrieve = LabPLANETArray.addValueToArray1D(fieldToRetrieve, "analysis");
+            fieldToRetrieve = LabPLANETArray.addValueToArray1D(fieldToRetrieve, "analysis");
+            fieldToRetrieve = LabPLANETArray.addValueToArray1D(fieldToRetrieve, "analysis");            
             configSpecTestingArray[inumTesting][0]=schemaPrefix;
             configSpecTestingArray[inumTesting][1]=tableName;
             configSpecTestingArray[inumTesting][2]=userName;
@@ -135,12 +130,12 @@ public class DbQueries extends HttpServlet {
             String[] fieldToRetrieve= new String[0];
             String schemaPrefix="oil-pl1-config";
             String tableName="analysis_method_params";
-            fieldName = labArr.addValueToArray1D(fieldName, "zzzzzanalysis");
-            fieldValue = labArr.addValueToArray1D(fieldValue, "pH");
-            fieldToRetrieve = labArr.addValueToArray1D(fieldToRetrieve, "analysis");
-            fieldToRetrieve = labArr.addValueToArray1D(fieldToRetrieve, "analysis");
-            fieldToRetrieve = labArr.addValueToArray1D(fieldToRetrieve, "analysis");
-            fieldToRetrieve = labArr.addValueToArray1D(fieldToRetrieve, "analysis");            
+            fieldName = LabPLANETArray.addValueToArray1D(fieldName, "zzzzzanalysis");
+            fieldValue = LabPLANETArray.addValueToArray1D(fieldValue, "pH");
+            fieldToRetrieve = LabPLANETArray.addValueToArray1D(fieldToRetrieve, "analysis");
+            fieldToRetrieve = LabPLANETArray.addValueToArray1D(fieldToRetrieve, "analysis");
+            fieldToRetrieve = LabPLANETArray.addValueToArray1D(fieldToRetrieve, "analysis");
+            fieldToRetrieve = LabPLANETArray.addValueToArray1D(fieldToRetrieve, "analysis");            
             configSpecTestingArray[inumTesting][0]=schemaPrefix;
             configSpecTestingArray[inumTesting][1]=tableName;
             configSpecTestingArray[inumTesting][2]=userName;
@@ -155,12 +150,12 @@ public class DbQueries extends HttpServlet {
             String[] fieldToRetrieve= new String[0];
             String schemaPrefix="oil-pl1-config";
             String tableName="analysis_method_params";
-            fieldName = labArr.addValueToArray1D(fieldName, "analysis");
-            fieldValue = labArr.addValueToArray1D(fieldValue, "pH");
-            fieldToRetrieve = labArr.addValueToArray1D(fieldToRetrieve, "zzzzzanalysis");
-            fieldToRetrieve = labArr.addValueToArray1D(fieldToRetrieve, "analysis");
-            fieldToRetrieve = labArr.addValueToArray1D(fieldToRetrieve, "analysis");
-            fieldToRetrieve = labArr.addValueToArray1D(fieldToRetrieve, "analysis");            
+            fieldName = LabPLANETArray.addValueToArray1D(fieldName, "analysis");
+            fieldValue = LabPLANETArray.addValueToArray1D(fieldValue, "pH");
+            fieldToRetrieve = LabPLANETArray.addValueToArray1D(fieldToRetrieve, "zzzzzanalysis");
+            fieldToRetrieve = LabPLANETArray.addValueToArray1D(fieldToRetrieve, "analysis");
+            fieldToRetrieve = LabPLANETArray.addValueToArray1D(fieldToRetrieve, "analysis");
+            fieldToRetrieve = LabPLANETArray.addValueToArray1D(fieldToRetrieve, "analysis");            
             configSpecTestingArray[inumTesting][0]=schemaPrefix;
             configSpecTestingArray[inumTesting][1]=tableName;
             configSpecTestingArray[inumTesting][2]=userName;
@@ -176,16 +171,16 @@ public class DbQueries extends HttpServlet {
             String[] fieldToRetrieve= new String[0];
             String schemaPrefix="oil-pl1-config";
             String tableName="analysis_method_params";
-            fieldName = labArr.addValueToArray1D(fieldName, "analysis");
-            fieldValue = labArr.addValueToArray1D(fieldValue, "pH");
-            fieldName = labArr.addValueToArray1D(fieldName, "method_name");
-            fieldValue = labArr.addValueToArray1D(fieldValue, "pH method");
-            fieldName = labArr.addValueToArray1D(fieldName, "method_version");
-            fieldValue = labArr.addValueToArray1D(fieldValue, 2);
-            fieldToRetrieve = labArr.addValueToArray1D(fieldToRetrieve, "analysis");
-            fieldToRetrieve = labArr.addValueToArray1D(fieldToRetrieve, "analysis");
-            fieldToRetrieve = labArr.addValueToArray1D(fieldToRetrieve, "analysis");
-            fieldToRetrieve = labArr.addValueToArray1D(fieldToRetrieve, "analysis");            
+            fieldName = LabPLANETArray.addValueToArray1D(fieldName, "analysis");
+            fieldValue = LabPLANETArray.addValueToArray1D(fieldValue, "pH");
+            fieldName = LabPLANETArray.addValueToArray1D(fieldName, "method_name");
+            fieldValue = LabPLANETArray.addValueToArray1D(fieldValue, "pH method");
+            fieldName = LabPLANETArray.addValueToArray1D(fieldName, "method_version");
+            fieldValue = LabPLANETArray.addValueToArray1D(fieldValue, 2);
+            fieldToRetrieve = LabPLANETArray.addValueToArray1D(fieldToRetrieve, "analysis");
+            fieldToRetrieve = LabPLANETArray.addValueToArray1D(fieldToRetrieve, "analysis");
+            fieldToRetrieve = LabPLANETArray.addValueToArray1D(fieldToRetrieve, "analysis");
+            fieldToRetrieve = LabPLANETArray.addValueToArray1D(fieldToRetrieve, "analysis");            
             configSpecTestingArray[inumTesting][0]=schemaPrefix;
             configSpecTestingArray[inumTesting][1]=tableName;
             configSpecTestingArray[inumTesting][2]=userName;
@@ -200,12 +195,12 @@ public class DbQueries extends HttpServlet {
             String[] fieldToRetrieve= new String[0];
             String schemaPrefix="oil-pl1-config";
             String tableName="analysis_method_params";
-            fieldName = labArr.addValueToArray1D(fieldName, "method_name is null");
-            fieldValue = labArr.addValueToArray1D(fieldValue, "");
-            fieldToRetrieve = labArr.addValueToArray1D(fieldToRetrieve, "analysis");
-            fieldToRetrieve = labArr.addValueToArray1D(fieldToRetrieve, "analysis");
-            fieldToRetrieve = labArr.addValueToArray1D(fieldToRetrieve, "analysis");
-            fieldToRetrieve = labArr.addValueToArray1D(fieldToRetrieve, "analysis");            
+            fieldName = LabPLANETArray.addValueToArray1D(fieldName, "method_name is null");
+            fieldValue = LabPLANETArray.addValueToArray1D(fieldValue, "");
+            fieldToRetrieve = LabPLANETArray.addValueToArray1D(fieldToRetrieve, "analysis");
+            fieldToRetrieve = LabPLANETArray.addValueToArray1D(fieldToRetrieve, "analysis");
+            fieldToRetrieve = LabPLANETArray.addValueToArray1D(fieldToRetrieve, "analysis");
+            fieldToRetrieve = LabPLANETArray.addValueToArray1D(fieldToRetrieve, "analysis");            
             configSpecTestingArray[inumTesting][0]=schemaPrefix;
             configSpecTestingArray[inumTesting][1]=tableName;
             configSpecTestingArray[inumTesting][2]=userName;
@@ -220,12 +215,12 @@ public class DbQueries extends HttpServlet {
             String[] fieldToRetrieve= new String[0];
             String schemaPrefix="oil-pl1-config";
             String tableName="analysis_method_params";
-            fieldName = labArr.addValueToArray1D(fieldName, "method_name is not null");
-            fieldValue = labArr.addValueToArray1D(fieldValue, "");
-            fieldToRetrieve = labArr.addValueToArray1D(fieldToRetrieve, "analysis");
-            fieldToRetrieve = labArr.addValueToArray1D(fieldToRetrieve, "analysis");
-            fieldToRetrieve = labArr.addValueToArray1D(fieldToRetrieve, "analysis");
-            fieldToRetrieve = labArr.addValueToArray1D(fieldToRetrieve, "analysis");            
+            fieldName = LabPLANETArray.addValueToArray1D(fieldName, "method_name is not null");
+            fieldValue = LabPLANETArray.addValueToArray1D(fieldValue, "");
+            fieldToRetrieve = LabPLANETArray.addValueToArray1D(fieldToRetrieve, "analysis");
+            fieldToRetrieve = LabPLANETArray.addValueToArray1D(fieldToRetrieve, "analysis");
+            fieldToRetrieve = LabPLANETArray.addValueToArray1D(fieldToRetrieve, "analysis");
+            fieldToRetrieve = LabPLANETArray.addValueToArray1D(fieldToRetrieve, "analysis");            
             configSpecTestingArray[inumTesting][0]=schemaPrefix;
             configSpecTestingArray[inumTesting][1]=tableName;
             configSpecTestingArray[inumTesting][2]=userName;
@@ -240,14 +235,14 @@ public class DbQueries extends HttpServlet {
             String[] fieldToRetrieve= new String[0];
             String schemaPrefix="oil-pl1-config";
             String tableName="analysis_method_params";
-            fieldName = labArr.addValueToArray1D(fieldName, "method_name is not null");
-            fieldValue = labArr.addValueToArray1D(fieldValue, "");
-            fieldName = labArr.addValueToArray1D(fieldName, "analysis");
-            fieldValue = labArr.addValueToArray1D(fieldValue, "pH");
-            fieldToRetrieve = labArr.addValueToArray1D(fieldToRetrieve, "analysis");
-            fieldToRetrieve = labArr.addValueToArray1D(fieldToRetrieve, "analysis");
-            fieldToRetrieve = labArr.addValueToArray1D(fieldToRetrieve, "analysis");
-            fieldToRetrieve = labArr.addValueToArray1D(fieldToRetrieve, "analysis");            
+            fieldName = LabPLANETArray.addValueToArray1D(fieldName, "method_name is not null");
+            fieldValue = LabPLANETArray.addValueToArray1D(fieldValue, "");
+            fieldName = LabPLANETArray.addValueToArray1D(fieldName, "analysis");
+            fieldValue = LabPLANETArray.addValueToArray1D(fieldValue, "pH");
+            fieldToRetrieve = LabPLANETArray.addValueToArray1D(fieldToRetrieve, "analysis");
+            fieldToRetrieve = LabPLANETArray.addValueToArray1D(fieldToRetrieve, "analysis");
+            fieldToRetrieve = LabPLANETArray.addValueToArray1D(fieldToRetrieve, "analysis");
+            fieldToRetrieve = LabPLANETArray.addValueToArray1D(fieldToRetrieve, "analysis");            
             configSpecTestingArray[inumTesting][0]=schemaPrefix;
             configSpecTestingArray[inumTesting][1]=tableName;
             configSpecTestingArray[inumTesting][2]=userName;
@@ -262,13 +257,13 @@ public class DbQueries extends HttpServlet {
             String[] fieldToRetrieve= new String[0];
             String schemaPrefix="oil-pl1-config";
             String tableName="analysis_method_params";
-            fieldName = labArr.addValueToArray1D(fieldName, "method_name is not null");            
-            fieldName = labArr.addValueToArray1D(fieldName, "analysis");
-            fieldValue = labArr.addValueToArray1D(fieldValue, "pH");
-            fieldToRetrieve = labArr.addValueToArray1D(fieldToRetrieve, "analysis");
-            fieldToRetrieve = labArr.addValueToArray1D(fieldToRetrieve, "analysis");
-            fieldToRetrieve = labArr.addValueToArray1D(fieldToRetrieve, "analysis");
-            fieldToRetrieve = labArr.addValueToArray1D(fieldToRetrieve, "analysis");            
+            fieldName = LabPLANETArray.addValueToArray1D(fieldName, "method_name is not null");            
+            fieldName = LabPLANETArray.addValueToArray1D(fieldName, "analysis");
+            fieldValue = LabPLANETArray.addValueToArray1D(fieldValue, "pH");
+            fieldToRetrieve = LabPLANETArray.addValueToArray1D(fieldToRetrieve, "analysis");
+            fieldToRetrieve = LabPLANETArray.addValueToArray1D(fieldToRetrieve, "analysis");
+            fieldToRetrieve = LabPLANETArray.addValueToArray1D(fieldToRetrieve, "analysis");
+            fieldToRetrieve = LabPLANETArray.addValueToArray1D(fieldToRetrieve, "analysis");            
             configSpecTestingArray[inumTesting][0]=schemaPrefix;
             configSpecTestingArray[inumTesting][1]=tableName;
             configSpecTestingArray[inumTesting][2]=userName;
@@ -283,12 +278,12 @@ public class DbQueries extends HttpServlet {
             String[] fieldToRetrieve= new String[0];
             String schemaPrefix="oil-pl1-config";
             String tableName="analysis_method_params";
-            fieldName = labArr.addValueToArray1D(fieldName, "method_name like ");
-            fieldValue = labArr.addValueToArray1D(fieldValue, "%met%");
-            fieldToRetrieve = labArr.addValueToArray1D(fieldToRetrieve, "analysis");
-            fieldToRetrieve = labArr.addValueToArray1D(fieldToRetrieve, "analysis");
-            fieldToRetrieve = labArr.addValueToArray1D(fieldToRetrieve, "analysis");
-            fieldToRetrieve = labArr.addValueToArray1D(fieldToRetrieve, "analysis");            
+            fieldName = LabPLANETArray.addValueToArray1D(fieldName, "method_name like ");
+            fieldValue = LabPLANETArray.addValueToArray1D(fieldValue, "%met%");
+            fieldToRetrieve = LabPLANETArray.addValueToArray1D(fieldToRetrieve, "analysis");
+            fieldToRetrieve = LabPLANETArray.addValueToArray1D(fieldToRetrieve, "analysis");
+            fieldToRetrieve = LabPLANETArray.addValueToArray1D(fieldToRetrieve, "analysis");
+            fieldToRetrieve = LabPLANETArray.addValueToArray1D(fieldToRetrieve, "analysis");            
             configSpecTestingArray[inumTesting][0]=schemaPrefix;
             configSpecTestingArray[inumTesting][1]=tableName;
             configSpecTestingArray[inumTesting][2]=userName;
@@ -303,14 +298,14 @@ public class DbQueries extends HttpServlet {
             String[] fieldToRetrieve= new String[0];
             String schemaPrefix="oil-pl1-config";
             String tableName="analysis_method_params";
-            fieldName = labArr.addValueToArray1D(fieldName, "method_name like ");
-            fieldValue = labArr.addValueToArray1D(fieldValue, "%met%");            
-            fieldName = labArr.addValueToArray1D(fieldName, "analysis");
-            fieldValue = labArr.addValueToArray1D(fieldValue, "LOD");
-            fieldToRetrieve = labArr.addValueToArray1D(fieldToRetrieve, "analysis");
-            fieldToRetrieve = labArr.addValueToArray1D(fieldToRetrieve, "analysis");
-            fieldToRetrieve = labArr.addValueToArray1D(fieldToRetrieve, "analysis");
-            fieldToRetrieve = labArr.addValueToArray1D(fieldToRetrieve, "analysis");            
+            fieldName = LabPLANETArray.addValueToArray1D(fieldName, "method_name like ");
+            fieldValue = LabPLANETArray.addValueToArray1D(fieldValue, "%met%");            
+            fieldName = LabPLANETArray.addValueToArray1D(fieldName, "analysis");
+            fieldValue = LabPLANETArray.addValueToArray1D(fieldValue, "LOD");
+            fieldToRetrieve = LabPLANETArray.addValueToArray1D(fieldToRetrieve, "analysis");
+            fieldToRetrieve = LabPLANETArray.addValueToArray1D(fieldToRetrieve, "analysis");
+            fieldToRetrieve = LabPLANETArray.addValueToArray1D(fieldToRetrieve, "analysis");
+            fieldToRetrieve = LabPLANETArray.addValueToArray1D(fieldToRetrieve, "analysis");            
             configSpecTestingArray[inumTesting][0]=schemaPrefix;
             configSpecTestingArray[inumTesting][1]=tableName;
             configSpecTestingArray[inumTesting][2]=userName;
@@ -325,14 +320,14 @@ public class DbQueries extends HttpServlet {
             String[] fieldToRetrieve= new String[0];
             String schemaPrefix="oil-pl1-config";
             String tableName="analysis_method_params";
-            fieldName = labArr.addValueToArray1D(fieldName, "method_name like '%met%'");
-            //fieldValue = labArr.addValueToArray1D(fieldValue, "%met%");
-            fieldName = labArr.addValueToArray1D(fieldName, "analysis");
-            fieldValue = labArr.addValueToArray1D(fieldValue, "LOD");
-            fieldToRetrieve = labArr.addValueToArray1D(fieldToRetrieve, "analysis");
-            fieldToRetrieve = labArr.addValueToArray1D(fieldToRetrieve, "analysis");
-            fieldToRetrieve = labArr.addValueToArray1D(fieldToRetrieve, "analysis");
-            fieldToRetrieve = labArr.addValueToArray1D(fieldToRetrieve, "analysis");            
+            fieldName = LabPLANETArray.addValueToArray1D(fieldName, "method_name like '%met%'");
+            //fieldValue = LabPLANETArray.addValueToArray1D(fieldValue, "%met%");
+            fieldName = LabPLANETArray.addValueToArray1D(fieldName, "analysis");
+            fieldValue = LabPLANETArray.addValueToArray1D(fieldValue, "LOD");
+            fieldToRetrieve = LabPLANETArray.addValueToArray1D(fieldToRetrieve, "analysis");
+            fieldToRetrieve = LabPLANETArray.addValueToArray1D(fieldToRetrieve, "analysis");
+            fieldToRetrieve = LabPLANETArray.addValueToArray1D(fieldToRetrieve, "analysis");
+            fieldToRetrieve = LabPLANETArray.addValueToArray1D(fieldToRetrieve, "analysis");            
             configSpecTestingArray[inumTesting][0]=schemaPrefix;
             configSpecTestingArray[inumTesting][1]=tableName;
             configSpecTestingArray[inumTesting][2]=userName;
@@ -347,14 +342,14 @@ public class DbQueries extends HttpServlet {
             String[] fieldToRetrieve= new String[0];
             String schemaPrefix="oil-pl1-config";
             String tableName="analysis_method_params";
-            fieldName = labArr.addValueToArray1D(fieldName, "method_name in|");
-            fieldValue = labArr.addValueToArray1D(fieldValue, "pH|LOD");
-            //fieldName = labArr.addValueToArray1D(fieldName, "analysis");
-            //fieldValue = labArr.addValueToArray1D(fieldValue, "LOD");
-            fieldToRetrieve = labArr.addValueToArray1D(fieldToRetrieve, "analysis");
-            fieldToRetrieve = labArr.addValueToArray1D(fieldToRetrieve, "analysis");
-            fieldToRetrieve = labArr.addValueToArray1D(fieldToRetrieve, "analysis");
-            fieldToRetrieve = labArr.addValueToArray1D(fieldToRetrieve, "analysis");            
+            fieldName = LabPLANETArray.addValueToArray1D(fieldName, "method_name in|");
+            fieldValue = LabPLANETArray.addValueToArray1D(fieldValue, "pH|LOD");
+            //fieldName = LabPLANETArray.addValueToArray1D(fieldName, "analysis");
+            //fieldValue = LabPLANETArray.addValueToArray1D(fieldValue, "LOD");
+            fieldToRetrieve = LabPLANETArray.addValueToArray1D(fieldToRetrieve, "analysis");
+            fieldToRetrieve = LabPLANETArray.addValueToArray1D(fieldToRetrieve, "analysis");
+            fieldToRetrieve = LabPLANETArray.addValueToArray1D(fieldToRetrieve, "analysis");
+            fieldToRetrieve = LabPLANETArray.addValueToArray1D(fieldToRetrieve, "analysis");            
             configSpecTestingArray[inumTesting][0]=schemaPrefix;
             configSpecTestingArray[inumTesting][1]=tableName;
             configSpecTestingArray[inumTesting][2]=userName;
@@ -400,7 +395,7 @@ public class DbQueries extends HttpServlet {
             out.println("<td>"+i+"</td><td>"+schemaPrefix+"</td><td>"+tableName+"</td><td>"+Arrays.toString(fieldName)+"</td><td><b>"+Arrays.toString(fieldValue)+"</b></td>");
 
             
-            dataSample = rdbm.getRecordFieldsByFilter(rdbm, schemaPrefix, tableName, fieldName, fieldValue, fieldsToRetrieve);
+            dataSample = Rdbms.getRecordFieldsByFilter(schemaPrefix, tableName, fieldName, fieldValue, fieldsToRetrieve);
             
             if ((dataSample[0][3].toString().equalsIgnoreCase("FALSE"))){
                  out.println("<td>"+dataSample[0][3].toString()+": "+dataSample[0][5].toString()+"</td>");                
@@ -414,7 +409,7 @@ public class DbQueries extends HttpServlet {
         }
 
         out.println("</table>");        
-        rdbm.closeRdbms();       
+        Rdbms.closeRdbms();       
 
     }   
 }

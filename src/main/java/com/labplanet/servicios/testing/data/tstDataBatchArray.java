@@ -44,28 +44,24 @@ public class tstDataBatchArray extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         
         String fileContent = "";        
-        Rdbms rdbm = new Rdbms();          
         DataBatch batch = new DataBatch();
         try (PrintWriter out = response.getWriter()) {
             
             response.setContentType("text/html;charset=UTF-8");
             UserMethod um = new UserMethod();
       
-            boolean isConnected = false;
-            isConnected = rdbm.startRdbms("labplanet", "LabPlanet");
+            if (Rdbms.getRdbms().startRdbms("labplanet", "avecesllegaelmomento")==null){out.println("Connection to the database not established");return;}
 
             String csvFileName = "tstDataBatchArray.txt"; String csvFileSeparator=";";
             String csvPathName = "\\\\FRANCLOUD\\fran\\LabPlanet\\testingRepository\\"+csvFileName; 
- 
          
             Object[][] dataSample2D = new Object[1][6];
         
             Integer numTesting = 1;
             Integer inumTesting = 0;
             Object[][] configSpecTestingArray = new Object[numTesting][9];
-            LabPLANETArray labArr = new LabPLANETArray();
             
-            configSpecTestingArray = labArr.convertCSVinArray(csvPathName, csvFileSeparator);                        
+            configSpecTestingArray = LabPLANETArray.convertCSVinArray(csvPathName, csvFileSeparator);                        
      
             fileContent = testingFileContentSections.getHtmlStyleHeader(this.getServletName());
 
@@ -87,7 +83,7 @@ public class tstDataBatchArray extends HttpServlet {
                 String[] orderBy=null;                    String[] groupBy=null;
                 String[] fieldsToRetrieve=null;   
                 String functionBeingTested="";                     
-                LabPLANETPlatform LabPlat = new LabPLANETPlatform();
+                LabPLANETPlatform LabPLANETPlatform = new LabPLANETPlatform();
                 Object[] dataSample2Din1D = new Object[0];
 
                 if (configSpecTestingArray[i][1]!=null){functionBeingTested = (String) configSpecTestingArray[i][1];}
@@ -105,15 +101,15 @@ public class tstDataBatchArray extends HttpServlet {
 /*                String[] whereFieldsNameArr = new String[]{"status in|"};
                 Object[] whereFieldsValueArr = null;
                 Object[] recEncrypted = labPlat.encryptString("RECEIVED");
-                whereFieldsValueArr=labArr.addValueToArray1D(whereFieldsValueArr, "RECEIVED|"+recEncrypted[1]);                
+                whereFieldsValueArr=LabPLANETArray.addValueToArray1D(whereFieldsValueArr, "RECEIVED|"+recEncrypted[1]);                
 */                
-                Object[] fieldValues = labArr.convertStringWithDataTypeToObjectArray(fieldValue);
+                Object[] fieldValues = LabPLANETArray.convertStringWithDataTypeToObjectArray(fieldValue);
                 if ( (fieldName!=null) && (fieldValue!=null) ){
-                    //whereFieldsNameArr=labArr.addValueToArray1D(whereFieldsNameArr, whereFieldsName.split("\\|"));
-                    //whereFieldsValueArr = labArr.addValueToArray1D(whereFieldsValueArr, labArr.convertStringWithDataTypeToObjectArray(whereFieldsValue.split("\\|")));                                                              
+                    //whereFieldsNameArr=LabPLANETArray.addValueToArray1D(whereFieldsNameArr, whereFieldsName.split("\\|"));
+                    //whereFieldsValueArr = LabPLANETArray.addValueToArray1D(whereFieldsValueArr, LabPLANETArray.convertStringWithDataTypeToObjectArray(whereFieldsValue.split("\\|")));                                                              
                 }                         
-                //Object[] fieldValues = labArr.convertStringWithDataTypeToObjectArray(fieldValue);
-                Object[] setFieldValues = labArr.convertStringWithDataTypeToObjectArray(setFieldValue);
+                //Object[] fieldValues = LabPLANETArray.convertStringWithDataTypeToObjectArray(fieldValue);
+                Object[] setFieldValues = LabPLANETArray.convertStringWithDataTypeToObjectArray(setFieldValue);
                 
                 fileContent = fileContent + "<td>"+i+"</td><td>"+functionBeingTested+"</td><td>"+schemaPrefix+"</td><td>"+tableName
                         +"</td><td>"+Arrays.toString(fieldName)+"</td><td><b>"+Arrays.toString(fieldValue)+"</b></td><td>"+Arrays.toString(fieldsToRetrieve)
@@ -121,43 +117,43 @@ public class tstDataBatchArray extends HttpServlet {
                         +"</td><td>"+Arrays.toString(orderBy)+"</td><td><b>"+Arrays.toString(groupBy)+"</b></td>";
                 
                 Object[] allFunctionsBeingTested = new Object[0];                
-                allFunctionsBeingTested = labArr.addValueToArray1D(allFunctionsBeingTested, "CREATEBATCHARRAY");
-                allFunctionsBeingTested = labArr.addValueToArray1D(allFunctionsBeingTested, "INSERT");
-                allFunctionsBeingTested = labArr.addValueToArray1D(allFunctionsBeingTested, "GETRECORDFIELDSBYFILTER");
-                allFunctionsBeingTested = labArr.addValueToArray1D(allFunctionsBeingTested, "UPDATE");
+                allFunctionsBeingTested = LabPLANETArray.addValueToArray1D(allFunctionsBeingTested, "CREATEBATCHARRAY");
+                allFunctionsBeingTested = LabPLANETArray.addValueToArray1D(allFunctionsBeingTested, "INSERT");
+                allFunctionsBeingTested = LabPLANETArray.addValueToArray1D(allFunctionsBeingTested, "GETRECORDFIELDSBYFILTER");
+                allFunctionsBeingTested = LabPLANETArray.addValueToArray1D(allFunctionsBeingTested, "UPDATE");
                 
                 switch (functionBeingTested.toUpperCase()){
                     case "CREATEBATCHARRAY":   
-                        //batch.dbCreateBatchArray(rdbm, );
-                        Object[] exRec =  rdbm.existsRecord(rdbm, schemaPrefix, tableName, fieldName, fieldValues);
-                        dataSample2D = labArr.array1dTo2d(exRec, exRec.length);
+                        //batch.dbCreateBatchArray();
+                        Object[] exRec =  Rdbms.existsRecord(schemaPrefix, tableName, fieldName, fieldValues);
+                        dataSample2D = LabPLANETArray.array1dTo2d(exRec, exRec.length);
                         break;
                     case "INSERT":                    
-                        Object[] insRec = rdbm.insertRecordInTable(rdbm, schemaPrefix, tableName, fieldName, fieldValues);  
-                        dataSample2D = labArr.array1dTo2d(insRec, insRec.length);
+                        Object[] insRec = Rdbms.insertRecordInTable(schemaPrefix, tableName, fieldName, fieldValues);  
+                        dataSample2D = LabPLANETArray.array1dTo2d(insRec, insRec.length);
                         break;
                     case "GETRECORDFIELDSBYFILTER":              
                         if (orderBy.length>0){
-                            dataSample2D = rdbm.getRecordFieldsByFilter(rdbm, schemaPrefix, tableName, fieldName, fieldValues, fieldsToRetrieve, orderBy);
+                            dataSample2D = Rdbms.getRecordFieldsByFilter(schemaPrefix, tableName, fieldName, fieldValues, fieldsToRetrieve, orderBy);
                         }else{
-                            dataSample2D = rdbm.getRecordFieldsByFilter(rdbm, schemaPrefix, tableName, fieldName, fieldValues, fieldsToRetrieve);
+                            dataSample2D = Rdbms.getRecordFieldsByFilter(schemaPrefix, tableName, fieldName, fieldValues, fieldsToRetrieve);
                         }
                         if (!"LABPLANET_FALSE".equalsIgnoreCase(dataSample2D[0][0].toString())){
-                            dataSample2Din1D =  labArr.array2dTo1d(dataSample2D);
+                            dataSample2Din1D =  LabPLANETArray.array2dTo1d(dataSample2D);
                         }    
                         break;
                     case "UPDATE":                    
-                        Object[] updRec = rdbm.updateRecordFieldsByFilter(rdbm, schemaPrefix, tableName, setFieldName, setFieldValues, fieldName, fieldValues);  
-                        dataSample2D = labArr.array1dTo2d(updRec, updRec.length);
+                        Object[] updRec = Rdbms.updateRecordFieldsByFilter(schemaPrefix, tableName, setFieldName, setFieldValues, fieldName, fieldValues);  
+                        dataSample2D = LabPLANETArray.array1dTo2d(updRec, updRec.length);
                         break;                        
                     default:
                         String errorCode = "ERROR: FUNCTION NOT RECOGNIZED";
                         Object[] errorDetail = new Object [1];
                         errorDetail[0]="The function <*1*> is not one of the declared ones therefore nothing can be performed for it. Functions are: <*2*>";
-                        errorDetail = labArr.addValueToArray1D(errorDetail, functionBeingTested);
-                        errorDetail = labArr.addValueToArray1D(errorDetail, Arrays.toString(allFunctionsBeingTested));
-                        Object[] trapErrorMessage = LabPLANETPlatform.trapErrorMessage(rdbm, "LABPLANET_FALSE", classVersion, errorCode, errorDetail);            
-                        dataSample2D = labArr.array1dTo2d(trapErrorMessage, trapErrorMessage.length);
+                        errorDetail = LabPLANETArray.addValueToArray1D(errorDetail, functionBeingTested);
+                        errorDetail = LabPLANETArray.addValueToArray1D(errorDetail, Arrays.toString(allFunctionsBeingTested));
+                        Object[] trapErrorMessage = LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetail);            
+                        dataSample2D = LabPLANETArray.array1dTo2d(trapErrorMessage, trapErrorMessage.length);
                         break;
                 }        
                 LPNulls labNull = new LPNulls();
@@ -185,12 +181,12 @@ public class tstDataBatchArray extends HttpServlet {
                     fileWriter.write(fileContent);
                     fileWriter.flush();
                 } 
-            rdbm.closeRdbms();
+            Rdbms.closeRdbms();
             }   catch (IOException ex) {
                 Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);   
                 fileContent = fileContent + "</table>";        
                 out.println(fileContent);        
-                rdbm.closeRdbms();
+                Rdbms.closeRdbms();
             }
     }
 

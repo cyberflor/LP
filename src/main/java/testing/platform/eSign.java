@@ -41,23 +41,19 @@ public class eSign extends HttpServlet {
         try (PrintWriter out = response.getWriter()) {
         response.setContentType("text/html;charset=UTF-8");
         ConfigSpecStructure configSpec = new ConfigSpecStructure();
-        Rdbms rdbm = new Rdbms();
         
         Integer numTesting = 1;
         Integer inumTesting = 0;
         Object[][] configSpecTestingArray = new Object[numTesting][4];
-        LabPLANETArray labArr = new LabPLANETArray();
         String userName="1"; 
         String userRole="oil1plant_analyst";    
         
         String csvFileName = "userSecurity.txt"; String csvFileSeparator=";";
         String csvPathName = "\\\\FRANCLOUD\\fran\\LabPlanet\\testingRepository\\"+csvFileName; 
         
-        configSpecTestingArray = labArr.convertCSVinArray(csvPathName, csvFileSeparator);
+        configSpecTestingArray = LabPLANETArray.convertCSVinArray(csvPathName, csvFileSeparator);
 
-        boolean isConnected = false;
-        isConnected = rdbm.startRdbms("labplanet", "LabPlanet");           
-        if (!isConnected){out.println("Connection to the database not established");return;}
+        if (Rdbms.getRdbms().startRdbms("labplanet", "avecesllegaelmomento")==null){out.println("Connection to the database not established");return;}
                
         String fileContent = "";
         fileContent = fileContent + "<!DOCTYPE html>" + "";
@@ -108,7 +104,7 @@ public class eSign extends HttpServlet {
                     //fileContent = fileContent + "<td>User Name</td><td>Password</td>";
                     fileContent = fileContent + "<td>"+userName+"</td><td>"+userPass+"</td><td>"+userEsign+"</td>";
                     try {
-                        usrSecDiag = usrSec.setUserEsig(rdbm, userName, userPass, userEsign);
+                        usrSecDiag = usrSec.setUserEsig(userName, userPass, userEsign);
                         fileContent = fileContent + "<td>"+usrSecDiag[0].toString()+". "+usrSecDiag[1].toString();
                     } catch (IllegalArgumentException ex) {
                         Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
@@ -118,7 +114,7 @@ public class eSign extends HttpServlet {
                     //fileContent = fileContent + "<td>User Name</td><td>Password</td>";
                     fileContent = fileContent + "<td>"+userName+"</td><td>"+userPass+"</td><td>"+userEsign+"</td>";
                     try {
-                        usrSecDiag = usrSec.isValidESign(rdbm, userName, userEsign);
+                        usrSecDiag = usrSec.isValidESign(userName, userEsign);
                         fileContent = fileContent + "<td>"+usrSecDiag[0].toString()+". "+usrSecDiag[1].toString();
                     } catch (IllegalArgumentException ex) {
                         Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
@@ -128,7 +124,7 @@ public class eSign extends HttpServlet {
                     //fileContent = fileContent + "<td>User Name</td><td>Password</td>";
                     fileContent = fileContent + "<td>"+userName+"</td><td>"+userPass+"</td><td>"+userEsign+"</td>";
                     try {
-                        usrSecDiag = usrSec.isValidESign(rdbm, userName, userPass, userEsign);
+                        usrSecDiag = usrSec.isValidESign(userName, userPass, userEsign);
                         fileContent = fileContent + "<td>"+usrSecDiag[0].toString()+". "+usrSecDiag[1].toString();
                     } catch (IllegalArgumentException ex) {
                         Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
@@ -158,7 +154,7 @@ public class eSign extends HttpServlet {
         fileWriter.flush();
         fileWriter.close();   
 
-        rdbm.closeRdbms();
+        Rdbms.closeRdbms();
         }           
     }
         

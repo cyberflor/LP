@@ -28,12 +28,11 @@ public class Role {
     
     /**
      *
-     * @param rdbm
      * @param roleId
      * @return
      * @throws SQLException
      */
-    public Object[] createRole(Rdbms rdbm, String roleId) throws SQLException {        
+    public Object[] createRole( String roleId) throws SQLException {        
                 
         if (roleId.toUpperCase().contains("ALL")){            
             StackTraceElement[] elements = Thread.currentThread().getStackTrace();
@@ -45,7 +44,7 @@ public class Role {
             diagnoses[5]="The word ALL in roles is an special one, it means this privilege should be added to all the roles present in this procedure.";
             return diagnoses;
         }                
-        diagnoses = rdbm.insertRecordInTable(rdbm, "config", "role", new String[]{"role_id", "active"}, new Object[]{roleId, true });
+        diagnoses = Rdbms.insertRecordInTable("config", "role", new String[]{"role_id", "active"}, new Object[]{roleId, true });
            if ("LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){	
             String newEntry = " for role " + roleId + ". Success, The record is created.";
             StackTraceElement[] elements = Thread.currentThread().getStackTrace();
@@ -71,14 +70,13 @@ public class Role {
     
     /**
      *
-     * @param rdbm
      * @param privilegeId
      * @param roleId
      * @param procName
      * @return
      * @throws SQLException
      */
-    public Object[] addPrivilegeToRole(Rdbms rdbm, String privilegeId, String roleId, String procName) throws SQLException {
+    public Object[] addPrivilegeToRole( String privilegeId, String roleId, String procName) throws SQLException {
         String methodName = "addPrivilegeToRole";
         Integer id;      
         Integer numRecords = 0;
@@ -90,12 +88,12 @@ public class Role {
         if (roleId.toUpperCase().contains("ALL")){   
             String tableName = "role";
             
-            resRole = rdbm.getRecordFieldsByFilter(rdbm, procName, tableName, 
+            resRole = Rdbms.getRecordFieldsByFilter(procName, tableName, 
                     new String[]{tableName+"_id like %"}, new Object[]{procName}, new String[]{tableName+"_id"});
             numRecords = resRole.length;
 /*            String queryRoles = "SELECT " + tableName + "_id from config." + tableName + " where " + tableName + "_id like ?";  
             procName = procName + "%";
-            resRole = rdbm.prepRdQuery(queryRoles, new Object [] {procName});
+            resRole = Rdbms.prepRdQuery(queryRoles, new Object [] {procName});
             resRole.last();
             numRecords = resRole.getRow();
             resRole.first();
@@ -108,10 +106,10 @@ public class Role {
         }
         for (Integer inumRecords=0; inumRecords<numRecords; inumRecords++){
             if (roleId.toUpperCase().contains("ALL")){newRoleId = resRole[inumRecords][0].toString();}
-            Object[] diagnoses = rdbm.existsRecord(rdbm, schemaConfigName, "role_privilege", 
+            Object[] diagnoses = Rdbms.existsRecord(schemaConfigName, "role_privilege", 
                     new String[]{"privilege_id"}, new Object[]{privilegeId + "," + roleId} );
             if ("LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){      
-                diagnoses = rdbm.insertRecordInTable(rdbm, "config", "role_privilege", new String[]{"role_id", "privilege_id"}, new Object[]{newRoleId, privilegeId });
+                diagnoses = Rdbms.insertRecordInTable("config", "role_privilege", new String[]{"role_id", "privilege_id"}, new Object[]{newRoleId, privilegeId });
                 if ("LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){
                     StackTraceElement[] elements = Thread.currentThread().getStackTrace();
                     diagnoses[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
@@ -139,16 +137,15 @@ public class Role {
 
     /**
      *
-     * @param rdbm
      * @param privilegeId
      * @return
      * @throws SQLException
      */
-    public Object[] createPrivilege(Rdbms rdbm, String privilegeId) throws SQLException {
+    public Object[] createPrivilege( String privilegeId) throws SQLException {
 /*        String methodName = "createPrivilege";
         Integer id;                
 */        
-        diagnoses = rdbm.insertRecordInTable(rdbm, "config", "privilege", new String[]{"privilege_id"}, new Object[]{privilegeId});
+        diagnoses = Rdbms.insertRecordInTable("config", "privilege", new String[]{"privilege_id"}, new Object[]{privilegeId});
         if ("LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){
             StackTraceElement[] elements = Thread.currentThread().getStackTrace();
             diagnoses[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
@@ -171,12 +168,11 @@ public class Role {
 
     /**
      *
-     * @param rdbm
      * @param dbUserName
      * @return
      */
-    public Object[][] getInternalUser(Rdbms rdbm, String dbUserName) {
-        Object[][] recordFieldsByFilter = rdbm.getRecordFieldsByFilter(rdbm, "app", "users", new String[]{"user_name"}, new Object[]{dbUserName},
+    public Object[][] getInternalUser( String dbUserName) {
+        Object[][] recordFieldsByFilter = Rdbms.getRecordFieldsByFilter("app", "users", new String[]{"user_name"}, new Object[]{dbUserName},
                 new String[]{"person_name"});        
         return recordFieldsByFilter;
     }

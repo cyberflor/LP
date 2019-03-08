@@ -91,10 +91,7 @@ public class UserRole {
             return false;
         }
         final UserRole other = (UserRole) obj;
-        if (this.UserId != other.UserId) {
-            return false;
-        }
-        return true;
+        return this.UserId == other.UserId;
     }
             
     

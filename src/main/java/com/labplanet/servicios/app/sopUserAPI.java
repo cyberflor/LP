@@ -48,9 +48,6 @@ public class sopUserAPI extends HttpServlet {
 
         String language = "en";
         
-        LabPLANETFrontEnd labFrEnd = new LabPLANETFrontEnd();
-        LabPLANETArray labArr = new LabPLANETArray();
-        Rdbms rdbm = new Rdbms();            
         //ResponseEntity<String> responsew;
         
         response.setContentType("application/json");
@@ -63,10 +60,10 @@ public class sopUserAPI extends HttpServlet {
             String finalToken = request.getParameter("finalToken");                      
 
             if (finalToken==null) {
-                errObject = labArr.addValueToArray1D(errObject, "API Error Message: finalToken is one mandatory param for this API");                    
-                Object[] errMsg = labFrEnd.responseError(errObject, language, null);
+                errObject = LabPLANETArray.addValueToArray1D(errObject, "API Error Message: finalToken is one mandatory param for this API");                    
+                Object[] errMsg = LabPLANETFrontEnd.responseError(errObject, language, null);
                 response.sendError((int) errMsg[0], (String) errMsg[1]);   
-                rdbm.closeRdbms(); 
+                Rdbms.closeRdbms(); 
                 return ;
             }                    
 
@@ -74,36 +71,34 @@ public class sopUserAPI extends HttpServlet {
             String[] tokenParams = token.tokenParamsList();
             String[] tokenParamsValues = token.validateToken(finalToken, tokenParams);
 
-            String dbUserName = tokenParamsValues[labArr.valuePosicInArray(tokenParams, "userDB")];
-            String dbUserPassword = tokenParamsValues[labArr.valuePosicInArray(tokenParams, "userDBPassword")];         
-            String internalUserID = tokenParamsValues[labArr.valuePosicInArray(tokenParams, "internalUserID")];         
-            String userRole = tokenParamsValues[labArr.valuePosicInArray(tokenParams, "userRole")];         
+            String dbUserName = tokenParamsValues[LabPLANETArray.valuePosicInArray(tokenParams, "userDB")];
+            String dbUserPassword = tokenParamsValues[LabPLANETArray.valuePosicInArray(tokenParams, "userDBPassword")];         
+            String internalUserID = tokenParamsValues[LabPLANETArray.valuePosicInArray(tokenParams, "internalUserID")];         
+            String userRole = tokenParamsValues[LabPLANETArray.valuePosicInArray(tokenParams, "userRole")];         
                         
-            boolean isConnected = false;
-            isConnected = rdbm.startRdbms(dbUserName, dbUserPassword);
-            if (!isConnected){
-                errObject = labArr.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
-                errObject = labArr.addValueToArray1D(errObject, "API Error Message: db User Name and Password not correct, connection to the database is not possible");                    
-                Object[] errMsg = labFrEnd.responseError(errObject, language, null);
+            if (Rdbms.getRdbms().startRdbms(dbUserName, dbUserPassword)==null){
+                errObject = LabPLANETArray.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
+                errObject = LabPLANETArray.addValueToArray1D(errObject, "API Error Message: db User Name and Password not correct, connection to the database is not possible");                    
+                Object[] errMsg = LabPLANETFrontEnd.responseError(errObject, language, null);
                 response.sendError((int) errMsg[0], (String) errMsg[1]);  
-                rdbm.closeRdbms(); 
+                Rdbms.closeRdbms(); 
                 return ;               
             }            
         
             String actionName = request.getParameter("actionName");
             if (actionName==null) {
-                errObject = labArr.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
-                errObject = labArr.addValueToArray1D(errObject, "API Error Message: actionName is one mandatory param for this API");                    
-                Object[] errMsg = labFrEnd.responseError(errObject, language, null);
+                errObject = LabPLANETArray.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
+                errObject = LabPLANETArray.addValueToArray1D(errObject, "API Error Message: actionName is one mandatory param for this API");                    
+                Object[] errMsg = LabPLANETFrontEnd.responseError(errObject, language, null);
                 response.sendError((int) errMsg[0], (String) errMsg[1]);    
-                rdbm.closeRdbms(); 
+                Rdbms.closeRdbms(); 
                 return ;
             }           
 /*            String schemaPrefix = request.getParameter("schemaPrefix");
             if (actionName==null) {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);                
-                errObject = labArr.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
-                errObject = labArr.addValueToArray1D(errObject, "API Error Message: schemaPrefix is one mandatory param for this API");                    
+                errObject = LabPLANETArray.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
+                errObject = LabPLANETArray.addValueToArray1D(errObject, "API Error Message: schemaPrefix is one mandatory param for this API");                    
                 out.println(Arrays.toString(errObject));
                 return ;
             }           
@@ -111,11 +106,11 @@ public class sopUserAPI extends HttpServlet {
             switch (actionName.toUpperCase()){
             case "MY_SOPS":    
                 UserProfile usProf = new UserProfile();
-                String[] allUserProcedurePrefix = labArr.ConvertObjectArrayToStringArray(usProf.getAllUserProcedurePrefix(rdbm, dbUserName));
-                if ("LABPLANET_FALSE".equalsIgnoreCase(allUserProcedurePrefix[0].toString())){
-                    Object[] errMsg = labFrEnd.responseError(allUserProcedurePrefix, language, null);
+                String[] allUserProcedurePrefix = LabPLANETArray.ConvertObjectArrayToStringArray(usProf.getAllUserProcedurePrefix(dbUserName));
+                if ("LABPLANET_FALSE".equalsIgnoreCase(allUserProcedurePrefix[0])){
+                    Object[] errMsg = LabPLANETFrontEnd.responseError(allUserProcedurePrefix, language, null);
                     response.sendError((int) errMsg[0], (String) errMsg[1]);    
-                    rdbm.closeRdbms(); 
+                    Rdbms.closeRdbms(); 
                     return;
                 }
                 String[] fieldsToRetrieve = new String[]{"sop_id", "sop_name"};
@@ -123,18 +118,18 @@ public class sopUserAPI extends HttpServlet {
                 if (sopFieldsToRetrieve!=null) {                
                     String[] sopFieldsToRetrieveArr = sopFieldsToRetrieve.split("\\|");
                     for (String fv: sopFieldsToRetrieveArr){
-                        fieldsToRetrieve = labArr.addValueToArray1D(fieldsToRetrieve, fv);
+                        fieldsToRetrieve = LabPLANETArray.addValueToArray1D(fieldsToRetrieve, fv);
                     }
                 }
                 
                 UserSop userSop = new UserSop();                               
                 
-                Object[][] userSops = userSop.getUserProfileFieldValues(rdbm, 
-                        new String[]{"user_id"}, new Object[]{internalUserID}, fieldsToRetrieve, allUserProcedurePrefix);
-                if ("LABPLANET_FALSE".equalsIgnoreCase(allUserProcedurePrefix[0].toString())){
-                    Object[] errMsg = labFrEnd.responseError(allUserProcedurePrefix, language, null);
+                Object[][] userSops = userSop.getUserProfileFieldValues(new String[]{"user_id"}, 
+                        new Object[]{internalUserID}, fieldsToRetrieve, allUserProcedurePrefix);
+                if ("LABPLANET_FALSE".equalsIgnoreCase(allUserProcedurePrefix[0])){
+                    Object[] errMsg = LabPLANETFrontEnd.responseError(allUserProcedurePrefix, language, null);
                     response.sendError((int) errMsg[0], (String) errMsg[1]);    
-                    rdbm.closeRdbms();
+                    Rdbms.closeRdbms();
                     return;
                 }
                 JSONArray columnNames = new JSONArray(); 
@@ -160,15 +155,15 @@ public class sopUserAPI extends HttpServlet {
 
                 Response.ok().build();
                 response.getWriter().write(mySopsList.toString());      
-                rdbm.closeRdbms(); 
+                Rdbms.closeRdbms(); 
                 return;
             case "MY_PENDING_SOPS":    
                 usProf = new UserProfile();
-                allUserProcedurePrefix = labArr.ConvertObjectArrayToStringArray(usProf.getAllUserProcedurePrefix(rdbm, dbUserName));
-                if ("LABPLANET_FALSE".equalsIgnoreCase(allUserProcedurePrefix[0].toString())){
-                    Object[] errMsg = labFrEnd.responseError(allUserProcedurePrefix, language, null);
+                allUserProcedurePrefix = LabPLANETArray.ConvertObjectArrayToStringArray(usProf.getAllUserProcedurePrefix(dbUserName));
+                if ("LABPLANET_FALSE".equalsIgnoreCase(allUserProcedurePrefix[0])){
+                    Object[] errMsg = LabPLANETFrontEnd.responseError(allUserProcedurePrefix, language, null);
                     response.sendError((int) errMsg[0], (String) errMsg[1]);   
-                    rdbm.closeRdbms();
+                    Rdbms.closeRdbms();
                     return;
                 }
                 fieldsToRetrieve = new String[]{"sop_id", "sop_name"};
@@ -176,20 +171,20 @@ public class sopUserAPI extends HttpServlet {
                 if (sopFieldsToRetrieve!=null) {                
                     String[] sopFieldsToRetrieveArr = sopFieldsToRetrieve.split("\\|");
                     for (String fv: sopFieldsToRetrieveArr){
-                        fieldsToRetrieve = labArr.addValueToArray1D(fieldsToRetrieve, fv);
+                        fieldsToRetrieve = LabPLANETArray.addValueToArray1D(fieldsToRetrieve, fv);
                     }
                 }
                 JSONArray  myPendingSopsByProc = new JSONArray();                 
                 userSop = new UserSop();      
                 for (String currProc: allUserProcedurePrefix) {                   
                     
-                    Object[][] userProcSops = userSop.getNotCompletedUserSOP(rdbm, internalUserID, currProc, fieldsToRetrieve);
+                    Object[][] userProcSops = userSop.getNotCompletedUserSOP(internalUserID, currProc, fieldsToRetrieve);
                     //userSops = userSop.getUserProfileFieldValues(rdbm, 
                     //        new String[]{"user_id"}, new Object[]{internalUserID}, fieldsToRetrieve, allUserProcedurePrefix);
-                    if ("LABPLANET_FALSE".equalsIgnoreCase(userProcSops[0].toString())){
-                        Object[] errMsg = labFrEnd.responseError(userProcSops, language, null);
+                    if ("LABPLANET_FALSE".equalsIgnoreCase(Arrays.toString(userProcSops[0]))){
+                        Object[] errMsg = LabPLANETFrontEnd.responseError(userProcSops, language, null);
                         response.sendError((int) errMsg[0], (String) errMsg[1]);    
-                        rdbm.closeRdbms();
+                        Rdbms.closeRdbms();
                         return; 
                     }
                     mySops = new JSONArray(); 
@@ -207,17 +202,17 @@ public class sopUserAPI extends HttpServlet {
                     mySopsList.put("procedure_name", currProc);
                     myPendingSopsByProc.add(mySopsList);
                 }                
-                rdbm.closeRdbms();
+                Rdbms.closeRdbms();
                 Response.ok().build();
                 response.getWriter().write(myPendingSopsByProc.toString());                    
                 return;
             case "PROCEDURE_SOPS":    
                 usProf = new UserProfile();
-                allUserProcedurePrefix = labArr.ConvertObjectArrayToStringArray(usProf.getAllUserProcedurePrefix(rdbm, dbUserName));
-                if ("LABPLANET_FALSE".equalsIgnoreCase(allUserProcedurePrefix[0].toString())){
-                    Object[] errMsg = labFrEnd.responseError(allUserProcedurePrefix, language, null);
+                allUserProcedurePrefix = LabPLANETArray.ConvertObjectArrayToStringArray(usProf.getAllUserProcedurePrefix(dbUserName));
+                if ("LABPLANET_FALSE".equalsIgnoreCase(allUserProcedurePrefix[0])){
+                    Object[] errMsg = LabPLANETFrontEnd.responseError(allUserProcedurePrefix, language, null);
                     response.sendError((int) errMsg[0], (String) errMsg[1]);    
-                    rdbm.closeRdbms();
+                    Rdbms.closeRdbms();
                     return;
                 }
                 fieldsToRetrieve = new String[]{"sop_id", "sop_name"};
@@ -225,21 +220,21 @@ public class sopUserAPI extends HttpServlet {
                 if (sopFieldsToRetrieve!=null) {                
                     String[] sopFieldsToRetrieveArr = sopFieldsToRetrieve.split("\\|");
                     for (String fv: sopFieldsToRetrieveArr){
-                        fieldsToRetrieve = labArr.addValueToArray1D(fieldsToRetrieve, fv);
+                        fieldsToRetrieve = LabPLANETArray.addValueToArray1D(fieldsToRetrieve, fv);
                     }
                 }
                 myPendingSopsByProc = new JSONArray();                 
                 userSop = new UserSop();      
                 for (String currProc: allUserProcedurePrefix) {                   
-                    Object[][] procSops = rdbm.getRecordFieldsByFilter(rdbm, currProc+"-config", "sop_meta_data", 
+                    Object[][] procSops = Rdbms.getRecordFieldsByFilter(currProc+"-config", "sop_meta_data", 
                             new String[]{"sop_id is not null"}, null, fieldsToRetrieve);
                     //Object[][] procSops = userSop.getNotCompletedUserSOP(rdbm, internalUserID, currProc, fieldsToRetrieve);
                     //userSops = userSop.getUserProfileFieldValues(rdbm, 
                     //        new String[]{"user_id"}, new Object[]{internalUserID}, fieldsToRetrieve, allUserProcedurePrefix);
-                    if ("LABPLANET_FALSE".equalsIgnoreCase(procSops[0].toString())){
-                        Object[] errMsg = labFrEnd.responseError(procSops, language, null);
+                    if ("LABPLANET_FALSE".equalsIgnoreCase(Arrays.toString(procSops[0]))){
+                        Object[] errMsg = LabPLANETFrontEnd.responseError(procSops, language, null);
                         response.sendError((int) errMsg[0], (String) errMsg[1]);    
-                        rdbm.closeRdbms();
+                        Rdbms.closeRdbms();
                         return;
                     }
                     mySops = new JSONArray(); 
@@ -259,25 +254,23 @@ public class sopUserAPI extends HttpServlet {
                 }                
                 Response.ok().build();
                 response.getWriter().write(myPendingSopsByProc.toString());                    
-                rdbm.closeRdbms();
+                Rdbms.closeRdbms();
                 return;
             default:                
-                errObject = labArr.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
-                errObject = labArr.addValueToArray1D(errObject, "No action linked to actionName "+actionName+" in this API");                     
-                Object[] errMsg = labFrEnd.responseError(errObject, language, null);
+                errObject = LabPLANETArray.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
+                errObject = LabPLANETArray.addValueToArray1D(errObject, "No action linked to actionName "+actionName+" in this API");                     
+                Object[] errMsg = LabPLANETFrontEnd.responseError(errObject, language, null);
                 response.sendError((int) errMsg[0], (String) errMsg[1]);    
-                rdbm.closeRdbms();                    
-                return;                   
-                
+                Rdbms.closeRdbms();                                    
             }
         }catch(Exception e){
             String errMessage = e.getMessage();
             String[] errObject = new String[0];
-            errObject = labArr.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
-            errObject = labArr.addValueToArray1D(errObject, "This call raised one unhandled exception. Error:"+errMessage);     
-            Object[] errMsg = labFrEnd.responseError(errObject, language, null);
+            errObject = LabPLANETArray.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
+            errObject = LabPLANETArray.addValueToArray1D(errObject, "This call raised one unhandled exception. Error:"+errMessage);     
+            Object[] errMsg = LabPLANETFrontEnd.responseError(errObject, language, null);
             response.sendError((int) errMsg[0], (String) errMsg[1]);    
-            rdbm.closeRdbms();        
+            Rdbms.closeRdbms();        
         }
     }
 

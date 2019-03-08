@@ -43,12 +43,10 @@ public class TestingConfigSop extends HttpServlet {
         try (PrintWriter out = response.getWriter()) {
             response.setContentType("text/html;charset=UTF-8");
             
-            LabPLANETArray labArr = new LabPLANETArray();
-
             String csvFileName = "config-Sop.txt"; String csvFileSeparator=";";
             String csvPathName = "\\\\FRANCLOUD\\fran\\LabPlanet\\testingRepository\\"+csvFileName;     
 
-            Object[][] configSpecTestingArray = labArr.convertCSVinArray(csvPathName, csvFileSeparator);                        
+            Object[][] configSpecTestingArray = LabPLANETArray.convertCSVinArray(csvPathName, csvFileSeparator);                        
      
             String fileContent = testingFileContentSections.getHtmlStyleHeader(this.getServletName());
             fileContent = fileContent + "<table>";
@@ -62,11 +60,10 @@ public class TestingConfigSop extends HttpServlet {
 //            String schemaDataName = "\"oil-pl1-data\"";
             HttpSession miSession = request.getSession(false);         
             
-            Rdbms rdbm = new Rdbms();
             //DBTransac dbObj = null;          
-            boolean isConnected = false;  
-            isConnected = rdbm.startRdbms("labplanet", "avecesllegaelmomento");
-            
+            if (Rdbms.getRdbms().startRdbms("labplanet", "avecesllegaelmomento")==null){
+                fileContent = fileContent + "<th>Error connecting to the database</th>";
+            }
             String currentUser = "labplanet";
             Integer sopId = 1;
             
@@ -77,7 +74,7 @@ public class TestingConfigSop extends HttpServlet {
             String[] fieldsToReturn = new String[2];     
 
             String userInfoId = "1"; 
-            Object[] userProfileField = usProf.getProcedureUserProfileFieldValues(rdbm, schemaDataName, userInfoId);  
+            Object[] userProfileField = usProf.getProcedureUserProfileFieldValues(schemaDataName, userInfoId);  
             fileContent = fileContent + "<tr><td>"+"getUserProfileFieldValues"+"</td>";                                   
             fileContent = fileContent + "<td>"+"filterFieldName: "+Arrays.toString(filterFieldName)+"</td>";                                   
             fileContent = fileContent + "<td>"+"filterFieldValue: "+Arrays.toString(filterFieldValue)+"</td>";                                   
@@ -89,7 +86,7 @@ public class TestingConfigSop extends HttpServlet {
                 schemaPrefix[i]=userProfileField[i].toString();
             }
             
-            Object[] userSchemas = usProf.getAllUserProcedurePrefix(rdbm, "1");
+            Object[] userSchemas = usProf.getAllUserProcedurePrefix( "1");
             fileContent = fileContent + "<tr><td>"+"getAllUserSchemaPrefix"+"</td>";  
             fileContent = fileContent + "<td>"+"UserInfoId: 1"+"</td>";                                               
             fileContent = fileContent + "<td>"+Arrays.toString(userSchemas)+"</td></tr>";    
@@ -102,34 +99,34 @@ public class TestingConfigSop extends HttpServlet {
             filterFieldValue[1]="1";
             filterFieldName[2]="understood is null";            
 
-            Object[][] userSOP = usSop.getUserProfileFieldValues(rdbm, filterFieldName, filterFieldValue, fieldsToReturn, schemaPrefix);
+            Object[][] userSOP = usSop.getUserProfileFieldValues(filterFieldName, filterFieldValue, fieldsToReturn, schemaPrefix);
             fileContent = fileContent + "<tr><td>"+"getUserProfileFieldValues"+"</td>";          
             fileContent = fileContent + "<td>"+"filterFieldName: "+Arrays.toString(filterFieldName)+"</td>";                                   
             fileContent = fileContent + "<td>"+"filterFieldValue: "+Arrays.toString(filterFieldValue)+"</td>";                                   
             fileContent = fileContent + "<td>"+"fieldsToReturn: "+Arrays.toString(fieldsToReturn)+"</td>";                                   
             fileContent = fileContent + "<td>"+"schemaPrefix: "+Arrays.toString(schemaPrefix)+"</td>";   
-            fileContent = fileContent + "<td>"+Arrays.toString(labArr.array2dTo1d(userSOP))+"</td></tr>";  
+            fileContent = fileContent + "<td>"+Arrays.toString(LabPLANETArray.array2dTo1d(userSOP))+"</td></tr>";  
             
             
 //            if ("LABPLANET_FALSE".equalsIgnoreCase(userSOP[0][0].toString())){
 //                out.println(Arrays.toString(userSOP));
 //            }
 
-            Object[][] userPendingSOPs = usSop.getNotCompletedUserSOP(rdbm, "1", "ALL", null);
+            Object[][] userPendingSOPs = usSop.getNotCompletedUserSOP("1", "ALL", null);
             fileContent = fileContent + "<tr><td>"+"getNotCompletedUserSOP"+"</td>";                                   
             fileContent = fileContent + "<td>"+"UserInfoId: 1"+"</td>";      
             fileContent = fileContent + "<td>"+"schemaPrefix: ALL"+"</td>";          
-            Object[] userPendingSOPs1D = labArr.array2dTo1d(userPendingSOPs);
+            Object[] userPendingSOPs1D = LabPLANETArray.array2dTo1d(userPendingSOPs);
             fileContent = fileContent + "<td>"+Arrays.toString(userPendingSOPs1D)+"</td></tr>";                
             
-            Object[] certificationStatus = usSop.userSopCertifiedBySopId(rdbm, "oil-pl11", "1", "58");
+            Object[] certificationStatus = usSop.userSopCertifiedBySopId("oil-pl11", "1", "58");
             fileContent = fileContent + "<tr><td>"+"userSopCertifiedBySopId"+"</td>";                                   
             fileContent = fileContent + "<td>"+"schemaPrefix: "+"oil-pl11"+"</td>";  
             fileContent = fileContent + "<td>"+"UserInfoId: 1"+"</td>";      
             fileContent = fileContent + "<td>"+"SopId: 58"+"</td>";      
             fileContent = fileContent + "<td>"+Arrays.toString(certificationStatus)+"</td></tr>";           
 
-            certificationStatus = usSop.userSopCertifiedBySopId(rdbm, "oil-pl1", "1", "58");
+            certificationStatus = usSop.userSopCertifiedBySopId("oil-pl1", "1", "58");
             fileContent = fileContent + "<tr><td>"+"userSopCertifiedBySopId"+"</td>";                                   
             fileContent = fileContent + "<td>"+"schemaPrefix: "+"oil-pl1"+"</td>";  
             fileContent = fileContent + "<td>"+"UserInfoId: 1"+"</td>";      
@@ -141,25 +138,25 @@ public class TestingConfigSop extends HttpServlet {
             String sopName = "Demo UAT";
             
             Sop s = new Sop(sopId, sopName, 1, 1, "ACTIVE", "READ");
-            Object[][] dbGetSopIdByName = s.dbGetSopObjByName(rdbm, schemaConfigName, sopName,new String[]{"sop_id", "sop_name"});            
+            Object[][] dbGetSopIdByName = s.dbGetSopObjByName(schemaConfigName, sopName,new String[]{"sop_id", "sop_name"});            
             if ("LABPLANET_FALSE".equalsIgnoreCase(dbGetSopIdByName[0][0].toString())){
-                Object[] recordCreated = s.dbInsertSopId(rdbm, schemaConfigName, sopName);
+                Object[] recordCreated = s.dbInsertSopId(schemaConfigName, sopName);
                 fileContent = fileContent + "<tr><td>"+"dbInsertSopId"+"</td>";                                   
                 fileContent = fileContent + "<td>"+"schemaConfigName: "+schemaConfigName+"</td>";  
                 fileContent = fileContent + "<td>"+"sopName:"+sopName+"</td>";      
                 fileContent = fileContent + "<td>"+"[sop_id, sop_name]"+"</td>";      
                 fileContent = fileContent + "<td>"+Arrays.toString(recordCreated)+"</td></tr>";                  
             }
-            dbGetSopIdByName = s.dbGetSopObjByName(rdbm, schemaConfigName, sopName,new String[]{"sop_id", "sop_name"});
+            dbGetSopIdByName = s.dbGetSopObjByName(schemaConfigName, sopName,new String[]{"sop_id", "sop_name"});
             fileContent = fileContent + "<tr><td>"+"dbGetSopObjByName"+"</td>";                                   
             fileContent = fileContent + "<td>"+"schemaConfigName: "+schemaConfigName+"</td>";  
             fileContent = fileContent + "<td>"+"sopName:"+sopName+"</td>";      
             fileContent = fileContent + "<td>"+"[sop_id, sop_name]"+"</td>";      
-            Object[] dbGetSopIdByName1D = labArr.array2dTo1d(dbGetSopIdByName);
+            Object[] dbGetSopIdByName1D = LabPLANETArray.array2dTo1d(dbGetSopIdByName);
             fileContent = fileContent + "<td>"+Arrays.toString(dbGetSopIdByName1D)+"</td></tr>";                  
 
             UserSop userSop = new UserSop();
-            Object[] addSopToUserById = userSop.addSopToUserById(rdbm, schemaDataName, currentUser, sopId);
+            Object[] addSopToUserById = userSop.addSopToUserById(schemaDataName, currentUser, sopId);
             fileContent = fileContent + "<tr><td>"+"addSopToUserById"+"</td>";                                   
             fileContent = fileContent + "<td>"+"schemaDataName: "+schemaDataName+"</td>";  
             fileContent = fileContent + "<td>"+"currentUser:"+currentUser+"</td>";      
@@ -172,7 +169,7 @@ public class TestingConfigSop extends HttpServlet {
             Integer sopListRevision = 1;
             String sopListStatus = "DRAFT";            
             SopList sList = new SopList(sopListId, sopListName, sopListVersion, sopListRevision, sopListStatus, null);
-            sList.dbInsertSopList(rdbm, schemaConfigName, currentUser);
+            sList.dbInsertSopList(schemaConfigName, currentUser);
 
             sopListId = 1;
             sopListName = "My second SOP List";
@@ -199,17 +196,17 @@ public class TestingConfigSop extends HttpServlet {
             fileContent = fileContent + "<td>"+"sopName:"+sopName+"</td>";      
             fileContent = fileContent + "<td>"+Arrays.toString(addSopToSopList2)+"</td></tr>";     
 
-            sList.dbInsertSopList(rdbm, schemaConfigName, currentUser);
+            sList.dbInsertSopList(schemaConfigName, currentUser);
 
             sopsInSopList = sList.getSopListSopAssigned().length;  
-            Object[] dbUpdateSopListSopAssigned = sList.dbUpdateSopListSopAssigned(rdbm, schemaConfigName, sList.getSopListSopAssigned());
+            Object[] dbUpdateSopListSopAssigned = sList.dbUpdateSopListSopAssigned(schemaConfigName, sList.getSopListSopAssigned());
             fileContent = fileContent + "<tr><td>"+"dbUpdateSopListSopAssigned"+"</td>";                                   
             fileContent = fileContent + "<td>"+"schemaConfigName: "+schemaConfigName+"</td>";  
             fileContent = fileContent + "<td>"+"getSopListSopAssigned: "+Arrays.toString(sList.getSopListSopAssigned())+"</td>";              
             fileContent = fileContent + "<td>"+Arrays.toString(dbUpdateSopListSopAssigned)+"</td></tr>";        
 
             sopsInSopList = sList.getSopListSopAssigned().length;  
-            dbUpdateSopListSopAssigned = sList.dbUpdateSopListSopAssigned(rdbm, schemaConfigName, sList.getSopListSopAssigned());
+            dbUpdateSopListSopAssigned = sList.dbUpdateSopListSopAssigned(schemaConfigName, sList.getSopListSopAssigned());
             fileContent = fileContent + "<tr><td>"+"dbUpdateSopListSopAssigned"+"</td>";                                   
             fileContent = fileContent + "<td>"+"schemaConfigName: "+schemaConfigName+"</td>";  
             fileContent = fileContent + "<td>"+"getSopListSopAssigned: "+Arrays.toString(sList.getSopListSopAssigned())+"</td>";              
@@ -227,7 +224,7 @@ public class TestingConfigSop extends HttpServlet {
                     fileWriter.write(fileContent);
                     fileWriter.flush();
                 } 
-            rdbm.closeRdbms();
+            Rdbms.closeRdbms();
           
         } catch (SQLException ex) {
             Logger.getLogger(TestingConfigSop.class.getName()).log(Level.SEVERE, null, ex);

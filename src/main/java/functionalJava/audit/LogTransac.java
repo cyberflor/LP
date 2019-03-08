@@ -46,14 +46,14 @@ public class LogTransac {
      * @param level
  */
     public void addCall(String methodName, String[] mainInputArguments, Object[] mainOutput, Integer level){        
-        LabPLANETArray labArr = new LabPLANETArray();
+        
         Object[] newCalledFunctions = new Object[1];
 //        JSONArray mJSONArray;
 //        mJSONArray = new JSONArray(mainInputArguments);
         
         newCalledFunctions[0] = methodName; newCalledFunctions[1] = mainInputArguments; newCalledFunctions[2] = mainOutput;
         
-        this.calledFunctions = labArr.addColumnToArray2D(this.calledFunctions, newCalledFunctions);
+        this.calledFunctions = LabPLANETArray.addColumnToArray2D(this.calledFunctions, newCalledFunctions);
     }
 
 /**
@@ -64,14 +64,14 @@ public class LogTransac {
      * @param mainOutput
  */
     public void addCall(String methodName, String mainInputArguments, Object mainOutput){        
-        LabPLANETArray labArr = new LabPLANETArray();
+        
         Object[] newCalledFunctions = new Object[1];
 //        JSONArray mJSONArray;
 //        mJSONArray = new JSONArray(mainInputArguments);
         
         newCalledFunctions[0] = methodName; newCalledFunctions[1] = mainInputArguments; newCalledFunctions[2] = mainOutput;
         
-        this.calledFunctions = labArr.addColumnToArray2D(calledFunctions, newCalledFunctions);
+        this.calledFunctions = LabPLANETArray.addColumnToArray2D(calledFunctions, newCalledFunctions);
     }
 /**
  * UNDER DEVELOPMENT

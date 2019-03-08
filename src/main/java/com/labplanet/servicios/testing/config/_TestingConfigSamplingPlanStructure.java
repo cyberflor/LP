@@ -39,15 +39,13 @@ public class _TestingConfigSamplingPlanStructure extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
             response.setContentType("text/html;charset=UTF-8");
-            Rdbms rdbm = new Rdbms();            
             _ConfigSamplingPlanForSpec smpPlan = new _ConfigSamplingPlanForSpec();
-            boolean isConnected = false;
-            isConnected = rdbm.startRdbms("labplanet", "LabPlanet");
+
+            if (Rdbms.getRdbms().startRdbms("labplanet", "avecesllegaelmomento")==null){out.println("Connection to the database not established");return;}
                 
             Integer numTesting = 1;
             Integer inumTesting = 0;
             Object[][] configSamplingPlanTestingArray = new Object[numTesting][6];
-            LabPLANETArray labArr = new LabPLANETArray();
             String userName="1"; 
             String userRole="oil1plant_analyst";
 
@@ -57,12 +55,12 @@ public class _TestingConfigSamplingPlanStructure extends HttpServlet {
                 String schemaPrefix="oil-pl1";
                 String actionName="NEWSAMPLINGDETAIL";
                 String samplingPlan = "84";
-                fieldName = labArr.addValueToArray1D(fieldName, "analysis");
-                fieldValue = labArr.addValueToArray1D(fieldValue, "pH");
-                fieldName = labArr.addValueToArray1D(fieldName, "method_name");
-                fieldValue = labArr.addValueToArray1D(fieldValue, "pH method");
-                fieldName = labArr.addValueToArray1D(fieldName, "method_version");
-                fieldValue = labArr.addValueToArray1D(fieldValue, 2);
+                fieldName = LabPLANETArray.addValueToArray1D(fieldName, "analysis");
+                fieldValue = LabPLANETArray.addValueToArray1D(fieldValue, "pH");
+                fieldName = LabPLANETArray.addValueToArray1D(fieldName, "method_name");
+                fieldValue = LabPLANETArray.addValueToArray1D(fieldValue, "pH method");
+                fieldName = LabPLANETArray.addValueToArray1D(fieldName, "method_version");
+                fieldValue = LabPLANETArray.addValueToArray1D(fieldValue, 2);
                 configSamplingPlanTestingArray[inumTesting][0]=schemaPrefix;
                 configSamplingPlanTestingArray[inumTesting][1]=samplingPlan;
                 configSamplingPlanTestingArray[inumTesting][2]=userName;
@@ -109,7 +107,7 @@ public class _TestingConfigSamplingPlanStructure extends HttpServlet {
                         if (configSamplingPlanTestingArray[i][3]!=null){fieldName = (String[]) configSamplingPlanTestingArray[i][3];}              
                         if (configSamplingPlanTestingArray[i][4]!=null){fieldValue = (Object[]) configSamplingPlanTestingArray[i][4];}                         
                         try {
-                            dataSample = smpPlan.newSamplingPlanDetailRecord(rdbm, schemaPrefix, userName, userRole, fieldName, fieldValue);
+                            dataSample = smpPlan.newSamplingPlanDetailRecord(schemaPrefix, userName, userRole, fieldName, fieldValue);
                         } catch (IllegalArgumentException ex) {
                             Logger.getLogger(_TestingConfigSamplingPlanStructure.class.getName()).log(Level.SEVERE, null, ex);
                         }
@@ -123,7 +121,7 @@ public class _TestingConfigSamplingPlanStructure extends HttpServlet {
             out.println("</table>");        
             out.println("</body>");
             out.println("</html>");
-            rdbm.closeRdbms();
+            Rdbms.closeRdbms();
         }   catch (SQLException|IOException ex) {
                 Logger.getLogger(_TestingConfigSamplingPlanStructure.class.getName()).log(Level.SEVERE, null, ex);                           
         }                                            

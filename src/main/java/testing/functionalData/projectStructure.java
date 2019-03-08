@@ -47,10 +47,7 @@ public class projectStructure extends HttpServlet {
             response.setContentType("text/html;charset=UTF-8");
             UserMethod um = new UserMethod();
 
-            Rdbms rdbm = new Rdbms();            
-            boolean isConnected = false;
-            isConnected = rdbm.startRdbms("labplanet", "LabPlanet");
-            if (!isConnected){out.println("Connection to the database not established");return;}
+        if (Rdbms.getRdbms().startRdbms("labplanet", "avecesllegaelmomento")==null){out.println("Connection to the database not established");return;}
 
             String csvFileName = "dataProjectStructure.txt"; String csvFileSeparator=";";
             String csvPathName = "\\\\FRANCLOUD\\fran\\LabPlanet\\testingRepository\\"+csvFileName; 
@@ -60,11 +57,10 @@ public class projectStructure extends HttpServlet {
             Integer numTesting = 1;
             Integer inumTesting = 0;
             Object[][] configSpecTestingArray = new Object[numTesting][6];
-            LabPLANETArray labArr = new LabPLANETArray();
             String userName="1"; 
             String userRole="oil1plant_analyst";
             
-            configSpecTestingArray = labArr.convertCSVinArray(csvPathName, csvFileSeparator);
+            configSpecTestingArray = LabPLANETArray.convertCSVinArray(csvPathName, csvFileSeparator);
 
             String fileContent="";
             fileContent = testingFileContentSections.getHtmlStyleHeader(this.getServletName());
@@ -100,12 +96,12 @@ public class projectStructure extends HttpServlet {
                         projectTemplateVersion = Integer.parseInt(sampleTemplateInfo[1]);
                         if (configSpecTestingArray[i][3]!=null){fieldName = (String[]) configSpecTestingArray[i][4].toString().split("\\|");}              
                         if (configSpecTestingArray[i][4]!=null){fieldValue = (Object[]) configSpecTestingArray[i][5].toString().split("\\|");} 
-                        fieldValue = labArr.convertStringWithDataTypeToObjectArray((String[]) fieldValue);
+                        fieldValue = LabPLANETArray.convertStringWithDataTypeToObjectArray((String[]) fieldValue);
                         fileContent = fileContent + "<td>templateName, templateVersion, fieldNames, fieldValues</td>";
                         fileContent = fileContent + "<td>"+projectTemplate+", "+projectTemplateVersion.toString()+", "
                                 +configSpecTestingArray[i][4].toString()+", "+configSpecTestingArray[i][5].toString()+"</td>";                        
                         try {
-                            dataProject = prj.createProject(rdbm, schemaPrefix, projectTemplate, projectTemplateVersion, fieldName, fieldValue, userName, userRole);
+                            dataProject = prj.createProject(schemaPrefix, projectTemplate, projectTemplateVersion, fieldName, fieldValue, userName, userRole);
                         } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
                             Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
                         }
@@ -119,13 +115,13 @@ public class projectStructure extends HttpServlet {
                         projectTemplateVersion = Integer.parseInt(sampleTemplateInfo[1]);
                         if (configSpecTestingArray[i][3]!=null){fieldName = (String[]) configSpecTestingArray[i][4].toString().split("\\|");}              
                         if (configSpecTestingArray[i][4]!=null){fieldValue = (Object[]) configSpecTestingArray[i][5].toString().split("\\|");}   
-                        fieldValue = labArr.convertStringWithDataTypeToObjectArray((String[]) fieldValue);
+                        fieldValue = LabPLANETArray.convertStringWithDataTypeToObjectArray((String[]) fieldValue);
                         if (configSpecTestingArray[i][5]!=null){projectName = (String) configSpecTestingArray[i][6];}                           
                         fileContent = fileContent + "<td>projectName, templateName, templateVersion, fieldNames, fieldValues</td>";
                         fileContent = fileContent + "<td>"+projectName+", "+projectTemplate+", "+projectTemplateVersion.toString()+", "
                                 +configSpecTestingArray[i][4].toString()+", "+configSpecTestingArray[i][5].toString()+"</td>";                        
                         try {
-                            dataProject = prj.logProjectSample(rdbm, schemaPrefix, projectTemplate, projectTemplateVersion, fieldName, fieldValue, userName, userRole, projectName, null);
+                            dataProject = prj.logProjectSample(schemaPrefix, projectTemplate, projectTemplateVersion, fieldName, fieldValue, userName, userRole, projectName, null);
                         } catch (IllegalArgumentException ex) {
                             Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
                         }
@@ -135,13 +131,13 @@ public class projectStructure extends HttpServlet {
                         if (configSpecTestingArray[i][4]!=null){userName = (String) configSpecTestingArray[i][4];}
                         if (configSpecTestingArray[i][5]!=null){fieldName = (String[]) configSpecTestingArray[i][5].toString().split("\\|");}              
                         if (configSpecTestingArray[i][6]!=null){fieldValue = (Object[]) configSpecTestingArray[i][6].toString().split("\\|");}
-                        fieldValue = labArr.convertStringWithDataTypeToObjectArray((String[]) fieldValue);
+                        fieldValue = LabPLANETArray.convertStringWithDataTypeToObjectArray((String[]) fieldValue);
                         try {                        
-                            fieldValue = labArr.convertStringWithDataTypeToObjectArray(configSpecTestingArray[i][6].toString().split("\\|"));
+                            fieldValue = LabPLANETArray.convertStringWithDataTypeToObjectArray(configSpecTestingArray[i][6].toString().split("\\|"));
                             fileContent = fileContent + "<td>sampleId, userName, fieldNames, fieldValues</td>";
                             fileContent = fileContent + "<td>"+sampleId.toString()+", "+userName+", "
                                 +configSpecTestingArray[i][5].toString()+", "+configSpecTestingArray[i][6].toString()+"</td>";                            
-                            dataProject = prj.sampleAnalysisAddtoSample(rdbm, schemaPrefix, userName, sampleId, fieldName, fieldValue, userRole);
+                            dataProject = prj.sampleAnalysisAddtoSample(schemaPrefix, userName, sampleId, fieldName, fieldValue, userRole);
                         } catch (IllegalArgumentException ex) {
                             Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
                         }
@@ -172,7 +168,7 @@ public class projectStructure extends HttpServlet {
             fileWriter.flush();
             fileWriter.close();   
 
-            rdbm.closeRdbms();
+            Rdbms.closeRdbms();
 
             }   catch (SQLException|IOException ex) {
                     Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);   

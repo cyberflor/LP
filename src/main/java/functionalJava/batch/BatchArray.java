@@ -21,7 +21,7 @@ import javax.sql.rowset.serial.SerialException;
  *
  * @author Administrator
  */
-public class BatchArray extends Batch{
+public final class BatchArray extends Batch{
     public Integer numTotalPositions = 0;
     public Integer numRows = 0;
     public Integer numCols = 0; 
@@ -38,6 +38,8 @@ public class BatchArray extends Batch{
      * @param creator
      * @param numRows
      * @param numCols
+     * @param rowNames
+     * @param colNames
      */
     public BatchArray(String batchTemplate, Integer batchTemplateVersion, String batchName, String creator, Integer numRows, Integer numCols, Object[] rowNames, Object[] colNames){
         super(batchTemplate, batchTemplateVersion, batchName, creator);
@@ -53,6 +55,7 @@ public class BatchArray extends Batch{
     }        
     /**
      *  Creates one BatchArray object in memory
+     * @param schemaName
      * @param batchTemplate 
      * @param batchTemplateVersion
      * @param batchName
@@ -60,7 +63,7 @@ public class BatchArray extends Batch{
      * @param numRows
      * @param numCols
      */
-    public BatchArray(Rdbms rdbm, String schemaName, String batchTemplate, Integer batchTemplateVersion, String batchName, String creator, Integer numRows, Integer numCols){
+    public BatchArray(String schemaName, String batchTemplate, Integer batchTemplateVersion, String batchName, String creator, Integer numRows, Integer numCols){
         super(batchTemplate, batchTemplateVersion, batchName, creator);
         
         this.numRows = numRows;
@@ -77,7 +80,7 @@ public class BatchArray extends Batch{
 //        this.linesName=linesName;
 //        this.columnsName=columnsName;
         
-        Object[] dbCreateBatchArray = dbCreateBatchArray(rdbm, schemaName);
+        Object[] dbCreateBatchArray = dbCreateBatchArray(schemaName);
     }        
 /*
     public BatchArray() {
@@ -233,7 +236,7 @@ public class BatchArray extends Batch{
             }            
         return foundPosic; //If not found, return null             
     }     
-    public Object[] dbCreateBatchArray(Rdbms rdbm, String schemaName)
+    public Object[] dbCreateBatchArray(String schemaName)
     {
         String ermessage="";
         String functionResult = "Fail";
@@ -248,7 +251,7 @@ public class BatchArray extends Batch{
         
         schemaName = LabPLANETPlatform.buildSchemaName(schemaName, "data");
         
-        Object[] insertRecordInTable = rdbm.insertRecordInTable(rdbm, schemaName, tableName, 
+        Object[] insertRecordInTable = Rdbms.insertRecordInTable(schemaName, tableName, 
                                                 new String[]{"name", "template", "template_version", "array_num_rows",
                                                      "array_num_cols", "array_total_positions", "array_total_objects",
                                                     "array_lines_name", "array_columns_name"},
@@ -258,10 +261,10 @@ public class BatchArray extends Batch{
         //functionResult = "Added to the database";
         return insertRecordInTable;        
     }   
-    public static BatchArray dbGetBatchArray(Rdbms rdbm, String schemaName, String batchName){
+    public static BatchArray dbGetBatchArray(String schemaName, String batchName){
         schemaName = LabPLANETPlatform.buildSchemaName(schemaName, "data");
         String tableName = "batch_java";
-        Object[][] recordFieldsByFilter = rdbm.getRecordFieldsByFilter(rdbm, schemaName, tableName, 
+        Object[][] recordFieldsByFilter = Rdbms.getRecordFieldsByFilter(schemaName, tableName, 
                 new String[]{"name"}, new Object[]{batchName}, 
                 new String[]{"name", "template", "template_version", "operator" , "array_num_rows",
                     "array_num_cols", "array_total_positions", "array_total_objects",
