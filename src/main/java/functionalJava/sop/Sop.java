@@ -7,7 +7,7 @@ package functionalJava.sop;
 
 import databases.Rdbms;
 import LabPLANET.utilities.LabPLANETArray;
-import LabPLANET.utilities.LabPLANETPlatform;
+import LabPLANET.utilities.LPPlatform;
 import java.sql.SQLException;
 
 /**
@@ -69,7 +69,7 @@ public class Sop {
      */
     public Object[] dbInsertSopId( String schemaPrefix, String userInfoId) throws SQLException{
          String schemaConfigName = "config";
-         schemaConfigName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaConfigName);
+         schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, schemaConfigName);
 //        schemaPrefix = "\""+schemaPrefix+"\"";
         //requires added_on
         String[] fieldNames = new String[0];
@@ -87,11 +87,11 @@ public class Sop {
         fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, userInfoId);
 
         Object[][] dbGetSopObjByName = this.dbGetSopObjByName(schemaPrefix, this.sopName, fieldNames);
-        if ("LABPLANET_FALSE".equalsIgnoreCase(dbGetSopObjByName[0][0].toString())){        
+        if (LPPlatform.LAB_FALSE.equalsIgnoreCase(dbGetSopObjByName[0][0].toString())){        
             Object[] diagnoses = Rdbms.insertRecordInTable(schemaConfigName, tableName, fieldNames, fieldValues);
             return diagnoses;
         }else{
-            Object[] diagnoses = LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", "Sop_SopAlreadyExists", new Object[]{this.sopName, schemaPrefix});
+            Object[] diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, "Sop_SopAlreadyExists", new Object[]{this.sopName, schemaPrefix});
             return diagnoses;
         }
     }
@@ -105,7 +105,7 @@ public class Sop {
      */
     public Integer dbGetSopIdById( String schemaPrefix, Integer sopId) throws SQLException{     
         String schemaConfigName = "config";
-        schemaConfigName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaConfigName);
+        schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, schemaConfigName);
         Object[][] sopInfo = Rdbms.getRecordFieldsByFilter(schemaConfigName, tableName, 
                                                                 new String[]{"sop_id"}, new Object[]{sopId}, new String[]{"sop_id"});
         Integer getSopId = (Integer) sopInfo[0][0];
@@ -121,7 +121,7 @@ public class Sop {
      */
     public Integer dbGetSopIdByName( String schemaPrefix, String sopName) throws SQLException{
         String schemaConfigName = "config";
-        schemaConfigName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaConfigName);
+        schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, schemaConfigName);
         Object[][] sopInfo = Rdbms.getRecordFieldsByFilter(schemaConfigName, tableName, 
                                                                 new String[]{"sop_name"}, new Object[]{sopName}, new String[]{"sop_id"});
         Integer getSopId = (Integer) sopInfo[0][0];
@@ -139,7 +139,7 @@ public class Sop {
      */
     public Object[][] dbGetSopObjByName( String schemaPrefix, String sopName, String[] fields) throws SQLException{
         String schemaConfigName = "config";
-        schemaConfigName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaConfigName);
+        schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, schemaConfigName);
         Object[][] sopInfo = Rdbms.getRecordFieldsByFilter(schemaConfigName, tableName, 
                                                                 new String[]{"sop_name"}, new Object[]{sopName}, fields);
         return sopInfo;
@@ -154,15 +154,15 @@ public class Sop {
      */
     public Object[] createSop( String schemaPrefix, String sopName) throws SQLException {
         String schemaConfigName = "config";
-        schemaConfigName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaConfigName); 
+        schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, schemaConfigName); 
         String errorCode = "";        
         Object[] diagnoses = Rdbms.insertRecordInTable(schemaConfigName, "sop_meta_data", 
                             new String[]{"sop_name", "sop_version", "sop_revision"},
                             new Object[]{sopName, 1, 1});
-        if ("LABPLANET_FALSE".equals(diagnoses[0].toString() )){
+        if (LPPlatform.LAB_FALSE.equals(diagnoses[0].toString() )){
             errorCode = "Sop_SopMetaData_recordNotCreated";
             String[] fieldForInserting = LabPLANETArray.joinTwo1DArraysInOneOf1DString(new String[]{"sop_name", "sop_version", "sop_revision"}, new Object[]{sopName, 1, 1}, ":");
-            LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, new Object[]{fieldForInserting, schemaConfigName} );
+            LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, new Object[]{fieldForInserting, schemaConfigName} );
             return diagnoses;            
         }else{           
             return diagnoses;                        
@@ -181,12 +181,12 @@ public class Sop {
      */
     public Object[] updateSop( String schemaName, String schemaPrefix, String fieldName, String fieldValue, String fieldType) throws SQLException {
         String schemaConfigName = "config";
-        schemaConfigName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaConfigName);
+        schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, schemaConfigName);
         Object[] diagnoses = Rdbms.updateRecordFieldsByFilter(schemaConfigName, "sop_meta_data", 
                                         new String[]{fieldName}, new Object[]{fieldValue}, new String[]{"sop_name"}, new Object[]{sopName});
-        if ("LABPLANET_FALSE".equalsIgnoreCase(diagnoses[0].toString())){
+        if (LPPlatform.LAB_FALSE.equalsIgnoreCase(diagnoses[0].toString())){
             String errorCode = "Sop_SopMetaData_recordNotUpdated";
-            LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, new Object[]{fieldName, fieldValue, sopName, schemaConfigName} );
+            LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, new Object[]{fieldName, fieldValue, sopName, schemaConfigName} );
             return diagnoses;            
         }else{
             return diagnoses;                        

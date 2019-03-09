@@ -5,7 +5,7 @@
  */
 package functionalJava.user;
 
-import LabPLANET.utilities.LabPLANETPlatform;
+import LabPLANET.utilities.LPPlatform;
 import databases.Rdbms;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -56,7 +56,7 @@ public class UserSecurity {
                 diagnoses[1] = userExists[5];           
                 return diagnoses;
             }
-            Object[] encrypted = LabPLANETPlatform.encryptString(newEsign);
+            Object[] encrypted = LPPlatform.encryptString(newEsign);
             if (!(Boolean) encrypted[0]){
                 diagnoses[1] = encrypted[1];           
                 return diagnoses;                
@@ -104,7 +104,7 @@ public class UserSecurity {
             diagnoses[1] = userExists[0][5];           
             return diagnoses;
         }
-        Object[] decrypted = LabPLANETPlatform.decryptString((String) userExists[0][3]);
+        Object[] decrypted = LPPlatform.decryptString((String) userExists[0][3]);
         if (!(Boolean) decrypted[0]){
             diagnoses[1] = decrypted[1];           
             return diagnoses;                

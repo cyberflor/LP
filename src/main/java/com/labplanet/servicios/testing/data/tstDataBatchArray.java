@@ -7,7 +7,7 @@ package com.labplanet.servicios.testing.data;
 
 import LabPLANET.utilities.LabPLANETArray;
 import LabPLANET.utilities.LPNulls;
-import LabPLANET.utilities.LabPLANETPlatform;
+import LabPLANET.utilities.LPPlatform;
 import databases.Rdbms;
 import functionalJava.analysis.UserMethod;
 import functionalJava.batch.DataBatch;
@@ -83,7 +83,7 @@ public class tstDataBatchArray extends HttpServlet {
                 String[] orderBy=null;                    String[] groupBy=null;
                 String[] fieldsToRetrieve=null;   
                 String functionBeingTested="";                     
-                LabPLANETPlatform LabPLANETPlatform = new LabPLANETPlatform();
+                LPPlatform LabPLANETPlatform = new LPPlatform();
                 Object[] dataSample2Din1D = new Object[0];
 
                 if (configSpecTestingArray[i][1]!=null){functionBeingTested = (String) configSpecTestingArray[i][1];}
@@ -97,7 +97,7 @@ public class tstDataBatchArray extends HttpServlet {
                 if (configSpecTestingArray[i][9]!=null){orderBy = (String[]) configSpecTestingArray[i][9].toString().split("\\|");}else{orderBy = new String[0];}
                 if (configSpecTestingArray[i][10]!=null){groupBy = (String[]) configSpecTestingArray[i][10].toString().split("\\|");}else{groupBy = new String[0];}
                 
-                LabPLANETPlatform labPlat = new LabPLANETPlatform();                   
+                LPPlatform labPlat = new LPPlatform();                   
 /*                String[] whereFieldsNameArr = new String[]{"status in|"};
                 Object[] whereFieldsValueArr = null;
                 Object[] recEncrypted = labPlat.encryptString("RECEIVED");

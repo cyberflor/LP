@@ -8,7 +8,7 @@ package functionalJava.sop;
 import databases.Rdbms;
 import functionalJava.user.UserProfile;
 import LabPLANET.utilities.LabPLANETArray;
-import LabPLANET.utilities.LabPLANETPlatform;
+import LabPLANET.utilities.LPPlatform;
 import functionalJava.parameter.Parameter;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -61,12 +61,12 @@ public class UserSop {
                 
         String schemaConfigName = "config";
         Object[] diagnoses = new Object[0];
-        schemaConfigName = LabPLANETPlatform.buildSchemaName(schemaPrefixName, "config");
+        schemaConfigName = LPPlatform.buildSchemaName(schemaPrefixName, "config");
         String actionEnabledUserSopCertification = Parameter.getParameterBundle(schemaConfigName, "actionEnabledUserSopCertification"); 
         
         UserProfile usProf = new UserProfile();
         Object[] userSchemas = (Object[]) usProf.getAllUserProcedurePrefix(userInfoId);
-        if ("LABPLANET_FALSE".equalsIgnoreCase(userSchemas[0].toString())){
+        if (LPPlatform.LAB_FALSE.equalsIgnoreCase(userSchemas[0].toString())){
             return LabPLANETArray.array1dTo2d(userSchemas, userSchemas.length);
         }        
         Boolean schemaIsCorrect = false;
@@ -75,7 +75,7 @@ public class UserSop {
         }
         if (!schemaIsCorrect){
             String errorCode = "UserSop_UserWithNoRolesForThisGivenSchema";
-            diagnoses = LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, new Object[]{userInfoId, schemaPrefixName});
+            diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, new Object[]{userInfoId, schemaPrefixName});
             diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, "ERROR");
             diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, Parameter.getParameterBundle(schemaConfigName, "userSopCertificationLevelImage_ERROR"));
             return diagnoses;
@@ -96,26 +96,26 @@ public class UserSop {
         filterFieldName[1]=SopIdFieldName;
         filterFieldValue[1]=SopIdFieldValue;                
         Object[][] getUserProfileFieldValues = getUserProfileFieldValues(filterFieldName, filterFieldValue, fieldsToReturn, userSchema);   
-        if ("LABPLANET_FALSE".equalsIgnoreCase(getUserProfileFieldValues[0][0].toString())){
+        if (LPPlatform.LAB_FALSE.equalsIgnoreCase(getUserProfileFieldValues[0][0].toString())){
             diagnoses = LabPLANETArray.array2dTo1d(getUserProfileFieldValues);
             diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, "ERROR");
             return diagnoses;
         }
         if (getUserProfileFieldValues.length<=0){
-            diagnoses = LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", "UserSop_SopNotAssignedToThisUser", new Object[]{SopIdFieldValue, userInfoId, schemaPrefixName});
+            diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, "UserSop_SopNotAssignedToThisUser", new Object[]{SopIdFieldValue, userInfoId, schemaPrefixName});
             diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, "ERROR");
             diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, Parameter.getParameterBundle(schemaConfigName, "userSopCertificationLevelImage_NotAssigned"));
             return diagnoses;
         }
         if (getUserProfileFieldValues[0][3].toString().contains("GREEN")){
-            diagnoses = LabPLANETPlatform.trapErrorMessage("LABPLANET_TRUE", "UserSop_SopNotAssignedToThisUser", 
+            diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, "UserSop_SopNotAssignedToThisUser", 
                     new Object[]{userInfoId, SopIdFieldValue, schemaPrefixName, "current status is "+getUserProfileFieldValues[0][2].toString()+" and the light is "+getUserProfileFieldValues[0][3].toString()});
             diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, "PASS");
             diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, Parameter.getParameterBundle(schemaConfigName, "userSopCertificationLevelImage_Certified"));
             return diagnoses;
         }
         else{
-            diagnoses = LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", "UserSop_UserNotCertifiedForSop", new Object[]{userInfoId, SopIdFieldValue, schemaPrefixName});
+            diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, "UserSop_UserNotCertifiedForSop", new Object[]{userInfoId, SopIdFieldValue, schemaPrefixName});
             diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, "NOTPASS");
             diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, Parameter.getParameterBundle(schemaConfigName, "userSopCertificationLevelImage_NotCertified"));
             return diagnoses;
@@ -140,7 +140,7 @@ public class UserSop {
             userSchemas[0]=schemaPrefixName;
         }
 
-        if ("LABPLANET_FALSE".equalsIgnoreCase(userSchemas[0].toString())){
+        if (LPPlatform.LAB_FALSE.equalsIgnoreCase(userSchemas[0].toString())){
             return LabPLANETArray.array1dTo2d(userSchemas, userSchemas.length);
         }
         String[] filterFieldName = new String[2];
@@ -211,7 +211,7 @@ public class UserSop {
                                                         new String[]{"procedure", "version"}, new Object[]{procedure, procVersion}, 
                                                         new String[]{"sop_mode", "certify_management", "enable_recertification", "procedure"});
         
-        if ("LABPLANET_FALSE".equalsIgnoreCase(procBusinessRule[0][0].toString())){return diagnoses;}
+        if (LPPlatform.LAB_FALSE.equalsIgnoreCase(procBusinessRule[0][0].toString())){return diagnoses;}
         
         sopMode = (String) procBusinessRule[0][0];
         certifyManagement = (Boolean) procBusinessRule[0][1];
@@ -316,7 +316,7 @@ public class UserSop {
         Object[] diagnoses = new Object[0];
         
         if (fieldsToReturn.length<=0){
-            diagnoses = LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", "Rdbms_NotFilterSpecified", new Object[]{tableName, schemaPrefix});
+            diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, "Rdbms_NotFilterSpecified", new Object[]{tableName, schemaPrefix});
             String[][] getUserProfileNEW = new String[1][2];
             getUserProfileNEW[0][0]="ERROR";
             getUserProfileNEW[0][1]="No fields specified for fieldsToReturn";
@@ -370,7 +370,7 @@ public class UserSop {
             }
             return getUserProfileNEW;                
         }catch(SQLException ex){}
-            Object[] diagErr =  LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", "Rdbms_NoRecordsFound", 
+            Object[] diagErr =  LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, "Rdbms_NoRecordsFound", 
                     new Object[]{tableName, query, Arrays.toString(schemaPrefix)});
             return LabPLANETArray.array1dTo2d(diagErr, diagErr.length);
     }
@@ -379,7 +379,7 @@ public class UserSop {
 
         
         String schemaDataName = "data";
-        schemaName = LabPLANETPlatform.buildSchemaName(schemaDataName, schemaName);
+        schemaName = LPPlatform.buildSchemaName(schemaDataName, schemaName);
         
         String query = "";
         schemaName = "\""+schemaName+"\"";
@@ -443,23 +443,23 @@ public class UserSop {
     public Object[] addSopToUserInternalLogic( String schemaName, String userInfoId, String sopIdFieldName, Object sopIdFieldValue){
         
         String schemaDataName = "data";
-        schemaName = LabPLANETPlatform.buildSchemaName(schemaName, schemaDataName);
+        schemaName = LPPlatform.buildSchemaName(schemaName, schemaDataName);
         String diagnoses = "";
         Sop s = null;
         tableName = "user_sop";
         Object[] exists = Rdbms.existsRecord(schemaName, tableName, new String[]{"user_id", sopIdFieldName}, new Object[]{userInfoId, sopIdFieldValue});
                 
-        if ("LABPLANET_TRUE".equalsIgnoreCase(exists[0].toString())){
+        if (LPPlatform.LAB_TRUE.equalsIgnoreCase(exists[0].toString())){
             String messageCode = "UserSop_sopAlreadyAssignToUser";
             Object[] errorDetailVariables = new Object[0] ;
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, sopIdFieldValue);          
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, userInfoId);          
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaName);          
-            return LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", diagnoses, javaDocValues);
+            return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, diagnoses, javaDocValues);
         }
         
         Object[] diagnosis = Rdbms.insertRecordInTable(schemaName, "user_sop", new String[]{"user_id", sopIdFieldName}, new Object[]{userInfoId, sopIdFieldValue});
-        if ("LABPLANET_FALSE".equalsIgnoreCase(diagnosis[0].toString())){
+        if (LPPlatform.LAB_FALSE.equalsIgnoreCase(diagnosis[0].toString())){
             return diagnosis;
         }else{
             String messageCode = "UserSop_sopAddedToUser";
@@ -467,7 +467,7 @@ public class UserSop {
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, sopIdFieldValue);          
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, userInfoId);          
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaName);          
-            return LabPLANETPlatform.trapErrorMessage("LABPLANET_TRUE", diagnoses, javaDocValues);
+            return LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, diagnoses, javaDocValues);
         }
     }
     

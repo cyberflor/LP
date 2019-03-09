@@ -15,6 +15,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import LabPLANET.utilities.LPPlatform;
 
 /**
  *
@@ -41,7 +42,7 @@ public class TestingResultCheckSpecQuantitative extends HttpServlet {
             Object[][] QuantitSpecTestingArray = new Object[numTesting][11];
 
             if (inumTesting<numTesting){
-                QuantitSpecTestingArray[inumTesting][0]="LABPLANET_FALSE";
+                QuantitSpecTestingArray[inumTesting][0]=LPPlatform.LAB_FALSE;
                 QuantitSpecTestingArray[inumTesting][1]="specLimits_quantitativeMinSpecMaxSpec_MinSpecGreaterOrEqualToMaxSpec";
                 QuantitSpecTestingArray[inumTesting][2]=BigDecimal.valueOf(Double.valueOf("4.000000000000000000001"));            
                 QuantitSpecTestingArray[inumTesting][3]=BigDecimal.valueOf(Double.valueOf("4"));  
@@ -61,7 +62,7 @@ public class TestingResultCheckSpecQuantitative extends HttpServlet {
                 inumTesting++;}
               
             if (inumTesting<numTesting){
-                QuantitSpecTestingArray[inumTesting][0]="LABPLANET_FALSE";
+                QuantitSpecTestingArray[inumTesting][0]=LPPlatform.LAB_FALSE;
                 QuantitSpecTestingArray[inumTesting][1]="specLimits_quantitativeMinSpecMaxSpec_MinSpecGreaterOrEqualToMaxSpec";
                 QuantitSpecTestingArray[inumTesting][2]=BigDecimal.valueOf(Double.valueOf("4.188888888888888888888887"));            
                 QuantitSpecTestingArray[inumTesting][3]=null;  
@@ -271,7 +272,7 @@ public class TestingResultCheckSpecQuantitative extends HttpServlet {
                 inumTesting++;}            
 
             if (inumTesting<numTesting){
-                QuantitSpecTestingArray[inumTesting][0]="LABPLANET_FALSE";
+                QuantitSpecTestingArray[inumTesting][0]=LPPlatform.LAB_FALSE;
                 QuantitSpecTestingArray[inumTesting][1]="specLimits_quantitativeMinSpecMaxSpec_MinSpecGreaterOrEqualToMaxSpec";                
                 QuantitSpecTestingArray[inumTesting][2]=BigDecimal.valueOf(Float.valueOf("4.51"));        
                 QuantitSpecTestingArray[inumTesting][3]=BigDecimal.valueOf(Float.valueOf("4"));

@@ -7,7 +7,7 @@ package com.labplanet.servicios.testing.Platform;
 
 import LabPLANET.utilities.LabPLANETArray;
 import LabPLANET.utilities.LPNulls;
-import LabPLANET.utilities.LabPLANETPlatform;
+import LabPLANET.utilities.LPPlatform;
 import databases.Rdbms;
 import databases.SqlStatement;
 import functionalJava.analysis.UserMethod;
@@ -84,7 +84,7 @@ public class DBActions extends HttpServlet {
                     String[] orderBy=null;                    String[] groupBy=null;
                     String[] fieldsToRetrieve=null;   
                     String functionBeingTested="";                     
-                    LabPLANETPlatform LabPlat = new LabPLANETPlatform();
+                    LPPlatform LabPlat = new LPPlatform();
                     Object[] dataSample2Din1D = new Object[0];
 
                     if (configSpecTestingArray[i][1]!=null){functionBeingTested = (String) configSpecTestingArray[i][1];}
@@ -100,7 +100,7 @@ public class DBActions extends HttpServlet {
 
     /*                String[] whereFieldsNameArr = new String[]{"status in|"};
                     Object[] whereFieldsValueArr = null;
-                    Object[] recEncrypted = LabPLANETPlatform.encryptString("RECEIVED");
+                    Object[] recEncrypted = LPPlatform.encryptString("RECEIVED");
                     whereFieldsValueArr=LabPLANETArray.addValueToArray1D(whereFieldsValueArr, "RECEIVED|"+recEncrypted[1]);                
     */                
                     Object[] fieldValues = LabPLANETArray.convertStringWithDataTypeToObjectArray(fieldValue);
@@ -108,8 +108,8 @@ public class DBActions extends HttpServlet {
                         //whereFieldsNameArr=LabPLANETArray.addValueToArray1D(whereFieldsNameArr, whereFieldsName.split("\\|"));
                         //whereFieldsValueArr = LabPLANETArray.addValueToArray1D(whereFieldsValueArr, LabPLANETArray.convertStringWithDataTypeToObjectArray(whereFieldsValue.split("\\|")));                                                              
                         for (int iFields=0; iFields<fieldName.length; iFields++){
-                            if (LabPLANETPlatform.isEncryptedField(schemaPrefix, "sample", fieldName[iFields])){                
-                                HashMap<String, String> hm = LabPLANETPlatform.encryptEncryptableFieldsAddBoth(fieldName[iFields], fieldValues[iFields].toString());
+                            if (LPPlatform.isEncryptedField(schemaPrefix, "sample", fieldName[iFields])){                
+                                HashMap<String, String> hm = LPPlatform.encryptEncryptableFieldsAddBoth(fieldName[iFields], fieldValues[iFields].toString());
                                 fieldName[iFields]= hm.keySet().iterator().next();    
                                 SqlStatement sql = new SqlStatement();
                                 String separator = sql.inSeparator(fieldName[iFields]);
@@ -149,7 +149,7 @@ public class DBActions extends HttpServlet {
                             }else{
                                 dataSample2D = Rdbms.getRecordFieldsByFilter(schemaPrefix, tableName, fieldName, fieldValues, fieldsToRetrieve);
                             }
-                            if (!"LABPLANET_FALSE".equalsIgnoreCase(dataSample2D[0][0].toString())){
+                            if (!LPPlatform.LAB_FALSE.equalsIgnoreCase(dataSample2D[0][0].toString())){
                                 dataSample2Din1D =  LabPLANETArray.array2dTo1d(dataSample2D);
                             }    
                             break;
@@ -163,7 +163,7 @@ public class DBActions extends HttpServlet {
                             errorDetail[0]="The function <*1*> is not one of the declared ones therefore nothing can be performed for it. Functions are: <*2*>";
                             errorDetail = LabPLANETArray.addValueToArray1D(errorDetail, functionBeingTested);
                             errorDetail = LabPLANETArray.addValueToArray1D(errorDetail, Arrays.toString(allFunctionsBeingTested));
-                            Object[] trapErrorMessage = LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetail);            
+                            Object[] trapErrorMessage = LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetail);            
                             dataSample2D = LabPLANETArray.array1dTo2d(trapErrorMessage, trapErrorMessage.length);
                             break;
                     }        
@@ -174,7 +174,7 @@ public class DBActions extends HttpServlet {
                     if (dataSample2D[0].length>3){fileContent = fileContent + ". "+LPNulls.replaceNull((String) dataSample2D[0][3]);}
                     if (dataSample2D[0].length>4){fileContent = fileContent + ". "+LPNulls.replaceNull((String) dataSample2D[0][4]);}                
                     if (dataSample2D[0].length>5){fileContent = fileContent + ". "+LPNulls.replaceNull((String) dataSample2D[0][5]);}
-                    if ( ("GETRECORDFIELDSBYFILTER".equalsIgnoreCase(functionBeingTested)) && (!"LABPLANET_FALSE".equalsIgnoreCase(dataSample2D[0][0].toString())) ){
+                    if ( ("GETRECORDFIELDSBYFILTER".equalsIgnoreCase(functionBeingTested)) && (!LPPlatform.LAB_FALSE.equalsIgnoreCase(dataSample2D[0][0].toString())) ){
                         fileContent = fileContent + "</td><td>"+Arrays.toString(dataSample2Din1D);
                     }
 

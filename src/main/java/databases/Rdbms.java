@@ -7,7 +7,7 @@ package databases;
 
 import com.sun.rowset.CachedRowSetImpl;
 import LabPLANET.utilities.LabPLANETArray;
-import LabPLANET.utilities.LabPLANETPlatform;
+import LabPLANET.utilities.LPPlatform;
 import java.sql.Array;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -120,7 +120,7 @@ public class Rdbms {
    
     public static void setTransactionId(String schemaName){
         
-        schemaName = LabPLANETPlatform.buildSchemaName(schemaName, "");
+        schemaName = LPPlatform.buildSchemaName(schemaName, "");
         String qry = "select nextval('"+ schemaName + ".transaction_id')";
         Integer transactionIdNextVal = prepUpQuery(qry, null);
         
@@ -209,13 +209,13 @@ public class Rdbms {
                 errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, keyFieldValue.toString());
                 errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, tableName);
                 errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaName);
-                return (String[]) LabPLANETPlatform.trapErrorMessage("LABPLANET_TRUE", rdbms.errorCode, errorDetailVariables);                
+                return (String[]) LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, rdbms.errorCode, errorDetailVariables);                
             }else{
                 rdbms.errorCode = "Rbdms_existsRecord_RecordNotFound";
                 errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, keyFieldValue.toString());
                 errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, tableName);
                 errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaName);
-                return (String[]) LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", rdbms.errorCode, errorDetailVariables);                
+                return (String[]) LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, rdbms.errorCode, errorDetailVariables);                
             }
         }catch (SQLException er) {
             String ermessage=er.getLocalizedMessage()+er.getCause();
@@ -223,7 +223,7 @@ public class Rdbms {
             rdbms.errorCode = "Rdbms_dtSQLException";
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, ermessage);
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, query);
-            return (Object[]) LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", rdbms.errorCode, errorDetailVariables);                                       
+            return (Object[]) LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, rdbms.errorCode, errorDetailVariables);                                       
         }                    
     }
 
@@ -243,7 +243,7 @@ public class Rdbms {
            rdbms.errorCode = "Rdbms_NotFilterSpecified";
            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, tableName);
            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaName);          
-           return (Object[]) LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", rdbms.errorCode, errorDetailVariables);                         
+           return (Object[]) LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, rdbms.errorCode, errorDetailVariables);                         
         }
         SqlStatement sql = new SqlStatement(); 
         HashMap<String, Object[]> hmQuery = sql.buildSqlStatement("SELECT", schemaName, tableName,
@@ -272,7 +272,7 @@ public class Rdbms {
                 if(keyFieldValues[i] instanceof String){                    
                     Object[] fieldsIN = keyFieldValues[i].toString().split(separator);
                     int fINlen=fieldsIN.length;
-                    LabPLANETPlatform labPlat = new LabPLANETPlatform();
+                    LPPlatform labPlat = new LPPlatform();
                     
                     //Object[] decrypted = labPlat.decryptString("fS￵ￃﾺﾀ?p￦￠￝ﾅ\\ﾭﾡ￡");
                     //"fS￵ￃﾺﾀ?p￦￠￝ﾅ\ﾭﾡ￡"
@@ -297,13 +297,13 @@ public class Rdbms {
                 errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, Arrays.toString(filteredValues));
                 errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, tableName);
                 errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaName);
-                return LabPLANETPlatform.trapErrorMessage("LABPLANET_TRUE", rdbms.errorCode, errorDetailVariables);                
+                return LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, rdbms.errorCode, errorDetailVariables);                
             }else{
                 rdbms.errorCode = "Rbdms_existsRecord_RecordNotFound";
                 errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, Arrays.toString(filteredValues));
                 errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, tableName);
                 errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaName);
-                return LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", rdbms.errorCode, errorDetailVariables);                
+                return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, rdbms.errorCode, errorDetailVariables);                
             }
         }catch (SQLException er) {
             String ermessage=er.getLocalizedMessage()+er.getCause();
@@ -311,7 +311,7 @@ public class Rdbms {
             rdbms.errorCode = "Rdbms_dtSQLException";
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, ermessage);
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, query);
-            return (Object[]) LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", rdbms.errorCode, errorDetailVariables);                         
+            return (Object[]) LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, rdbms.errorCode, errorDetailVariables);                         
         }                    
     }
 
@@ -327,13 +327,13 @@ public class Rdbms {
      */
     public static String getRecordFieldsByFilterJSON(String schemaName, String tableName, String[] whereFieldNames, Object[] whereFieldValues, String[] fieldsToRetrieve, String[] fieldsSortBy){
         String[] errorDetailVariables = new String[0];        
-        schemaName = LabPLANETPlatform.buildSchemaName(schemaName, "");
+        schemaName = LPPlatform.buildSchemaName(schemaName, "");
         
         if (whereFieldNames.length==0){
            rdbms.errorCode = "Rdbms_NotFilterSpecified";
            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, tableName);
            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaName);          
-           Object[] diagnosesError = (Object[]) LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", rdbms.errorCode, errorDetailVariables);                         
+           Object[] diagnosesError = (Object[]) LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, rdbms.errorCode, errorDetailVariables);                         
            return null;
            //return LabPLANETArray.array1dTo2d(diagnosesError, diagnosesError.length);
         }
@@ -393,7 +393,7 @@ public class Rdbms {
                 errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, tableName);
                 errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, Arrays.toString(whereFieldValues) );
                 errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaName);
-                Object[] diagnosesError = (Object[]) LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", rdbms.errorCode, errorDetailVariables);                         
+                Object[] diagnosesError = (Object[]) LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, rdbms.errorCode, errorDetailVariables);                         
                 return null;
                 //return LabPLANETArray.array1dTo2d(diagnosesError, diagnosesError.length);
             }
@@ -403,7 +403,7 @@ public class Rdbms {
             rdbms.errorCode = "Rdbms_dtSQLException";
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, ermessage);
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, query);
-            Object[] diagnosesError = (Object[]) LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", rdbms.errorCode, errorDetailVariables);                         
+            Object[] diagnosesError = (Object[]) LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, rdbms.errorCode, errorDetailVariables);                         
             return null;
             //return LabPLANETArray.array1dTo2d(diagnosesError, diagnosesError.length);
         }                    
@@ -422,13 +422,13 @@ public class Rdbms {
         
         Object[][] diagnoses = new Object[1][7];                
         String[] errorDetailVariables = new String[0];        
-        schemaName = LabPLANETPlatform.buildSchemaName(schemaName, "");
+        schemaName = LPPlatform.buildSchemaName(schemaName, "");
         
         if (whereFieldNames.length==0){
            Rdbms.rdbms.errorCode = "Rdbms_NotFilterSpecified";
            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, tableName);
            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaName);          
-           Object[] diagnosesError = (Object[]) LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", Rdbms.rdbms.errorCode, errorDetailVariables);                         
+           Object[] diagnosesError = (Object[]) LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, Rdbms.rdbms.errorCode, errorDetailVariables);                         
            return LabPLANETArray.array1dTo2d(diagnosesError, diagnosesError.length);
         }        
         
@@ -467,7 +467,7 @@ public class Rdbms {
                 errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, tableName);
                 errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, Arrays.toString(whereFieldValues) );
                 errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaName);
-                Object[] diagnosesError = (Object[]) LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", rdbms.errorCode, errorDetailVariables);                         
+                Object[] diagnosesError = (Object[]) LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, rdbms.errorCode, errorDetailVariables);                         
                 return LabPLANETArray.array1dTo2d(diagnosesError, diagnosesError.length);
             }
         }catch (SQLException er) {
@@ -476,7 +476,7 @@ public class Rdbms {
             rdbms.errorCode = "Rdbms_dtSQLException";
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, ermessage);
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, query);
-            Object[] diagnosesError = (Object[]) LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", rdbms.errorCode, errorDetailVariables);                         
+            Object[] diagnosesError = (Object[]) LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, rdbms.errorCode, errorDetailVariables);                         
             return LabPLANETArray.array1dTo2d(diagnosesError, diagnosesError.length);
         }                    
     }
@@ -499,7 +499,7 @@ public class Rdbms {
            rdbms.errorCode = "Rdbms_NotFilterSpecified";
            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, tableName);
            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaName);          
-           Object[] diagnosesError = (Object[]) LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", rdbms.errorCode, errorDetailVariables);                         
+           Object[] diagnosesError = (Object[]) LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, rdbms.errorCode, errorDetailVariables);                         
            return LabPLANETArray.array1dTo2d(diagnosesError, diagnosesError.length);               
         }
         
@@ -550,7 +550,7 @@ public class Rdbms {
                 errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, Arrays.toString(whereFieldValues));
                 errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, tableName);
                 errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaName);
-                Object[] diagnosesError = (Object[]) LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", rdbms.errorCode, errorDetailVariables);                         
+                Object[] diagnosesError = (Object[]) LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, rdbms.errorCode, errorDetailVariables);                         
                 return LabPLANETArray.array1dTo2d(diagnosesError, diagnosesError.length);               
             }
         }catch (SQLException er) {
@@ -559,7 +559,7 @@ public class Rdbms {
             rdbms.errorCode = "Rdbms_dtSQLException";
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, ermessage);
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, query);
-            Object[] diagnosesError = (Object[]) LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", rdbms.errorCode, errorDetailVariables);                         
+            Object[] diagnosesError = (Object[]) LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, rdbms.errorCode, errorDetailVariables);                         
             return LabPLANETArray.array1dTo2d(diagnosesError, diagnosesError.length);               
         }                    
     }
@@ -583,7 +583,7 @@ public class Rdbms {
            rdbms.errorCode = "Rdbms_NotFilterSpecified";
            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, tableName);
            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaName);          
-           Object[] diagnosesError = (Object[]) LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", rdbms.errorCode, errorDetailVariables);                         
+           Object[] diagnosesError = (Object[]) LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, rdbms.errorCode, errorDetailVariables);                         
            return LabPLANETArray.array1dTo2d(diagnosesError, diagnosesError.length);               
         }
         SqlStatement sql = new SqlStatement(); 
@@ -643,7 +643,7 @@ public class Rdbms {
                 errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, tableName);
                 errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, Arrays.toString(whereFieldValues) );
                 errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaName);
-                Object[] diagnosesError = (Object[]) LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", rdbms.errorCode, errorDetailVariables);                         
+                Object[] diagnosesError = (Object[]) LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, rdbms.errorCode, errorDetailVariables);                         
                 return LabPLANETArray.array1dTo2d(diagnosesError, diagnosesError.length);                
             }
         }catch (SQLException er) {
@@ -652,7 +652,7 @@ public class Rdbms {
             rdbms.errorCode = "Rdbms_dtSQLException";
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, ermessage);
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, query);
-            Object[] diagnosesError = (Object[]) LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", rdbms.errorCode, errorDetailVariables);                         
+            Object[] diagnosesError = (Object[]) LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, rdbms.errorCode, errorDetailVariables);                         
             return LabPLANETArray.array1dTo2d(diagnosesError, diagnosesError.length);             
         }                    
     }
@@ -674,13 +674,13 @@ public class Rdbms {
            rdbms.errorCode = "Rdbms_NotFilterSpecified";
            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, tableName);
            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaName);          
-           return (Object[]) LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", rdbms.errorCode, errorDetailVariables);                         
+           return (Object[]) LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, rdbms.errorCode, errorDetailVariables);                         
         }
         if (fieldNames.length!=fieldValues.length){
            rdbms.errorCode = "DataSample_FieldArraysDifferentSize";
            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, Arrays.toString(fieldNames));
            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, Arrays.toString(fieldValues));
-           return (String[]) LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", rdbms.errorCode, errorDetailVariables);
+           return (String[]) LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, rdbms.errorCode, errorDetailVariables);
         }
         SqlStatement sql = new SqlStatement(); 
         HashMap<String, Object[]> hmQuery = sql.buildSqlStatement("INSERT", schemaName, tableName,
@@ -711,7 +711,7 @@ public class Rdbms {
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, query);
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, Arrays.toString(fieldValues));            
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaName);                
-            Object[] diagnosis =  LabPLANETPlatform.trapErrorMessage("LABPLANET_TRUE", rdbms.errorCode, errorDetailVariables);                         
+            Object[] diagnosis =  LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, rdbms.errorCode, errorDetailVariables);                         
             diagnosis = LabPLANETArray.addValueToArray1D(diagnosis, keyValueNewRecord);
             return diagnosis;
         } catch (SQLException er) {
@@ -720,7 +720,7 @@ public class Rdbms {
             rdbms.errorCode = "Rdbms_dtSQLException";
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, ermessage);
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, query);
-            return (Object[]) LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", rdbms.errorCode, errorDetailVariables);                         
+            return (Object[]) LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, rdbms.errorCode, errorDetailVariables);                         
         }
     }
     
@@ -744,7 +744,7 @@ public class Rdbms {
            rdbms.errorCode = "Rdbms_NotFilterSpecified";
            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, tableName);
            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaName);          
-           return (Object[]) LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", rdbms.errorCode, errorDetailVariables);                         
+           return (Object[]) LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, rdbms.errorCode, errorDetailVariables);                         
         }
         SqlStatement sql = new SqlStatement();       
 //        for (Object fn: whereFieldValues){
@@ -762,19 +762,19 @@ public class Rdbms {
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, tableName);
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, Arrays.toString(whereFieldValues));
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaName);     
-            return (Object[]) LabPLANETPlatform.trapErrorMessage("LABPLANET_TRUE", rdbms.errorCode, errorDetailVariables);   
+            return (Object[]) LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, rdbms.errorCode, errorDetailVariables);   
         }else if(numr==-999){
             rdbms.errorCode = "Rdbms_dtSQLException";
             String ermessage="The database cannot perform this sql statement: Schema: "+schemaName+". Table: "+tableName+". Query: "+query+", By the values "+ Arrays.toString(keyFieldValueNew);
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, ermessage);
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, query);
-            return (Object[]) LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", rdbms.errorCode, errorDetailVariables);   
+            return (Object[]) LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, rdbms.errorCode, errorDetailVariables);   
         }else{   
             rdbms.errorCode = "Rdbms_NoRecordsFound";
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, tableName);
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, Arrays.toString(whereFieldValues) );
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaName);
-            return (Object[]) LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", rdbms.errorCode, errorDetailVariables);                         
+            return (Object[]) LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, rdbms.errorCode, errorDetailVariables);                         
         }
     }    
 

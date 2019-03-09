@@ -664,7 +664,7 @@ public class  LabPLANETArray {
            errorCode = "DataSample_FieldArraysDifferentSize";
            errorDetailVariables = addValueToArray1D(errorDetailVariables, Arrays.toString(arrayA));
            errorDetailVariables = addValueToArray1D(errorDetailVariables, Arrays.toString(arrayB));
-           return (String[]) LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);           
+           return (String[]) LPPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);           
         }else{
             diagnoses[0]="LABPLANET_TRUE";
         }    
@@ -686,7 +686,7 @@ public class  LabPLANETArray {
            errorCode = "LabPLANETArray_getColumnFromArray2D_ColNotFound";
            errorDetailVariables = (String[]) addValueToArray1D(errorDetailVariables, array[0].length);
            errorDetailVariables = addValueToArray1D(errorDetailVariables, colNum.toString());
-           return (String[]) LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);           
+           return (String[]) LPPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);           
         }       
         for (Integer i=0;i<array.length;i++){
             diagnoses=addValueToArray1D(diagnoses, array[colNum][i]);

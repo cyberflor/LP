@@ -7,7 +7,7 @@ package functionalJava.audit;
 
 import databases.Rdbms;
 import LabPLANET.utilities.LabPLANETArray;
-import LabPLANET.utilities.LabPLANETPlatform;
+import LabPLANET.utilities.LPPlatform;
 import LabPLANET.utilities.LabPLANETSession;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -26,7 +26,7 @@ public class SampleAudit {
 
     String classVersion = "0.1";
 //    
-//    LabPLANETPlatform labPlat = new LabPLANETPlatform();
+//    LPPlatform labPlat = new LPPlatform();
     String[] javaDocFields = new String[0];
     Object[] javaDocValues = new Object[0];
     String javaDocLineName = "";
@@ -55,7 +55,7 @@ public class SampleAudit {
         String auditTableName = "sample";
         String schemaName = "data-audit";                
         
-        schemaName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaName);                
+        schemaName = LPPlatform.buildSchemaName(schemaPrefix, schemaName);                
         
         String[] fieldNames = new String[0];
         Object[] fieldValues = new Object[0];
@@ -127,7 +127,7 @@ public class SampleAudit {
     public void sampleAuditAdd(String schemaPrefix, String action, String tableName, Integer tableId, Integer aliquotId, Integer sampleId, Integer testId, Integer resultId, Object[] auditlog, String userName, String userRole, Integer sessionId) {
         String auditTableName = "sample";
         String schemaName = "data-audit";                
-        schemaName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaName);                
+        schemaName = LPPlatform.buildSchemaName(schemaPrefix, schemaName);                
         
         String[] fieldNames = new String[0];
         Object[] fieldValues = new Object[0];
@@ -195,7 +195,7 @@ public class SampleAudit {
     public void sampleAuditAdd( String schemaPrefix, String action, String tableName, Integer tableId, Integer subaliquotId, Integer aliquotId, Integer sampleId, Integer testId, Integer resultId, Object[] auditlog, String userName, String userRole, Integer sessionId) {
         String auditTableName = "sample";
         String schemaName = "data-audit";                
-        schemaName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaName);                
+        schemaName = LPPlatform.buildSchemaName(schemaPrefix, schemaName);                
         
         String[] fieldNames = new String[0];
         Object[] fieldValues = new Object[0];
@@ -268,7 +268,7 @@ public class SampleAudit {
     public void sampleAuditAdd( String schemaPrefix, String action, String tableName, Integer tableId, Integer sampleId, Integer testId, Integer resultId, Object[] auditlog, String userName, String userRole) {
         String auditTableName = "sample";
         String schemaName = "data-audit";                
-        schemaName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaName);                
+        schemaName = LPPlatform.buildSchemaName(schemaPrefix, schemaName);                
         
         String[] fieldNames = new String[0];
         Object[] fieldValues = new Object[0];
@@ -337,7 +337,7 @@ public class SampleAudit {
     public void sampleAuditAdd( String schemaPrefix, String action, String tableName, Integer tableId, Object[] auditlog, String userName){
         String auditTableName = "sample";
         String schemaName = "data-audit";
-        schemaName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaName);                
+        schemaName = LPPlatform.buildSchemaName(schemaPrefix, schemaName);                
         
         String[] fieldNames = new String[0];
         Object[] fieldValues = new Object[0];
@@ -370,9 +370,9 @@ public class SampleAudit {
         String query = "";
         String schemaName = "data";                
     
-    LabPLANETPlatform labPlat = new LabPLANETPlatform();
+    LPPlatform labPlat = new LPPlatform();
                 
-        schemaName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaName);  
+        schemaName = LPPlatform.buildSchemaName(schemaPrefix, schemaName);  
         
         String[] sampleTblFldsArr = Rdbms.getTableFieldsArrayEj(schemaName.replace("\"", ""), "sample");
         

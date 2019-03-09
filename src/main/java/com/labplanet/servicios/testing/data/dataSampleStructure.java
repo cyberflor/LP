@@ -7,7 +7,7 @@ package com.labplanet.servicios.testing.data;
 
 import LabPLANET.utilities.LabPLANETArray;
 import LabPLANET.utilities.LPNulls;
-import LabPLANET.utilities.LabPLANETPlatform;
+import LabPLANET.utilities.LPPlatform;
 import databases.Rdbms;
 import functionalJava.ChangeOfCustody.ChangeOfCustody;
 import functionalJava.analysis.UserMethod;
@@ -103,7 +103,7 @@ public class dataSampleStructure extends HttpServlet {
             if (configSpecTestingArray[i][4]!=null){functionBeingTested = (String) configSpecTestingArray[i][4];}
                         
             fileContent = fileContent + "<td>"+i+"</td><td>"+schemaPrefix+"</td><td>"+userName+"</td><td>"+userRole+"</td><td>"+functionBeingTested+"</td>";
-            Object[] actionEnabled = LabPLANETPlatform.procActionEnabled(schemaPrefix, functionBeingTested);
+            Object[] actionEnabled = LPPlatform.procActionEnabled(schemaPrefix, functionBeingTested);
             if ("LABPLANET_FALSE".equalsIgnoreCase(actionEnabled[0].toString())){
                 if ("GETSAMPLEINFO".equalsIgnoreCase(functionBeingTested)){                
                         dataSample2D[0][0] = (String) actionEnabled[0];
@@ -117,9 +117,9 @@ public class dataSampleStructure extends HttpServlet {
                 //fileContent = fileContent + "<td>Action not allowed for the procedure "+schemaPrefix+"</td></tr>";
             }else{            
 
-                Object[] actionEnabledForRole = LabPLANETPlatform.procUserRoleActionEnabled(schemaPrefix, userRole, functionBeingTested);
+                Object[] actionEnabledForRole = LPPlatform.procUserRoleActionEnabled(schemaPrefix, userRole, functionBeingTested);
                 if ("LABPLANET_FALSE".equalsIgnoreCase(actionEnabledForRole[0].toString())){
-                    LabPLANETPlatform labPlat = new LabPLANETPlatform();
+                    LPPlatform labPlat = new LPPlatform();
                     //StackTraceElement[] elementsDev = Thread.currentThread().getStackTrace();
                     if ("GETSAMPLEINFO".equalsIgnoreCase(functionBeingTested)){                
                             dataSample2D[0][0] = (String) actionEnabledForRole[0];
@@ -298,7 +298,7 @@ public class dataSampleStructure extends HttpServlet {
                             break;   
                         case "GETSAMPLEINFO":
                             String schemaDataName = "data";
-                            schemaDataName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaDataName);                     
+                            schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, schemaDataName);                     
                             if (configSpecTestingArray[i][5]!=null){sampleId = Integer.parseInt( (String) configSpecTestingArray[i][5]);}
                             String[] fieldsToGet = (configSpecTestingArray[i][6].toString().split("\\|"));                    
                                  fileContent = fileContent + "<td>"

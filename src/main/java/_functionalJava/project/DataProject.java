@@ -6,7 +6,7 @@
 package _functionalJava.project;
 
 import LabPLANET.utilities.LabPLANETArray;
-import LabPLANET.utilities.LabPLANETPlatform;
+import LabPLANET.utilities.LPPlatform;
 import databases.DataDataIntegrity;
 import databases.Rdbms;
 import functionalJava.audit.SampleAudit;
@@ -99,7 +99,7 @@ Object[] createProject( String schemaPrefix, String projectTemplate, Integer pro
         javaDocValues = LabPLANETArray.addValueToArray1D(javaDocValues, javaDocLineName);
         javaDocFields = LabPLANETArray.addValueToArray1D(javaDocFields, "class_version");
         javaDocValues = LabPLANETArray.addValueToArray1D(javaDocValues, classVersion);
-        LabPLANETPlatform.addJavaClassDoc(javaDocFields, javaDocValues, elementsDev);
+        LPPlatform.addJavaClassDoc(javaDocFields, javaDocValues, elementsDev);
     }    
     
         String query = "";
@@ -110,8 +110,8 @@ Object[] createProject( String schemaPrefix, String projectTemplate, Integer pro
         String schemaDataName = "data";
         String schemaConfigName = "config";
         
-        schemaDataName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaDataName);    
-        schemaConfigName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaConfigName); 
+        schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, schemaDataName);    
+        schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, schemaConfigName); 
         
         mandatoryFields = labIntChecker.getTableMandatoryFields(schemaDataName, this.getSampleGrouper()+"_"+tableName, actionName);
         
@@ -123,7 +123,7 @@ Object[] createProject( String schemaPrefix, String projectTemplate, Integer pro
         javaDocValues = LabPLANETArray.addValueToArray1D(javaDocValues, javaDocLineName);
         javaDocFields = LabPLANETArray.addValueToArray1D(javaDocFields, "class_version");
         javaDocValues = LabPLANETArray.addValueToArray1D(javaDocValues, classVersion);
-        LabPLANETPlatform.addJavaClassDoc(javaDocFields, javaDocValues, elementsDev);
+        LPPlatform.addJavaClassDoc(javaDocFields, javaDocValues, elementsDev);
     }    
     if (devMode==false){
         diagnoses = LabPLANETArray.checkTwoArraysSameLength(sampleFieldName, sampleFieldValue);
@@ -145,7 +145,7 @@ Object[] createProject( String schemaPrefix, String projectTemplate, Integer pro
         javaDocValues = LabPLANETArray.addValueToArray1D(javaDocValues, javaDocLineName);
         javaDocFields = LabPLANETArray.addValueToArray1D(javaDocFields, "class_version");
         javaDocValues = LabPLANETArray.addValueToArray1D(javaDocValues, classVersion);
-        LabPLANETPlatform.addJavaClassDoc(javaDocFields, javaDocValues, elementsDev);
+        LPPlatform.addJavaClassDoc(javaDocFields, javaDocValues, elementsDev);
     }    
     if (devMode==false){        
         if (LabPLANETArray.duplicates(sampleFieldName)){
@@ -264,7 +264,7 @@ Object[] createProject( String schemaPrefix, String projectTemplate, Integer pro
         }else{    
             javaDocValues[specialFieldIndex] = javaDocLineName;             
         }
-        LabPLANETPlatform.addJavaClassDoc(javaDocFields, javaDocValues, elementsDev);
+        LPPlatform.addJavaClassDoc(javaDocFields, javaDocValues, elementsDev);
     }
     return diagnoses; 
 }    
@@ -293,7 +293,7 @@ Object[] createProject( String schemaPrefix, String projectTemplate, Integer pro
                 String schemaDataName = "data";
                 String schemaConfigName = "config";
 
-                LabPLANETPlatform labPlat = new LabPLANETPlatform();
+                LPPlatform labPlat = new LPPlatform();
                 schemaDataName = labPlat.buildSchemaName(schemaPrefix, schemaDataName);    
                 schemaConfigName = labPlat.buildSchemaName(schemaPrefix, schemaConfigName);                 
                 

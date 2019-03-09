@@ -7,7 +7,7 @@ package functionalJava.sop;
 
 import databases.Rdbms;
 import LabPLANET.utilities.LabPLANETArray;
-import LabPLANET.utilities.LabPLANETPlatform;
+import LabPLANET.utilities.LPPlatform;
 import java.sql.SQLException;
 import java.util.Arrays;
 
@@ -121,7 +121,7 @@ public class SopList {
      */
     public Object[] dbInsertSopList( String schemaPrefix, String userInfoId){
         String schemaConfigName = "config";     
-        schemaConfigName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaConfigName);
+        schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, schemaConfigName);
 
         //requires added_on
         String[] fieldNames = new String[0];
@@ -154,13 +154,13 @@ public class SopList {
      */
     public Object[] dbUpdateSopListSopAssigned( String schemaPrefix, String[] sopAssigned) throws SQLException{    
         String schemaConfigName = "config";     
-        schemaConfigName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaConfigName);
+        schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, schemaConfigName);
         Object[] diagnoses = Rdbms.updateRecordFieldsByFilter(schemaConfigName, tableName, 
                                         new String[]{"sop_assigned"}, new Object[]{this.sopListId}, 
                                         new String[]{"sop_list_id"}, new Object[]{sopAssigned});
-        if ("LABPLANET_FALSE".equalsIgnoreCase(diagnoses[0].toString())) return diagnoses;
+        if (LPPlatform.LAB_FALSE.equalsIgnoreCase(diagnoses[0].toString())) return diagnoses;
         String errorCode = "SopList_SopAssignedToSopList";
-        LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, new Object[]{sopAssigned, this.sopListId, schemaConfigName} );
+        LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, new Object[]{sopAssigned, this.sopListId, schemaConfigName} );
         return diagnoses;        
     }   
     
@@ -190,13 +190,13 @@ public class SopList {
         Integer arrayPosic = currSopAssignedValue.length;
         for (Integer i=0;i<arrayPosic;i++){
             if (currSopAssignedValue[i] == null ? sopId == null : currSopAssignedValue[i].equals(sopId)){ 
-                diagnoses = LabPLANETPlatform.trapErrorMessage("LABPLANET_TRUE", "SOP FOUND IN SOP LIST", 
+                diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, "SOP FOUND IN SOP LIST", 
                         new Object[]{"SOP <*1*> found in SOP List <*2*> in position <*3>", sopId, currSopAssignedValue, i});
                 diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, i);
                 return diagnoses;
             }
         }
-        diagnoses = LabPLANETPlatform.trapErrorMessage("LABPLANET_TRUE", "SOP NOT FOUND IN SOP LIST", 
+        diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, "SOP NOT FOUND IN SOP LIST", 
                 new Object[]{"SOP <*1*> NOT found in SOP List <*2*>", sopId, currSopAssignedValue});
         diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, -1);
         return diagnoses;
@@ -220,7 +220,7 @@ public class SopList {
             newArray[arrayPosic++] = sopId;
             setSopListSopAssigned(newArray);
         }    
-        diagnoses = LabPLANETPlatform.trapErrorMessage("LABPLANET_TRUE", "SopList_SopAssignedToSopList", 
+        diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, "SopList_SopAssignedToSopList", 
                 new Object[]{sopId, Arrays.toString(currSopAssignedValue),""});
         return diagnoses;
     }

@@ -7,7 +7,7 @@ package com.labplanet.servicios.ModuleBatch;
 
 import LabPLANET.utilities.LabPLANETArray;
 import LabPLANET.utilities.LabPLANETFrontEnd;
-import LabPLANET.utilities.LabPLANETPlatform;
+import LabPLANET.utilities.LPPlatform;
 import LabPLANET.utilities.LabPLANETRequest;
 import databases.Rdbms;
 import databases.Token;
@@ -49,7 +49,7 @@ public class batchAPI extends HttpServlet {
         mandatoryParams = LabPLANETArray.addValueToArray1D(mandatoryParams, "actionName");
         mandatoryParams = LabPLANETArray.addValueToArray1D(mandatoryParams, "finalToken");
         Object[] areMandatoryParamsInResponse = LabPLANETRequest.areMandatoryParamsInApiRequest(request, mandatoryParams);
-        if (LabPLANETPlatform.LAB_FALSE.equalsIgnoreCase(areMandatoryParamsInResponse[0].toString())){
+        if (LPPlatform.LAB_FALSE.equalsIgnoreCase(areMandatoryParamsInResponse[0].toString())){
             errObject = LabPLANETArray.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
             errObject = LabPLANETArray.addValueToArray1D(errObject, "API Error Message: There are mandatory params for this API method not being passed: "+areMandatoryParamsInResponse[1].toString());                    
             Object[] errMsg = LabPLANETFrontEnd.responseError(errObject, language, areMandatoryParamsInResponse[1].toString());
@@ -94,15 +94,15 @@ public class batchAPI extends HttpServlet {
                  return;}
             Rdbms.setTransactionId(schemaPrefix);
 
-            Object[] actionEnabled = LabPLANETPlatform.procActionEnabled(schemaPrefix, actionName);
-            if (LabPLANETPlatform.LAB_FALSE.equalsIgnoreCase(actionEnabled[0].toString())){
+            Object[] actionEnabled = LPPlatform.procActionEnabled(schemaPrefix, actionName);
+            if (LPPlatform.LAB_FALSE.equalsIgnoreCase(actionEnabled[0].toString())){
                 Object[] errMsg = LabPLANETFrontEnd.responseError(actionEnabled, language, schemaPrefix);
                 response.sendError((int) errMsg[0], (String) errMsg[1]);    
                 Rdbms.closeRdbms(); 
                 return ;               
             }            
-            actionEnabled = LabPLANETPlatform.procUserRoleActionEnabled(schemaPrefix, userRole, actionName);
-            if (LabPLANETPlatform.LAB_FALSE.equalsIgnoreCase(actionEnabled[0].toString())){            
+            actionEnabled = LPPlatform.procUserRoleActionEnabled(schemaPrefix, userRole, actionName);
+            if (LPPlatform.LAB_FALSE.equalsIgnoreCase(actionEnabled[0].toString())){            
                 Object[] errMsg = LabPLANETFrontEnd.responseError(actionEnabled, language, schemaPrefix);
                 response.sendError((int) errMsg[0], (String) errMsg[1]);    
                 Rdbms.closeRdbms(); 
@@ -120,7 +120,7 @@ public class batchAPI extends HttpServlet {
                     mandatoryParams = LabPLANETArray.addValueToArray1D(mandatoryParams, "numRows");
                     mandatoryParams = LabPLANETArray.addValueToArray1D(mandatoryParams, "numCols");
                     areMandatoryParamsInResponse = LabPLANETRequest.areMandatoryParamsInApiRequest(request, mandatoryParams);
-                    if (LabPLANETPlatform.LAB_FALSE.equalsIgnoreCase(areMandatoryParamsInResponse[0].toString())){
+                    if (LPPlatform.LAB_FALSE.equalsIgnoreCase(areMandatoryParamsInResponse[0].toString())){
                         errObject = LabPLANETArray.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
                         errObject = LabPLANETArray.addValueToArray1D(errObject, "API Error Message: There are mandatory params for this API method not being passed: "+areMandatoryParamsInResponse[1].toString());                    
                         Object[] errMsg = LabPLANETFrontEnd.responseError(errObject, language, areMandatoryParamsInResponse[1].toString());
@@ -141,7 +141,7 @@ public class batchAPI extends HttpServlet {
                     break;
                 case "LOADBATCHARRAY":
                         mandatoryParams = new String[]{"batchName"};
-                        if (LabPLANETPlatform.LAB_FALSE.equalsIgnoreCase(areMandatoryParamsInResponse[0].toString())){
+                        if (LPPlatform.LAB_FALSE.equalsIgnoreCase(areMandatoryParamsInResponse[0].toString())){
                             errObject = LabPLANETArray.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
                             errObject = LabPLANETArray.addValueToArray1D(errObject, "API Error Message: There are mandatory params for this API method not being passed: "+areMandatoryParamsInResponse[1].toString());                    
                             Object[] errMsg = LabPLANETFrontEnd.responseError(errObject, language, areMandatoryParamsInResponse[1].toString());
@@ -160,7 +160,7 @@ public class batchAPI extends HttpServlet {
                     Rdbms.closeRdbms();                    
                     return;                    
             }    
-            if (LabPLANETPlatform.LAB_FALSE.equalsIgnoreCase(dataSample[0].toString())){  
+            if (LPPlatform.LAB_FALSE.equalsIgnoreCase(dataSample[0].toString())){  
                 Rdbms.rollbackWithSavePoint();
                 con.rollback();
                 con.setAutoCommit(true);

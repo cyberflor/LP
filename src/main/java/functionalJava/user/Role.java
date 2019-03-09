@@ -7,7 +7,7 @@ package functionalJava.user;
 
 import databases.Rdbms;
 import java.sql.SQLException;
-
+import LabPLANET.utilities.LPPlatform;
 /**
  *
  * @author Administrator
@@ -45,7 +45,7 @@ public class Role {
             return diagnoses;
         }                
         diagnoses = Rdbms.insertRecordInTable("config", "role", new String[]{"role_id", "active"}, new Object[]{roleId, true });
-           if ("LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){	
+           if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){	
             StackTraceElement[] elements = Thread.currentThread().getStackTrace();
             diagnoses[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
             diagnoses[1]= classVersion;
@@ -105,9 +105,9 @@ public class Role {
             if (roleId.toUpperCase().contains("ALL")){newRoleId = resRole[inumRecords][0].toString();}
             Object[] diagnoses = Rdbms.existsRecord(schemaConfigName, "role_privilege", 
                     new String[]{"privilege_id"}, new Object[]{privilegeId + "," + roleId} );
-            if ("LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){      
+            if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){      
                 diagnoses = Rdbms.insertRecordInTable("config", "role_privilege", new String[]{"role_id", "privilege_id"}, new Object[]{newRoleId, privilegeId });
-                if ("LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){
+                if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){
                     StackTraceElement[] elements = Thread.currentThread().getStackTrace();
                     diagnoses[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
                     diagnoses[1]= classVersion;
@@ -143,7 +143,7 @@ public class Role {
         Integer id;                
 */        
         diagnoses = Rdbms.insertRecordInTable("config", "privilege", new String[]{"privilege_id"}, new Object[]{privilegeId});
-        if ("LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){
+        if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){
             StackTraceElement[] elements = Thread.currentThread().getStackTrace();
             diagnoses[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
             diagnoses[1]= classVersion;

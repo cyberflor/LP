@@ -6,7 +6,7 @@
 package functionalJava.batch;
 
 import LabPLANET.utilities.LPNulls;
-import LabPLANET.utilities.LabPLANETPlatform;
+import LabPLANET.utilities.LPPlatform;
 import databases.Rdbms;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -249,7 +249,7 @@ public final class BatchArray extends Batch{
         }       
         String[] sd = singleDArray.toArray(new String[singleDArray.size()]);       
         
-        schemaName = LabPLANETPlatform.buildSchemaName(schemaName, "data");
+        schemaName = LPPlatform.buildSchemaName(schemaName, "data");
         
         Object[] insertRecordInTable = Rdbms.insertRecordInTable(schemaName, tableName, 
                                                 new String[]{"name", "template", "template_version", "array_num_rows",
@@ -262,7 +262,7 @@ public final class BatchArray extends Batch{
         return insertRecordInTable;        
     }   
     public static BatchArray dbGetBatchArray(String schemaName, String batchName){
-        schemaName = LabPLANETPlatform.buildSchemaName(schemaName, "data");
+        schemaName = LPPlatform.buildSchemaName(schemaName, "data");
         String tableName = "batch_java";
         Object[][] recordFieldsByFilter = Rdbms.getRecordFieldsByFilter(schemaName, tableName, 
                 new String[]{"name"}, new Object[]{batchName}, 

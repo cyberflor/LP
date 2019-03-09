@@ -66,7 +66,7 @@ public class LabPLANETSession {
      */
     public static Object[] addProcessSession( String processName, Integer appSessionId, String[] fieldsNamesToInsert){
         String tableName = "session";
-        String schemaAuditName = LabPLANETPlatform.buildSchemaName(processName, "data-audit");       
+        String schemaAuditName = LPPlatform.buildSchemaName(processName, "data-audit");       
         
         Object[][] recordFieldsBySessionId = Rdbms.getRecordFieldsByFilter(schemaAuditName, tableName, 
                 new String[]{"session_id"}, new Object[]{appSessionId}, fieldsNamesToInsert);

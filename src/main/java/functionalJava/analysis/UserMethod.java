@@ -6,7 +6,7 @@
 package functionalJava.analysis;
 
 import LabPLANET.utilities.LabPLANETArray;
-import LabPLANET.utilities.LabPLANETPlatform;
+import LabPLANET.utilities.LPPlatform;
 import databases.Rdbms;
 import functionalJava.parameter.Parameter;
 
@@ -18,7 +18,7 @@ public class UserMethod {
 
     String classVersion = "0.1";
     
-    LabPLANETPlatform labPlat = new LabPLANETPlatform();
+    LPPlatform labPlat = new LPPlatform();
     String[] javaDocFields = new String[0];
     Object[] javaDocValues = new Object[0];
     String javaDocLineName = "";
@@ -48,8 +48,8 @@ public class UserMethod {
         String diagnostic = "";
         String tableName = "user_method";
         
-        schemaDataName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaDataName);  
-        schemaConfigName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaConfigName);   
+        schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, schemaDataName);  
+        schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, schemaConfigName);   
         
         String userMethodNotAssigned = Parameter.getParameterBundle(schemaConfigName, "userMethodCertificate_notAssigned");
         String userMethodInactive = Parameter.getParameterBundle(schemaConfigName, "userMethodCertificate_inactive");

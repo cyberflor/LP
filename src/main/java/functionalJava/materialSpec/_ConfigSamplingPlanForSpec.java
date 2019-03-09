@@ -8,7 +8,7 @@ package functionalJava.materialSpec;
 import databases.Rdbms;
 import LabPLANET.utilities.LabPLANETArray;
 import static LabPLANET.utilities.LabPLANETMath.nthroot;
-import LabPLANET.utilities.LabPLANETPlatform;
+import LabPLANET.utilities.LPPlatform;
 import java.sql.SQLException;
 import java.util.Arrays;
 
@@ -75,7 +75,7 @@ public class _ConfigSamplingPlanForSpec {
      */
     public Object[] newSamplingPlanDetailRecordDev( String schemaPrefix, String userName, String userRole, String[] fieldsName, Object[] fieldsValue, Boolean devMode) throws SQLException{
     if (devMode==true){
-        LabPLANETPlatform labPlat = new LabPLANETPlatform();
+        LPPlatform labPlat = new LPPlatform();
         StackTraceElement[] elementsDev = Thread.currentThread().getStackTrace();
         javaDocLineName = "BEGIN";
         javaDocFields = LabPLANETArray.addValueToArray1D(javaDocFields, "line_name");         javaDocValues = LabPLANETArray.addValueToArray1D(javaDocValues, javaDocLineName);         
@@ -85,29 +85,29 @@ public class _ConfigSamplingPlanForSpec {
         String actionName = "Insert";
         tableName = "project";
         String auditActionName = "CREATE SAMPLING PLAN DETAIL RECORD";
-        schemaConfigName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaConfigName);
+        schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, schemaConfigName);
     if (devMode==true){
         StackTraceElement[] elementsDev = Thread.currentThread().getStackTrace();
         javaDocLineName = "CHECK fieldsName and fieldsValue match in length";
         javaDocFields = LabPLANETArray.addValueToArray1D(javaDocFields, "line_name");         javaDocValues = LabPLANETArray.addValueToArray1D(javaDocValues, javaDocLineName);         
         javaDocFields = LabPLANETArray.addValueToArray1D(javaDocFields, "class_version");         javaDocValues = LabPLANETArray.addValueToArray1D(javaDocValues, classVersion);         
-        LabPLANETPlatform.addJavaClassDoc(javaDocFields, javaDocValues, elementsDev);
+        LPPlatform.addJavaClassDoc(javaDocFields, javaDocValues, elementsDev);
     }    
     if (devMode==false){
         diagnoses = LabPLANETArray.checkTwoArraysSameLength(fieldsName, fieldsValue);
-        if ("LABPLANET_FALSE".equalsIgnoreCase(diagnoses[0].toString())){ return diagnoses;}
+        if (LPPlatform.LAB_FALSE.equalsIgnoreCase(diagnoses[0].toString())){ return diagnoses;}
     } 
     if (devMode==true){
         StackTraceElement[] elementsDev = Thread.currentThread().getStackTrace();
         javaDocLineName = "CHECK MANDATORY FIELDS";
         javaDocFields = LabPLANETArray.addValueToArray1D(javaDocFields, "line_name");         javaDocValues = LabPLANETArray.addValueToArray1D(javaDocValues, javaDocLineName);         
         javaDocFields = LabPLANETArray.addValueToArray1D(javaDocFields, "class_version");         javaDocValues = LabPLANETArray.addValueToArray1D(javaDocValues, classVersion);         
-        LabPLANETPlatform.addJavaClassDoc(javaDocFields, javaDocValues, elementsDev);
+        LPPlatform.addJavaClassDoc(javaDocFields, javaDocValues, elementsDev);
     }  
     if (devMode==false){
-        schemaDataName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaDataName);         
-        Object[][] mandatoryFieldsCheck = (Object[][]) LabPLANETPlatform.mandatoryFieldsCheck(schemaDataName, fieldsName, fieldsValue, tableName, actionName);                
-        if ("LABPLANET_FALSE".equalsIgnoreCase(mandatoryFieldsCheck[0][0].toString())){ return mandatoryFieldsCheck;}
+        schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, schemaDataName);         
+        Object[][] mandatoryFieldsCheck = (Object[][]) LPPlatform.mandatoryFieldsCheck(schemaDataName, fieldsName, fieldsValue, tableName, actionName);                
+        if (LPPlatform.LAB_FALSE.equalsIgnoreCase(mandatoryFieldsCheck[0][0].toString())){ return mandatoryFieldsCheck;}
         for (Integer i=0;i<mandatoryFieldsCheck[1].length;i++){
             if (mandatoryFieldsCheck[1][i]!=null){
                 String value = (String) mandatoryFieldsCheck[1][i];
@@ -127,41 +127,41 @@ public class _ConfigSamplingPlanForSpec {
         javaDocLineName = "CHECK CONFIG OBJECT EXISTS";
         javaDocFields = LabPLANETArray.addValueToArray1D(javaDocFields, "line_name");         javaDocValues = LabPLANETArray.addValueToArray1D(javaDocValues, javaDocLineName);         
         javaDocFields = LabPLANETArray.addValueToArray1D(javaDocFields, "class_version");         javaDocValues = LabPLANETArray.addValueToArray1D(javaDocValues, classVersion);         
-        LabPLANETPlatform.addJavaClassDoc(javaDocFields, javaDocValues, elementsDev);
+        LPPlatform.addJavaClassDoc(javaDocFields, javaDocValues, elementsDev);
     } 
     if (devMode==false){
-        diagnoses = LabPLANETPlatform.configObjectExists(schemaConfigName, fieldsName, fieldsValue, tableName);
-        if ("LABPLANET_FALSE".equalsIgnoreCase(diagnoses[0].toString())){return diagnoses;}
+        diagnoses = LPPlatform.configObjectExists(schemaConfigName, fieldsName, fieldsValue, tableName);
+        if (LPPlatform.LAB_FALSE.equalsIgnoreCase(diagnoses[0].toString())){return diagnoses;}
     }
     if (devMode==true){
         StackTraceElement[] elementsDev = Thread.currentThread().getStackTrace();
         javaDocLineName = "CHECK SPECIAL FIELDS";
         javaDocFields = LabPLANETArray.addValueToArray1D(javaDocFields, "line_name");         javaDocValues = LabPLANETArray.addValueToArray1D(javaDocValues, javaDocLineName);         
         javaDocFields = LabPLANETArray.addValueToArray1D(javaDocFields, "class_version");         javaDocValues = LabPLANETArray.addValueToArray1D(javaDocValues, classVersion);         
-        LabPLANETPlatform.addJavaClassDoc(javaDocFields, javaDocValues, elementsDev);
+        LPPlatform.addJavaClassDoc(javaDocFields, javaDocValues, elementsDev);
     }  
     if (devMode==false){
-        LabPLANETPlatform labPlat = new LabPLANETPlatform();
+        LPPlatform labPlat = new LPPlatform();
         diagnoses = labPlat.specialFieldsCheck(schemaDataName, fieldsName, fieldsValue, tableName, actionName);
-        if ("LABPLANET_FALSE".equalsIgnoreCase(diagnoses[0].toString())){return diagnoses;}
+        if (LPPlatform.LAB_FALSE.equalsIgnoreCase(diagnoses[0].toString())){return diagnoses;}
     }
     if (devMode==true){
         StackTraceElement[] elementsDev = Thread.currentThread().getStackTrace();
         javaDocLineName = "INSERT RECORD IN PROJECT TABLE";
         javaDocFields = LabPLANETArray.addValueToArray1D(javaDocFields, "line_name");         javaDocValues = LabPLANETArray.addValueToArray1D(javaDocValues, javaDocLineName);         
         javaDocFields = LabPLANETArray.addValueToArray1D(javaDocFields, "class_version");         javaDocValues = LabPLANETArray.addValueToArray1D(javaDocValues, classVersion);         
-        LabPLANETPlatform.addJavaClassDoc(javaDocFields, javaDocValues, elementsDev);
+        LPPlatform.addJavaClassDoc(javaDocFields, javaDocValues, elementsDev);
     }  
     if (devMode==false){
         diagnoses = Rdbms.insertRecordInTable(schemaDataName, tableName, fieldsName, fieldsValue);    
-        if ("LABPLANET_FALSE".equalsIgnoreCase(diagnoses[0].toString())){return diagnoses;}
+        if (LPPlatform.LAB_FALSE.equalsIgnoreCase(diagnoses[0].toString())){return diagnoses;}
     }    
     if (devMode==true){
         StackTraceElement[] elementsDev = Thread.currentThread().getStackTrace();
         javaDocLineName = "END";
         javaDocFields = LabPLANETArray.addValueToArray1D(javaDocFields, "line_name");         javaDocValues = LabPLANETArray.addValueToArray1D(javaDocValues, javaDocLineName);         
         javaDocFields = LabPLANETArray.addValueToArray1D(javaDocFields, "class_version");         javaDocValues = LabPLANETArray.addValueToArray1D(javaDocValues, classVersion);         
-        LabPLANETPlatform.addJavaClassDoc(javaDocFields, javaDocValues, elementsDev);
+        LPPlatform.addJavaClassDoc(javaDocFields, javaDocValues, elementsDev);
     }      
         return diagnoses;
     }

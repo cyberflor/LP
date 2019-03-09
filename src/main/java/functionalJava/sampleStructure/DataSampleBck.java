@@ -15,7 +15,7 @@ import functionalJava.audit.SampleAudit;
 import functionalJava.materialSpec.DataSpec;
 import LabPLANET.utilities.LabPLANETArray;
 import LabPLANET.utilities.LabPLANETDate;
-import LabPLANET.utilities.LabPLANETPlatform;
+import LabPLANET.utilities.LPPlatform;
 import databases.DataDataIntegrity;
 import functionalJava.ChangeOfCustody.ChangeOfCustody;
 import functionalJava.parameter.Parameter;
@@ -147,7 +147,7 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
         javaDocValues = LabPLANETArray.addValueToArray1D(javaDocValues, javaDocLineName);
         javaDocFields = LabPLANETArray.addValueToArray1D(javaDocFields, "class_version");
         javaDocValues = LabPLANETArray.addValueToArray1D(javaDocValues, classVersion);
-        LabPLANETPlatform.addJavaClassDoc(javaDocFields, javaDocValues, elementsDev);
+        LPPlatform.addJavaClassDoc(javaDocFields, javaDocValues, elementsDev);
     }    
     
         String query = "";
@@ -158,8 +158,8 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
         String schemaDataName = "data";
         String schemaConfigName = "config";
 
-        schemaDataName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaDataName);    
-        schemaConfigName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaConfigName); 
+        schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, schemaDataName);    
+        schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, schemaConfigName); 
         
         String sampleLevel = tableName;
 //        if (this.getSampleGrouper()!=null){sampleLevel=this.getSampleGrouper()+"_"+sampleLevel;}
@@ -179,15 +179,15 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
         javaDocValues = LabPLANETArray.addValueToArray1D(javaDocValues, javaDocLineName);
         javaDocFields = LabPLANETArray.addValueToArray1D(javaDocFields, "class_version");
         javaDocValues = LabPLANETArray.addValueToArray1D(javaDocValues, classVersion);
-        LabPLANETPlatform.addJavaClassDoc(javaDocFields, javaDocValues, elementsDev);
+        LPPlatform.addJavaClassDoc(javaDocFields, javaDocValues, elementsDev);
     }    
     if (devMode==false){
         diagnoses = LabPLANETArray.checkTwoArraysSameLength(sampleFieldName, sampleFieldValue);
-        if (!"LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){
+        if (!LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){
            errorCode = "DataSample_FieldArraysDifferentSize";
            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, Arrays.toString(sampleFieldName));
            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, Arrays.toString(sampleFieldValue));
-           return LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);
+           return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);
         }
     }    
     if (devMode==true){
@@ -197,13 +197,13 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
         javaDocValues = LabPLANETArray.addValueToArray1D(javaDocValues, javaDocLineName);
         javaDocFields = LabPLANETArray.addValueToArray1D(javaDocFields, "class_version");
         javaDocValues = LabPLANETArray.addValueToArray1D(javaDocValues, classVersion);
-        LabPLANETPlatform.addJavaClassDoc(javaDocFields, javaDocValues, elementsDev);
+        LPPlatform.addJavaClassDoc(javaDocFields, javaDocValues, elementsDev);
     }    
     if (devMode==false){                
         if (LabPLANETArray.duplicates(sampleFieldName)){
            errorCode = "DataSample_FieldsDuplicated";
            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, Arrays.toString(sampleFieldName));
-           return LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);                      
+           return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);                      
         }
 
         // spec is not mandatory but when any of the fields involved is added to the parameters 
@@ -238,17 +238,17 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
         if (mandatoryFieldsMissing.length()>0){
            errorCode = "DataSample_MissingMandatoryFields";
            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, mandatoryFieldsMissing);
-           return LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);    
+           return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);    
         }               
         
         Object[] diagnosis = Rdbms.existsRecord(schemaConfigName, tableName, new String[]{"code","code_version"}, new Object[]{sampleTemplate, sampleTemplateVersion});
-        if ("LABPLANET_FALSE".equalsIgnoreCase(diagnosis[0].toString())){
+        if (LPPlatform.LAB_FALSE.equalsIgnoreCase(diagnosis[0].toString())){
            errorCode = "DataSample_MissingConfigCode";
            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, sampleTemplate);
            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, sampleTemplateVersion);
            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaConfigName);
            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, diagnosis[5]);
-           return LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);    
+           return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);    
         }
         //String[] specialFields = getSpecialFields();
         //String[] specialFieldsFunction = getSpecialFieldsFunction();
@@ -281,7 +281,7 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
                         errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, currField);
                         errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, aMethod);
                         errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, specialFunctionReturn.toString());
-                        return LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);                            
+                        return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);                            
                     } 
             }
         }
@@ -296,10 +296,10 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
         if (this.getSampleGrouper().length()>0){tableName=this.getSampleGrouper()+"_"+tableName;}               
         
         diagnoses = Rdbms.insertRecordInTable(schemaDataName, tableName, sampleFieldName, sampleFieldValue);
-        if (!"LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){
+        if (!LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){
             errorCode = "DataSample_errorInsertingSampleRecord";
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, diagnoses[5]);
-            return LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);
+            return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);
         }        
 
         Object[] fieldsOnLogSample = LabPLANETArray.joinTwo1DArraysInOneOf1DString(sampleFieldName, sampleFieldValue, ":");
@@ -320,7 +320,7 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
         }else{    
             javaDocValues[specialFieldIndex] = javaDocLineName;             
         }
-        LabPLANETPlatform.addJavaClassDoc(javaDocFields, javaDocValues, elementsDev);
+        LPPlatform.addJavaClassDoc(javaDocFields, javaDocValues, elementsDev);
     }
     return diagnoses; 
 }
@@ -329,7 +329,7 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
     
     
     
-    LabPLANETPlatform labPlat = new LabPLANETPlatform();
+    LPPlatform labPlat = new LPPlatform();
     
     if (devMode==true){
         StackTraceElement[] elementsDev = Thread.currentThread().getStackTrace();
@@ -338,7 +338,7 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
         javaDocValues = LabPLANETArray.addValueToArray1D(javaDocValues, javaDocLineName);
         javaDocFields = LabPLANETArray.addValueToArray1D(javaDocFields, "class_version");
         javaDocValues = LabPLANETArray.addValueToArray1D(javaDocValues, classVersion);
-        LabPLANETPlatform.addJavaClassDoc(javaDocFields, javaDocValues, elementsDev);
+        LPPlatform.addJavaClassDoc(javaDocFields, javaDocValues, elementsDev);
     }    
     
         String query = "";
@@ -349,8 +349,8 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
         String schemaDataName = "data";
         String schemaConfigName = "config";
 
-        schemaDataName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaDataName);    
-        schemaConfigName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaConfigName); 
+        schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, schemaDataName);    
+        schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, schemaConfigName); 
         
         String sampleLevel = tableName;
 //        if (this.getSampleGrouper()!=null){sampleLevel=this.getSampleGrouper()+"_"+sampleLevel;}
@@ -370,15 +370,15 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
         javaDocValues = LabPLANETArray.addValueToArray1D(javaDocValues, javaDocLineName);
         javaDocFields = LabPLANETArray.addValueToArray1D(javaDocFields, "class_version");
         javaDocValues = LabPLANETArray.addValueToArray1D(javaDocValues, classVersion);
-        LabPLANETPlatform.addJavaClassDoc(javaDocFields, javaDocValues, elementsDev);
+        LPPlatform.addJavaClassDoc(javaDocFields, javaDocValues, elementsDev);
     }    
     if (devMode==false){
         diagnoses = LabPLANETArray.checkTwoArraysSameLength(sampleFieldName, sampleFieldValue);
-        if (!"LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){
+        if (!LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){
            errorCode = "DataSample_FieldArraysDifferentSize";
            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, Arrays.toString(sampleFieldName));
            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, Arrays.toString(sampleFieldValue));
-           return LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);
+           return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);
         }
     }    
     if (devMode==true){
@@ -388,13 +388,13 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
         javaDocValues = LabPLANETArray.addValueToArray1D(javaDocValues, javaDocLineName);
         javaDocFields = LabPLANETArray.addValueToArray1D(javaDocFields, "class_version");
         javaDocValues = LabPLANETArray.addValueToArray1D(javaDocValues, classVersion);
-        LabPLANETPlatform.addJavaClassDoc(javaDocFields, javaDocValues, elementsDev);
+        LPPlatform.addJavaClassDoc(javaDocFields, javaDocValues, elementsDev);
     }    
     if (devMode==false){        
         if (LabPLANETArray.duplicates(sampleFieldName)){
            errorCode = "DataSample_FieldsDuplicated";
            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, Arrays.toString(sampleFieldName));
-           return LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);                      
+           return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);                      
         }
 
         // spec is not mandatory but when any of the fields involved is added to the parameters 
@@ -429,17 +429,17 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
         if (mandatoryFieldsMissing.length()>0){
            errorCode = "DataSample_MissingMandatoryFields";
            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, mandatoryFieldsMissing);
-           return LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);    
+           return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);    
         }               
         
         Object[] diagnosis = Rdbms.existsRecord(schemaConfigName, tableName, new String[]{"code","code_version"}, new Object[]{sampleTemplate, sampleTemplateVersion});
-        if ("LABPLANET_FALSE".equalsIgnoreCase(diagnosis[0].toString())){
+        if (LPPlatform.LAB_FALSE.equalsIgnoreCase(diagnosis[0].toString())){
            errorCode = "DataSample_MissingConfigCode";
            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, sampleTemplate);
            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, sampleTemplateVersion);
            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaConfigName);
            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, diagnosis[5]);
-           return LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);    
+           return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);    
         }
         //String[] specialFields = getSpecialFields();
         //String[] specialFieldsFunction = getSpecialFieldsFunction();
@@ -472,7 +472,7 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
                         errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, currField);
                         errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, aMethod);
                         errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, specialFunctionReturn.toString());
-                        return LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);                            
+                        return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);                            
                     } 
             }
         }
@@ -483,7 +483,7 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
         
         ChangeOfCustody coc = new ChangeOfCustody();
         Object[] changeOfCustodyEnable = coc.isChangeOfCustodyEnable(schemaDataName, tableName);
-        if ("LABPLANET_TRUE".equalsIgnoreCase(changeOfCustodyEnable[0].toString())){
+        if (LPPlatform.LAB_TRUE.equalsIgnoreCase(changeOfCustodyEnable[0].toString())){
             sampleFieldName = LabPLANETArray.addValueToArray1D(sampleFieldName, "custodian");    
             sampleFieldValue = LabPLANETArray.addValueToArray1D(sampleFieldValue, userName);             
         }
@@ -497,10 +497,10 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
             if (this.getSampleGrouper().length()>0){tableName=this.getSampleGrouper()+"_"+tableName;}               
 
             diagnoses = Rdbms.insertRecordInTable(schemaDataName, tableName, sampleFieldName, sampleFieldValue);
-            if (!"LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){
+            if (!LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){
                 errorCode = "DataSample_errorInsertingSampleRecord";
                 errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, diagnoses[diagnoses.length-2]);
-                return LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);
+                return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);
             }                                
 
             Object[] fieldsOnLogSample = LabPLANETArray.joinTwo1DArraysInOneOf1DString(sampleFieldName, sampleFieldValue, ":");
@@ -530,7 +530,7 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
         }else{    
             javaDocValues[specialFieldIndex] = javaDocLineName;             
         }
-        LabPLANETPlatform.addJavaClassDoc(javaDocFields, javaDocValues, elementsDev);
+        LPPlatform.addJavaClassDoc(javaDocFields, javaDocValues, elementsDev);
     }
     return diagnoses; 
 }
@@ -548,21 +548,21 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
 
     String receptionStatus = "RECEIVED";
     String auditActionName = "SAMPLE_RECEPTION";
-    schemaDataName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaDataName); 
+    schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, schemaDataName); 
     
     Object[][] currSampleStatus = Rdbms.getRecordFieldsByFilter(schemaDataName, "sample", new String[]{"sample_id"}, 
                                                 new Object[]{sampleId}, new String[]{"status", "received_by","received_on", "status"});
-    if ("LABPLANET_FALSE"==currSampleStatus[0][0]){
+    if (LPPlatform.LAB_FALSE==currSampleStatus[0][0]){
         errorCode = "DataSample_SampleNotFound";
         errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, sampleId);
         errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaPrefix);
-        return LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);
+        return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);
     }
     if (currSampleStatus[0][1]!=null){ 
         errorCode = "DataSample_SampleAlreadyReceived";
         errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, sampleId.toString());
         errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, currSampleStatus[0][2]);
-        return LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);
+        return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);
     }
     String currentStatus = (String) currSampleStatus[0][0];
     
@@ -588,7 +588,7 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
     
     diagnoses = Rdbms.updateRecordFieldsByFilter(schemaDataName, tableName, sampleFieldName, sampleFieldValue, 
                                             new String[] {"sample_id"}, new Object[]{sampleId});
-    if ("LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){
+    if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){
         String[] fieldsForAudit = LabPLANETArray.joinTwo1DArraysInOneOf1DString(sampleFieldName, sampleFieldValue, userName);
         smpAudit.sampleAuditAdd(schemaPrefix, auditActionName, this.getSampleGrouper()+"_"+"sample", sampleId, sampleId, null, null, fieldsForAudit, userName, userRole, appSessionId);
     }    
@@ -608,8 +608,8 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
     public Object[] changeSamplingDate( String schemaPrefix, String userName, Integer sampleId, Date newDate, String userRole) throws SQLException{
 
     
-    LabPLANETPlatform labPlat = new LabPLANETPlatform();
-    schemaDataName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaDataName); 
+    LPPlatform labPlat = new LPPlatform();
+    schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, schemaDataName); 
     
     String auditActionName = "SAMPLE_CHANGE_SAMPLING_DATE";
 
@@ -622,12 +622,12 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
     iField++;
     
     diagnoses = Rdbms.updateRecordFieldsByFilter(schemaDataName, tableName, sampleFieldName, sampleFieldValue, new String[] {"sample_id"}, new Object[]{sampleId});
-    if ("LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){
+    if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){
         errorCode = "DataSample_SamplingDateChangedSuccessfully";
         errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, sampleId.toString());
         errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaDataName);
         errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, Arrays.toString(LabPLANETArray.joinTwo1DArraysInOneOf1DString(sampleFieldName, sampleFieldValue, ", ")));        
-        diagnoses = LabPLANETPlatform.trapErrorMessage("LABPLANET_TRUE", errorCode, errorDetailVariables);
+        diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, errorCode, errorDetailVariables);
 
         String[] fieldsForAudit = LabPLANETArray.joinTwo1DArraysInOneOf1DString(sampleFieldName, sampleFieldValue, userName);
         smpAudit.sampleAuditAdd(schemaPrefix, auditActionName, "sample", sampleId, sampleId, null, null, fieldsForAudit, userName, userRole);
@@ -648,7 +648,7 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
      */
     public Object[] sampleReceptionCommentAdd( String schemaPrefix, String userName, Integer sampleId, String comment, String userRole) throws SQLException{
 
-    schemaDataName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaDataName); 
+    schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, schemaDataName); 
     
     String auditActionName = "SAMPLE_RECEPTION_COMMENT_ADD";
 
@@ -661,12 +661,12 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
     iField++;
     
     diagnoses = Rdbms.updateRecordFieldsByFilter(schemaDataName, tableName, sampleFieldName, sampleFieldValue, new String[] {"sample_id"}, new Object[]{sampleId});
-    if ("LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){        
+    if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){        
         errorCode = "DataSample_SampleReceptionCommentAdd";
         errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, sampleId);
         errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaDataName);
         errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, Arrays.toString(LabPLANETArray.joinTwo1DArraysInOneOf1DString(sampleFieldName, sampleFieldValue, ", ")));
-        diagnoses = LabPLANETPlatform.trapErrorMessage("LABPLANET_TRUE", errorCode, errorDetailVariables);                
+        diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, errorCode, errorDetailVariables);                
         
         String[] fieldsForAudit = LabPLANETArray.joinTwo1DArraysInOneOf1DString(sampleFieldName, sampleFieldValue, userName);
         smpAudit.sampleAuditAdd(schemaPrefix, auditActionName, "sample", sampleId, sampleId, null, null, fieldsForAudit, userName, userRole);
@@ -686,7 +686,7 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
      * @throws SQLException
      */
     public Object[] sampleReceptionCommentRemove( String schemaPrefix, String userName, Integer sampleId, String comment, String userRole) throws SQLException{
-    schemaDataName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaDataName); 
+    schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, schemaDataName); 
 
     String auditActionName = "SAMPLE_RECEPTION_COMMENT_REMOVE";
     
@@ -699,12 +699,12 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
     iField++;
     
     diagnoses = Rdbms.updateRecordFieldsByFilter(schemaDataName, tableName, sampleFieldName, sampleFieldValue, new String[] {"sample_id"}, new Object[]{sampleId});
-    if ("LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){
+    if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){
         errorCode = "DataSample_SampleReceptionCommentRemoved";
         errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, sampleId);
         errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaDataName);
         errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, Arrays.toString(LabPLANETArray.joinTwo1DArraysInOneOf1DString(sampleFieldName, sampleFieldValue, ", ")));
-        diagnoses = LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);                
+        diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);                
 
         String[] fieldsForAudit = LabPLANETArray.joinTwo1DArraysInOneOf1DString(sampleFieldName, sampleFieldValue, userName);
         smpAudit.sampleAuditAdd(schemaPrefix, auditActionName, "sample", sampleId, sampleId, null, null, fieldsForAudit, userName, userRole);
@@ -723,7 +723,7 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
      * @throws SQLException
      */
     public Object[] setSampleStartIncubationDateTime( String schemaPrefix, String userName, Integer sampleId, String userRole) throws SQLException{
-        schemaDataName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaDataName); 
+        schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, schemaDataName); 
 
         String auditActionName = "SAMPLE_SET_INCUBATION_START";
 
@@ -740,12 +740,12 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
         iField++;
 
         diagnoses = Rdbms.updateRecordFieldsByFilter(schemaDataName, tableName, sampleFieldName, sampleFieldValue, new String[] {"sample_id"}, new Object[]{sampleId});
-        if ("LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){
+        if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){
             errorCode = "DataSample_SampleIncubationStartedSuccessfully";
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, sampleId);
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaDataName);
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, Arrays.toString(LabPLANETArray.joinTwo1DArraysInOneOf1DString(sampleFieldName, sampleFieldValue, ", ")));
-            diagnoses = LabPLANETPlatform.trapErrorMessage("LABPLANET_TRUE", errorCode, errorDetailVariables);                
+            diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, errorCode, errorDetailVariables);                
 
             String[] fieldsForAudit = LabPLANETArray.joinTwo1DArraysInOneOf1DString(sampleFieldName, sampleFieldValue, userName);
             smpAudit.sampleAuditAdd(schemaPrefix, auditActionName, "sample", sampleId, sampleId, null, null, fieldsForAudit, userName, userRole);
@@ -764,7 +764,7 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
      * @throws SQLException
      */
     public Object[] setSampleEndIncubationDateTime( String schemaPrefix, String userName, Integer sampleId, String userRole) throws SQLException{
-    schemaDataName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaDataName); 
+    schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, schemaDataName); 
     
     String auditActionName = "SAMPLE_SET_INCUBATION_START";
 
@@ -775,7 +775,7 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
         errorCode = "DataSample_SampleIncubationEnded_NotStartedYet";
         errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, sampleId);
         errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaDataName);
-        return LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);
+        return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);
     }
     String[] sampleFieldName = new String[2];
     Object[] sampleFieldValue = new Object[2];
@@ -790,12 +790,12 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
     iField++;
 
     diagnoses = Rdbms.updateRecordFieldsByFilter(schemaDataName, tableName, sampleFieldName, sampleFieldValue, new String[] {"sample_id"}, new Object[]{sampleId});
-    if ("LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){
+    if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){
         errorCode = "DataSample_SampleIncubationEndedSuccessfully";
         errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, sampleId);
         errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaDataName);
         errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, Arrays.toString(LabPLANETArray.joinTwo1DArraysInOneOf1DString(sampleFieldName, sampleFieldValue, ", ")));
-        diagnoses = LabPLANETPlatform.trapErrorMessage("LABPLANET_TRUE", errorCode, errorDetailVariables);                
+        diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, errorCode, errorDetailVariables);                
 
         String[] fieldsForAudit = LabPLANETArray.joinTwo1DArraysInOneOf1DString(sampleFieldName, sampleFieldValue, userName);
         smpAudit.sampleAuditAdd(schemaPrefix, auditActionName, "sample", sampleId, sampleId, null, null, fieldsForAudit, userName, userRole);
@@ -832,8 +832,8 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
     tableName = "sample_analysis";
     String auditActionName = "SAMPLE_ANALYSIS_ANALYST_ASSIGNMENT";
 
-    schemaDataName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaDataName);  
-    schemaConfigName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaConfigName); 
+    schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, schemaDataName);  
+    schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, schemaConfigName); 
 
     String testStatusReviewed = Parameter.getParameterBundle(schemaDataName.replace("\"", ""), "sampleAnalysis_statusReviewed");
     String testStatusCanceled = Parameter.getParameterBundle(schemaDataName.replace("\"", ""), "sampleAnalysis_statusCanceled");    
@@ -843,11 +843,11 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
     String assignmentModes = Parameter.getParameterBundle(schemaDataName.replace("\"", ""), "sampleAnalysis_analystAssigmentModes");
     
     Object[][] testData = Rdbms.getRecordFieldsByFilter(schemaDataName, tableName, new String[]{"test_id"}, new Object[]{testId}, new String[]{"sample_id", "status", "analyst", "analysis", "method_name", "method_version"});    
-     if ("LABPLANET_FALSE".equalsIgnoreCase(testData[0][0].toString())){
+     if (LPPlatform.LAB_FALSE.equalsIgnoreCase(testData[0][0].toString())){
         errorCode = "DataSample_SampleAnalysisNotFound";
         errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, testId.toString());
         errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaPrefix);
-        return LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);
+        return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);
     }   
      
     Integer sampleId = (Integer) testData[0][0];String testStatus = (String) testData[0][1];String testCurrAnalyst = (String) testData[0][2];
@@ -858,7 +858,7 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
         errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, testCurrAnalyst);
         errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, testId.toString());
         errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaPrefix);
-        return LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);
+        return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);
     }
     
     // the test status cannot be reviewed or canceled, should be checked
@@ -869,7 +869,7 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, testId.toString());
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, newAnalyst);
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaPrefix);
-            return LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);
+            return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);
         }    
     }       
 
@@ -891,7 +891,7 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
         errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaPrefix);
         errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, testId.toString());
         errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, newAnalyst);              
-        return LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);
+        return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);
     }
     if (testAssignmentMode.equalsIgnoreCase("DISABLE")){
         assignTestAnalyst = true;
@@ -909,7 +909,7 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, Arrays.toString(userMethodModesArr));
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, userMethodCertificationMode);
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaDataName);
-            return LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);
+            return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);
         }        
     }    
 
@@ -925,12 +925,12 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
         
         diagnoses = Rdbms.updateRecordFieldsByFilter(schemaDataName, tableName, updateFieldName, updateFieldValue, new String[]{"test_id"}, new Object[]{testId}); 
                
-        if ("LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){   
+        if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){   
               errorCode = "DataSample_SampleAnalysisAssignment_Successfully";
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, testId.toString());
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, newAnalyst);
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaDataName);
-            diagnoses = LabPLANETPlatform.trapErrorMessage("LABPLANET_TRUE", errorCode, errorDetailVariables);          
+            diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, errorCode, errorDetailVariables);          
             String[] fieldsForAudit = LabPLANETArray.joinTwo1DArraysInOneOf1DString(updateFieldName, updateFieldValue, ":");            
             smpAudit.sampleAuditAdd(schemaPrefix, auditActionName, "sample_analysis", testId, sampleId, testId, null, fieldsForAudit, userName, userRole);
         }else{    
@@ -938,7 +938,7 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, testId.toString());
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, newAnalyst);
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaDataName);
-            return LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);               
+            return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);               
         }   
     }
 
@@ -948,7 +948,7 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
     errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, testId.toString());
     errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, newAnalyst);
     errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, userRole);
-    return LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);           
+    return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);           
 }
         
     /**
@@ -968,8 +968,8 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
     String actionName = "Insert";
     String auditActionName = "ADD_SAMPLE_ANALYSIS";
 
-    schemaDataName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaDataName);  
-    schemaConfigName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaConfigName); 
+    schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, schemaDataName);  
+    schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, schemaConfigName); 
     
     String sampleLevel = "sample";
     if ((this.getSampleGrouper().length())>0){sampleLevel=this.getSampleGrouper()+"_"+sampleLevel;}
@@ -982,13 +982,13 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
             errorCode = "DataSample_FieldArraysDifferentSize";
            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, Arrays.toString(fieldName));
            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, Arrays.toString(fieldValue));
-           return LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);
+           return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);
     }
     
     if (LabPLANETArray.duplicates(fieldName)){
            errorCode = "DataSample_FieldsDuplicated";
            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, Arrays.toString(fieldName));
-           return LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);   
+           return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);   
     }
 
     mandatoryFieldsValue = new Object[mandatoryFields.length];
@@ -1010,7 +1010,7 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, mandatoryFieldsMissing);
            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, Arrays.toString(fieldName));
            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaConfigName);
-           return LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);   
+           return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);   
     }
 
 // set first status. Begin    
@@ -1027,27 +1027,27 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
 // Spec Business Rule. Allow other analyses. Begin
     Object[][] sampleData = Rdbms.getRecordFieldsByFilter(schemaDataName, sampleTableName, new String[]{"sample_id"}, new Object[]{sampleId}, 
         new String[]{"sample_id","sample_id","sample_id", "status"});
-    if ("LABPLANET_FALSE".equalsIgnoreCase(sampleData[0][0].toString())){
+    if (LPPlatform.LAB_FALSE.equalsIgnoreCase(sampleData[0][0].toString())){
            errorCode = "DataSample_SampleNotFound";
            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, sampleId.toString());
            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaDataName);
-           return LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);    
+           return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);    
     }   
     Object[][] sampleSpecData = Rdbms.getRecordFieldsByFilter(schemaDataName, sampleTableName, new String[]{"sample_id"}, new Object[]{sampleId}, 
         new String[]{"sample_id", "spec_code","spec_code_version","spec_variation_name", "status"});
     
-    if ( (sampleSpecData[0][0]==null) || (!"LABPLANET_FALSE".equalsIgnoreCase(sampleSpecData[0][0].toString())) ){                
+    if ( (sampleSpecData[0][0]==null) || (!LPPlatform.LAB_FALSE.equalsIgnoreCase(sampleSpecData[0][0].toString())) ){                
         String sampleSpecCode = (String) sampleSpecData[0][1];Integer sampleSpecCodeVersion = (Integer) sampleSpecData[0][2];
         String sampleSpecVariationName = (String) sampleSpecData[0][3];
         if (sampleSpecCode!=null){
             Object[][] specRules = Rdbms.getRecordFieldsByFilter(schemaConfigName, "spec_rules", new String[]{"code", "config_version"}, new Object[]{sampleSpecCode, sampleSpecCodeVersion}, 
             new String[]{"allow_other_analysis","allow_multi_spec","code", "config_version"});
-            if ("LABPLANET_FALSE".equalsIgnoreCase(specRules[0][0].toString())){
+            if (LPPlatform.LAB_FALSE.equalsIgnoreCase(specRules[0][0].toString())){
                 errorCode = "DataSample_SpecRuleNotFound";
                 errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, sampleSpecCode);
                 errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, sampleSpecCodeVersion.toString());
                 errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaDataName);
-                return LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);                    
+                return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);                    
             }    
             if ((Boolean) specRules[0][0]==false){
                 String[] specAnalysisFieldName = new String[]{"analysis", "method_name", "method_version"};
@@ -1064,11 +1064,11 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
                 specAnalysisFieldName = LabPLANETArray.addValueToArray1D(specAnalysisFieldName,"variation_name");
                 specAnalysisFieldValue = LabPLANETArray.addValueToArray1D(specAnalysisFieldValue,sampleSpecVariationName);  
                 Object[] analysisInSpec = Rdbms.existsRecord(schemaConfigName, "spec_limits", specAnalysisFieldName, specAnalysisFieldValue);
-                if ("LABPLANET_FALSE".equalsIgnoreCase(analysisInSpec[0].toString())){
+                if (LPPlatform.LAB_FALSE.equalsIgnoreCase(analysisInSpec[0].toString())){
                     errorCode = "DataSample_SpecLimitNotFound";
                     errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, Arrays.toString(LabPLANETArray.joinTwo1DArraysInOneOf1DString(specAnalysisFieldName, specAnalysisFieldValue, ":")));
                     errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaDataName);
-                    return LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);                          
+                    return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);                          
                 }
             }
         }
@@ -1112,7 +1112,7 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
                     errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, currField);
                     errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, aMethod);
                     errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, specialFunctionReturn.toString());
-                    return LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);                                                  
+                    return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);                                                  
                 }
         }
     }    
@@ -1130,7 +1130,7 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, fieldNeed);
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, Arrays.toString(mandatoryFields));
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaDataName);
-            return  LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);                          
+            return  LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);                          
         }        
         value = fieldValue[specialFieldIndex];            
     }else{value = mandatoryFieldsValue[specialFieldIndex];}        
@@ -1146,7 +1146,7 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, fieldNeed);
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, mandatoryFields);
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaDataName);
-            return LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);                          
+            return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);                          
         }        
         value = fieldValue[specialFieldIndex];    
     }else{value = mandatoryFieldsValue[specialFieldIndex];}        
@@ -1162,7 +1162,7 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, fieldNeed);
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, mandatoryFields);
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaDataName);
-            return LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);                          
+            return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);                          
         }        
         value = fieldValue[specialFieldIndex];    
     }else{value = mandatoryFieldsValue[specialFieldIndex];}        
@@ -1179,11 +1179,11 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
     
     Object[][] resultFieldRecords = Rdbms.getRecordFieldsByFilter(schemaConfigName, "analysis_method_params", whereResultFieldName, whereResultFieldValue, getResultFields);
  
-    if ("LABPLANET_FALSE".equalsIgnoreCase(resultFieldRecords[0][0].toString())){ 
+    if (LPPlatform.LAB_FALSE.equalsIgnoreCase(resultFieldRecords[0][0].toString())){ 
         errorCode = "DataSample_AnalysisMethodParamsNotFound";
         errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, Arrays.toString(LabPLANETArray.joinTwo1DArraysInOneOf1DString(whereResultFieldName, whereResultFieldValue, ":")));
         errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaDataName);
-        return LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);                          
+        return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);                          
     }
     resultFieldRecords = LabPLANETArray.addColumnToArray2D(resultFieldRecords, sampleId);
     getResultFields = LabPLANETArray.addValueToArray1D(getResultFields, "sample_id");
@@ -1229,7 +1229,7 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
            errorCode = "DataSample_MissingMandatoryFields";
            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, mandatoryFieldsMissing);
            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaDataName);
-           return LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);   
+           return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);   
     }
     
         
@@ -1297,14 +1297,14 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
     
     //String[] diagnoses2 = sampleAnalysisEvaluateStatus(schemaPrefix, userName, sampleId, testId);
     Object[] diagnoses3 = sampleEvaluateStatus(schemaPrefix, userName, sampleId, auditActionName, userRole);
-    if ("LABPLANET_FALSE".equalsIgnoreCase(diagnoses3[0].toString())){
+    if (LPPlatform.LAB_FALSE.equalsIgnoreCase(diagnoses3[0].toString())){
         return diagnoses3;
     }
     errorCode = "DataSample_SampleAnalysisAddedSuccessfully";
     errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, "");
     errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, testId.toString());
     errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaDataName);
-    return LabPLANETPlatform.trapErrorMessage("LABPLANET_TRUE", errorCode, errorDetailVariables);       
+    return LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, errorCode, errorDetailVariables);       
 }
 
     /**
@@ -1322,8 +1322,8 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
     String auditActionName = "SAMPLE_EVALUATE_STATUS";
     if (parentAuditAction!=null){auditActionName = parentAuditAction + ":"+auditActionName;}
 
-    schemaDataName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaDataName);  
-    schemaConfigName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaConfigName); 
+    schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, schemaDataName);  
+    schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, schemaConfigName); 
     tableName = "sample_analysis";      
             
     String sampleStatusIncomplete = Parameter.getParameterBundle(schemaDataName.replace("\"", ""), "sample_statusIncomplete");
@@ -1335,7 +1335,7 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
     diagnoses =  Rdbms.existsRecord(schemaDataName, "sample_analysis", 
                                         new String[]{"sample_id","status in|"}, 
                                         new Object[]{sampleId, "NOT_STARTED|STARTED|INCOMPLETE"});
-    if ("LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){smpAnaNewStatus=sampleStatusIncomplete;}
+    if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){smpAnaNewStatus=sampleStatusIncomplete;}
     else{smpAnaNewStatus=sampleStatusComplete;}
     
     diagnoses = Rdbms.updateRecordFieldsByFilter(schemaDataName, "sample", 
@@ -1343,7 +1343,7 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
             new Object[]{smpAnaNewStatus},
             new String[]{"sample_id"},
             new Object[]{sampleId});
-    if ("LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){
+    if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){
         String[] fieldsForAudit = new String[0];
         fieldsForAudit = LabPLANETArray.addValueToArray1D(fieldsForAudit, "status:"+smpAnaNewStatus);
         smpAudit.sampleAuditAdd(schemaPrefix, auditActionName, "sample", sampleId, sampleId, null, null, fieldsForAudit, userName, userRole);        
@@ -1365,7 +1365,7 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
     public Object[] sampleAnalysisEvaluateStatus( String schemaPrefix, String userName, Integer sampleId, Integer testId, String parentAuditAction, String userRole){
     
     schemaDataName = "data";
-    schemaDataName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaDataName);  
+    schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, schemaDataName);  
     
     tableName = "sample_analysis_result";      
     
@@ -1382,7 +1382,7 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
     diagnoses = Rdbms.existsRecord(schemaDataName, tableName, 
                                         new String[]{"test_id","status","mandatory"}, 
                                         new Object[]{testId, "BLANK", true});
-    if ("LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){smpAnaNewStatus=sampleAnalysisStatusIncomplete;}
+    if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){smpAnaNewStatus=sampleAnalysisStatusIncomplete;}
     else{smpAnaNewStatus=sampleAnalysisStatusComplete;}
     
     diagnoses = Rdbms.updateRecordFieldsByFilter(schemaDataName, "sample_analysis", 
@@ -1390,7 +1390,7 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
             new Object[]{smpAnaNewStatus},
             new String[]{"test_id"},
             new Object[]{testId});
-    if ("LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){
+    if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){
         String[] fieldsForAudit = new String[0];
         fieldsForAudit = LabPLANETArray.addValueToArray1D(fieldsForAudit, "status:"+smpAnaNewStatus);
         smpAudit.sampleAuditAdd(schemaPrefix, auditActionName, "sample_analysis", testId, sampleId, testId, null, fieldsForAudit, userName, userRole);        
@@ -1417,8 +1417,8 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
     tableName = "sample_analysis_result";  
     String actionName = "Insert";
     String auditActionName = "SAMPLE_ANALYSIS_RESULT_ENTRY";
-    schemaDataName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaDataName);  
-    schemaConfigName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaConfigName); 
+    schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, schemaDataName);  
+    schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, schemaConfigName); 
     
     String specEvalNoSpec = Parameter.getParameterBundle(schemaDataName.replace("\"", ""), "sampleAnalysisResult_statusSpecEvalNoSpec");
     String specEvalNoSpecParamLimit = Parameter.getParameterBundle(schemaDataName.replace("\"", ""), "sampleAnalysisResult_statusSpecEvalNoSpecParamLimit");
@@ -1446,11 +1446,11 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
         new String[]{"result_id"}, 
         new Object[]{resultId}, 
         new String[]{"sample_id","test_id", "analysis", "method_name", "method_version","param_name", "status", "raw_value", "uom", "uom_conversion_mode"});
-    if ("LABPLANET_FALSE".equals(resultData[0][0].toString())){
+    if (LPPlatform.LAB_FALSE.equals(resultData[0][0].toString())){
         errorCode = "DataSample_SampleAnalysisResultNotFound";
         errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, resultId.toString());
         errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaDataName);
-        return LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);    
+        return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);    
     }
     Integer sampleId = (Integer)resultData[0][0];Integer testId = (Integer)resultData[0][1];
     String analysis = (String)resultData[0][2];String methodName = (String)resultData[0][3];Integer methodVersion = (Integer)resultData[0][4];
@@ -1462,7 +1462,7 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
         errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, currResultStatus);
         errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, resultId.toString());
         errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaConfigName);
-        return LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);         
+        return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);         
     }
     
     if ( (currRawValue!=null) && (currRawValue.equalsIgnoreCase(resultValue.toString())) ){
@@ -1470,16 +1470,16 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
         errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, resultId.toString());
         errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaDataName);
         errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, currRawValue);
-        return LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);         
+        return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);         
     }
     
     Object[][] sampleData = Rdbms.getRecordFieldsByFilter(schemaDataName, "sample", new String[]{"sample_id"}, new Object[]{sampleId}, 
         new String[]{"sample_id","sample_id","sample_id", "status", "sample_config_code", "sample_config_code_version"});
-    if ("LABPLANET_FALSE".equals(sampleData[0][0].toString())){
+    if (LPPlatform.LAB_FALSE.equals(sampleData[0][0].toString())){
         errorCode = "DataSample_SampleNotFound";
         errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, sampleId.toString());
         errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaDataName);
-        return LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);   
+        return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);   
     }  
     String sampleConfigCode = (String) sampleData[0][4];Integer sampleConfigCodeVersion = (Integer) sampleData[0][5];
     
@@ -1488,7 +1488,7 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
     String sampleSpecCode = null; Integer sampleSpecCodeVersion = null;
     String sampleSpecVariationName = null; String status = null; 
     if (sampleSpecData[0][0]!=null){
-        if (!"LABPLANET_FALSE".equalsIgnoreCase(sampleSpecData[0][0].toString())){
+        if (!LPPlatform.LAB_FALSE.equalsIgnoreCase(sampleSpecData[0][0].toString())){
             sampleSpecCode = sampleSpecData[0][0].toString(); 
             sampleSpecCodeVersion = Integer.valueOf(sampleSpecData[0][1].toString());
             sampleSpecVariationName = sampleSpecData[0][2].toString(); status = sampleSpecData[0][3].toString();        
@@ -1496,23 +1496,23 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
     }
     Object[][] sampleRulesData = Rdbms.getRecordFieldsByFilter(schemaConfigName, "sample_rules", new String[]{"code", "code_version"}, new Object[]{sampleConfigCode, sampleConfigCodeVersion}, 
         new String[]{"test_analyst_required"});
-    if ("LABPLANET_FALSE".equalsIgnoreCase(sampleRulesData[0][0].toString())){    
+    if (LPPlatform.LAB_FALSE.equalsIgnoreCase(sampleRulesData[0][0].toString())){    
         errorCode = "DataSample_SampleRulesNotFound";
         errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, "analyst_assignment_mode");
         errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, sampleConfigCode);
         errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, sampleConfigCodeVersion);
         errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaConfigName);
-        return LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);        
+        return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);        
     }    
     Boolean analystRequired = (Boolean) sampleRulesData[0][0];
     if (analystRequired){
         Object[][] testData = Rdbms.getRecordFieldsByFilter(schemaDataName, "sample_analysis", new String[]{"test_id"}, new Object[]{testId}, 
             new String[]{"test_id", "analyst", "analyst_assigned_on", "analyst_assigned_by"});
-        if ("LABPLANET_FALSE".equalsIgnoreCase(sampleRulesData[0][0].toString())){
+        if (LPPlatform.LAB_FALSE.equalsIgnoreCase(sampleRulesData[0][0].toString())){
             errorCode = "DataSample_SampleAnalysisNotFound";
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, testId.toString());
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaDataName);
-            return LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);          
+            return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);          
         }    
         String testAnalyst = (String) testData[0][1];String testAnalystBy = (String) testData[0][3];
         if (testAnalyst==null){
@@ -1521,7 +1521,7 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, sampleConfigCode);
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, sampleConfigCodeVersion.toString());
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaDataName);
-            return LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);                     
+            return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);                     
         }
         if (!testAnalyst.equalsIgnoreCase(userName)){
             errorCode = "DataSample_SampleAnalysisRuleOtherAnalystEnterResult";
@@ -1529,7 +1529,7 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, testAnalyst);
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, userName);
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaDataName);
-            return LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);                     
+            return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);                     
         }
     }
     String newResultStatus = currResultStatus;
@@ -1551,11 +1551,11 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
         fieldsName = LabPLANETArray.addValueToArray1D(fieldsName, "status");
         fieldsValue = LabPLANETArray.addValueToArray1D(fieldsValue, newResultStatus);
         diagnoses = Rdbms.updateRecordFieldsByFilter(schemaDataName, tableName, fieldsName, fieldsValue, new String[] {"result_id"} , new Object[] {resultId});
-        if ("LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){
+        if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){
             String[] fieldsForAudit = LabPLANETArray.joinTwo1DArraysInOneOf1DString(fieldsName, fieldsValue, ":");
             smpAudit.sampleAuditAdd(schemaPrefix, auditActionName, "sample_analysis_result", resultId, sampleId, testId, resultId, fieldsForAudit, userName, userRole);
         }
-        if ("LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){
+        if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){
             Object[] diagnoses2 = sampleAnalysisEvaluateStatus(schemaPrefix, userName, sampleId,testId, auditActionName, userRole);
         }    
         String[] whereFields = new String[]{"user_id", "analysis", "method_name", "method_version"};
@@ -1567,10 +1567,10 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
                                                 whereFields,
                                                 whereFieldsValue,
                                                 new String[]{"user_method_id", "user_id", "analysis", "method_name", "method_version"});
-        if (!("LABPLANET_FALSE".equalsIgnoreCase(userMethodInfo[0][0].toString())) ){ 
+        if (!(LPPlatform.LAB_FALSE.equalsIgnoreCase(userMethodInfo[0][0].toString())) ){ 
             diagnoses = Rdbms.updateRecordFieldsByFilter(schemaDataName, "user_method", 
                                                 updFields, updFieldsValue, whereFields, whereFieldsValue);
-        if ("LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){
+        if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){
                 updFields = LabPLANETArray.addValueToArray1D(updFields, whereFields);
                 updFieldsValue = LabPLANETArray.addValueToArray1D(updFieldsValue, whereFieldsValue);
                 String[] fieldsForAudit = LabPLANETArray.joinTwo1DArraysInOneOf1DString(updFields, updFieldsValue, ":");
@@ -1585,11 +1585,11 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
         new String[]{"code", "config_version", "variation_name", "analysis", "method_name","method_version","parameter"}, 
         new Object[]{sampleSpecCode, sampleSpecCodeVersion, sampleSpecVariationName, analysis, methodName, methodVersion, paramName}, 
         new String[]{"limit_id","rule_type","rule_variables", "limit_id", "uom", "uom_conversion_mode"});
-//    if ("LABPLANET_FALSE".equalsIgnoreCase(specLimits[0][0].toString())){
-    if ( ("LABPLANET_FALSE".equalsIgnoreCase(specLimits[0][0].toString())) && (!"Rdbms_NoRecordsFound".equalsIgnoreCase(specLimits[0][4].toString())) ){
+//    if (LPPlatform.LAB_FALSE.equalsIgnoreCase(specLimits[0][0].toString())){
+    if ( (LPPlatform.LAB_FALSE.equalsIgnoreCase(specLimits[0][0].toString())) && (!"Rdbms_NoRecordsFound".equalsIgnoreCase(specLimits[0][4].toString())) ){
         return LabPLANETArray.array2dTo1d(specLimits);
     }
-    if ( ("LABPLANET_FALSE".equalsIgnoreCase(specLimits[0][0].toString())) && ("Rdbms_NoRecordsFound".equalsIgnoreCase(specLimits[0][4].toString())) ){
+    if ( (LPPlatform.LAB_FALSE.equalsIgnoreCase(specLimits[0][0].toString())) && ("Rdbms_NoRecordsFound".equalsIgnoreCase(specLimits[0][4].toString())) ){
         fieldsName = LabPLANETArray.addValueToArray1D(fieldsName, "spec_eval");
         fieldsValue = LabPLANETArray.addValueToArray1D(fieldsValue, specEvalNoSpecParamLimit);
         fieldsName = LabPLANETArray.addValueToArray1D(fieldsName, "entered_by");
@@ -1599,10 +1599,10 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
         fieldsName = LabPLANETArray.addValueToArray1D(fieldsName, "status");
         fieldsValue = LabPLANETArray.addValueToArray1D(fieldsValue, newResultStatus);
         diagnoses = Rdbms.updateRecordFieldsByFilter(schemaDataName, tableName, fieldsName, fieldsValue, new String[] {"result_id"} , new Object[] {resultId});
-        if ("LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){            String[] fieldsForAudit = LabPLANETArray.joinTwo1DArraysInOneOf1DString(fieldsName, fieldsValue, ":");
+        if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){            String[] fieldsForAudit = LabPLANETArray.joinTwo1DArraysInOneOf1DString(fieldsName, fieldsValue, ":");
             smpAudit.sampleAuditAdd(schemaPrefix, auditActionName, "sample_analysis_result", resultId, sampleId, testId, resultId, fieldsForAudit, userName, userRole);
         }        
-        if ("LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){            Object[] diagnoses2 = sampleAnalysisEvaluateStatus(schemaPrefix, userName, sampleId,testId, auditActionName, userRole);
+        if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){            Object[] diagnoses2 = sampleAnalysisEvaluateStatus(schemaPrefix, userName, sampleId,testId, auditActionName, userRole);
         }
         String[] whereFields = new String[]{"user_id", "analysis", "method_name", "method_version"};
         Object[] whereFieldsValue = new Object[]{userName, analysis, methodName, methodVersion};
@@ -1613,10 +1613,10 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
                                                 whereFields,
                                                 whereFieldsValue,
                                                 new String[]{"user_method_id", "user_id", "analysis", "method_name", "method_version"});
-        if (!("LABPLANET_FALSE".equalsIgnoreCase(userMethodInfo[0][0].toString())) ){ 
+        if (!(LPPlatform.LAB_FALSE.equalsIgnoreCase(userMethodInfo[0][0].toString())) ){ 
             diagnoses = Rdbms.updateRecordFieldsByFilter(schemaDataName, "user_method", 
                                                 updFields, updFieldsValue, whereFields, whereFieldsValue);
-            if ("LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){                updFields = LabPLANETArray.addValueToArray1D(updFields, whereFields);
+            if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){                updFields = LabPLANETArray.addValueToArray1D(updFields, whereFields);
                 updFieldsValue = LabPLANETArray.addValueToArray1D(updFieldsValue, whereFieldsValue);
                 String[] fieldsForAudit = LabPLANETArray.joinTwo1DArraysInOneOf1DString(updFields, updFieldsValue, ":");
                 auditActionName = "UPDATE LAST ANALYSIS USER METHOD";
@@ -1640,18 +1640,18 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
                 errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, resultUomName);
                 errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, limitId.toString());
                 errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaDataName);
-                return LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);                      
+                return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);                      
             }    
            
             requiresUnitsConversion=true;
             UnitsOfMeasurement UOM = new UnitsOfMeasurement();            
             Object[] convDiagnoses = UOM.convertValue(schemaPrefix, new BigDecimal(resultValue.toString()), resultUomName, specUomName);
-            if ("LABPLANET_FALSE".equalsIgnoreCase(convDiagnoses[0].toString())) {
+            if (LPPlatform.LAB_FALSE.equalsIgnoreCase(convDiagnoses[0].toString())) {
                 errorCode = "DataSample_SampleAnalysisResult_ConverterFALSE";
                 errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, resultId.toString());
                 errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, convDiagnoses[3].toString());
                 errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaDataName);
-                return LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);                  
+                return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);                  
             }
             resultConverted = (BigDecimal) convDiagnoses[1];
         }
@@ -1669,13 +1669,13 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
             String specListName = null;
             
             resSpecEvaluation = resChkSpec.resultCheck(schemaDataName, (String) resultValue, specRuleType, specValues, specSeparator, specListName);
-            if ("LABPLANET_FALSE".equalsIgnoreCase(resSpecEvaluation[0].toString())){
+            if (LPPlatform.LAB_FALSE.equalsIgnoreCase(resSpecEvaluation[0].toString())){
                 return resSpecEvaluation;
                //errorCode = "DataSample_SampleAnalysisResult_QualitativeSpecNotRecognized";
                // errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, resultId.toString());
                // errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, ruleVariables);
                // errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaDataName);
-               // return labPlat.trapErrorMessage("LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);                  
+               // return labPlat.trapErrorMessage(LPPlatform.LAB_FALSE, classVersion, errorCode, errorDetailVariables);                  
             }
             fieldsName = LabPLANETArray.addValueToArray1D(fieldsName, "spec_eval");
             fieldsValue = LabPLANETArray.addValueToArray1D(fieldsValue, resSpecEvaluation[resSpecEvaluation.length-1]);
@@ -1688,11 +1688,11 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
             fieldsName = LabPLANETArray.addValueToArray1D(fieldsName, "status");
             fieldsValue = LabPLANETArray.addValueToArray1D(fieldsValue, newResultStatus);
             diagnoses = Rdbms.updateRecordFieldsByFilter(schemaDataName, tableName, fieldsName, fieldsValue, new String[] {"result_id"} , new Object[] {resultId});
-            if ("LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){
+            if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){
                 String[] fieldsForAudit = LabPLANETArray.joinTwo1DArraysInOneOf1DString(fieldsName, fieldsValue, ":");
                 smpAudit.sampleAuditAdd(schemaPrefix, auditActionName, "sample_analysis_result", resultId, sampleId, testId, resultId, fieldsForAudit, userName, userRole);
             }  
-            if ("LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){
+            if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){
                 Object[] diagnoses2 = sampleAnalysisEvaluateStatus(schemaPrefix, userName, sampleId,testId, auditActionName, userRole);
             }
             return diagnoses;                
@@ -1745,13 +1745,13 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
 //                resSpecEvaluation = resChkSpec.resultCheck((Float) resultValue, (Float) minSpec, (Float) maxSpec, (Boolean) minStrict, (Boolean) maxStrict);
             } 
 
-            if ("LABPLANET_FALSE".equalsIgnoreCase(resSpecEvaluation[0].toString())){        
+            if (LPPlatform.LAB_FALSE.equalsIgnoreCase(resSpecEvaluation[0].toString())){        
                 return resSpecEvaluation;
                 //errorCode = "DataSample_SampleAnalysisResult_QuantitativeSpecNotRecognized";
                 //errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, resultId.toString());
                 //errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, ruleVariables);
                 //errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaDataName);
-                //return labPlat.trapErrorMessage("LABPLANET_FALSE", classVersion, errorCode, errorDetailVariables);                  
+                //return labPlat.trapErrorMessage(LPPlatform.LAB_FALSE, classVersion, errorCode, errorDetailVariables);                  
             }
             String specEval = (String) resSpecEvaluation[resSpecEvaluation.length-1];      String specEvalDetail = (String) resSpecEvaluation[resSpecEvaluation.length-2];
             if (requiresUnitsConversion==true){specEvalDetail=specEvalDetail+ " in "+specUomName;}
@@ -1767,11 +1767,11 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
             fieldsName = LabPLANETArray.addValueToArray1D(fieldsName, "status");
             fieldsValue = LabPLANETArray.addValueToArray1D(fieldsValue, newResultStatus);
             diagnoses = Rdbms.updateRecordFieldsByFilter(schemaDataName, tableName, fieldsName, fieldsValue, new String[] {"result_id"} , new Object[] {resultId});
-            if ("LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){
+            if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){
                 String[] fieldsForAudit = LabPLANETArray.joinTwo1DArraysInOneOf1DString(fieldsName, fieldsValue, ":");
                 smpAudit.sampleAuditAdd(schemaPrefix, auditActionName, "sample_analysis_result", resultId, sampleId, testId, resultId, fieldsForAudit, userName, userRole);
             }
-            if ("LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){
+            if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){
                 Object[] diagnoses2 = sampleAnalysisEvaluateStatus(schemaPrefix, userName, sampleId, testId, auditActionName, userRole);
             }
             String[] whereFields = new String[]{"user_id", "analysis", "method_name", "method_version"};
@@ -1783,10 +1783,10 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
                                                     whereFields,
                                                     whereFieldsValue,
                                                     new String[]{"user_method_id", "user_id", "analysis", "method_name", "method_version"});
-            if (!("LABPLANET_FALSE".equalsIgnoreCase(userMethodInfo[0][0].toString())) ){ 
+            if (!(LPPlatform.LAB_FALSE.equalsIgnoreCase(userMethodInfo[0][0].toString())) ){ 
                 diagnoses = Rdbms.updateRecordFieldsByFilter(schemaDataName, "user_method", 
                                                     updFields, updFieldsValue, whereFields, whereFieldsValue);
-                if ("LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){
+                if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){
                     updFields = LabPLANETArray.addValueToArray1D(updFields, whereFields);
                     updFieldsValue = LabPLANETArray.addValueToArray1D(updFieldsValue, whereFieldsValue);
                     String[] fieldsForAudit = LabPLANETArray.joinTwo1DArraysInOneOf1DString(updFields, updFieldsValue, ":");
@@ -1802,7 +1802,7 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
                 errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, resultId.toString());
                 errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaDataName);
                 errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, ruleType);
-                return LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);                  
+                return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);                  
     }
 }
 
@@ -1822,8 +1822,8 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
         
         tableName = "sample_analysis_result";  
 
-        schemaDataName = LabPLANETPlatform.buildSchemaName(schemaPrefix, "data");  
-        schemaConfigName = LabPLANETPlatform.buildSchemaName(schemaPrefix, "config"); 
+        schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, "data");  
+        schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, "config"); 
             
         String sampleAnalysisResultStatusCanceled = Parameter.getParameterBundle(schemaDataName.replace("\"", ""), "sampleAnalysisResult_statusCanceled");
         String sampleAnalysisResultStatusReviewed = Parameter.getParameterBundle(schemaDataName.replace("\"", ""), "sampleAnalysisResult_statusReviewed");
@@ -1849,7 +1849,7 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
             errorCode = "DataSample_SampleAnalysisResultNotFound";
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, resultId.toString());
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaDataName);
-            return LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);                  
+            return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);                  
         }else{
             for (Integer iResToCancel=0;iResToCancel<objectInfo.length;iResToCancel++){
                 String currStatus = (String) objectInfo[iResToCancel][0];
@@ -1861,7 +1861,7 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
                     diagnoses = Rdbms.updateRecordFieldsByFilter(schemaDataName, "sample_analysis_result", 
                                                                         new String[]{"status", "status_previous"}, new Object[]{sampleAnalysisResultStatusReviewed, currStatus}, 
                                                                         new String[]{"result_id", "status"}, new Object[]{resultId, "<>"+sampleAnalysisResultStatusCanceled});
-                    if ("LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){
+                    if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){
                         String[] fieldsForAudit = new String[0];
                         fieldsForAudit = LabPLANETArray.addValueToArray1D(fieldsForAudit, "status:"+sampleAnalysisResultStatusReviewed);
                         fieldsForAudit = LabPLANETArray.addValueToArray1D(fieldsForAudit, "status_previous:"+currStatus);
@@ -1874,7 +1874,7 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
                     errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, resultId.toString());
                     errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaDataName);
                     errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, sampleAnalysisResultStatusReviewed);                    
-                    return LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);                  
+                    return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);                  
                      }    
                 }
                 if ((cancelScope.equalsIgnoreCase("sample_id")) && (!LabPLANETArray.valueInArray(samplesToReview, sampleId)))
@@ -1896,7 +1896,7 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
                     diagnoses = Rdbms.updateRecordFieldsByFilter(schemaDataName, "sample_analysis", 
                                                                         new String[]{"status", "status_previous"}, new Object[]{sampleAnalysisStatusReviewed, currStatus}, 
                                                                         new String[]{"test_id"}, new Object[]{currTest});      
-                    if ("LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){
+                    if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){
                         String[] fieldsForAudit = new String[0];
                         fieldsForAudit = LabPLANETArray.addValueToArray1D(fieldsForAudit, "status:"+sampleAnalysisStatusCanceled);
                         fieldsForAudit = LabPLANETArray.addValueToArray1D(fieldsForAudit, "status_previous:"+currStatus);
@@ -1907,7 +1907,7 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
                     errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, currTest.toString());
                     errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaDataName);
                     errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, currStatus);                    
-                    return LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);                                  
+                    return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);                                  
                 }
         }
         
@@ -1922,7 +1922,7 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
                     diagnoses = Rdbms.updateRecordFieldsByFilter(schemaDataName, "sample", 
                                                                         new String[]{"status", "status_previous"}, new Object[]{sampleStatusReviewed, currStatus}, 
                                                                         new String[]{"sample_id"}, new Object[]{currSample});                                                        
-                    if ("LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){
+                    if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){
                         String[] fieldsForAudit = new String[0];
                         fieldsForAudit = LabPLANETArray.addValueToArray1D(fieldsForAudit, "status:"+sampleStatusCanceled);
                         fieldsForAudit = LabPLANETArray.addValueToArray1D(fieldsForAudit, "status_previous:"+currStatus);
@@ -1933,7 +1933,7 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
                     errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, currSample.toString());
                     errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaDataName);
                     errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, currStatus);                    
-                    diagnoses = LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);                       
+                    diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);                       
                 }
         }
         return diagnoses;
@@ -2028,15 +2028,15 @@ private Map getDefaultValuesTemplate(String schema, String tsample, String templ
         String myDiagnoses = "";        
         String schemaConfigName = "config";
         
-        LabPLANETPlatform labPlat = new LabPLANETPlatform();       
-        schemaConfigName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaConfigName); 
+        LPPlatform labPlat = new LPPlatform();       
+        schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, schemaConfigName); 
         
         Integer specialFieldIndex = Arrays.asList(mandatoryFields).indexOf("status");
         String status = mandatoryFieldsValue[specialFieldIndex].toString();     
         if (status.length()==0){myDiagnoses = "ERROR: The parameter status cannot be null"; return myDiagnoses;}
         
         Object[] diagnosis = Rdbms.existsRecord(schemaConfigName, "sample_rules", new String[] {"code", "code_version"}, new Object[] {template, templateVersion});
-        if (!"LABPLANET_TRUE".equalsIgnoreCase(diagnosis[0].toString())){
+        if (!LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnosis[0].toString())){
             myDiagnoses = "ERROR: The sample_rule record for "+template+" does not exist in schema"+schemaConfigName+". ERROR: "+diagnosis[5];}
         else{    
             String[] fieldNames = new String[1];
@@ -2048,7 +2048,7 @@ private Map getDefaultValuesTemplate(String schema, String tsample, String templ
             String[] fieldFilter = new String[] {"code", "code_version", "statuses", "default_status"};
             
             Object[][] records = Rdbms.getRecordFieldsByFilter(schemaConfigName, "sample_rules", fieldNames, fieldValues, fieldFilter);
-            if ("LABPLANET_FALSE".equalsIgnoreCase(records[0][0].toString())){
+            if (LPPlatform.LAB_FALSE.equalsIgnoreCase(records[0][0].toString())){
                 myDiagnoses = "ERROR: Problem on getting sample rules for " + template + " exists but the rule record is missing in the schema "+schemaConfigName;            
                 return myDiagnoses;
             }
@@ -2098,11 +2098,11 @@ private Map getDefaultValuesTemplate(String schema, String tsample, String templ
         fieldValues[2]=methodVersion;                            
         
         Object[] diagnosis = Rdbms.existsRecord(schemaConfigName, "analysis_method", fieldNames, fieldValues);
-        if ("LABPLANET_TRUE".equalsIgnoreCase(diagnosis[0].toString())){
+        if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnosis[0].toString())){
             myDiagnoses = "SUCCESS";        }
         else{    
             diagnosis = Rdbms.existsRecord(schemaConfigName, "analysis", new String[]{"code"},  new Object[]{analysis});
-            if ("LABPLANET_TRUE".equalsIgnoreCase(diagnosis[0].toString())){
+            if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnosis[0].toString())){
                 myDiagnoses = "ERROR: The analysis " + analysis + " exists but the method " + methodName +" with version "+ methodVersion+ " was not found in the schema "+schemaPrefix;            
             }
             else{
@@ -2126,7 +2126,7 @@ private Map getDefaultValuesTemplate(String schema, String tsample, String templ
         String myDiagnoses = "";        
         String schemaConfigName = "config";
         
-        schemaConfigName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaConfigName); 
+        schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, schemaConfigName); 
         
         if ( 1==1){
             myDiagnoses = "ERROR: specialFieldCheckSampleAnalysisAnalyst not implemented yet.";
@@ -2138,7 +2138,7 @@ private Map getDefaultValuesTemplate(String schema, String tsample, String templ
         if (status.length()==0){myDiagnoses = "ERROR: The parameter status cannot be null"; return myDiagnoses;}
         
         Object[] diagnosis = Rdbms.existsRecord(schemaConfigName, "sample_rules", new String[] {"code", "code_version"}, new Object[] {template, templateVersion});
-        if ("LABPLANET_TRUE".equalsIgnoreCase(diagnosis[0].toString())){
+        if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnosis[0].toString())){
             myDiagnoses = "ERROR: The sample_rule record for "+template+" does not exist in schema"+schemaConfigName+". ERROR: "+diagnosis[5];}
         else{    
             String[] fieldNames = new String[1];
@@ -2150,7 +2150,7 @@ private Map getDefaultValuesTemplate(String schema, String tsample, String templ
             String[] fieldFilter = new String[] {"code", "code_version", "statuses", "default_status"};
             
             Object[][] records = Rdbms.getRecordFieldsByFilter(schemaConfigName, "sample_rules", fieldNames, fieldValues, fieldFilter);
-            if ("LABPLANET_FALSE".equalsIgnoreCase(records[0][0].toString())){
+            if (LPPlatform.LAB_FALSE.equalsIgnoreCase(records[0][0].toString())){
                 myDiagnoses = "ERROR: Problem on getting sample rules for " + template + " exists but the rule record is missing in the schema "+schemaConfigName;            
                 return myDiagnoses;
             }
@@ -2181,7 +2181,7 @@ private Map getDefaultValuesTemplate(String schema, String tsample, String templ
         String myDiagnoses = "";        
         String schemaConfigName = "config";
         
-        schemaConfigName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaConfigName); 
+        schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, schemaConfigName); 
 
         Integer specialFieldIndex = Arrays.asList(mandatoryFields).indexOf("spec_code");
         String specCode = (String) mandatoryFieldsValue[specialFieldIndex];     
@@ -2199,7 +2199,7 @@ private Map getDefaultValuesTemplate(String schema, String tsample, String templ
                 new String[] {"code", "config_version", "variation_name"}, 
                 new Object[] {specCode, specCodeVersion, specVariationName});
         
-        if ("LABPLANET_FALSE".equalsIgnoreCase(diagnosis[0].toString())){
+        if (LPPlatform.LAB_FALSE.equalsIgnoreCase(diagnosis[0].toString())){
             myDiagnoses = "ERROR: The sample_rule record for "+template+" does not exist in schema"+schemaConfigName+". ERROR: "+diagnosis[5];
             return myDiagnoses;}
         
@@ -2221,8 +2221,8 @@ private Map getDefaultValuesTemplate(String schema, String tsample, String templ
     public Object[] sampleAnalysisResultCancel( String schemaPrefix, String userName, Integer sampleId, Integer testId, Integer resultId, String userRole) throws SQLException{
         
         tableName = "sample_analysis_result";  
-        schemaDataName = LabPLANETPlatform.buildSchemaName(schemaPrefix, "data");  
-        schemaConfigName = LabPLANETPlatform.buildSchemaName(schemaPrefix, "config"); 
+        schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, "data");  
+        schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, "config"); 
             
         String sampleAnalysisResultStatusCanceled = Parameter.getParameterBundle(schemaDataName.replace("\"", ""), "sampleAnalysisResult_statusCanceled");
         String sampleAnalysisResultStatusReviewed = Parameter.getParameterBundle(schemaDataName.replace("\"", ""), "sampleAnalysisResult_statusReviewed");
@@ -2249,7 +2249,7 @@ private Map getDefaultValuesTemplate(String schema, String tsample, String templ
             errorCode = "DataSample_SampleNotFound";
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, Arrays.toString(filter));
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaDataName);
-            return LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);
+            return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);
         }else{
             for (Integer iResToCancel=0;iResToCancel<objectInfo.length;iResToCancel++){
                 String currStatus = (String) objectInfo[iResToCancel][0];
@@ -2261,7 +2261,7 @@ private Map getDefaultValuesTemplate(String schema, String tsample, String templ
                     diagnoses = Rdbms.updateRecordFieldsByFilter(schemaDataName, "sample_analysis_result", 
                                                                         new String[]{"status", "status_previous"}, new Object[]{sampleAnalysisResultStatusCanceled, currStatus}, 
                                                                         new String[]{"result_id"}, new Object[]{resultId});
-                    if ("LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){
+                    if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){
                         String[] fieldsForAudit = new String[0];
                         fieldsForAudit = LabPLANETArray.addValueToArray1D(fieldsForAudit, "status:"+sampleAnalysisResultStatusCanceled);
                         fieldsForAudit = LabPLANETArray.addValueToArray1D(fieldsForAudit, "status_previous:"+currStatus);
@@ -2272,7 +2272,7 @@ private Map getDefaultValuesTemplate(String schema, String tsample, String templ
                     errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, resultId.toString());
                     errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, currStatus);
                     errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaDataName);
-                    return LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);
+                    return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);
                 }    
                 }
                 if ((cancelScope.equalsIgnoreCase("sample_id")) && (!LabPLANETArray.valueInArray(samplesToCancel, sampleId)))
@@ -2294,7 +2294,7 @@ private Map getDefaultValuesTemplate(String schema, String tsample, String templ
                     diagnoses = Rdbms.updateRecordFieldsByFilter(schemaDataName, "sample_analysis", 
                                                                         new String[]{"status", "status_previous"}, new Object[]{sampleAnalysisStatusCanceled, currStatus}, 
                                                                         new String[]{"test_id"}, new Object[]{currTest});      
-                    if ("LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){
+                    if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){
                         String[] fieldsForAudit = new String[0];
                         fieldsForAudit = LabPLANETArray.addValueToArray1D(fieldsForAudit, "status:"+sampleAnalysisStatusCanceled);
                         fieldsForAudit = LabPLANETArray.addValueToArray1D(fieldsForAudit, "status_previous:"+currStatus);
@@ -2305,7 +2305,7 @@ private Map getDefaultValuesTemplate(String schema, String tsample, String templ
                     errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, currTest.toString());
                     errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, currStatus);
                     errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaDataName);
-                    diagnoses = LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);
+                    diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);
                 }
         }
         
@@ -2320,7 +2320,7 @@ private Map getDefaultValuesTemplate(String schema, String tsample, String templ
                     diagnoses = Rdbms.updateRecordFieldsByFilter(schemaDataName, "sample", 
                                                                         new String[]{"status", "status_previous"}, new Object[]{sampleStatusCanceled, currStatus}, 
                                                                         new String[]{"sample_id"}, new Object[]{currSample});                                                        
-                    if ("LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){
+                    if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){
                     String[] fieldsForAudit = new String[0];
                     fieldsForAudit = LabPLANETArray.addValueToArray1D(fieldsForAudit, "status:"+sampleStatusCanceled);
                     fieldsForAudit = LabPLANETArray.addValueToArray1D(fieldsForAudit, "status_previous:"+currStatus);
@@ -2331,7 +2331,7 @@ private Map getDefaultValuesTemplate(String schema, String tsample, String templ
                     errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, currSample.toString());
                     errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, currStatus);
                     errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaDataName);
-                    diagnoses = LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);
+                    diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);
                 }
         }
         return diagnoses;
@@ -2354,8 +2354,8 @@ private Map getDefaultValuesTemplate(String schema, String tsample, String templ
         tableName = "sample_analysis_result";  
        
         String auditActionName = "SAMPLE_ANALYSIS_RESULT_UNCANCELING";
-        schemaDataName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaDataName);  
-        schemaConfigName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaConfigName); 
+        schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, schemaDataName);  
+        schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, schemaConfigName); 
 
         String sampleAnalysisResultStatusCanceled = Parameter.getParameterBundle(schemaDataName.replace("\"", ""), "sampleAnalysisResult_statusCanceled");
         String sampleAnalysisResultStatusReviewed = Parameter.getParameterBundle(schemaDataName.replace("\"", ""), "sampleAnalysisResult_statusReviewed");
@@ -2378,7 +2378,7 @@ private Map getDefaultValuesTemplate(String schema, String tsample, String templ
             errorCode = "DataSample_SampleNotFound";
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, Arrays.toString(filter));
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaDataName);
-            return LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);
+            return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);
         }
         Object[] samplesToUnCancel = new Object[0];
         Object[] testsToUnCancel = new Object[0];       
@@ -2395,7 +2395,7 @@ private Map getDefaultValuesTemplate(String schema, String tsample, String templ
                 errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, resultInfo[0][0].toString());
                 errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, sampleAnalysisResultStatusCanceled);
                 errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaDataName);
-                diagnoses = LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);
+                diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);
                 diagPerResult = LabPLANETArray.addValueToArray1D(diagPerResult, "Result "+ resultId.toString() + " not uncanceled because current status is "+ currResultStatus);
             }else{    
             resultId = (Integer) resultInfo[iResToCancel][2];
@@ -2403,7 +2403,7 @@ private Map getDefaultValuesTemplate(String schema, String tsample, String templ
                                                                 new String[]{"status_previous", "status"}, 
                                                                 new Object[]{sampleAnalysisResultStatusCanceled, statusPrevious}, 
                                                                 new String[]{"result_id"}, new Object[]{resultId});
-            if ("LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){
+            if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){
                 String[] fieldsForAudit = new String[0];
                 fieldsForAudit = LabPLANETArray.addValueToArray1D(fieldsForAudit, "status_previous:"+sampleAnalysisResultStatusCanceled);
                 fieldsForAudit = LabPLANETArray.addValueToArray1D(fieldsForAudit, "status:"+statusPrevious);
@@ -2429,7 +2429,7 @@ private Map getDefaultValuesTemplate(String schema, String tsample, String templ
                     diagnoses = Rdbms.updateRecordFieldsByFilter(schemaDataName, "sample_analysis", 
                                                                         new String[]{"status", "status_previous"}, new Object[]{currPrevStatus, sampleAnalysisResultStatusCanceled}, 
                                                                         new String[]{"test_id"}, new Object[]{currTest});      
-                    if ("LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){
+                    if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){
                         String[] fieldsForAudit = new String[0];
                         fieldsForAudit = LabPLANETArray.addValueToArray1D(fieldsForAudit, "status_previous:"+sampleAnalysisResultStatusCanceled);
                         fieldsForAudit = LabPLANETArray.addValueToArray1D(fieldsForAudit, "status:"+currPrevStatus);
@@ -2451,7 +2451,7 @@ private Map getDefaultValuesTemplate(String schema, String tsample, String templ
                     diagnoses = Rdbms.updateRecordFieldsByFilter(schemaDataName, "sample", 
                                                                         new String[]{"status", "status_previous"}, new Object[]{currPrevStatus, sampleAnalysisResultStatusCanceled}, 
                                                                         new String[]{"sample_id"}, new Object[]{currSample});                                                        
-                if ("LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){
+                if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){
                     String[] fieldsForAudit = new String[0];
                     fieldsForAudit = LabPLANETArray.addValueToArray1D(fieldsForAudit, "status_previous:"+sampleAnalysisResultStatusCanceled);
                     fieldsForAudit = LabPLANETArray.addValueToArray1D(fieldsForAudit, "status:"+currPrevStatus);
@@ -2480,8 +2480,8 @@ private Map getDefaultValuesTemplate(String schema, String tsample, String templ
     public Object[] sampleAnalysisResultCancelBack( String schemaPrefix, String userName, Integer sampleId, Integer testId, Integer resultId, String userRole) throws SQLException{
         
         tableName = "sample_analysis_result";  
-        schemaDataName = LabPLANETPlatform.buildSchemaName(schemaPrefix, "data");  
-        schemaConfigName = LabPLANETPlatform.buildSchemaName(schemaPrefix, "config"); 
+        schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, "data");  
+        schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, "config"); 
         String[] diagnoses = new String[6];
             
         String sampleAnalysisResultStatusCanceled = Parameter.getParameterBundle(schemaDataName.replace("\"", ""), "sampleAnalysisResult_statusCanceled");
@@ -2509,7 +2509,7 @@ private Map getDefaultValuesTemplate(String schema, String tsample, String templ
             errorCode = "DataSample_SampleAnalysisResultNotFound";
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, Arrays.toString(filter));
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaDataName);
-            return LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);                    
+            return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);                    
         }else{
             for (Integer iResToCancel=0;iResToCancel<objectInfo.length;iResToCancel++){
                 String currStatus = (String) objectInfo[iResToCancel][0];
@@ -2522,7 +2522,7 @@ private Map getDefaultValuesTemplate(String schema, String tsample, String templ
                         diagnoses = (String[]) Rdbms.updateRecordFieldsByFilter(schemaDataName, "sample_analysis_result", 
                                                                             new String[]{"status", "status_previous"}, new Object[]{sampleAnalysisResultStatusCanceled, currStatus}, 
                                                                             new String[]{"result_id"}, new Object[]{resultId});
-                        if ("LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0])){
+                        if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0])){
                             String[] fieldsForAudit = new String[0];
                             fieldsForAudit = LabPLANETArray.addValueToArray1D(fieldsForAudit, "status:"+sampleAnalysisResultStatusCanceled);
                             fieldsForAudit = LabPLANETArray.addValueToArray1D(fieldsForAudit, "status_previous:"+currStatus);
@@ -2633,7 +2633,7 @@ private Map getDefaultValuesTemplate(String schema, String tsample, String templ
     public Object[] sarChangeUOM( String schemaPrefix, Integer resultId, String newUOM, String userName, String userRole){
         Object[] diagnoses = new Object[0];
         String auditActionName = "CHANGE_UOM";
-        schemaDataName = LabPLANETPlatform.buildSchemaName(schemaPrefix, "data");
+        schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, "data");
         tableName="sample_analysis_result";
         
         Object[][] resultInfo = Rdbms.getRecordFieldsByFilter(schemaDataName, tableName, 
@@ -2656,17 +2656,17 @@ private Map getDefaultValuesTemplate(String schema, String tsample, String templ
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, currUOM);
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, resultId.toString());
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaDataName);
-            return LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);                      
+            return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);                      
         }    
         
         UnitsOfMeasurement uom = new UnitsOfMeasurement();
         Object[] convDiagnoses = uom.convertValue(schemaPrefix, new BigDecimal(currValue), currUOM, newUOM);
-        if ("LABPLANET_FALSE".equalsIgnoreCase(convDiagnoses[0].toString())) {
+        if (LPPlatform.LAB_FALSE.equalsIgnoreCase(convDiagnoses[0].toString())) {
             errorCode = "DataSample_SampleAnalysisResult_ConverterFALSE";
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, resultId.toString());
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, convDiagnoses[3].toString());
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaDataName);
-            return LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);                  
+            return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);                  
         }
         BigDecimal resultConverted = (BigDecimal) convDiagnoses[convDiagnoses.length-2];
         
@@ -2676,7 +2676,7 @@ private Map getDefaultValuesTemplate(String schema, String tsample, String templ
         Object[] updateRecordFieldsByFilter = Rdbms.updateRecordFieldsByFilter(schemaDataName, tableName, 
                 updFieldNames, updFieldValues,
                 new String[]{"result_id"}, new Object[]{resultId});
-        if ("LABPLANET_FALSE".equalsIgnoreCase(updateRecordFieldsByFilter[0].toString())) {
+        if (LPPlatform.LAB_FALSE.equalsIgnoreCase(updateRecordFieldsByFilter[0].toString())) {
             return updateRecordFieldsByFilter;}
         
         SampleAudit smpAudit = new SampleAudit();
@@ -2689,9 +2689,9 @@ private Map getDefaultValuesTemplate(String schema, String tsample, String templ
     
 //public Object[] logSampleAliquot( String schemaPrefix, Integer sampleId, String sampleTemplate, Integer sampleTemplateVersion, String[] smpAliqFieldName, Object[] smpAliqFieldValue, String userName, String userRole, Integer appSessionId, Boolean devMode) {
 public Object[] logSampleAliquot( String schemaPrefix, Integer sampleId, String[] smpAliqFieldName, Object[] smpAliqFieldValue, String userName, String userRole, Integer appSessionId, Boolean devMode) {    
-    Object[] diagnoses = new Object[]{"LABPLANET_FALSE"};
+    Object[] diagnoses = new Object[]{LPPlatform.LAB_FALSE};
     
-    LabPLANETPlatform labPlat = new LabPLANETPlatform();
+    LPPlatform labPlat = new LPPlatform();
         
     String query = "";
     String parentTableName = "sample";
@@ -2702,8 +2702,8 @@ public Object[] logSampleAliquot( String schemaPrefix, Integer sampleId, String[
     String schemaDataName = "data";
     String schemaConfigName = "config";
 
-    schemaDataName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaDataName);    
-    schemaConfigName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaConfigName); 
+    schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, schemaDataName);    
+    schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, schemaConfigName); 
 
     BigDecimal aliqVolume = BigDecimal.ZERO;
     String aliqVolumeUOM = "";
@@ -2713,7 +2713,7 @@ public Object[] logSampleAliquot( String schemaPrefix, Integer sampleId, String[
         String[] mandatorySampleFields = new String[]{"volume_for_aliq", "volume_for_aliq_uom"};
         String[] mandatorySampleAliqFields = new String[]{"volume", "volume_uom"};
         Object[][] sampleInfo = Rdbms.getRecordFieldsByFilter(schemaDataName, parentTableName, new String[] {"sample_id"}, new Object[]{sampleId}, mandatorySampleFields);
-        if ( (sampleInfo[0][0]!=null) && ("LABPLANET_FALSE".equalsIgnoreCase(sampleInfo[0][0].toString())) ){
+        if ( (sampleInfo[0][0]!=null) && (LPPlatform.LAB_FALSE.equalsIgnoreCase(sampleInfo[0][0].toString())) ){
             return LabPLANETArray.array2dTo1d(sampleInfo);}    
         for (String fv: mandatorySampleAliqFields){
             if (LabPLANETArray.valuePosicInArray(smpAliqFieldName, fv) == -1){
@@ -2722,7 +2722,7 @@ public Object[] logSampleAliquot( String schemaPrefix, Integer sampleId, String[
                 errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, Arrays.toString(smpAliqFieldName));
                 errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, sampleId.toString());
                 errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaPrefix);
-                return LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);                
+                return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);                
             }
         }      
         if (aliqVolume.compareTo(BigDecimal.ZERO)==-1) {
@@ -2730,7 +2730,7 @@ public Object[] logSampleAliquot( String schemaPrefix, Integer sampleId, String[
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, aliqVolume.toString());
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, sampleId.toString());
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaPrefix);
-            return LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);                 
+            return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);                 
         }        
 
         if (sampleInfo[0][0]==null) {
@@ -2738,7 +2738,7 @@ public Object[] logSampleAliquot( String schemaPrefix, Integer sampleId, String[
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, "null");
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, sampleId.toString());
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaPrefix);
-            return LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);                 
+            return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);                 
         }        
         
 
@@ -2761,7 +2761,7 @@ public Object[] logSampleAliquot( String schemaPrefix, Integer sampleId, String[
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, "aliquoting");
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, aliqVolume.toString());
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaPrefix);
-            return LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);                     
+            return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);                     
         }
         
         smpVolume = smpVolume.add(aliqVolume.negate());
@@ -2769,7 +2769,7 @@ public Object[] logSampleAliquot( String schemaPrefix, Integer sampleId, String[
         Object[] smpVolFldValue = new Object[]{smpVolume};
         Object[] updateSampleVolume = Rdbms.updateRecordFieldsByFilter(schemaDataName, parentTableName, 
                 smpVolFldName, smpVolFldValue, new String[]{"sample_id"}, new Object[]{sampleId});
-        if ("LABPLANET_FALSE".equalsIgnoreCase(updateSampleVolume[0].toString())){
+        if (LPPlatform.LAB_FALSE.equalsIgnoreCase(updateSampleVolume[0].toString())){
             return updateSampleVolume;}    
         smpAudit.sampleAuditAdd(schemaPrefix, auditActionName, parentTableName, sampleId, 
                 sampleId, null, null, 
@@ -2791,10 +2791,10 @@ public Object[] logSampleAliquot( String schemaPrefix, Integer sampleId, String[
     smpAliqFieldValue = LabPLANETArray.addValueToArray1D(smpAliqFieldValue, LabPLANETDate.getTimeStampLocalDate());
 
     diagnoses = Rdbms.insertRecordInTable(schemaDataName, tableName, smpAliqFieldName, smpAliqFieldValue);
-    if (!"LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){
+    if (!LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){
         errorCode = "DataSample_errorInsertingSampleRecord";
         errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, diagnoses[diagnoses.length-2]);
-        return LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);
+        return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);
     }
     Integer aliquotId = Integer.parseInt(diagnoses[diagnoses.length-1].toString());
     Object[] fieldsOnLogSample = LabPLANETArray.joinTwo1DArraysInOneOf1DString(smpAliqFieldName, smpAliqFieldValue, ":");
@@ -2810,9 +2810,9 @@ public Object[] logSampleAliquot( String schemaPrefix, Integer sampleId, String[
 
 public Object[] logSampleSubAliquot( String schemaPrefix, Integer aliquotId, String[] smpSubAliqFieldName, Object[] smpSubAliqFieldValue, String userName, String userRole, Integer appSessionId, Boolean devMode) {
     
-    Object[] diagnoses = new Object[]{"LABPLANET_FALSE"};
+    Object[] diagnoses = new Object[]{LPPlatform.LAB_FALSE};
     
-    LabPLANETPlatform labPlat = new LabPLANETPlatform();
+    LPPlatform labPlat = new LPPlatform();
         
     String query = "";
     String parentTableName = "sample_aliq";
@@ -2823,8 +2823,8 @@ public Object[] logSampleSubAliquot( String schemaPrefix, Integer aliquotId, Str
     String schemaDataName = "data";
     String schemaConfigName = "config";
 
-    schemaDataName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaDataName);    
-    schemaConfigName = LabPLANETPlatform.buildSchemaName(schemaPrefix, schemaConfigName); 
+    schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, schemaDataName);    
+    schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, schemaConfigName); 
 
     Integer sampleId = 0;
     String[] mandatoryAliquotFields = new String[]{"sample_id"};
@@ -2836,7 +2836,7 @@ public Object[] logSampleSubAliquot( String schemaPrefix, Integer aliquotId, Str
         
         String[] mandatorySampleSubAliqFields = new String[]{"volume", "volume_uom"};
         Object[][] aliquotInfo = Rdbms.getRecordFieldsByFilter(schemaDataName, parentTableName, new String[] {"aliquot_id"}, new Object[]{aliquotId}, mandatoryAliquotFields);
-         if ( (aliquotInfo[0][0]!=null) && ("LABPLANET_FALSE".equalsIgnoreCase(aliquotInfo[0][0].toString())) ){
+         if ( (aliquotInfo[0][0]!=null) && (LPPlatform.LAB_FALSE.equalsIgnoreCase(aliquotInfo[0][0].toString())) ){
             return LabPLANETArray.array2dTo1d(aliquotInfo);}    
         for (String fv: mandatorySampleSubAliqFields){
             if (LabPLANETArray.valuePosicInArray(smpSubAliqFieldName, fv) == -1){
@@ -2845,7 +2845,7 @@ public Object[] logSampleSubAliquot( String schemaPrefix, Integer aliquotId, Str
                 errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, Arrays.toString(smpSubAliqFieldName));
                 errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, aliquotId.toString());
                 errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaPrefix);
-                return LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);                
+                return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);                
             }
         }
         if (aliquotInfo[0][1]==null) {
@@ -2853,7 +2853,7 @@ public Object[] logSampleSubAliquot( String schemaPrefix, Integer aliquotId, Str
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, "null");
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, sampleId.toString());
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaPrefix);
-            return LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);                 
+            return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);                 
         }          
         sampleId = (Integer) aliquotInfo[0][0];
         BigDecimal aliqVolume = new BigDecimal(aliquotInfo[0][1].toString());           
@@ -2872,7 +2872,7 @@ public Object[] logSampleSubAliquot( String schemaPrefix, Integer aliquotId, Str
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, subAliqVolume.toString());
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, aliquotId.toString());
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaPrefix);
-            return LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);                 
+            return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);                 
         }        
         
        if ( aliqVolume.compareTo(BigDecimal.ZERO)==-1) {
@@ -2882,7 +2882,7 @@ public Object[] logSampleSubAliquot( String schemaPrefix, Integer aliquotId, Str
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, "subaliquoting");
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, subAliqVolume.toString());
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaPrefix);
-            return LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);                          
+            return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);                          
         }
         
         aliqVolume = aliqVolume.add(subAliqVolume.negate());
@@ -2890,7 +2890,7 @@ public Object[] logSampleSubAliquot( String schemaPrefix, Integer aliquotId, Str
         Object[] smpVolFldValue = new Object[]{aliqVolume};
         Object[] updateSampleVolume = Rdbms.updateRecordFieldsByFilter(schemaDataName, parentTableName, 
                 smpVolFldName, smpVolFldValue, new String[]{"aliquot_id"}, new Object[]{aliquotId});
-        if ("LABPLANET_FALSE".equalsIgnoreCase(updateSampleVolume[0].toString())){
+        if (LPPlatform.LAB_FALSE.equalsIgnoreCase(updateSampleVolume[0].toString())){
             return updateSampleVolume;}    
         smpAudit.sampleAuditAdd(schemaPrefix, auditActionName, parentTableName, aliquotId, aliquotId, 
                 sampleId, null, null, 
@@ -2914,10 +2914,10 @@ public Object[] logSampleSubAliquot( String schemaPrefix, Integer aliquotId, Str
     smpSubAliqFieldValue = LabPLANETArray.addValueToArray1D(smpSubAliqFieldValue, LabPLANETDate.getTimeStampLocalDate());
     
     diagnoses = Rdbms.insertRecordInTable(schemaDataName, tableName, smpSubAliqFieldName, smpSubAliqFieldValue);
-    if (!"LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){
+    if (!LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){
         errorCode = "DataSample_errorInsertingSampleRecord";
         errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, diagnoses[diagnoses.length-2]);
-        return LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);
+        return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);
     }
     Integer subaliquotId = Integer.parseInt(diagnoses[diagnoses.length-1].toString());
     Object[] fieldsOnLogSample = LabPLANETArray.joinTwo1DArraysInOneOf1DString(smpSubAliqFieldName, smpSubAliqFieldValue, ":");

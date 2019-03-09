@@ -23,10 +23,10 @@ import org.json.simple.JSONObject;
 import databases.Rdbms;
 
 /**
- * LabPLANETPlatform is a library for methods solving topics that are specifically part of the LabPLANET Paradigm.
+ * LPPlatform is a library for methods solving topics that are specifically part of the LabPLANET Paradigm.
  * @author Fran Gomez
  */
-public class LabPLANETPlatform {
+public class LPPlatform {
     String classVersion = "0.1";
     
     public static String LAB_ENCODER_UTF8 = "utf-8";
@@ -711,7 +711,7 @@ public class LabPLANETPlatform {
         int i = 0;
         for (StackTraceElement ste : Thread.currentThread().getStackTrace()){
             i++;
-            if (ste.getClassName().equals(LabPLANETPlatform.class.getName())){
+            if (ste.getClassName().equals(LPPlatform.class.getName())){
                 break;
             }
         }

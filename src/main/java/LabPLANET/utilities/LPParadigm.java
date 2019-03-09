@@ -24,13 +24,13 @@ public class LPParadigm {
            errorCode = "DataSample_FieldArraysDifferentSize";
            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, Arrays.toString(fName));
            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, Arrays.toString(fValue));
-           return LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);
+           return LPPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);
         }
         
         if (LabPLANETArray.duplicates(fName)){
            errorCode = "DataSample_FieldsDuplicated";
            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, Arrays.toString(fName));
-           return LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);                      
+           return LPPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);                      
         }        
         diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, "LABPLANET_TRUE");
         return diagnoses;

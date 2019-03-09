@@ -8,7 +8,7 @@ package com.labplanet.servicios.app;
 import LabPLANET.utilities.LabPLANETArray;
 import LabPLANET.utilities.LabPLANETFrontEnd;
 import LabPLANET.utilities.LabPLANETJson;
-import LabPLANET.utilities.LabPLANETPlatform;
+import LabPLANET.utilities.LPPlatform;
 import databases.Rdbms;
 import databases.Token;
 import functionalJava.user.UserProfile;
@@ -42,8 +42,8 @@ public class AppProcedureListAPI extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {   
                 response.setContentType("application/json");
-                response.setCharacterEncoding(LabPLANETPlatform.LAB_ENCODER_UTF8);
-                request.setCharacterEncoding(LabPLANETPlatform.LAB_ENCODER_UTF8);
+                response.setCharacterEncoding(LPPlatform.LAB_ENCODER_UTF8);
+                request.setCharacterEncoding(LPPlatform.LAB_ENCODER_UTF8);
                 
                 ResourceBundle prop = ResourceBundle.getBundle("parameter.config.config");
                 String frontendUrl = prop.getString("frontend_url");
@@ -55,7 +55,7 @@ public class AppProcedureListAPI extends HttpServlet {
             String sopFieldName = "sop";
             
             LabPLANETJson labJson = new LabPLANETJson();
-            response.setContentType("application/json");        response.setCharacterEncoding(LabPLANETPlatform.LAB_ENCODER_UTF8);
+            response.setContentType("application/json");        response.setCharacterEncoding(LPPlatform.LAB_ENCODER_UTF8);
 
         try (PrintWriter out = response.getWriter()) {
             String[] errObject = new String[]{"Servlet AppProcedureList at " + request.getServletPath()};      
