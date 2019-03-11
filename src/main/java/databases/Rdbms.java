@@ -974,9 +974,9 @@ public class Rdbms {
                         prepsta.setNull(indexval, Types.FLOAT);
                         break;                        
                     default:
+                        obj=null;
                         break;
                 }
-                obj=null;
             }else{
                     switch(clase){
                        case "class java.lang.Integer":
@@ -1044,22 +1044,19 @@ public class Rdbms {
     
     private static CachedRowSetImpl readQuery(String consulta) throws SQLException{
         Statement sta=null;
-        CachedRowSetImpl crs = null;
-        try{
+        try (CachedRowSetImpl crs = new CachedRowSetImpl()){
             sta=getConnection().createStatement();
             sta.setQueryTimeout(rdbms.getTimeout());    
             ResultSet res=null;            
             if(!"".equals(consulta)){
                 res = sta.executeQuery(consulta);    
             }
-        crs = new CachedRowSetImpl();
         crs.populate(res);    
         return crs;    
         }catch(Exception e){
             sta.close();
-            crs.close();
         }
-        return crs;
+        return null;
     }
     
     public Connection createTransaction(){

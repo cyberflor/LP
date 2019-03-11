@@ -127,14 +127,15 @@ public class UnitsOfMeasurement_ConversionTable extends HttpServlet {
         fileContent = fileContent + "</table>";        
         out.println(fileContent);
 
-        csvPathName = csvPathName.replace(".txt", ".html");
+        csvPathName = csvPathName.replace(".txt", ".html");        
         File file = new File(csvPathName);
-        FileWriter fileWriter = new FileWriter(file);
-        if (file.exists()){ file.delete();} 
-        fileWriter.write(fileContent);
-        fileWriter.flush();
-        fileWriter.close();   
         
+        try (FileWriter fileWriter = new FileWriter(file)){                
+            if (file.exists()){ file.delete();} 
+            fileWriter.write(fileContent);
+            fileWriter.flush();
+//            fileWriter.close();   
+        }
         Rdbms.closeRdbms();       
     }             
 }

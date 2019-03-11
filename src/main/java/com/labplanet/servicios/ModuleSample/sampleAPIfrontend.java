@@ -8,6 +8,7 @@ package com.labplanet.servicios.ModuleSample;
 import LabPLANET.utilities.LabPLANETArray;
 import LabPLANET.utilities.LabPLANETFrontEnd;
 import LabPLANET.utilities.LPPlatform;
+import LabPLANET.utilities.LabPLANETRequest;
 import com.sun.rowset.CachedRowSetImpl;
 import databases.Rdbms;
 import databases.SqlStatement;
@@ -42,22 +43,12 @@ public class sampleAPIfrontend extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-
-        ResourceBundle prop = ResourceBundle.getBundle("parameter.config.config");
-        String frontendUrl = prop.getString("frontend_url");
-
-        response.setHeader("Access-Control-Allow-Origin", frontendUrl);
-        response.setHeader("Access-Control-Allow-Methods", "GET");        
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response)            throws ServletException, IOException {
+        response = LabPLANETRequest.responsePreparation(response);
+        request = LabPLANETRequest.requestPreparation(request);           
 
         String language = "en";
 
-
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-        request.setCharacterEncoding("UTF-8");
-        
         try (PrintWriter out = response.getWriter()) {
             String[] errObject = new String[]{"Servlet sampleAPI at " + request.getServletPath()};            
             

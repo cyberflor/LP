@@ -675,9 +675,9 @@ public class LPPlatform {
                             Class<?>[] paramTypes = {Rdbms.class, String[].class, Object[].class, String.class};
                             method = getClass().getDeclaredMethod(aMethod, paramTypes);
                         } catch (NoSuchMethodException | SecurityException ex) {
-                        }
-                        Object specialFunctionReturn = method.invoke(this, fieldNames, fieldValues, schemaName);
-                        if (specialFunctionReturn.toString().contains("ERROR")){
+                        }                        
+                        Object specialFunctionReturn = LPNulls.replaceNull(method.invoke(this, fieldNames, fieldValues, schemaName));
+                        if (specialFunctionReturn.toString().contains("ERROR")) {
                             errorCode = "LabPLANETPlatform_SpecialFunctionReturnedERROR";
                             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, currField);
                             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, aMethod);
@@ -725,9 +725,7 @@ public class LPPlatform {
  * The parameter.config.labtimus mandatoryFields_requerimentsJavaDoc defines which are the mandatory fields that should be added
  * to the peer fields/values to let this call be consider fill enough to proceed.
  * 
- * @param rdbm Rdbms - The connection channel to the database.
      * @param evaluation
- * @param classVersion String - The LabPLANET internal class version
  * @param errorCode String - Error code
      * @param errorVariables
      * @return Object[]
@@ -743,8 +741,8 @@ public class LPPlatform {
         Integer lineNumber = Thread.currentThread().getStackTrace()[CLIENT_CODE_STACK_INDEX].getLineNumber(); 
         className = className.replace(".java", "");
         Boolean errorCodeFromBundle = true;
-        String errorCodeText = Parameter.getParameterBundle(CONFIG_FILES_FOLDER, "errorTraping", null, className+"_"+errorCode, null);
-        if (errorCodeText.length()==0){errorCodeText = Parameter.getParameterBundle(CONFIG_FILES_FOLDER, "errorTraping", null, errorCode, null);}
+        String errorCodeText = Parameter.getParameterBundle(CONFIG_FILES_FOLDER, CONFIG_FILES_ERRORTRAPING, null, className+"_"+errorCode, null);
+        if (errorCodeText.length()==0){errorCodeText = Parameter.getParameterBundle(CONFIG_FILES_FOLDER, CONFIG_FILES_ERRORTRAPING, null, errorCode, null);}
         if (errorCodeText.length()==0){errorCodeText = errorCode; errorCodeFromBundle=false;}
         
         if (!errorCodeFromBundle){
@@ -756,8 +754,8 @@ public class LPPlatform {
                 }
             }            
         }else{
-            errorDetail = Parameter.getParameterBundle(CONFIG_FILES_FOLDER, "errorTraping", null, className+"_"+errorCode+"_detail", null);
-            if (errorDetail.length()==0){errorDetail = Parameter.getParameterBundle(CONFIG_FILES_FOLDER, "errorTraping", null, errorCode+"_detail", null);}
+            errorDetail = Parameter.getParameterBundle(CONFIG_FILES_FOLDER, CONFIG_FILES_ERRORTRAPING, null, className+"_"+errorCode+"_detail", null);
+            if (errorDetail.length()==0){errorDetail = Parameter.getParameterBundle(CONFIG_FILES_FOLDER, CONFIG_FILES_ERRORTRAPING, null, errorCode+"_detail", null);}
             if (errorVariables!=null){
                 for (int iVarValue=1; iVarValue<=errorVariables.length; iVarValue++){
                     errorDetail = errorDetail.replace("<*"+String.valueOf(iVarValue)+"*>", errorVariables[iVarValue-1].toString());

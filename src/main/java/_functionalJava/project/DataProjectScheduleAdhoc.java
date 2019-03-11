@@ -140,8 +140,7 @@ public class DataProjectScheduleAdhoc {
      * @return
      */
     public List<dataProjectSchedule> getDataProjectSchedulers( String schemaName, String pName, int projSchedId) {
-    	List<dataProjectSchedule> project= new ArrayList<>();
-        String condition = "1 ";
+        List<dataProjectSchedule> project= new ArrayList<>();
 
         String tableName = "project_schedule";
         

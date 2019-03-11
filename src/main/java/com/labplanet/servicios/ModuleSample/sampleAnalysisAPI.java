@@ -40,14 +40,10 @@ public class sampleAnalysisAPI extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        ResourceBundle prop = ResourceBundle.getBundle("parameter.config.config");
-        String frontendUrl = prop.getString("frontend_url");
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response)            throws ServletException, IOException {
 
-        response.setHeader("Access-Control-Allow-Origin", frontendUrl);
-        response.setHeader("Access-Control-Allow-Methods", "GET");        
+        response = LabPLANETRequest.responsePreparation(response);
+        request = LabPLANETRequest.requestPreparation(request);           
         
         String language = "es";
         String[] errObject = new String[]{"Servlet sampleAPI at " + request.getServletPath()};   
@@ -144,10 +140,6 @@ public class sampleAnalysisAPI extends HttpServlet {
         Rdbms.setTransactionId(schemaPrefix);
         //ResponseEntity<String121> responsew;        
         
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-        request.setCharacterEncoding("UTF-8");
-    
         try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */                     
 

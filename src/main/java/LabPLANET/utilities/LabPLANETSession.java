@@ -14,6 +14,8 @@ import java.util.Date;
  */
 public class LabPLANETSession {
     
+    public static String fieldName_sessionId = "session_id";
+    
     public static Object[] newAppSession( String[] fieldsName2, Object[] fieldsValue2){        
         Date nowLocalDate = LabPLANETDate.getTimeStampLocalDate();
         String schemaAppName = "app";
@@ -41,14 +43,13 @@ public class LabPLANETSession {
     public static Object[] getAppSession( Integer appSessionId, String[] fieldsToRetrieve){
         String schemaAppName = "app";
         String tableName = "app_session";
-        String fieldName_sessionId = "session_id";
         if (fieldsToRetrieve==null){
-            fieldsToRetrieve = LabPLANETArray.addValueToArray1D(fieldsToRetrieve, "session_id");
+            fieldsToRetrieve = LabPLANETArray.addValueToArray1D(fieldsToRetrieve, fieldName_sessionId);
             fieldsToRetrieve = LabPLANETArray.addValueToArray1D(fieldsToRetrieve, "date_started");
         }
         
         Object[][] recordFieldsBySessionId = Rdbms.getRecordFieldsByFilter(schemaAppName, tableName, 
-                new String[]{"session_id"}, new Object[]{appSessionId}, fieldsToRetrieve);
+                new String[]{fieldName_sessionId}, new Object[]{appSessionId}, fieldsToRetrieve);
         return LabPLANETArray.array2dTo1d(recordFieldsBySessionId);
     }
     
@@ -69,11 +70,11 @@ public class LabPLANETSession {
         String schemaAuditName = LPPlatform.buildSchemaName(processName, "data-audit");       
         
         Object[][] recordFieldsBySessionId = Rdbms.getRecordFieldsByFilter(schemaAuditName, tableName, 
-                new String[]{"session_id"}, new Object[]{appSessionId}, fieldsNamesToInsert);
+                new String[]{fieldName_sessionId}, new Object[]{appSessionId}, fieldsNamesToInsert);
         if ("LABPLANET_FALSE".equalsIgnoreCase(recordFieldsBySessionId[0][0].toString())){
             Object[] appSession = getAppSession(appSessionId, fieldsNamesToInsert);
-            if (!LabPLANETArray.valueInArray(fieldsNamesToInsert, "session_id")){
-                fieldsNamesToInsert = LabPLANETArray.addValueToArray1D(fieldsNamesToInsert, "session_id");
+            if (!LabPLANETArray.valueInArray(fieldsNamesToInsert, fieldName_sessionId)){
+                fieldsNamesToInsert = LabPLANETArray.addValueToArray1D(fieldsNamesToInsert, fieldName_sessionId);
                 appSession = LabPLANETArray.addValueToArray1D(appSession, appSessionId);
             }
             return Rdbms.insertRecordInTable(schemaAuditName, tableName, fieldsNamesToInsert, appSession);

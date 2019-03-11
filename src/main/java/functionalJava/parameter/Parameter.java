@@ -109,12 +109,12 @@ public class Parameter {
             if (fileName.equalsIgnoreCase("USERNAV")){ newEntry = entryName + ":" +entryValue;}
             else { newEntry = entryName + "=" +entryValue;}
 
-            fw = new FileWriter(fileidt, true);
-
-            if (!newEntry.isEmpty()){
-                newEntry = newEntry + "\n";
-                fw.append(newEntry);
-                }
+            try (FileWriter fileWriter = new FileWriter(fileidt, true)){
+                if (!newEntry.isEmpty()){
+                    newEntry = newEntry + "\n";
+                    fw.append(newEntry);
+                    }
+            }
         }
 
         fw.close();
@@ -130,8 +130,7 @@ public class Parameter {
      */
     public String addTagInPropertiesFile(String fileName, String entryName, String entryValue) throws IOException{
 
-        String methodName = "addTagInPropertiesFile";    
-        FileWriter fw = null;
+        //FileWriter fw = null;
         String newEntry = "";
 
         ResourceBundle propConfig = ResourceBundle.getBundle("parameter.config.conf");        
@@ -156,15 +155,16 @@ public class Parameter {
 
                 if (fileName.equalsIgnoreCase("USERNAV")){ newEntry = entryName + ":" +entryValue;}
                 else { newEntry = entryName + "=" +entryValue;}
-
-                fw = new FileWriter(fileidt, true);
+                
+                try (FileWriter fw = new FileWriter(fileidt, true)){
+                //fw = new FileWriter(fileidt, true);
 
                 if (!newEntry.isEmpty()){
                     newEntry = newEntry + "\n";
                     fw.append(newEntry);
                     }
-                fw.close();
-
+                //fw.close();
+                }
                 return newLogEntry;
             }
         }    

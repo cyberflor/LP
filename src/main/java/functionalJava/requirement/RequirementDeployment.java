@@ -53,8 +53,7 @@ public class RequirementDeployment {
      */
     @SuppressWarnings("ConvertToTryWithResources")
     public String _newRequirement ( String procedure, Integer procVersion) throws SQLException, IOException {    
-        String methodName = "newRequirement";
-        
+       
         Integer queryInsertNum=0;
         FileWriter fw = null;  
         Writer wr = null;
@@ -168,7 +167,6 @@ return "";
      */
  
     public void _deploymentNavigatorNavId ( String procName, Integer procVersion){                       
-        String methodName = "deploymentNavigatorNavId";
         Integer queryInsertNum=0;
         Integer rootNode = 0;
         Integer newBranch;

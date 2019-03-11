@@ -8,6 +8,7 @@ package com.labplanet.servicios.testing.Platform;
 import LabPLANET.utilities.LabPLANETArray;
 import LabPLANET.utilities.LPNulls;
 import LabPLANET.utilities.LPPlatform;
+import LabPLANET.utilities.LPTestingOutFormat;
 import databases.Rdbms;
 import databases.SqlStatement;
 import functionalJava.analysis.UserMethod;
@@ -41,41 +42,36 @@ public class DBActions extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
+        response = LPTestingOutFormat.responsePreparation(response);
         
         String fileContent = "";                          
         try (PrintWriter out = response.getWriter()) {
             
-            response.setContentType("text/html;charset=UTF-8");
-            UserMethod um = new UserMethod();
-
-            String csvFileName = "dbActions.txt"; String csvFileSeparator=";";
-            String csvPathName = "\\\\FRANCLOUD\\fran\\LabPlanet\\testingRepository\\"+csvFileName; 
+            String csvFileName = "dbActions.txt"; 
+            String csvPathName = LPTestingOutFormat.TESTING_FILES_PATH+csvFileName; 
+            String csvFileSeparator=LPTestingOutFormat.TESTING_FILES_FIELD_SEPARATOR;
             
-            if (Rdbms.getRdbms().startRdbms("labplanet", "avecesllegaelmomento")==null){
+            if (Rdbms.getRdbms().startRdbms(LPTestingOutFormat.TESTING_USER, LPTestingOutFormat.TESTING_PW)==null){
                 fileContent = fileContent + "<th>Error connecting to the database</th>";
-            }else{
-          
+            }else{          
                 Object[][] dataSample2D = new Object[1][6];
-
                 Integer numTesting = 1;
                 Integer inumTesting = 0;
                 Object[][] configSpecTestingArray = new Object[numTesting][9];
 
                 configSpecTestingArray = LabPLANETArray.convertCSVinArray(csvPathName, csvFileSeparator);                        
 
-                fileContent = testingFileContentSections.getHtmlStyleHeader(this.getServletName());
+                fileContent = LPTestingOutFormat.getHtmlStyleHeader(this.getServletName());
 
                 for (Integer j=0;j<configSpecTestingArray[0].length;j++){
                     fileContent = fileContent + "<th>"+configSpecTestingArray[0][j]+"</th>";
                 }            
 
                 for (Integer i=1;i<configSpecTestingArray.length;i++){
-                    //if (configSpecTestingArray[i][2]==null && configSpecTestingArray[i][3]==null){
-
                     out.println("Line "+i.toString());
 
-                    fileContent = fileContent + "<tr>";                
+                    fileContent = fileContent + LPTestingOutFormat.rowStart();  
+                    
                     String userName=null;                
                     String schemaPrefix=null;
                     String tableName=null;
@@ -84,7 +80,6 @@ public class DBActions extends HttpServlet {
                     String[] orderBy=null;                    String[] groupBy=null;
                     String[] fieldsToRetrieve=null;   
                     String functionBeingTested="";                     
-                    LPPlatform LabPlat = new LPPlatform();
                     Object[] dataSample2Din1D = new Object[0];
 
                     if (configSpecTestingArray[i][1]!=null){functionBeingTested = (String) configSpecTestingArray[i][1];}
@@ -98,15 +93,8 @@ public class DBActions extends HttpServlet {
                     if (configSpecTestingArray[i][9]!=null){orderBy = (String[]) configSpecTestingArray[i][9].toString().split("\\|");}else{orderBy = new String[0];}
                     if (configSpecTestingArray[i][10]!=null){groupBy = (String[]) configSpecTestingArray[i][10].toString().split("\\|");}else{groupBy = new String[0];}
 
-    /*                String[] whereFieldsNameArr = new String[]{"status in|"};
-                    Object[] whereFieldsValueArr = null;
-                    Object[] recEncrypted = LPPlatform.encryptString("RECEIVED");
-                    whereFieldsValueArr=LabPLANETArray.addValueToArray1D(whereFieldsValueArr, "RECEIVED|"+recEncrypted[1]);                
-    */                
                     Object[] fieldValues = LabPLANETArray.convertStringWithDataTypeToObjectArray(fieldValue);
                     if ( (fieldName!=null) && (fieldValue!=null) ){
-                        //whereFieldsNameArr=LabPLANETArray.addValueToArray1D(whereFieldsNameArr, whereFieldsName.split("\\|"));
-                        //whereFieldsValueArr = LabPLANETArray.addValueToArray1D(whereFieldsValueArr, LabPLANETArray.convertStringWithDataTypeToObjectArray(whereFieldsValue.split("\\|")));                                                              
                         for (int iFields=0; iFields<fieldName.length; iFields++){
                             if (LPPlatform.isEncryptedField(schemaPrefix, "sample", fieldName[iFields])){                
                                 HashMap<String, String> hm = LPPlatform.encryptEncryptableFieldsAddBoth(fieldName[iFields], fieldValues[iFields].toString());
@@ -120,13 +108,13 @@ public class DBActions extends HttpServlet {
                             }
                         }                                    
                     }                         
-                    //Object[] fieldValues = LabPLANETArray.convertStringWithDataTypeToObjectArray(fieldValue);
-                    Object[] setFieldValues = LabPLANETArray.convertStringWithDataTypeToObjectArray(setFieldValue);
-
-                    fileContent = fileContent + "<td>"+i+"</td><td>"+functionBeingTested+"</td><td>"+schemaPrefix+"</td><td>"+tableName
-                            +"</td><td>"+Arrays.toString(fieldName)+"</td><td><b>"+Arrays.toString(fieldValue)+"</b></td><td>"+Arrays.toString(fieldsToRetrieve)
-                            +"</td><td>"+Arrays.toString(setFieldName)+"</td><td><b>"+Arrays.toString(setFieldValue)+"</b></td>"
-                            +"</td><td>"+Arrays.toString(orderBy)+"</td><td><b>"+Arrays.toString(groupBy)+"</b></td>";
+                    Object[] setFieldValues = LabPLANETArray.convertStringWithDataTypeToObjectArray(setFieldValue);                    
+                    fileContent=fileContent+LPTestingOutFormat.rowAddField(i)+LPTestingOutFormat.rowAddField(functionBeingTested)
+                            +LPTestingOutFormat.rowAddField(schemaPrefix)+LPTestingOutFormat.rowAddField(tableName)
+                            +LPTestingOutFormat.rowAddField(Arrays.toString(fieldName))+LPTestingOutFormat.rowAddField(Arrays.toString(fieldValue))
+                            +LPTestingOutFormat.rowAddField(Arrays.toString(fieldsToRetrieve))
+                            +LPTestingOutFormat.rowAddField(Arrays.toString(setFieldName))+LPTestingOutFormat.rowAddField(Arrays.toString(setFieldValue))
+                            +LPTestingOutFormat.rowAddField(Arrays.toString(orderBy))+LPTestingOutFormat.rowAddField(Arrays.toString(groupBy));
 
                     Object[] allFunctionsBeingTested = new Object[0];                
                     allFunctionsBeingTested = LabPLANETArray.addValueToArray1D(allFunctionsBeingTested, "EXISTSRECORD");
@@ -167,22 +155,25 @@ public class DBActions extends HttpServlet {
                             dataSample2D = LabPLANETArray.array1dTo2d(trapErrorMessage, trapErrorMessage.length);
                             break;
                     }        
-                    if (dataSample2D[0].length==0){fileContent = fileContent + "<td>No content in the array dataSample2D returned for function "+functionBeingTested;}
-                    if (dataSample2D[0].length>0){fileContent = fileContent + "<td>"+dataSample2D[0][0].toString();}
-                    if (dataSample2D[0].length>1){fileContent = fileContent + ". "+LPNulls.replaceNull((String) dataSample2D[0][1]);}
-                    if (dataSample2D[0].length>2){fileContent = fileContent + ". "+LPNulls.replaceNull((String) dataSample2D[0][2]);}
-                    if (dataSample2D[0].length>3){fileContent = fileContent + ". "+LPNulls.replaceNull((String) dataSample2D[0][3]);}
-                    if (dataSample2D[0].length>4){fileContent = fileContent + ". "+LPNulls.replaceNull((String) dataSample2D[0][4]);}                
-                    if (dataSample2D[0].length>5){fileContent = fileContent + ". "+LPNulls.replaceNull((String) dataSample2D[0][5]);}
-                    if ( ("GETRECORDFIELDSBYFILTER".equalsIgnoreCase(functionBeingTested)) && (!LPPlatform.LAB_FALSE.equalsIgnoreCase(dataSample2D[0][0].toString())) ){
-                        fileContent = fileContent + "</td><td>"+Arrays.toString(dataSample2Din1D);
+                    if (dataSample2D[0].length==0){
+                        fileContent = fileContent +LPTestingOutFormat.rowAddField("No content in the array dataSample2D returned for function");                     
+                    }else{
+                        if ( ("GETRECORDFIELDSBYFILTER".equalsIgnoreCase(functionBeingTested)) && (!LPPlatform.LAB_FALSE.equalsIgnoreCase(dataSample2D[0][0].toString())) ){
+                            fileContent = fileContent +LPTestingOutFormat.rowAddField(Arrays.toString(dataSample2Din1D));
+                            //fileContent = fileContent + "<td>"+Arrays.toString(dataSample2Din1D)+"</td>";
+                        }
+                        if ( (!"GETRECORDFIELDSBYFILTER".equalsIgnoreCase(functionBeingTested)) && (!LPPlatform.LAB_FALSE.equalsIgnoreCase(dataSample2D[0][0].toString())) ){                        
+                            String dataSampleFldOut = "";
+                            for (int iFields=0; iFields<dataSample2D[0].length;iFields++){
+                                dataSampleFldOut=dataSampleFldOut+LPNulls.replaceNull((String) dataSample2D[0][iFields])+ ". ";
+                            }
+                            fileContent = fileContent +LPTestingOutFormat.rowAddField(dataSampleFldOut);
+                        }
                     }
-
-                    fileContent = fileContent + "</td>";
-                    fileContent = fileContent + "</tr>";
+                    fileContent = fileContent + LPTestingOutFormat.rowEnd();
                 }
             }
-            fileContent = fileContent + "</table>";        
+            fileContent = fileContent + LPTestingOutFormat.tableEnd();        
             out.println(fileContent);
 
             csvPathName = csvPathName.replace(".txt", ".html");
@@ -195,7 +186,7 @@ public class DBActions extends HttpServlet {
             Rdbms.closeRdbms();
             }   catch (IOException ex) {
                 Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);   
-                fileContent = fileContent + "</table>";        
+                fileContent = fileContent + LPTestingOutFormat.tableEnd();         
                 out.println(fileContent);        
                 Rdbms.closeRdbms();
             }

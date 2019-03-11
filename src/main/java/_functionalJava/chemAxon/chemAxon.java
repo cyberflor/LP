@@ -15,7 +15,7 @@ public class chemAxon {
      *
      */
     public void BasicExample(){
-        Molecule molecule = MolImporter.importMol("C1=CC=CC=C1");
+       MolImporter.importMol("C1=CC=CC=C1");
         //Standardizer standardizer = new Standardizer("aromatize");
         //standardizer.standardize(molecule);
     }

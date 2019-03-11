@@ -9,6 +9,7 @@ import LabPLANET.utilities.LabPLANETArray;
 import LabPLANET.utilities.LabPLANETFrontEnd;
 import LabPLANET.utilities.LabPLANETJson;
 import LabPLANET.utilities.LPPlatform;
+import LabPLANET.utilities.LabPLANETRequest;
 import databases.Rdbms;
 import databases.Token;
 import functionalJava.user.UserProfile;
@@ -39,27 +40,15 @@ public class AppProcedureListAPI extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {   
-                response.setContentType("application/json");
-                response.setCharacterEncoding(LPPlatform.LAB_ENCODER_UTF8);
-                request.setCharacterEncoding(LPPlatform.LAB_ENCODER_UTF8);
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response)            throws ServletException, IOException {   
+            response = LabPLANETRequest.responsePreparation(response);
+            request = LabPLANETRequest.requestPreparation(request);      
                 
-                ResourceBundle prop = ResourceBundle.getBundle("parameter.config.config");
-                String frontendUrl = prop.getString("frontend_url");
-      
-                response.setHeader("Access-Control-Allow-Origin", frontendUrl);
-                response.setHeader("Access-Control-Allow-Methods", "GET");        
-
             String language = "en";
             String sopFieldName = "sop";
             
-            LabPLANETJson labJson = new LabPLANETJson();
-            response.setContentType("application/json");        response.setCharacterEncoding(LPPlatform.LAB_ENCODER_UTF8);
-
         try (PrintWriter out = response.getWriter()) {
-            String[] errObject = new String[]{"Servlet AppProcedureList at " + request.getServletPath()};      
-            
+            String[] errObject = new String[]{"Servlet AppProcedureList at " + request.getServletPath()};                  
             String finalToken = request.getParameter("finalToken");                      
 
             if (finalToken==null) {                  
@@ -91,7 +80,7 @@ public class AppProcedureListAPI extends HttpServlet {
             String rolName = userRole;
             UserProfile usProf = new UserProfile();
             Object[] allUserProcedurePrefix = usProf.getAllUserProcedurePrefix(dbUserName);
-            if ("LABPLANET_FALSE".equalsIgnoreCase(allUserProcedurePrefix[0].toString())){
+            if (LPPlatform.LAB_FALSE.equalsIgnoreCase(allUserProcedurePrefix[0].toString())){
                 Object[] errMsg = LabPLANETFrontEnd.responseError(allUserProcedurePrefix, language, null);
                 response.sendError((int) errMsg[0], (String) errMsg[1]);                    
             }
@@ -121,7 +110,7 @@ public class AppProcedureListAPI extends HttpServlet {
                 //JSONArray procEventsJson = new JSONArray();
                 Object[][] procInfo = Rdbms.getRecordFieldsByFilter(curProc.toString()+"-config", "procedure_info", 
                         new String[]{"name is not null"}, null, procFldNameArray);
-                if ("LABPLANET_FALSE".equalsIgnoreCase(procInfo[0][0].toString())){
+                if (LPPlatform.LAB_FALSE.equalsIgnoreCase(procInfo[0][0].toString())){
                     Object[] errMsg = LabPLANETFrontEnd.responseError(procInfo, language,  curProc.toString());
                     response.sendError((int) errMsg[0], (String) errMsg[1]);                    
                 }                       
@@ -143,7 +132,7 @@ public class AppProcedureListAPI extends HttpServlet {
                 Object[][] procEvent = Rdbms.getRecordFieldsByFilter(curProc.toString()+"-config", "procedure_events", 
                         new String[]{"role_name"}, new String[]{rolName}, 
                         procEventFldNameArray, new String[]{"order_number"});
-                if (!"LABPLANET_FALSE".equalsIgnoreCase(procEvent[0][0].toString())){                                                
+                if (!LPPlatform.LAB_FALSE.equalsIgnoreCase(procEvent[0][0].toString())){                                                
                     
                     JSONArray procEvents = new JSONArray(); 
                     for (Object[] procEvent1 : procEvent) {

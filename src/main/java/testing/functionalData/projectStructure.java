@@ -10,6 +10,7 @@ import functionalJava.analysis.UserMethod;
 import _functionalJava.project.DataProject;
 import LabPLANET.utilities.LabPLANETArray;
 import LabPLANET.utilities.LPNulls;
+import LabPLANET.utilities.LPTestingOutFormat;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -63,7 +64,7 @@ public class projectStructure extends HttpServlet {
             configSpecTestingArray = LabPLANETArray.convertCSVinArray(csvPathName, csvFileSeparator);
 
             String fileContent="";
-            fileContent = testingFileContentSections.getHtmlStyleHeader(this.getServletName());
+            fileContent = LPTestingOutFormat.getHtmlStyleHeader(this.getServletName());
 
             DataProject prj = new DataProject("project");
             

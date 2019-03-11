@@ -5,6 +5,7 @@
  */
 package com.labplanet.servicios.testing.config;
 
+import LabPLANET.utilities.LPTestingOutFormat;
 import LabPLANET.utilities.LabPLANETArray;
 import functionalJava.sop.*;
 import java.io.IOException;
@@ -48,7 +49,7 @@ public class TestingConfigSop extends HttpServlet {
 
             Object[][] configSpecTestingArray = LabPLANETArray.convertCSVinArray(csvPathName, csvFileSeparator);                        
      
-            String fileContent = testingFileContentSections.getHtmlStyleHeader(this.getServletName());
+            String fileContent = LPTestingOutFormat.getHtmlStyleHeader(this.getServletName());
             fileContent = fileContent + "<table>";
             for (Integer j=0;j<configSpecTestingArray[0].length;j++){
                 fileContent = fileContent + "<th>"+configSpecTestingArray[0][j]+"</th>";

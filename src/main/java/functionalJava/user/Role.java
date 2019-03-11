@@ -61,7 +61,7 @@ public class Role {
             diagnoses[2]= "Code Line " + String.valueOf(elements[1].getLineNumber());
             diagnoses[3]="FALSE";
             diagnoses[4]="ERROR CREATING ROLE RECORD IN DB";
-            diagnoses[5]=diagnoses[5];
+            //diagnoses[5]=diagnoses[5];
             return diagnoses;        
         }
     }    
@@ -123,7 +123,7 @@ public class Role {
                     diagnoses[2]= "Code Line " + String.valueOf(elements[1].getLineNumber());
                     diagnoses[3]="FALSE";
                     diagnoses[4]="ERROR ROLE_PRIVILEGE RECORD CANNOT BE CREATED";
-                    diagnoses[5]=diagnoses[5];
+                    //diagnoses[5]=diagnoses[5];
                     //return diagnoses;                
                 }                        
             }               
@@ -158,7 +158,7 @@ public class Role {
             diagnoses[2]= "Code Line " + String.valueOf(elements[1].getLineNumber());
             diagnoses[3]="FALSE";
             diagnoses[4]="ERROR PRIVILEGE RECORD NOT CREATED";
-            diagnoses[5]=diagnoses[5];
+            //diagnoses[5]=diagnoses[5];
         }
         return diagnoses;
     }   

@@ -618,32 +618,27 @@ public class  LabPLANETArray {
  * @return String[]
  */
     public static String[] joinTwo1DArraysInOneOf1DString (Object[] arrayOne, Object[] arrayTwo, String separator){
-        String[] newArray = new String[0];
-        
-        Integer arrOneLength = arrayOne.length;
-        Integer arrTwoLength = arrayTwo.length;
+        String[] newArray = new String[0];        
         Integer arrLength = arrayOne.length;
+        
         if (arrayTwo.length>arrLength){arrLength=arrayTwo.length;}
         
-        String currValueA ="";
-        String currValueB ="";
-        
-        for (Integer iarrLength = 0;iarrLength<arrLength;iarrLength++){
+            String currValueA ="";
+            String currValueB ="";        
+            for (Integer iarrLength = 0;iarrLength<arrLength;iarrLength++){            
+                if (arrayOne.length < iarrLength) {currValueA ="";}
+                if (arrayOne[iarrLength]==null){currValueA ="";}
+                else{currValueA = arrayOne[iarrLength].toString();}
             
-            if (arrOneLength < iarrLength) {currValueA ="";}
-            if (arrayOne[iarrLength]==null){currValueA ="";}
-            else{currValueA = arrayOne[iarrLength].toString();}
+                if (arrayTwo.length < iarrLength) {currValueB ="";}
+                if (arrayTwo[iarrLength]==null){currValueB ="";}
+                else{currValueB = arrayTwo[iarrLength].toString();}
             
-            if (arrTwoLength < iarrLength) {currValueB ="";}
-            if (arrayTwo[iarrLength]==null){currValueB ="";}
-            else{currValueB = arrayTwo[iarrLength].toString();}
-            
-            if (currValueA==null){currValueA="";}
-            if (currValueB==null){currValueB="";}
-            
-            String newValue = currValueA + separator + currValueB;
-            newArray = addValueToArray1D(newArray, newValue);
-        }
+                currValueA = LPNulls.replaceNull(currValueA); currValueB = LPNulls.replaceNull(currValueB);
+                
+                String newValue = currValueA + separator + currValueB;
+                newArray = addValueToArray1D(newArray, newValue);
+            }
         return newArray;
     }
 

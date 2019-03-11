@@ -9,6 +9,7 @@ import databases.Rdbms;
 import functionalJava.analysis.UserMethod;
 import LabPLANET.utilities.LabPLANETArray;
 import LabPLANET.utilities.LPNulls;
+import LabPLANET.utilities.LPTestingOutFormat;
 import _functionalJava.project.DataProjectScheduleAdhoc;
 import java.io.File;
 import java.io.FileWriter;
@@ -63,7 +64,7 @@ public class projectScheduleAdhocStructure extends HttpServlet {
             configSpecTestingArray = LabPLANETArray.convertCSVinArray(csvPathName, csvFileSeparator);
 
             String fileContent="";
-            fileContent = testingFileContentSections.getHtmlStyleHeader(this.getServletName());
+            fileContent = LPTestingOutFormat.getHtmlStyleHeader(this.getServletName());
             
             DataProjectScheduleAdhoc prjSched = new DataProjectScheduleAdhoc();
             

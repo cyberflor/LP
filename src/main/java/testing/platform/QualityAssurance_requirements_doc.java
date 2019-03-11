@@ -96,12 +96,12 @@ public class QualityAssurance_requirements_doc extends HttpServlet {
 
             csvPathName = csvPathName.replace(".txt", ".html");
             File file = new File(csvPathName);
-            FileWriter fileWriter = new FileWriter(file);
-            if (file.exists()){ file.delete();} 
-            fileWriter.write(fileContent);
-            fileWriter.flush();
-            fileWriter.close();   
-
+            try (FileWriter fileWriter = new FileWriter(file)){
+                if (file.exists()){ file.delete();} 
+                fileWriter.write(fileContent);
+                fileWriter.flush();
+                fileWriter.close();   
+            }
         }
     }
 

@@ -40,8 +40,10 @@ public class batchAPI extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        response = LabPLANETRequest.responsePreparation(response);
+        request = LabPLANETRequest.requestPreparation(request);           
+        
         String language = "es";
         String[] errObject = new String[]{"Servlet sampleAPI at " + request.getServletPath()};   
 
@@ -80,15 +82,10 @@ public class batchAPI extends HttpServlet {
             Rdbms.closeRdbms(); 
             return ;               
         }      
-        //ResponseEntity<String121> responsew;        
-        
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-        request.setCharacterEncoding("UTF-8");
-        Connection con = null;
-
+try (Connection con = Rdbms.createTransactionWithSavePoint()) {        
         try (PrintWriter out = response.getWriter()) {
-            con = Rdbms.createTransactionWithSavePoint();
+            
+//            con = Rdbms.createTransactionWithSavePoint();
             if (con==null){
                  response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "The Transaction cannot be created, the action should be aborted");
                  return;}
@@ -185,8 +182,10 @@ public class batchAPI extends HttpServlet {
             response.sendError((int) errMsg[0], (String) errMsg[1]);                       
         }
         
+    }   catch (SQLException ex) {
+            Logger.getLogger(batchAPI.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
-
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.

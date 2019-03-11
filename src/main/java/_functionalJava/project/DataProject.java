@@ -27,19 +27,19 @@ import functionalJava.sampleStructure.DataSample;
  */
 public class DataProject extends DataSample{
 
-    Object[] diagnoses = new Object[7];
+    private Object[] diagnosesProj = new Object[7];
 
-    String[] mandatoryFields = null;
-    Object[] mandatoryFieldsValue = null;
+    private String[] mandatoryFieldsProj = null;
+    private Object[] mandatoryFieldsValueProj = null;
 
-    String classVersion = "0.1";
+    private String classVersionProj = "0.1";
 
-    String[] javaDocFields = new String[0];
-    Object[] javaDocValues = new Object[0];
-    String javaDocLineName = "";
-
-    String schemaDataName = "data";
-    String schemaConfigName = "config";
+    private String[] javaDocFieldsProj = new String[0];
+    private Object[] javaDocValuesProj = new Object[0];
+    private String javaDocLineNameProj = "";
+    
+    private final String schemaDataNameProj = "data";
+    private final String schemaConfigNameProj = "config";
 
     /**
      *
@@ -94,12 +94,12 @@ Object[] createProject( String schemaPrefix, String projectTemplate, Integer pro
 
     if (devMode==true){
         StackTraceElement[] elementsDev = Thread.currentThread().getStackTrace();
-        javaDocLineName = "BEGIN";
-        javaDocFields = LabPLANETArray.addValueToArray1D(javaDocFields, "line_name");
-        javaDocValues = LabPLANETArray.addValueToArray1D(javaDocValues, javaDocLineName);
-        javaDocFields = LabPLANETArray.addValueToArray1D(javaDocFields, "class_version");
-        javaDocValues = LabPLANETArray.addValueToArray1D(javaDocValues, classVersion);
-        LPPlatform.addJavaClassDoc(javaDocFields, javaDocValues, elementsDev);
+        javaDocLineNameProj = "BEGIN";
+        javaDocFieldsProj = LabPLANETArray.addValueToArray1D(javaDocFieldsProj, "line_name");
+        javaDocValuesProj = LabPLANETArray.addValueToArray1D(javaDocValuesProj, javaDocLineNameProj);
+        javaDocFieldsProj = LabPLANETArray.addValueToArray1D(javaDocFieldsProj, "class_version");
+        javaDocValuesProj = LabPLANETArray.addValueToArray1D(javaDocValuesProj, classVersionProj);
+        LPPlatform.addJavaClassDoc(javaDocFieldsProj, javaDocValuesProj, elementsDev);
     }    
     
         String query = "";
@@ -113,50 +113,50 @@ Object[] createProject( String schemaPrefix, String projectTemplate, Integer pro
         schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, schemaDataName);    
         schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, schemaConfigName); 
         
-        mandatoryFields = labIntChecker.getTableMandatoryFields(schemaDataName, this.getSampleGrouper()+"_"+tableName, actionName);
+        mandatoryFieldsProj = labIntChecker.getTableMandatoryFields(schemaDataName, this.getSampleGrouper()+"_"+tableName, actionName);
         
         
     if (devMode==true){
         StackTraceElement[] elementsDev = Thread.currentThread().getStackTrace();
-        javaDocLineName = "CHECK sampleFieldName and sampleFieldValue match in length";
-        javaDocFields = LabPLANETArray.addValueToArray1D(javaDocFields, "line_name");
-        javaDocValues = LabPLANETArray.addValueToArray1D(javaDocValues, javaDocLineName);
-        javaDocFields = LabPLANETArray.addValueToArray1D(javaDocFields, "class_version");
-        javaDocValues = LabPLANETArray.addValueToArray1D(javaDocValues, classVersion);
-        LPPlatform.addJavaClassDoc(javaDocFields, javaDocValues, elementsDev);
+        javaDocLineNameProj = "CHECK sampleFieldName and sampleFieldValue match in length";
+        javaDocFieldsProj = LabPLANETArray.addValueToArray1D(javaDocFieldsProj, "line_name");
+        javaDocValuesProj = LabPLANETArray.addValueToArray1D(javaDocValuesProj, javaDocLineNameProj);
+        javaDocFieldsProj = LabPLANETArray.addValueToArray1D(javaDocFieldsProj, "class_version");
+        javaDocValuesProj = LabPLANETArray.addValueToArray1D(javaDocValuesProj, classVersionProj);
+        LPPlatform.addJavaClassDoc(javaDocFieldsProj, javaDocValuesProj, elementsDev);
     }    
     if (devMode==false){
-        diagnoses = LabPLANETArray.checkTwoArraysSameLength(sampleFieldName, sampleFieldValue);
+        diagnosesProj = LabPLANETArray.checkTwoArraysSameLength(sampleFieldName, sampleFieldValue);
         if (sampleFieldName.length!=sampleFieldValue.length){
             StackTraceElement[] elements = Thread.currentThread().getStackTrace();
-            diagnoses[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
-            diagnoses[1]= classVersion;
-            diagnoses[2]= "Code Line " + String.valueOf(elements[1].getLineNumber());   
-            diagnoses[3]="LABPLANET_FALSE";
-            diagnoses[4]="ERROR:Field names and values arrays with different length";
-            diagnoses[5]="The values in FieldName are:"+ Arrays.toString(sampleFieldName)+". and in FieldValue are:"+Arrays.toString(sampleFieldValue);
-            return diagnoses;
+            diagnosesProj[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
+            diagnosesProj[1]= classVersionProj;
+            diagnosesProj[2]= "Code Line " + String.valueOf(elements[1].getLineNumber());   
+            diagnosesProj[3]="LABPLANET_FALSE";
+            diagnosesProj[4]="ERROR:Field names and values arrays with different length";
+            diagnosesProj[5]="The values in FieldName are:"+ Arrays.toString(sampleFieldName)+". and in FieldValue are:"+Arrays.toString(sampleFieldValue);
+            return diagnosesProj;
         }
     }    
     if (devMode==true){
         StackTraceElement[] elementsDev = Thread.currentThread().getStackTrace();
-        javaDocLineName = "CHECK sampleFieldName and sampleFieldValue match in length";
-        javaDocFields = LabPLANETArray.addValueToArray1D(javaDocFields, "line_name");
-        javaDocValues = LabPLANETArray.addValueToArray1D(javaDocValues, javaDocLineName);
-        javaDocFields = LabPLANETArray.addValueToArray1D(javaDocFields, "class_version");
-        javaDocValues = LabPLANETArray.addValueToArray1D(javaDocValues, classVersion);
-        LPPlatform.addJavaClassDoc(javaDocFields, javaDocValues, elementsDev);
+        javaDocLineNameProj = "CHECK sampleFieldName and sampleFieldValue match in length";
+        javaDocFieldsProj = LabPLANETArray.addValueToArray1D(javaDocFieldsProj, "line_name");
+        javaDocValuesProj = LabPLANETArray.addValueToArray1D(javaDocValuesProj, javaDocLineNameProj);
+        javaDocFieldsProj = LabPLANETArray.addValueToArray1D(javaDocFieldsProj, "class_version");
+        javaDocValuesProj = LabPLANETArray.addValueToArray1D(javaDocValuesProj, classVersionProj);
+        LPPlatform.addJavaClassDoc(javaDocFieldsProj, javaDocValuesProj, elementsDev);
     }    
     if (devMode==false){        
         if (LabPLANETArray.duplicates(sampleFieldName)){
             StackTraceElement[] elements = Thread.currentThread().getStackTrace();
-            diagnoses[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
-            diagnoses[1]= classVersion;
-            diagnoses[2]= "Code Line " + String.valueOf(elements[1].getLineNumber());
-            diagnoses[3]="FALSE";
-            diagnoses[4]="ERROR:Fields duplicated";
-            diagnoses[5]="Detected any field duplicated in FieldName, the values are:"+(char) 10 + Arrays.toString(sampleFieldName);
-            return diagnoses;
+            diagnosesProj[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
+            diagnosesProj[1]= classVersionProj;
+            diagnosesProj[2]= "Code Line " + String.valueOf(elements[1].getLineNumber());
+            diagnosesProj[3]="FALSE";
+            diagnosesProj[4]="ERROR:Fields duplicated";
+            diagnosesProj[5]="Detected any field duplicated in FieldName, the values are:"+(char) 10 + Arrays.toString(sampleFieldName);
+            return diagnosesProj;
         }
 
         // spec is not mandatory but when any of the fields involved is added to the parameters 
@@ -165,16 +165,16 @@ Object[] createProject( String schemaPrefix, String projectTemplate, Integer pro
         Integer fieldIndexSpecCodeVersion = Arrays.asList(sampleFieldName).indexOf("spec_code_version");
         Integer fieldIndexSpecVariationName = Arrays.asList(sampleFieldName).indexOf("spec_variation_name");
         if ((fieldIndexSpecCode!=-1) || (fieldIndexSpecCodeVersion!=-1) || (fieldIndexSpecVariationName!=-1)){
-            mandatoryFields = LabPLANETArray.addValueToArray1D(mandatoryFields, "spec_code");
-            mandatoryFields = LabPLANETArray.addValueToArray1D(mandatoryFields, "spec_code_version");
-            mandatoryFields = LabPLANETArray.addValueToArray1D(mandatoryFields, "spec_variation_name");
+            mandatoryFieldsProj = LabPLANETArray.addValueToArray1D(mandatoryFieldsProj, "spec_code");
+            mandatoryFieldsProj = LabPLANETArray.addValueToArray1D(mandatoryFieldsProj, "spec_code_version");
+            mandatoryFieldsProj = LabPLANETArray.addValueToArray1D(mandatoryFieldsProj, "spec_variation_name");
         }
 
-        mandatoryFieldsValue = new Object[mandatoryFields.length];
+        mandatoryFieldsValueProj = new Object[mandatoryFieldsProj.length];
         String configCode = "";
         String mandatoryFieldsMissing = "";
-        for (Integer inumLines=0;inumLines<mandatoryFields.length;inumLines++){
-            String currField = mandatoryFields[inumLines];
+        for (Integer inumLines=0;inumLines<mandatoryFieldsProj.length;inumLines++){
+            String currField = mandatoryFieldsProj[inumLines];
             boolean contains = Arrays.asList(sampleFieldName).contains(currField.toLowerCase());
             if (!contains){
                 
@@ -185,30 +185,30 @@ Object[] createProject( String schemaPrefix, String projectTemplate, Integer pro
                 mandatoryFieldsMissing = mandatoryFieldsMissing + currField;
             }else{
                 Integer valuePosic = Arrays.asList(sampleFieldName).indexOf(currField);
-                mandatoryFieldsValue[inumLines] = sampleFieldValue[valuePosic]; 
+                mandatoryFieldsValueProj[inumLines] = sampleFieldValue[valuePosic]; 
                 if ("config_code".equals(currField)){configCode = sampleFieldValue[Arrays.asList(sampleFieldName).indexOf(currField)].toString();}
             }        
         }            
         if (mandatoryFieldsMissing.length()>0){
             StackTraceElement[] elements = Thread.currentThread().getStackTrace();
-            diagnoses[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
-            diagnoses[1]= classVersion;
-            diagnoses[2]= "Code Line " + String.valueOf(elements[1].getLineNumber());
-            diagnoses[3]="FALSE";
-            diagnoses[4]="ERROR:Missing Mandatory Fields";
-            diagnoses[5]="Mandatory fields not found: "+mandatoryFieldsMissing;
-            return diagnoses;
+            diagnosesProj[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
+            diagnosesProj[1]= classVersionProj;
+            diagnosesProj[2]= "Code Line " + String.valueOf(elements[1].getLineNumber());
+            diagnosesProj[3]="FALSE";
+            diagnosesProj[4]="ERROR:Missing Mandatory Fields";
+            diagnosesProj[5]="Mandatory fields not found: "+mandatoryFieldsMissing;
+            return diagnosesProj;
         }        
         Object[] diagnosis = Rdbms.existsRecord(schemaConfigName, tableName, new String[]{"config","config_version"}, new Object[]{projectTemplate, projectTemplateVersion});
         if (!"LABPLANET_TRUE".equalsIgnoreCase(diagnosis[0].toString())){	
             StackTraceElement[] elements = Thread.currentThread().getStackTrace();
-            diagnoses[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
-            diagnoses[1]= classVersion;
-            diagnoses[2]= "Code Line " + String.valueOf(elements[1].getLineNumber());
-            diagnoses[3]="FALSE";
-            diagnoses[4]="ERROR:Sample Config Code NOT FOUND";
-            diagnoses[5]="The sample config code "+projectTemplate+" in its version "+projectTemplateVersion+" was not found in the schema "+schemaConfigName+". Detail:"+diagnosis[5];
-            return diagnoses;
+            diagnosesProj[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
+            diagnosesProj[1]= classVersionProj;
+            diagnosesProj[2]= "Code Line " + String.valueOf(elements[1].getLineNumber());
+            diagnosesProj[3]="FALSE";
+            diagnosesProj[4]="ERROR:Sample Config Code NOT FOUND";
+            diagnosesProj[5]="The sample config code "+projectTemplate+" in its version "+projectTemplateVersion+" was not found in the schema "+schemaConfigName+". Detail:"+diagnosis[5];
+            return diagnosesProj;
         }
 
         String[] specialFields = labIntChecker.getStructureSpecialFields(schemaDataName, this.getSampleGrouper()+"_"+"projectStructure", actionName);
@@ -232,13 +232,13 @@ Object[] createProject( String schemaPrefix, String projectTemplate, Integer pro
                     Object specialFunctionReturn = method.invoke(this, null, schemaPrefix, projectTemplate, projectTemplateVersion);      
                     if (specialFunctionReturn.toString().contains("ERROR")){
                         StackTraceElement[] elements = Thread.currentThread().getStackTrace();
-                        diagnoses[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
-                        diagnoses[1]= classVersion;
-                        diagnoses[2]= "Code Line " + String.valueOf(elements[1].getLineNumber());
-                        diagnoses[3]="FALSE";
-                        diagnoses[4]=specialFunctionReturn.toString();
-                        diagnoses[5]="The field " + currField + " is considered special and its checker (" + aMethod + ") returned the Error above";
-                        return diagnoses;                            
+                        diagnosesProj[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
+                        diagnosesProj[1]= classVersionProj;
+                        diagnosesProj[2]= "Code Line " + String.valueOf(elements[1].getLineNumber());
+                        diagnosesProj[3]="FALSE";
+                        diagnosesProj[4]=specialFunctionReturn.toString();
+                        diagnosesProj[5]="The field " + currField + " is considered special and its checker (" + aMethod + ") returned the Error above";
+                        return diagnosesProj;                            
                     }                
             }
         }
@@ -247,26 +247,26 @@ Object[] createProject( String schemaPrefix, String projectTemplate, Integer pro
         sampleFieldName = LabPLANETArray.addValueToArray1D(sampleFieldName, "config_version");    
         sampleFieldValue = LabPLANETArray.addValueToArray1D(sampleFieldValue, projectTemplateVersion); 
 
-        diagnoses = Rdbms.insertRecordInTable(schemaDataName, tableName, sampleFieldName, sampleFieldValue);
+        diagnosesProj = Rdbms.insertRecordInTable(schemaDataName, tableName, sampleFieldName, sampleFieldValue);
 
         Object[] fieldsOnLogSample = LabPLANETArray.joinTwo1DArraysInOneOf1DString(sampleFieldName, sampleFieldValue, ":");
 
-        //smpAudit.sampleAuditAdd(rdbm, schemaPrefix, auditActionName, "sample", Integer.parseInt(diagnoses[6]), Integer.parseInt(diagnoses[6]), null, null, fieldsOnLogSample, userName, userRole);
+        //smpAudit.sampleAuditAdd(rdbm, schemaPrefix, auditActionName, "sample", Integer.parseInt(diagnosesProj[6]), Integer.parseInt(diagnosesProj[6]), null, null, fieldsOnLogSample, userName, userRole);
 
-        return diagnoses;  
+        return diagnosesProj;  
     }    
     if (devMode==true){
         StackTraceElement[] elementsDev = Thread.currentThread().getStackTrace();
-        javaDocLineName = "END";
-        Integer specialFieldIndex = Arrays.asList(javaDocFields).indexOf("line_name");
+        javaDocLineNameProj = "END";
+        Integer specialFieldIndex = Arrays.asList(javaDocFieldsProj).indexOf("line_name");
         if (specialFieldIndex==-1){
-            javaDocFields = LabPLANETArray.addValueToArray1D(javaDocFields, "line_name");         javaDocValues = LabPLANETArray.addValueToArray1D(javaDocValues, javaDocLineName);         
+            javaDocFieldsProj = LabPLANETArray.addValueToArray1D(javaDocFieldsProj, "line_name");         javaDocValuesProj = LabPLANETArray.addValueToArray1D(javaDocValuesProj, javaDocLineNameProj);         
         }else{    
-            javaDocValues[specialFieldIndex] = javaDocLineName;             
+            javaDocValuesProj[specialFieldIndex] = javaDocLineNameProj;             
         }
-        LPPlatform.addJavaClassDoc(javaDocFields, javaDocValues, elementsDev);
+        LPPlatform.addJavaClassDoc(javaDocFieldsProj, javaDocValuesProj, elementsDev);
     }
-    return diagnoses; 
+    return diagnosesProj; 
 }    
 
     /**
@@ -290,14 +290,14 @@ Object[] createProject( String schemaPrefix, String projectTemplate, Integer pro
             fieldValue = LabPLANETArray.addValueToArray1D(fieldValue, projectName);
             newProjSample = ds.logSample(schemaPrefix, projectTemplate, projectTemplateVersion, fieldName, fieldValue, userName, userRole, appSessionId);
             /*if (!newProjSample[3].equalsIgnoreCase("FALSE")){
-                String schemaDataName = "data";
-                String schemaConfigName = "config";
+                String schemaDataNameProj = "data";
+                String schemaConfigNameProj = "config";
 
                 LPPlatform labPlat = new LPPlatform();
-                schemaDataName = labPlat.buildSchemaName(schemaPrefix, schemaDataName);    
-                schemaConfigName = labPlat.buildSchemaName(schemaPrefix, schemaConfigName);                 
+                schemaDataNameProj = labPlat.buildSchemaName(schemaPrefix, schemaDataNameProj);    
+                schemaConfigNameProj = labPlat.buildSchemaName(schemaPrefix, schemaConfigNameProj);                 
                 
-                newProjSample = rdbm.updateRecordFieldsByFilter(rdbm, schemaDataName, "project_sample", 
+                newProjSample = rdbm.updateRecordFieldsByFilter(rdbm, schemaDataNameProj, "project_sample", 
                         new String[]{"project"}, new Object[]{projectName}, 
                         new String[]{"sample_id"}, new Object[]{Integer.parseInt(newProjSample[newProjSample.length-1])});
             }*/

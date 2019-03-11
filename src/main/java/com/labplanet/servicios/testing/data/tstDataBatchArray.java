@@ -8,6 +8,7 @@ package com.labplanet.servicios.testing.data;
 import LabPLANET.utilities.LabPLANETArray;
 import LabPLANET.utilities.LPNulls;
 import LabPLANET.utilities.LPPlatform;
+import LabPLANET.utilities.LPTestingOutFormat;
 import databases.Rdbms;
 import functionalJava.analysis.UserMethod;
 import functionalJava.batch.DataBatch;
@@ -63,7 +64,7 @@ public class tstDataBatchArray extends HttpServlet {
             
             configSpecTestingArray = LabPLANETArray.convertCSVinArray(csvPathName, csvFileSeparator);                        
      
-            fileContent = testingFileContentSections.getHtmlStyleHeader(this.getServletName());
+            fileContent = LPTestingOutFormat.getHtmlStyleHeader(this.getServletName());
 
             for (Integer j=0;j<configSpecTestingArray[0].length;j++){
                 fileContent = fileContent + "<th>"+configSpecTestingArray[0][j]+"</th>";
@@ -138,7 +139,7 @@ public class tstDataBatchArray extends HttpServlet {
                         }else{
                             dataSample2D = Rdbms.getRecordFieldsByFilter(schemaPrefix, tableName, fieldName, fieldValues, fieldsToRetrieve);
                         }
-                        if (!"LABPLANET_FALSE".equalsIgnoreCase(dataSample2D[0][0].toString())){
+                        if (!LPPlatform.LAB_FALSE.equalsIgnoreCase(dataSample2D[0][0].toString())){
                             dataSample2Din1D =  LabPLANETArray.array2dTo1d(dataSample2D);
                         }    
                         break;
@@ -152,7 +153,7 @@ public class tstDataBatchArray extends HttpServlet {
                         errorDetail[0]="The function <*1*> is not one of the declared ones therefore nothing can be performed for it. Functions are: <*2*>";
                         errorDetail = LabPLANETArray.addValueToArray1D(errorDetail, functionBeingTested);
                         errorDetail = LabPLANETArray.addValueToArray1D(errorDetail, Arrays.toString(allFunctionsBeingTested));
-                        Object[] trapErrorMessage = LabPLANETPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetail);            
+                        Object[] trapErrorMessage = LabPLANETPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetail);            
                         dataSample2D = LabPLANETArray.array1dTo2d(trapErrorMessage, trapErrorMessage.length);
                         break;
                 }        
@@ -163,7 +164,7 @@ public class tstDataBatchArray extends HttpServlet {
                 if (dataSample2D[0].length>3){fileContent = fileContent + ". "+LPNulls.replaceNull((String) dataSample2D[0][3]);}
                 if (dataSample2D[0].length>4){fileContent = fileContent + ". "+LPNulls.replaceNull((String) dataSample2D[0][4]);}                
                 if (dataSample2D[0].length>5){fileContent = fileContent + ". "+LPNulls.replaceNull((String) dataSample2D[0][5]);}
-                if ( ("GETRECORDFIELDSBYFILTER".equalsIgnoreCase(functionBeingTested)) && (!"LABPLANET_FALSE".equalsIgnoreCase(dataSample2D[0][0].toString())) ){
+                if ( ("GETRECORDFIELDSBYFILTER".equalsIgnoreCase(functionBeingTested)) && (!LPPlatform.LAB_FALSE.equalsIgnoreCase(dataSample2D[0][0].toString())) ){
                     fileContent = fileContent + "</td><td>"+Arrays.toString(dataSample2Din1D);
                 }
 

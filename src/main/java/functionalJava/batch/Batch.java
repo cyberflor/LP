@@ -132,7 +132,7 @@ public class Batch {
      * @param creator
      */
     public void newBatch(String template, Integer templateVersion, String name, String creator){
-        Batch myBatch = new Batch(template, templateVersion, name, creator);
+        new Batch(template, templateVersion, name, creator);
     }
 
     /**

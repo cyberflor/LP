@@ -45,19 +45,10 @@ public class authenticationAPI extends HttpServlet {
      */
     //public enum actionsList {    AUTHENTICATE,    GETUSERROLE,    LOW    }
     
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response)            throws ServletException, IOException {
+        response = LabPLANETRequest.responsePreparation(response);
+        request = LabPLANETRequest.requestPreparation(request);               
 
-                response.setContentType("application/json");
-                response.setCharacterEncoding("UTF-8");
-                request.setCharacterEncoding("UTF-8");
-
-                ResourceBundle prop = ResourceBundle.getBundle("parameter.config.config");
-                String frontendUrl = prop.getString("frontend_url");
-      
-                response.setHeader("Access-Control-Allow-Origin", frontendUrl);
-                response.setHeader("Access-Control-Allow-Methods", "GET");        
-      
         String language = "en";
 
         try (PrintWriter out = response.getWriter()) {            

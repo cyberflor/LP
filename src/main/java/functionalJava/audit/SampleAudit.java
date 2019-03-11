@@ -121,7 +121,6 @@ public class SampleAudit {
 //        fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, userName);        
 
         Object[] diagnoses = Rdbms.insertRecordInTable(schemaName, auditTableName, fieldNames, fieldValues);
-        String veredict= diagnoses[0].toString();
     }
 
     public void sampleAuditAdd(String schemaPrefix, String action, String tableName, Integer tableId, Integer aliquotId, Integer sampleId, Integer testId, Integer resultId, Object[] auditlog, String userName, String userRole, Integer sessionId) {
@@ -189,7 +188,6 @@ public class SampleAudit {
 //        fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "user");
 //        fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, userName);        
         Object[] diagnoses = Rdbms.insertRecordInTable(schemaName, auditTableName, fieldNames, fieldValues);
-        String veredict= diagnoses[0].toString();
     }
 
     public void sampleAuditAdd( String schemaPrefix, String action, String tableName, Integer tableId, Integer subaliquotId, Integer aliquotId, Integer sampleId, Integer testId, Integer resultId, Object[] auditlog, String userName, String userRole, Integer sessionId) {
@@ -261,7 +259,6 @@ public class SampleAudit {
 //        fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "user");
 //        fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, userName);        
         Object[] diagnoses = Rdbms.insertRecordInTable(schemaName, auditTableName, fieldNames, fieldValues);
-        String veredict= diagnoses[0].toString();
     }
     
     
@@ -322,7 +319,6 @@ public class SampleAudit {
 //        fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "user");
 //        fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, userName);        
         Object[] diagnoses = Rdbms.insertRecordInTable(schemaName, auditTableName, fieldNames, fieldValues);
-        String veredict= diagnoses[0].toString();
     }
 
  /**

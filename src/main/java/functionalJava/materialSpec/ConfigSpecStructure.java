@@ -345,7 +345,6 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
         String errorCode = "DataSample_SpecialFunctionReturnedERROR";
         Object[] errorDetailVariables = new Object[0];
          
-        LPPlatform labPlat = new LPPlatform();
         schemaName = LPPlatform.buildSchemaName(schemaPrefix, schemaName);
             
         diagnoses = Rdbms.existsRecord(schemaName, "spec", new String[]{"code", "config_version"}, new Object[] {specCode, specCodeVersion});        
@@ -386,7 +385,6 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
                     errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, specialFunctionReturn.toString());
                     return (String[]) LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);                                                
                 }
-                //String specialFunctionReturnStatus = String.valueOf(specialFunctionReturn);
             }
         }      
         try{
@@ -576,7 +574,6 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
         String variationList = "";
         String errorCode ="";
         
-        LPPlatform labPlat = new LPPlatform();
         schemaName = LPPlatform.buildSchemaName(schemaPrefix, schemaName);
         
         Object[][] variationListArray = Rdbms.getRecordFieldsByFilter(schemaName, "spec_limits", new String[]{"code"}, new Object[]{specCode}, new String[]{"name"});

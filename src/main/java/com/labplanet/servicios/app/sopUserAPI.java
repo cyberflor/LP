@@ -8,6 +8,7 @@ package com.labplanet.servicios.app;
 import LabPLANET.utilities.LabPLANETArray;
 import LabPLANET.utilities.LPPlatform;
 import LabPLANET.utilities.LabPLANETFrontEnd;
+import LabPLANET.utilities.LabPLANETRequest;
 import databases.Rdbms;
 import databases.Token;
 import functionalJava.sop.UserSop;
@@ -40,23 +41,12 @@ public class sopUserAPI extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response)            throws ServletException, IOException {
+        response = LabPLANETRequest.responsePreparation(response);
+        request = LabPLANETRequest.requestPreparation(request);      
         
-        ResourceBundle prop = ResourceBundle.getBundle("parameter.config.config");
-        String frontendUrl = prop.getString("frontend_url");
-
-        response.setHeader("Access-Control-Allow-Origin", frontendUrl);
-        response.setHeader("Access-Control-Allow-Methods", "GET");        
-
         String language = "en";
         
-        //ResponseEntity<String> responsew;
-        
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-        request.setCharacterEncoding("UTF-8");        
-    
         try (PrintWriter out = response.getWriter()) {
             String[] errObject = new String[]{"Servlet sampleAPI at " + request.getServletPath()};                        
             

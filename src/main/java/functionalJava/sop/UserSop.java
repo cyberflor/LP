@@ -61,7 +61,7 @@ public class UserSop {
                 
         String schemaConfigName = "config";
         Object[] diagnoses = new Object[0];
-        schemaConfigName = LPPlatform.buildSchemaName(schemaPrefixName, "config");
+        schemaConfigName = LPPlatform.buildSchemaName(schemaPrefixName, schemaConfigName);
         String actionEnabledUserSopCertification = Parameter.getParameterBundle(schemaConfigName, "actionEnabledUserSopCertification"); 
         
         UserProfile usProf = new UserProfile();
@@ -209,8 +209,7 @@ public class UserSop {
         
         Object[][] procBusinessRule = Rdbms.getRecordFieldsByFilter("requirements", "procedure_business_rule", 
                                                         new String[]{"procedure", "version"}, new Object[]{procedure, procVersion}, 
-                                                        new String[]{"sop_mode", "certify_management", "enable_recertification", "procedure"});
-        
+                                                        new String[]{"sop_mode", "certify_management", "enable_recertification", "procedure"});        
         if (LPPlatform.LAB_FALSE.equalsIgnoreCase(procBusinessRule[0][0].toString())){return diagnoses;}
         
         sopMode = (String) procBusinessRule[0][0];
@@ -223,8 +222,7 @@ public class UserSop {
             diagnoses[2]="xf133@FontAwesome";
             diagnoses[3]="SOPs disabled";
             return diagnoses;
-        }
-        
+        }        
         if (!certifyManagement){
             diagnoses[0]="SOP_ENABLE_";
             diagnoses[1]="SOP enable but Certifications disabled, SOP merely info";
@@ -268,12 +266,14 @@ public class UserSop {
             diagnoses[1]="The user "+userInfoId+" has no the sop "+sopIdFieldValue+ " assigned to.";
             return diagnoses;
         }
+        String usrProfLight=getUserProfileFieldValues[0][3].toString();
+        Date usrProfExpDate=(Date) getUserProfileFieldValues[0][4];
                 
-        if (getUserProfileFieldValues[0][3].toString().contains("GREEN")){
+        if (usrProfLight.contains("GREEN")){
             
             if (certifyManagement && getUserProfileFieldValues[0][4]!=null){                
                 Date now = new Date();
-                if (now.after((Date) getUserProfileFieldValues[0][4])){
+                if (now.after(usrProfExpDate)){
                     diagnoses[0]="SOP_CERTIF_EXPIRED";
                     diagnoses[1]="The user "+userInfoId+" was certified for the sop "+sopIdFieldValue+" but it expired on "+getUserProfileFieldValues[0][4].toString();
                     diagnoses[2]="xf06a@FontAwesome";
@@ -310,7 +310,7 @@ public class UserSop {
      * @return
      */
         
-    public Object[][] getUserProfileFieldValues( String[] filterFieldName, Object[] filterFieldValue, String[] fieldsToReturn, String[] schemaPrefix){                
+    public Object[][] getUserProfileFieldValues(String[] filterFieldName, Object[] filterFieldValue, String[] fieldsToReturn, String[] schemaPrefix){                
         String tableName = "user_sop";
         
         Object[] diagnoses = new Object[0];
@@ -455,7 +455,7 @@ public class UserSop {
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, sopIdFieldValue);          
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, userInfoId);          
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaName);          
-            return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, diagnoses, javaDocValues);
+            return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, messageCode, errorDetailVariables);
         }
         
         Object[] diagnosis = Rdbms.insertRecordInTable(schemaName, "user_sop", new String[]{"user_id", sopIdFieldName}, new Object[]{userInfoId, sopIdFieldValue});
@@ -467,7 +467,7 @@ public class UserSop {
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, sopIdFieldValue);          
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, userInfoId);          
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaName);          
-            return LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, diagnoses, javaDocValues);
+            return LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, messageCode, errorDetailVariables);
         }
     }
     

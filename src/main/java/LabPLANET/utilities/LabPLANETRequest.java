@@ -5,7 +5,12 @@
  */
 package LabPLANET.utilities;
 
+import java.io.UnsupportedEncodingException;
+import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  *
@@ -13,6 +18,28 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class LabPLANETRequest {
 
+    public static HttpServletRequest requestPreparation(HttpServletRequest request){
+        try {
+            request.setCharacterEncoding(LPPlatform.LAB_ENCODER_UTF8);                    
+            return request;
+        } catch (UnsupportedEncodingException ex) {
+            Logger.getLogger(LabPLANETRequest.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return request;
+    }
+
+    public static HttpServletResponse responsePreparation(HttpServletResponse response){
+        response.setContentType("application/json");
+        response.setCharacterEncoding(LPPlatform.LAB_ENCODER_UTF8);
+
+        ResourceBundle prop = ResourceBundle.getBundle("parameter.config.config");
+        String frontendUrl = prop.getString("frontend_url");
+
+        response.setHeader("Access-Control-Allow-Origin", frontendUrl);
+        response.setHeader("Access-Control-Allow-Methods", "GET");                
+        return response;
+    }    
+    
     public static Object[] areMandatoryParamsInApiRequest(HttpServletRequest request, String[] paramNames){        
         LabPLANETArray labArr = new LabPLANETArray();
         Object [] diagnoses = null;        

@@ -358,7 +358,7 @@ public class DataSpec {
         
         Object[] isCorrectMinMaxSpec = new Object[2];
         Object[] diagnoses = new Object[2];
-        ConfigSpecRule matQuant = new ConfigSpecRule();
+
         String errorCode = "";
         Object [] errorVariables = new Object[0]; 
 
@@ -500,7 +500,6 @@ public class DataSpec {
         
         Object[] isCorrectMinMaxSpec = new Object[2];
         Object[] diagnoses = new Object[2];
-        ConfigSpecRule matQuant = new ConfigSpecRule();
         String errorCode = "";
         Object [] errorVariables = new Object[0]; 
 

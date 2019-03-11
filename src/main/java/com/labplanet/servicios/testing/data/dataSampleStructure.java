@@ -8,6 +8,7 @@ package com.labplanet.servicios.testing.data;
 import LabPLANET.utilities.LabPLANETArray;
 import LabPLANET.utilities.LPNulls;
 import LabPLANET.utilities.LPPlatform;
+import LabPLANET.utilities.LPTestingOutFormat;
 import databases.Rdbms;
 import functionalJava.ChangeOfCustody.ChangeOfCustody;
 import functionalJava.analysis.UserMethod;
@@ -75,7 +76,7 @@ public class dataSampleStructure extends HttpServlet {
             
             configSpecTestingArray = LabPLANETArray.convertCSVinArray(csvPathName, csvFileSeparator);            
             
-        fileContent = testingFileContentSections.getHtmlStyleHeader(this.getServletName());
+        fileContent = LPTestingOutFormat.getHtmlStyleHeader(this.getServletName());
             
         DataSample smp = new DataSample("");
             
@@ -387,7 +388,7 @@ public class dataSampleStructure extends HttpServlet {
                             try {
                                 dataSample = smp.logSampleAliquot(schemaPrefix, sampleId, 
                                         // sampleTemplate, sampleTemplateVersion, 
-                                        fieldName, fieldValue, userName, userRole, appSessionId, false);                                                                
+                                        fieldName, fieldValue, userName, userRole, appSessionId);                                                                
                             } catch (IllegalArgumentException ex) {
                                 Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
                             }
@@ -415,7 +416,7 @@ public class dataSampleStructure extends HttpServlet {
                             try {
                                 dataSample = smp.logSampleSubAliquot(schemaPrefix, aliquotId, 
                                         // sampleTemplate, sampleTemplateVersion, 
-                                        fieldName, fieldValue, userName, userRole, appSessionId, false);                                                                
+                                        fieldName, fieldValue, userName, userRole, appSessionId);                                                                
                             } catch (IllegalArgumentException ex) {
                                 Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
                             }

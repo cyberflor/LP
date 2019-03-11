@@ -58,10 +58,10 @@ public class ConfigSpecRule {
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaName);          
             return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);}                                                
         switch (rule.toUpperCase()){
-            case "EQUALTO":  errorCode = "specLimits_equalTo_Successfully"; return LPPlatform.trapErrorMessage("LABPLANET_TRUE", errorCode, errorDetailVariables);                          
-            case "NOTEQUALTO": errorCode = "specLimits_notEqualTo_Successfully"; return LPPlatform.trapErrorMessage("LABPLANET_TRUE", errorCode, errorDetailVariables);
-            case "CONTAINS": errorCode = "specLimits_contains_Successfully"; return LPPlatform.trapErrorMessage("LABPLANET_TRUE", errorCode, errorDetailVariables);          
-            case "NOTCONTAINS": errorCode = "specLimits_notContains_Successfully"; return LPPlatform.trapErrorMessage("LABPLANET_TRUE", errorCode, errorDetailVariables);          
+            case "EQUALTO":  errorCode = "specLimits_equalTo_Successfully"; return LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, errorCode, errorDetailVariables);                          
+            case "NOTEQUALTO": errorCode = "specLimits_notEqualTo_Successfully"; return LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, errorCode, errorDetailVariables);
+            case "CONTAINS": errorCode = "specLimits_contains_Successfully"; return LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, errorCode, errorDetailVariables);          
+            case "NOTCONTAINS": errorCode = "specLimits_notContains_Successfully"; return LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, errorCode, errorDetailVariables);          
             case "ISONEOF": 
                 if ((separator==null) || (separator.length()==0)){
                     errorCode = "specLimits_separatorMandatoryArgumentNull";
@@ -72,7 +72,7 @@ public class ConfigSpecRule {
                     String[] textSpecArray = textSpec.split(separator);
                     errorCode = "specLimits_isOneOf_Successfully";
                     errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, textSpecArray.length);          
-                    return LPPlatform.trapErrorMessage("LABPLANET_TRUE", errorCode, errorDetailVariables);}                       
+                    return LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, errorCode, errorDetailVariables);}                       
             case "ISNOTONEOF": 
                 if ((separator==null) || (separator.length()==0)){
                     errorCode = "specLimits_separatorMandatoryArgumentNull";
@@ -83,7 +83,7 @@ public class ConfigSpecRule {
                     String[] textSpecArray = textSpec.split(separator);
                     errorCode = "specLimits_isNotOneOf_Successfully";
                     errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, textSpecArray.length);          
-                    return LPPlatform.trapErrorMessage("LABPLANET_TRUE", errorCode, errorDetailVariables);}                          
+                    return LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, errorCode, errorDetailVariables);}                          
             default: 
                 errorCode = "specLimits_qualitativeRuleNotRecognized";
                 errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, rule);          
@@ -108,11 +108,11 @@ public class ConfigSpecRule {
         if ((minSpec==null) && (maxSpec==null)){
             errorCode = "specLimits_MinAndMaxSpecBothMandatory"; return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);}                                               
         if ((minSpec!=null) && (maxSpec==null)){
-            errorCode = "specLimits_quantitativeMinSpecSuccessfully"; return LPPlatform.trapErrorMessage("LABPLANET_TRUE", errorCode, errorDetailVariables);}                                    
+            errorCode = "specLimits_quantitativeMinSpecSuccessfully"; return LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, errorCode, errorDetailVariables);}                                    
         if ((minSpec==null) && (maxSpec!=null)){
-            errorCode = "specLimits_quantitativeMaxSpecSuccessfully"; return LPPlatform.trapErrorMessage("LABPLANET_TRUE", errorCode, errorDetailVariables);}                                           
+            errorCode = "specLimits_quantitativeMaxSpecSuccessfully"; return LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, errorCode, errorDetailVariables);}                                           
         if (minSpec<maxSpec){
-            errorCode = "specLimits_quantitativeMinSpecMaxSpec_Successfully"; return LPPlatform.trapErrorMessage("LABPLANET_TRUE", errorCode, errorDetailVariables);}                                    
+            errorCode = "specLimits_quantitativeMinSpecMaxSpec_Successfully"; return LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, errorCode, errorDetailVariables);}                                    
         
         errorCode = "specLimits_quantitativeMinSpecMaxSpec_MinSpecGreaterOrEqualToMaxSpec"; 
         errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, minSpec.toString());        
@@ -137,11 +137,11 @@ public class ConfigSpecRule {
         if ((minSpec==null) && (maxSpec==null)){
             errorCode = "specLimits_MinAndMaxSpecBothMandatory"; return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);}                                               
         if ((minSpec!=null) && (maxSpec==null)){
-            errorCode = "specLimits_quantitativeMinSpecSuccessfully"; return LPPlatform.trapErrorMessage("LABPLANET_TRUE", errorCode, errorDetailVariables);}                                    
+            errorCode = "specLimits_quantitativeMinSpecSuccessfully"; return LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, errorCode, errorDetailVariables);}                                    
         if ((minSpec==null) && (maxSpec!=null)){
-            errorCode = "specLimits_quantitativeMaxSpecSuccessfully"; return LPPlatform.trapErrorMessage("LABPLANET_TRUE", errorCode, errorDetailVariables);}                                           
+            errorCode = "specLimits_quantitativeMaxSpecSuccessfully"; return LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, errorCode, errorDetailVariables);}                                           
         if (minSpec.compareTo(maxSpec)==1){
-            errorCode = "specLimits_quantitativeMinSpecMaxSpec_Successfully"; return LPPlatform.trapErrorMessage("LABPLANET_TRUE", errorCode, errorDetailVariables);}                                    
+            errorCode = "specLimits_quantitativeMinSpecMaxSpec_Successfully"; return LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, errorCode, errorDetailVariables);}                                    
         
         errorCode = "specLimits_quantitativeMinSpecMaxSpec_MinSpecGreaterOrEqualToMaxSpec"; 
         errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, minSpec.toString());        
@@ -172,7 +172,7 @@ public class ConfigSpecRule {
             return isCorrectMinMaxSpec;}
                 
         if ((minControl1==null) && (maxControl1==null)){
-            errorCode = "specLimits_quantitativeMinSpecMaxSpec_Successfully"; return LPPlatform.trapErrorMessage("LABPLANET_TRUE", errorCode, errorDetailVariables);}                                            
+            errorCode = "specLimits_quantitativeMinSpecMaxSpec_Successfully"; return LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, errorCode, errorDetailVariables);}                                            
         if ((minControl1!=null) && (minSpec==null)){
             errorCode = "specLimits_MinControlPresent_MinSpecMandatory"; 
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, minControl1.toString());        
@@ -204,7 +204,7 @@ public class ConfigSpecRule {
                 return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);                                      
             }else{
                 errorCode = "specLimits_quantitativeMinSpecMinControlMaxSpec_Successfully"; 
-                return LPPlatform.trapErrorMessage("LABPLANET_TRUE", errorCode, errorDetailVariables);   
+                return LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, errorCode, errorDetailVariables);   
             }
         }                      
         if ((maxControl1!=null)){
@@ -216,7 +216,7 @@ public class ConfigSpecRule {
                 return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);                                   
             }else{
                 errorCode = "specLimits_quantitativeMinSpecMinControlMaxControlMaxSpec_Successfully"; 
-                return LPPlatform.trapErrorMessage("LABPLANET_TRUE", errorCode, errorDetailVariables);        
+                return LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, errorCode, errorDetailVariables);        
             }    
         }
         errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, minControl1.toString());        
