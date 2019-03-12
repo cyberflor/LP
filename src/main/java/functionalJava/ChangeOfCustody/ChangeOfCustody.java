@@ -20,6 +20,7 @@ public class ChangeOfCustody {
     String cocStartChangeStatus = "STARTED";
     String cocConfirmedChangeStatus = "CONFIRMED";
     String cocAbortedChangeStatus = "ABORTED";
+    public static String fieldName_status = "status";
     
     public Object[] cocStartChange(String schemaPrefix, String objectTable, String ObjectFieldName, Object objectId, String currCustodian, String custodianCandidate, String userRole, Integer appSessionId) {
         
@@ -51,7 +52,7 @@ public class ChangeOfCustody {
             return changeOfCustodyEnable;}
         
         Object[] existsRecord = Rdbms.existsRecord( schemaName, cocTableName, 
-                new String[]{ObjectFieldName, "status"}, 
+                new String[]{ObjectFieldName, fieldName_status}, 
                 new Object[]{objectId, cocStartChangeStatus});
         if (LPPlatform.LAB_TRUE.equalsIgnoreCase(existsRecord[0].toString())){
                 String errorCode = "ChainOfCustody_requestAlreadyInCourse";
@@ -67,7 +68,7 @@ public class ChangeOfCustody {
         if (LPPlatform.LAB_FALSE.equalsIgnoreCase(updateRecordFieldsByFilter[0].toString())){
             return updateRecordFieldsByFilter;}
         
-        String[] sampleFieldName = new String[]{ObjectFieldName, "custodian", "custodian_candidate", "coc_started_on", "status"};
+        String[] sampleFieldName = new String[]{ObjectFieldName, "custodian", "custodian_candidate", "coc_started_on", fieldName_status};
         Object[] sampleFieldValue = new Object[]{objectId, currCustodian, custodianCandidate, LabPLANETDate.getTimeStampLocalDate(), cocStartChangeStatus};
         
         Object[] insertRecordInTable = Rdbms.insertRecordInTable( schemaName, cocTableName, 
@@ -115,9 +116,9 @@ public class ChangeOfCustody {
             return changeOfCustodyEnable;}
 
         Object[][] startedProcessData = Rdbms.getRecordFieldsByFilter( schemaName, cocTableName, 
-                new String[]{ObjectFieldName, "status"},
+                new String[]{ObjectFieldName, fieldName_status},
                 new Object[]{objectId, "STARTED"},
-                new String[]{"id", "status", "custodian_candidate"});
+                new String[]{"id", fieldName_status, "custodian_candidate"});
         if (LPPlatform.LAB_FALSE.equalsIgnoreCase(startedProcessData[0][0].toString())){            
             String errorCode = "ChainOfCustody_noChangeInProgress";
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, objectId);
@@ -139,7 +140,7 @@ public class ChangeOfCustody {
             return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);}                                                   
         
         
-        String[] sampleFieldName=new String[]{"status", "coc_confirmed_on" };
+        String[] sampleFieldName=new String[]{fieldName_status, "coc_confirmed_on" };
         Object[] sampleFieldValue=new Object[]{actionName,LabPLANETDate.getTimeStampLocalDate()};
         if (comment!=null){            
             sampleFieldName = LabPLANETArray.addValueToArray1D(sampleFieldName, "coc_new_custodian_notes");

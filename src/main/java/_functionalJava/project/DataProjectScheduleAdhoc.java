@@ -111,8 +111,6 @@ public class DataProjectScheduleAdhoc {
         this.schedule_size=schedule_size;
         this.FirstDay=startDay;
         
-        Date endDay=null;
-        
         switch (itemsMeasurement.toUpperCase()){
             case "DAYS":
                 endDay = LabPLANETDate.addDays(startDay, schedule_size);
@@ -140,8 +138,6 @@ public class DataProjectScheduleAdhoc {
      * @return
      */
     public List<dataProjectSchedule> getDataProjectSchedulers( String schemaName, String pName, int projSchedId) {
-        List<dataProjectSchedule> project= new ArrayList<>();
-
         String tableName = "project_schedule";
         
         Object[][] projectSchedInfo = Rdbms.getRecordFieldsByFilter(schemaName, tableName, new String[]{"project", "id"}, new Object[]{pName, projSchedId}, 
@@ -150,7 +146,7 @@ public class DataProjectScheduleAdhoc {
         //Cursor cursor = this.db.query(TABLE_PROJECT, new String[] { "*"},
         //  condition + " ORDER BY pro_dateConfirm ASC" , null, null, null, null); 		
           //condition + "and (pro_finalTecnico = 'null' OR pro_finalTecnico = 'F') AND pro_dateConfirm <> 'null' ORDER BY pro_dateConfirm ASC" , null, null, null, null);
-        project = setProjectSchedulerFromDb(projectSchedInfo);
+        List<dataProjectSchedule>  project = setProjectSchedulerFromDb(projectSchedInfo);
           
         return project;    	    	
     }   

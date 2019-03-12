@@ -16,6 +16,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.file.Files;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -139,7 +140,7 @@ public class projectStructure extends HttpServlet {
                             fileContent = fileContent + "<td>"+sampleId.toString()+", "+userName+", "
                                 +configSpecTestingArray[i][5].toString()+", "+configSpecTestingArray[i][6].toString()+"</td>";                            
                             dataProject = prj.sampleAnalysisAddtoSample(schemaPrefix, userName, sampleId, fieldName, fieldValue, userRole);
-                        } catch (IllegalArgumentException ex) {
+                        } catch (IllegalArgumentException | NullPointerException ex) {
                             Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
                         }
                         break;                           
@@ -163,7 +164,7 @@ public class projectStructure extends HttpServlet {
             csvPathName = csvPathName.replace(".txt", ".html");
             File file = new File(csvPathName);
             FileWriter fileWriter = new FileWriter(file);
-            if (file.exists()){ file.delete();} 
+            Files.deleteIfExists(file.toPath());
             fileWriter.write(fileContent);
             fileWriter.flush();
             fileWriter.close();   

@@ -398,6 +398,7 @@ return "";
             newEntry = " ***Error creating navId for the node name " + nodename + ". Error: "+ diagnoses[4] + " / " + diagnoses[5];
             numr = 0;
         }
+        numr = Integer.valueOf(diagnoses[diagnoses.length-1].toString());
                 
         //load record from template and then insert replacing required code
         if (numr>0){
@@ -723,14 +724,12 @@ return "";
                             sopList = sopList + sp + "|";                             
                             }                        
                     }
-                    if (sopSectionName!=null){
-                       if (!sopList.contains(sopSectionName)){
-                            Object[] diagnoses = sop.createSop(schemaName, sp+"-"+sopSectionName);
-                             sopList = sopList + sp+"-"+sopSectionName + "|";                            
-                             diagnoses = sop.updateSop(schemaName, sp, "has_child", "true", "boolean");
-                             diagnoses = sop.updateSop(schemaName, sopSectionName, "parent_sop", sp, "text");
-                             sopList = sopList + sp+"-"+sopSectionName + "|";                         
-                        }                        
+                    if ( (sopSectionName!=null) && (!sopList.contains(sopSectionName)) ){
+                        Object[] diagnoses = sop.createSop(schemaName, sp+"-"+sopSectionName);
+                         sopList = sopList + sp+"-"+sopSectionName + "|";                            
+                         diagnoses = sop.updateSop(schemaName, sp, "has_child", "true", "boolean");
+                         diagnoses = sop.updateSop(schemaName, sopSectionName, "parent_sop", sp, "text");
+                         sopList = sopList + sp+"-"+sopSectionName + "|";                         
                     }    
                 }
             }
@@ -774,34 +773,32 @@ return "";
                     if (sopSectionName!=null){sp = sp+"-"+sopSectionName;}  
                     Object[] diagnoses = Rdbms.existsRecord(schemaName+"-config", "sop_meta_data", 
                             new String[]{"sop_name"}, new Object[]{sp});
-                    if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){                  
-                        if (role!=null){
-                            String[] roles = role.split(",");
-                            for (String r: roles){         
-                                Object[][] userProfileInfo = Rdbms.getRecordFieldsByFilter(schemaName, tableName, 
-                                                new String[]{"role_id"}, 
-                                                new Object[]{procName+"_"+r}, 
-                                                new String[]{"user_info_id", "user_info_id", "user_info_id", "user_info_id"});
+                    if ( (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())) && (role!=null) ){                  
+                        String[] roles = role.split(",");
+                        for (String r: roles){         
+                            Object[][] userProfileInfo = Rdbms.getRecordFieldsByFilter(schemaName, tableName, 
+                                            new String[]{"role_id"}, 
+                                            new Object[]{procName+"_"+r}, 
+                                            new String[]{"user_info_id", "user_info_id", "user_info_id", "user_info_id"});
 
-                                Integer contUser = userProfileInfo.length;     
+                            Integer contUser = userProfileInfo.length;     
 
-                                newEntry = "Found " + contUser + " users having assigned the role "+procName+"_"+r;
-                                try {requirementsLogEntry(methodName, newEntry,3);
-                                } catch (IOException ex) {Logger.getLogger(Requirement.class.getName()).log(Level.SEVERE, null, ex);}
+                            newEntry = "Found " + contUser + " users having assigned the role "+procName+"_"+r;
+                            try {requirementsLogEntry(methodName, newEntry,3);
+                            } catch (IOException ex) {Logger.getLogger(Requirement.class.getName()).log(Level.SEVERE, null, ex);}
 
-                                for (Integer icontUser=0;icontUser<contUser;icontUser++){
-                                    UserSop usSop=new UserSop();
-                                    String userInfoId = (String) userProfileInfo[icontUser][0];
+                            for (Integer icontUser=0;icontUser<contUser;icontUser++){
+                                UserSop usSop=new UserSop();
+                                String userInfoId = (String) userProfileInfo[icontUser][0];
 
-                                    Object[] newSopUser = usSop.addSopToUserByName(schemaName+"-data", userInfoId, sopName);
-                                    
-                                    newEntry = icontUser+"/"+contUser+"  "+newSopUser[newSopUser.length-1].toString();
-                                    try {requirementsLogEntry(methodName, newEntry,4);
-                                    } catch (IOException ex) {
-                                        Logger.getLogger(Requirement.class.getName()).log(Level.SEVERE, null, ex);}
+                                Object[] newSopUser = usSop.addSopToUserByName(schemaName+"-data", userInfoId, sopName);
 
-                                    sopList = sopList + sp + "|";            
-                                }    
+                                newEntry = icontUser+"/"+contUser+"  "+newSopUser[newSopUser.length-1].toString();
+                                try {requirementsLogEntry(methodName, newEntry,4);
+                                } catch (IOException ex) {
+                                    Logger.getLogger(Requirement.class.getName()).log(Level.SEVERE, null, ex);}
+
+                                sopList = sopList + sp + "|";            
                             }    
                         }    
                     }                                                                    

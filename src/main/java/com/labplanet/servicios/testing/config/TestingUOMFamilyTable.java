@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.ResourceBundle;
 import javax.servlet.ServletException;
@@ -85,7 +86,7 @@ public class TestingUOMFamilyTable extends HttpServlet {
                 userName=null;                
                 String schemaPrefix=null;
                 String familyName=null;    
-                String[] fieldsToRetrieve=null;
+                String[] fieldsToRetrieve= new String[0];
 
                 Object[][] dataSample = null;
 
@@ -132,7 +133,7 @@ public class TestingUOMFamilyTable extends HttpServlet {
         csvPathName = csvPathName.replace(".txt", ".html");
         File file = new File(csvPathName);
         try (FileWriter fileWriter = new FileWriter(file)){
-            if (file.exists()){ file.delete();} 
+            Files.deleteIfExists(file.toPath());
             fileWriter.write(fileContent);
             fileWriter.flush();
             fileWriter.close();        

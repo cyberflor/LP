@@ -75,12 +75,11 @@ public class _ConfigSamplingPlanForSpec {
      */
     public Object[] newSamplingPlanDetailRecordDev( String schemaPrefix, String userName, String userRole, String[] fieldsName, Object[] fieldsValue, Boolean devMode) throws SQLException{
     if (devMode==true){
-        LPPlatform labPlat = new LPPlatform();
         StackTraceElement[] elementsDev = Thread.currentThread().getStackTrace();
         javaDocLineName = "BEGIN";
         javaDocFields = LabPLANETArray.addValueToArray1D(javaDocFields, "line_name");         javaDocValues = LabPLANETArray.addValueToArray1D(javaDocValues, javaDocLineName);         
         javaDocFields = LabPLANETArray.addValueToArray1D(javaDocFields, "class_version");         javaDocValues = LabPLANETArray.addValueToArray1D(javaDocValues, classVersion);         
-        labPlat.addJavaClassDoc(javaDocFields, javaDocValues, elementsDev);
+        LPPlatform.addJavaClassDoc(javaDocFields, javaDocValues, elementsDev);
     }  
         String actionName = "Insert";
         tableName = "project";

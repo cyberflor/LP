@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.Files;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -149,7 +150,7 @@ public class projectScheduleAdhocStructure extends HttpServlet {
             csvPathName = csvPathName.replace(".txt", ".html");
             File file = new File(csvPathName);
             FileWriter fileWriter = new FileWriter(file);
-            if (file.exists()){ file.delete();} 
+            Files.deleteIfExists(file.toPath());
             fileWriter.write(fileContent);
             fileWriter.flush();
             fileWriter.close();   

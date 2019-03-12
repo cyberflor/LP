@@ -22,10 +22,6 @@ public class DataBatch {
     Object[] javaDocValues = new Object[0];
     String javaDocLineName = "";
 
-    String schemaDataName = "data";
-    String schemaConfigName = "config";
-    String tableName = "user_method"; 
-    
     Object[] diagnoses = new Object[7];    
     
     /**
@@ -101,10 +97,10 @@ public class DataBatch {
         String tableName = "batch_java";
         Integer pk = 0;
        
-        Object[] diagnoses = Rdbms.updateRecordFieldsByFilter(schemaName, tableName, 
+        Object[] updateRecordFieldsByFilter = Rdbms.updateRecordFieldsByFilter(schemaName, tableName, 
                 new String[]{fieldName}, new Object[]{fieldValue}, 
                 new String[]{"name"}, new Object[]{batchName});
-        pk = Integer.parseInt(diagnoses[6].toString());
+        pk = Integer.parseInt(updateRecordFieldsByFilter[6].toString());
         return pk; 
     }    
 }

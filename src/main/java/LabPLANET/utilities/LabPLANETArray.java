@@ -5,6 +5,8 @@
  */
 package LabPLANET.utilities;
 
+import static LabPLANET.utilities.LPPlatform.LAB_FALSE;
+import static LabPLANET.utilities.LPPlatform.trapErrorMessage;
 import functionalJava.parameter.Parameter;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -130,7 +132,12 @@ public class  LabPLANETArray {
     //                String decrypted = new String(cipher.doFinal(bb));
     //                System.err.println("decrypted:" + decrypted);                
         }
-                catch(InvalidKeyException | NoSuchAlgorithmException | BadPaddingException | IllegalBlockSizeException | NoSuchPaddingException e){}
+                catch(InvalidKeyException | NoSuchAlgorithmException | BadPaddingException | IllegalBlockSizeException | NoSuchPaddingException e){
+                    String errorCode = "LabPLANETPlatform_SpecialFunctionReturnedEXCEPTION";
+                    Object[] errorDetailVariables = new Object[0];
+                    errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, e.getMessage());
+                    return (String[]) trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);
+                }
             }
         }
         
@@ -172,7 +179,13 @@ public class  LabPLANETArray {
                         }    
                     }        
         }
-                catch(InvalidKeyException | NoSuchAlgorithmException | BadPaddingException | IllegalBlockSizeException | NoSuchPaddingException e){}
+                catch(InvalidKeyException | NoSuchAlgorithmException | BadPaddingException | IllegalBlockSizeException | NoSuchPaddingException e){
+                    String errorCode = "LabPLANETPlatform_SpecialFunctionReturnedEXCEPTION";
+                    Object[] errorDetailVariables = new Object[0];
+                    errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, e.getMessage());
+                    return LabPLANETArray.array1dTo2d(
+                            trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables), errorDetailVariables.length);
+                }
             }
         }
         
@@ -208,7 +221,12 @@ public class  LabPLANETArray {
                     System.err.println("decrypted:" + decrypted);   
                     fieldValue[iFields] = decrypted;
                 }
-                catch(InvalidKeyException | NoSuchAlgorithmException | BadPaddingException | IllegalBlockSizeException | NoSuchPaddingException e){}
+                catch(InvalidKeyException | NoSuchAlgorithmException | BadPaddingException | IllegalBlockSizeException | NoSuchPaddingException e){
+                    String errorCode = "LabPLANETPlatform_SpecialFunctionReturnedEXCEPTION";
+                    Object[] errorDetailVariables = new Object[0];
+                    errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, e.getMessage());
+                    return (String[]) trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);
+                }
             }
         }
         

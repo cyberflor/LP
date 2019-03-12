@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import static java.lang.System.out;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.file.Files;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.util.logging.Level;
@@ -321,6 +322,8 @@ public class dataSampleStructure extends HttpServlet {
                                 System.out.println(result);
                                 System.out.println(result.getClass());
                             } catch (FileNotFoundException | NoSuchMethodException | ScriptException e) {
+                                String errorCode = "LabPLANETPlatform_SpecialFunctionReturnedEXCEPTION";
+                                System.out.println(errorCode + "-"+ e.getMessage());
                             }
                             break;
                         case "COC_STARTCHANGE":
@@ -451,7 +454,7 @@ public class dataSampleStructure extends HttpServlet {
         csvPathName = csvPathName.replace(".txt", ".html");
         File file = new File(csvPathName);
             try (FileWriter fileWriter = new FileWriter(file)) {
-                if (file.exists()){ file.delete();}
+                Files.deleteIfExists(file.toPath());
                 fileWriter.write(fileContent);
                 fileWriter.flush();
             } 

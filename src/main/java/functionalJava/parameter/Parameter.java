@@ -92,7 +92,6 @@ public class Parameter {
 
     private void addTagInPropertiesFile(String fileName, String entryName, String entryValue, String testBackup) throws IOException{
          
-        FileWriter fw = null;
         String newEntry = "";
         
         ResourceBundle prop = ResourceBundle.getBundle("parameter.config.conf");        
@@ -112,12 +111,10 @@ public class Parameter {
             try (FileWriter fileWriter = new FileWriter(fileidt, true)){
                 if (!newEntry.isEmpty()){
                     newEntry = newEntry + "\n";
-                    fw.append(newEntry);
+                    fileWriter.append(newEntry);
                     }
             }
         }
-
-        fw.close();
     }
     
     /**

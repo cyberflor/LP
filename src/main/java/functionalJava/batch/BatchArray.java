@@ -138,7 +138,7 @@ public final class BatchArray extends Batch{
         } else{
             if (this.linesName.length==names.length) linesName=names;
         }
-        this.linesName=linesName;
+        this.linesName=names;
     }
 
     /**
@@ -157,7 +157,7 @@ public final class BatchArray extends Batch{
         } else{
             if (this.columnsName.length==names.length) columnsName=names;            
         }
-        this.columnsName=columnsName;
+        this.columnsName=names;
     }
     
     /**

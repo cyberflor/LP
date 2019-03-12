@@ -19,10 +19,6 @@ public class Requirement {
     Object[] javaDocValues = new Object[0];
     String javaDocLineName = "";
 
-    String schemaDataName = "data";
-    String schemaConfigName = "config";
-    String tableName = "requirement"; 
-    
     /**
      *
      * @param schemaPrefix

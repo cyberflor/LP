@@ -9,6 +9,8 @@ import databases.Rdbms;
 import functionalJava.user.UserProfile;
 import LabPLANET.utilities.LabPLANETArray;
 import LabPLANET.utilities.LPPlatform;
+import static LabPLANET.utilities.LPPlatform.LAB_FALSE;
+import static LabPLANET.utilities.LPPlatform.trapErrorMessage;
 import functionalJava.parameter.Parameter;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -369,10 +371,13 @@ public class UserSop {
                 res.next();
             }
             return getUserProfileNEW;                
-        }catch(SQLException ex){}
-            Object[] diagErr =  LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, "Rdbms_NoRecordsFound", 
-                    new Object[]{tableName, query, Arrays.toString(schemaPrefix)});
-            return LabPLANETArray.array1dTo2d(diagErr, diagErr.length);
+        }catch(SQLException ex){
+            String errorCode = "LabPLANETPlatform_SpecialFunctionReturnedEXCEPTION";
+            String[] errorDetailVariables = new String[0];
+            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, ex.getMessage());
+            Object[] trpErr =  trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);
+            return LabPLANETArray.array1dTo2d(trpErr, trpErr.length);            
+        }
     }
     
     Integer  _notRequireddbGetUserSopBySopId( String schemaName, String UserId, Integer sopId) {

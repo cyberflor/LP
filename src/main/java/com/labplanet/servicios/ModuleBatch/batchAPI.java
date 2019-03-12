@@ -106,7 +106,7 @@ try (Connection con = Rdbms.createTransactionWithSavePoint()) {
                 return ;                           
             }
             
-            DataSample smp = new DataSample("");            
+            //DataSample smp = new DataSample("");            
             Object[] dataSample = null;            
             
             switch (actionName.toUpperCase()){
@@ -170,7 +170,7 @@ try (Connection con = Rdbms.createTransactionWithSavePoint()) {
                 response.getWriter().write(Arrays.toString(dataSample));      
             }            
             Rdbms.closeRdbms();
-        }catch(Exception e){   
+        }catch(SQLException | NullPointerException e){   
             try {
                 con.rollback();
                 con.setAutoCommit(true);

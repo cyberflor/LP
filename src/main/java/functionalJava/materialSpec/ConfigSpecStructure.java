@@ -5,6 +5,7 @@
  */
 package functionalJava.materialSpec;
 
+import LabPLANET.utilities.LPNulls;
 import databases.Rdbms;
 import LabPLANET.utilities.LabPLANETArray;
 import LabPLANET.utilities.LPPlatform;
@@ -28,6 +29,7 @@ public class ConfigSpecStructure {
     String[] mandatoryFields = new String[1];
     Object[] mandatoryFieldValue = new String[0];
     String mandatoryFieldsMissing = "";
+    private static final String DIAGNOSES_SUCCESS = "SUCCESS";
 
     private String[] getSpecialFields(){
         String[] mySpecialFields = new String[6];
@@ -100,7 +102,7 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
         
         Object[] variationNameDiagnosticArray = specVariationGetNamesList(schemaPrefix, specCode);
         if (!variationNameDiagnosticArray[3].toString().equalsIgnoreCase("TRUE")){
-            myDiagnoses = "SUCCESS";
+            myDiagnoses = DIAGNOSES_SUCCESS;
         }
         else{
             String[] currVariationNameArray = variationNameDiagnosticArray[4].toString().split("\\|", -1);
@@ -114,7 +116,7 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
         if (variationNameExist.length()>0){
             myDiagnoses = "ERROR: Those variations (" +variationNameExist+") are part of the spec "+specCode+ " and cannot be removed from the variations name by this method";
         }else{    
-            myDiagnoses = "SUCCESS";
+            myDiagnoses = DIAGNOSES_SUCCESS;
         }        
         
         return myDiagnoses;
@@ -143,7 +145,7 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
         
         Object[] variationNameDiagnosticArray = specVariationGetNamesList(schemaPrefix, specCode);
         if (!variationNameDiagnosticArray[3].toString().equalsIgnoreCase("TRUE")){
-            myDiagnoses = "SUCCESS";
+            myDiagnoses = DIAGNOSES_SUCCESS;
         }
         else{
             String[] currVariationNameArray = variationNameDiagnosticArray[4].toString().split("\\|", -1);
@@ -157,7 +159,7 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
         if (variationNameExist.length()>0){
             myDiagnoses = "ERROR: Those variations (" +variationNameExist+") are part of the spec "+specCode+ " and cannot be removed from the variations name by this method";
         }else{    
-            myDiagnoses = "SUCCESS";
+            myDiagnoses = DIAGNOSES_SUCCESS;
         }        
         
         return myDiagnoses;
@@ -202,7 +204,7 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
         if (Arrays.asList(strArray).indexOf(varationName)==-1){
             myDiagnoses = "ERROR: The variation " + varationName + " is not one of the variations ("+ specVariations.replace("|", ", ") + ") on spec "+specCode+"  in the schema "+schemaPrefix+". Missed analysis="+analysesMissing;
         }else{    
-            myDiagnoses = "SUCCESS";
+            myDiagnoses = DIAGNOSES_SUCCESS;
         }        
         return myDiagnoses;
     }
@@ -243,7 +245,7 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
         
         Object[] diagnosis = Rdbms.existsRecord(schemaName, "analysis_method", fieldNames, fieldValues);        
         if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnosis[0].toString())){
-            myDiagnoses = "SUCCESS";        }
+            myDiagnoses = DIAGNOSES_SUCCESS;        }
         else{    
             diagnosis = Rdbms.existsRecord(schemaName, "analysis", 
                     new String[]{"code"}, new Object[]{analysis});
@@ -287,7 +289,7 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
                 Object[] isCorrect = null;
                 if (ruleVariablesArr.length==2){isCorrect = qualSpec.specLimitIsCorrectQualitative(schemaName, ruleVariablesArr[0], ruleVariablesArr[1], null);}                
                 else{isCorrect = qualSpec.specLimitIsCorrectQualitative(schemaName, ruleVariablesArr[0], ruleVariablesArr[1], ruleVariablesArr[2]);}
-                if ((Boolean) isCorrect[0]==true){myDiagnoses="SUCCESS";}
+                if ((Boolean) isCorrect[0]==true){myDiagnoses=DIAGNOSES_SUCCESS;}
                 else{myDiagnoses="ERROR: "+isCorrect[1];}
                 break;
             case "QUANTITATIVE": 
@@ -301,13 +303,13 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
                     if (ruleVar.contains("MINCONTROL")){ruleVar = ruleVar.replace("MINCONTROL", ""); minControl=Float.parseFloat(ruleVar);}
                     if (ruleVar.contains("MAXCONTROL")){ruleVar = ruleVar.replace("MAXCONTROL", ""); maxControl=Float.parseFloat(ruleVar);}
                 }
-                if (ruleVariablesArr.length!=4 && ruleVariablesArr.length!=4){
+                if (ruleVariablesArr.length!=4){
                     myDiagnoses="ERROR: Qualitative rule type requires 4 or 4 parameters and the string ("+ruleVariables+") contains "+ruleVariablesArr.length+ " parameters";
                     return myDiagnoses;
                 }                
                 ConfigSpecRule quantSpec2 = new ConfigSpecRule();
                 isCorrect = quantSpec2.specLimitIsCorrectQuantitative(minSpec, maxSpec, minControl, maxControl);                
-                if ((Boolean) isCorrect[0]==true){myDiagnoses="SUCCESS";}
+                if ((Boolean) isCorrect[0]==true){myDiagnoses=DIAGNOSES_SUCCESS;}
                 else{myDiagnoses="ERROR: "+isCorrect[1];}
                 break;       
             default:   
@@ -340,8 +342,6 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
     public Object[] specUpdate( String schemaPrefix, String specCode, Integer specCodeVersion, String[] specFieldName, Object[] specFieldValue) throws SQLException{
         
         String schemaName = "config";        
-        Object[] diagnoses = new Object[6];
-        
         String errorCode = "DataSample_SpecialFunctionReturnedERROR";
         Object[] errorDetailVariables = new Object[0];
          
@@ -375,14 +375,14 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
                 Object specialFunctionReturn = null;      
                 try {                        
                     specialFunctionReturn = method.invoke(this, (Object[]) parameters);
-                } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+                } catch (IllegalAccessException | NullPointerException | IllegalArgumentException | InvocationTargetException ex) {
                     Logger.getLogger(ConfigSpecStructure.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                if ("ERROR".equalsIgnoreCase(specialFunctionReturn.toString())){
+                if ( (specialFunctionReturn.toString().contains("ERROR")) ){
                     errorCode = "DataSample_SpecialFunctionReturnedERROR";
                     errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, currField);
                     errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, aMethod);
-                    errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, specialFunctionReturn.toString());
+                    errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, LPNulls.replaceNull(specialFunctionReturn));
                     return (String[]) LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);                                                
                 }
             }

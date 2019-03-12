@@ -41,7 +41,6 @@ public class LabPLANETRequest {
     }    
     
     public static Object[] areMandatoryParamsInApiRequest(HttpServletRequest request, String[] paramNames){        
-        LabPLANETArray labArr = new LabPLANETArray();
         Object [] diagnoses = null;        
         String paramsNotPresent = "";
         for (String curParam: paramNames){
@@ -55,11 +54,11 @@ public class LabPLANETRequest {
             }
         }
         if (paramsNotPresent.length()>0){
-            diagnoses = labArr.addValueToArray1D(diagnoses, "LABPLANET_FALSE");
-            diagnoses = labArr.addValueToArray1D(diagnoses, paramsNotPresent);
+            diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, LPPlatform.LAB_FALSE);
+            diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, paramsNotPresent);
             return diagnoses;
         }else{
-            return new Object[]{"LABPLANET_TRUE"};           
+            return new Object[]{LPPlatform.LAB_TRUE};           
         }
     }
     

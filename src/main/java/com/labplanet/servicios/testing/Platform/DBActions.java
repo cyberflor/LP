@@ -17,6 +17,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import static java.lang.System.out;
+import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.logging.Level;
@@ -179,7 +180,7 @@ public class DBActions extends HttpServlet {
             csvPathName = csvPathName.replace(".txt", ".html");
             File file = new File(csvPathName);
                 try (FileWriter fileWriter = new FileWriter(file)) {
-                    if (file.exists()){ file.delete();}
+                    Files.deleteIfExists(file.toPath());
                     fileWriter.write(fileContent);
                     fileWriter.flush();
                 } 

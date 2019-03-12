@@ -99,7 +99,7 @@ public class SampleAudit {
         
     //        Object[] appSession = labSession.getAppSession(appSessionId, new String[]{"date_started"});
             if ("LABPLANET_FALSE".equalsIgnoreCase(appSession[0].toString())){
-
+                return;
             }else{
 
                 fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "app_session_id");

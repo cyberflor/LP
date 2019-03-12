@@ -5,6 +5,7 @@
  */
 package testing.platform;
 
+import LabPLANET.utilities.LPNulls;
 import LabPLANET.utilities.LabPLANETArray;
 import databases.Rdbms;
 import functionalJava.materialSpec.ConfigSpecStructure;
@@ -13,6 +14,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.Files;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -99,7 +101,7 @@ public class eSign extends HttpServlet {
 
             fileContent = fileContent + "<td>"+i+"</td><td>"+functionBeingTested+"</td>";
 
-            switch (functionBeingTested.toUpperCase()){
+                switch (LPNulls.replaceNull((String) functionBeingTested).toUpperCase()){
                 case "SETUSERESIGN":
                     //fileContent = fileContent + "<td>User Name</td><td>Password</td>";
                     fileContent = fileContent + "<td>"+userName+"</td><td>"+userPass+"</td><td>"+userEsign+"</td>";
@@ -151,7 +153,7 @@ public class eSign extends HttpServlet {
         csvPathName = csvPathName.replace(".txt", ".html");
         File file = new File(csvPathName);
         try (FileWriter fileWriter = new FileWriter(file)){
-            if (file.exists()){ file.delete();} 
+            Files.deleteIfExists(file.toPath());
             fileWriter.write(fileContent);
             fileWriter.flush();
             fileWriter.close();   

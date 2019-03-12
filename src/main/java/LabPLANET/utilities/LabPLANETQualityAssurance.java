@@ -93,7 +93,7 @@ public class LabPLANETQualityAssurance {
                     }
                     if((jarEntry.getName ().startsWith (packageName)) &&
                          (jarEntry.getName ().endsWith (".class")) ) {
-                             if (debug) System.out.println
+                             System.out.println
                              ("Found " + jarEntry.getName().replaceAll("/", "\\."));
                              classes.add (jarEntry.getName().replaceAll("/", "\\."));
                          }                    

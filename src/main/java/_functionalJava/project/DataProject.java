@@ -9,8 +9,6 @@ import LabPLANET.utilities.LabPLANETArray;
 import LabPLANET.utilities.LPPlatform;
 import databases.DataDataIntegrity;
 import databases.Rdbms;
-import functionalJava.audit.SampleAudit;
-import java.util.Date;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.SQLException;
@@ -38,8 +36,8 @@ public class DataProject extends DataSample{
     private Object[] javaDocValuesProj = new Object[0];
     private String javaDocLineNameProj = "";
     
-    private final String schemaDataNameProj = "data";
-    private final String schemaConfigNameProj = "config";
+//    private final String schemaDataNameProj = "data";
+//    private final String schemaConfigNameProj = "config";
 
     /**
      *
@@ -228,6 +226,10 @@ Object[] createProject( String schemaPrefix, String projectTemplate, Integer pro
                         Class<?>[] paramTypes = {Rdbms.class, String[].class, String.class, String.class, Integer.class};
                         method = getClass().getDeclaredMethod(aMethod, paramTypes);
                     } catch (NoSuchMethodException | SecurityException ex) {
+                        String errorCode = "LabPLANETPlatform_SpecialFunctionReturnedEXCEPTION";
+                        Object[] errorDetailVariables = new Object[0];
+                        errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, ex.getMessage());
+                        return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);                        
                     }
                     Object specialFunctionReturn = method.invoke(this, null, schemaPrefix, projectTemplate, projectTemplateVersion);      
                     if (specialFunctionReturn.toString().contains("ERROR")){

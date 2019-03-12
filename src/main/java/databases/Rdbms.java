@@ -5,6 +5,7 @@
  */
 package databases;
 
+import LabPLANET.utilities.LPNulls;
 import com.sun.rowset.CachedRowSetImpl;
 import LabPLANET.utilities.LabPLANETArray;
 import LabPLANET.utilities.LPPlatform;
@@ -51,9 +52,10 @@ public class Rdbms {
     private String lastError = "";
     Integer transactionId = 0;
     String savepointName;
-    Savepoint savepoint=null;
+    Savepoint savepoint=null;    
     
     private static Rdbms rdbms;
+    private static final String SQLSELECT = "SELECT";
     
     private Rdbms() {}                
    
@@ -195,7 +197,7 @@ public class Rdbms {
     public Object[] zzzexistsRecord(String schemaName, String tableName, String[] keyFieldName, Object keyFieldValue){
         String[] errorDetailVariables = new String[0];
         SqlStatement sql = new SqlStatement();        
-        HashMap<String, Object[]> hmQuery = sql.buildSqlStatement("SELECT", schemaName, tableName,
+        HashMap<String, Object[]> hmQuery = sql.buildSqlStatement(SQLSELECT, schemaName, tableName,
                 keyFieldName, null, keyFieldName,  null, null,  null, null);          
             String query= hmQuery.keySet().iterator().next();   
             Object[] keyFieldValueNew = hmQuery.get(query);
@@ -246,11 +248,11 @@ public class Rdbms {
            return (Object[]) LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, rdbms.errorCode, errorDetailVariables);                         
         }
         SqlStatement sql = new SqlStatement(); 
-        HashMap<String, Object[]> hmQuery = sql.buildSqlStatement("SELECT", schemaName, tableName,
+        HashMap<String, Object[]> hmQuery = sql.buildSqlStatement(SQLSELECT, schemaName, tableName,
                 keyFieldNames, keyFieldValues, keyFieldNames,  null, null,  null, null);          
         String query= hmQuery.keySet().iterator().next();   
         Object[] keyFieldValueNew = hmQuery.get(query);
-//        String query = sql.buildSqlStatement("SELECT", schemaName, tableName,
+//        String query = sql.buildSqlStatement(SQLSELECT, schemaName, tableName,
 //                keyFieldNames, keyFieldValues, keyFieldNames,  null, null,  null, null);             
         try{
 /*            
@@ -338,10 +340,10 @@ public class Rdbms {
            //return LabPLANETArray.array1dTo2d(diagnosesError, diagnosesError.length);
         }
         SqlStatement sql = new SqlStatement(); 
-//        String query = sql.buildSqlStatement("SELECT", schemaName, tableName,
+//        String query = sql.buildSqlStatement(SQLSELECT, schemaName, tableName,
 //                whereFieldNames, whereFieldValues,
 //                fieldsToRetrieve,  null, null, fieldsSortBy, null);        
-        HashMap<String, Object[]> hmQuery = sql.buildSqlStatement("SELECT", schemaName, tableName,
+        HashMap<String, Object[]> hmQuery = sql.buildSqlStatement(SQLSELECT, schemaName, tableName,
                 whereFieldNames, whereFieldValues,
                 fieldsToRetrieve,  null, null, fieldsSortBy, null);       
         String query= hmQuery.keySet().iterator().next();    
@@ -433,7 +435,7 @@ public class Rdbms {
         }        
         
         SqlStatement sql = new SqlStatement(); 
-        HashMap<String, Object[]> hmQuery = sql.buildSqlStatement("SELECT", schemaName, tableName,
+        HashMap<String, Object[]> hmQuery = sql.buildSqlStatement(SQLSELECT, schemaName, tableName,
                 whereFieldNames, whereFieldValues,
                 fieldsToRetrieve,  null, null, null, null);           
         String query= hmQuery.keySet().iterator().next();   
@@ -587,7 +589,7 @@ public class Rdbms {
            return LabPLANETArray.array1dTo2d(diagnosesError, diagnosesError.length);               
         }
         SqlStatement sql = new SqlStatement(); 
-        HashMap<String, Object[]> hmQuery = sql.buildSqlStatement("SELECT", schemaName, tableName,
+        HashMap<String, Object[]> hmQuery = sql.buildSqlStatement(SQLSELECT, schemaName, tableName,
                 whereFieldNames, whereFieldValues,
                 fieldsToRetrieve,  orderBy, null, null, null);            
         String query= hmQuery.keySet().iterator().next();   
@@ -785,7 +787,7 @@ public class Rdbms {
      * @return
      * @throws SQLException
      */
-    public  static CachedRowSetImpl prepRdQuery(String consultaconinterrogaciones, Object [] valoresinterrogaciones) throws SQLException{
+    public  static CachedRowSetImpl prepRdQuery(String consultaconinterrogaciones, Object [] valoresinterrogaciones) throws SQLException, NullPointerException{
     //prepare statement para evitar sql injection
     Object[] filteredValoresConInterrogaciones = new Object[0];     
 //    PreparedStatement prep=new PreparedStatement();
@@ -818,7 +820,7 @@ public class Rdbms {
     try{
         crs = new CachedRowSetImpl();
         crs.populate(res);
-    }catch(Exception e){crs.close();}
+    }catch(SQLException e){crs.close();}
     return crs; 
     }
     
@@ -944,7 +946,7 @@ public class Rdbms {
             }else{
                clase = "null";    
             }
-            
+            obj = LPNulls.replaceNull(obj);
             if (obj.toString().toLowerCase().contains("null")){                
                 String[] split = obj.toString().split("\\*");
                 clase = split[1];
@@ -1042,8 +1044,9 @@ public class Rdbms {
         //Date de = new java.sql.Date(System.currentTimeMillis());        
         return getLocalDate();}    
     
-    private static CachedRowSetImpl readQuery(String consulta) throws SQLException{
+    private static CachedRowSetImpl readQuery(String consulta) throws SQLException, NullPointerException{
         Statement sta=null;
+        
         try (CachedRowSetImpl crs = new CachedRowSetImpl()){
             sta=getConnection().createStatement();
             sta.setQueryTimeout(rdbms.getTimeout());    
@@ -1053,10 +1056,9 @@ public class Rdbms {
             }
         crs.populate(res);    
         return crs;    
-        }catch(Exception e){
+        }finally{
             sta.close();
-        }
-        return null;
+        }        
     }
     
     public Connection createTransaction(){

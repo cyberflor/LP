@@ -19,10 +19,7 @@ public class Role {
     String[] javaDocFields = new String[0];
     Object[] javaDocValues = new Object[0];
     String javaDocLineName = "";
-
-    String schemaDataName = "data";
-    String schemaConfigName = "config";
-    String tableName = "role";  
+    private static final String DIAGNOSES_SUCCESS = "SUCCESS";
     
     Object[] diagnoses = new Object[7];
     
@@ -51,7 +48,7 @@ public class Role {
             diagnoses[1]= classVersion;
             diagnoses[2]= "Code Line " + String.valueOf(elements[1].getLineNumber());
             diagnoses[3]="TRUE";
-            diagnoses[4]="SUCCESS";
+            diagnoses[4]=DIAGNOSES_SUCCESS;
             diagnoses[5]=" for role " + roleId + ". Success, The record is created.";
             return diagnoses;            
         }else{
@@ -77,6 +74,8 @@ public class Role {
     public Object[] addPrivilegeToRole( String privilegeId, String roleId, String procName) throws SQLException {
         Integer id;      
         Integer numRecords = 0;
+        String schemaConfigName = "config";
+
 //        ResultSet resRole = null;
         String newRoleId = "";
         Object[][] resRole = new Object[0][0];
@@ -113,7 +112,7 @@ public class Role {
                     diagnoses[1]= classVersion;
                     diagnoses[2]= "Code Line " + String.valueOf(elements[1].getLineNumber());
                     diagnoses[3]="TRUE";
-                    diagnoses[4]="SUCCESS";
+                    diagnoses[4]=DIAGNOSES_SUCCESS;
                     diagnoses[5]=" for role " + newRoleId + " and privilege " + privilegeId + ". The record created.";
                     //return diagnoses;                                    
                 }else{
@@ -149,7 +148,7 @@ public class Role {
             diagnoses[1]= classVersion;
             diagnoses[2]= "Code Line " + String.valueOf(elements[1].getLineNumber());
             diagnoses[3]="TRUE";
-            diagnoses[4]="SUCCESS";
+            diagnoses[4]=DIAGNOSES_SUCCESS;
             diagnoses[5]=" for privilege " + privilegeId + ". Success, The record created.";
         }else{
             StackTraceElement[] elements = Thread.currentThread().getStackTrace();

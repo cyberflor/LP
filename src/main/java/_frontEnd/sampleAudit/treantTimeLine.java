@@ -130,9 +130,7 @@ public class treantTimeLine extends HttpServlet {
             
             String csvFileName = "LabPLANETTimeLine.html"; String csvFileSeparator=";";
             String csvPathName = "\\\\FRANCLOUD\\fran\\LabPlanet\\SourceCode\\treant-js\\"+csvFileName; 
-            Scanner scanIn = null;
-            try{
-                scanIn = new Scanner(new BufferedReader(new FileReader(csvPathName)));
+            try (Scanner scanIn = new Scanner(new BufferedReader(new FileReader(csvPathName))) ){
 
                 String myJsonInString = GetSampleAudit(schemaName, tableName, 12);
 
@@ -143,7 +141,7 @@ public class treantTimeLine extends HttpServlet {
                 }
                 out.println(fileContent);            
                 Rdbms.closeRdbms();                  
-            }catch(IOException e){scanIn.close();}
+            }
         }     
     }
      

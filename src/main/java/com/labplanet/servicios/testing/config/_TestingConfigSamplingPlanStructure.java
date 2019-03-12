@@ -5,6 +5,7 @@
  */
 package com.labplanet.servicios.testing.config;
 
+import LabPLANET.utilities.LPNulls;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
@@ -94,10 +95,10 @@ public class _TestingConfigSamplingPlanStructure extends HttpServlet {
 
                 if (configSamplingPlanTestingArray[i][0]!=null){schemaPrefix = (String) configSamplingPlanTestingArray[i][0];}
                 if (configSamplingPlanTestingArray[i][5]!=null){functionBeingTested = (String) configSamplingPlanTestingArray[i][5];}
-
+                    
                 out.println("<td>"+i+"</td><td>"+schemaPrefix+"</td><td>"+functionBeingTested+"</td><td>"+Arrays.toString(fieldName)+"</td><td><b>"+Arrays.toString(fieldValue)+"</b></td>");
 
-                switch (functionBeingTested.toUpperCase()){
+                switch (LPNulls.replaceNull((String) functionBeingTested).toUpperCase()){
                     case "NEWSAMPLINGDETAIL":
                         String sampleTemplate=null;
                         Integer sampleTemplateVersion=null;

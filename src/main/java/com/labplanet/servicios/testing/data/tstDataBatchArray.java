@@ -17,6 +17,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import static java.lang.System.out;
+import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -84,7 +85,6 @@ public class tstDataBatchArray extends HttpServlet {
                 String[] orderBy=null;                    String[] groupBy=null;
                 String[] fieldsToRetrieve=null;   
                 String functionBeingTested="";                     
-                LPPlatform LabPLANETPlatform = new LPPlatform();
                 Object[] dataSample2Din1D = new Object[0];
 
                 if (configSpecTestingArray[i][1]!=null){functionBeingTested = (String) configSpecTestingArray[i][1];}
@@ -98,7 +98,6 @@ public class tstDataBatchArray extends HttpServlet {
                 if (configSpecTestingArray[i][9]!=null){orderBy = (String[]) configSpecTestingArray[i][9].toString().split("\\|");}else{orderBy = new String[0];}
                 if (configSpecTestingArray[i][10]!=null){groupBy = (String[]) configSpecTestingArray[i][10].toString().split("\\|");}else{groupBy = new String[0];}
                 
-                LPPlatform labPlat = new LPPlatform();                   
 /*                String[] whereFieldsNameArr = new String[]{"status in|"};
                 Object[] whereFieldsValueArr = null;
                 Object[] recEncrypted = labPlat.encryptString("RECEIVED");
@@ -153,7 +152,7 @@ public class tstDataBatchArray extends HttpServlet {
                         errorDetail[0]="The function <*1*> is not one of the declared ones therefore nothing can be performed for it. Functions are: <*2*>";
                         errorDetail = LabPLANETArray.addValueToArray1D(errorDetail, functionBeingTested);
                         errorDetail = LabPLANETArray.addValueToArray1D(errorDetail, Arrays.toString(allFunctionsBeingTested));
-                        Object[] trapErrorMessage = LabPLANETPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetail);            
+                        Object[] trapErrorMessage = LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetail);            
                         dataSample2D = LabPLANETArray.array1dTo2d(trapErrorMessage, trapErrorMessage.length);
                         break;
                 }        
@@ -177,7 +176,7 @@ public class tstDataBatchArray extends HttpServlet {
             csvPathName = csvPathName.replace(".txt", ".html");
             File file = new File(csvPathName);
                 try (FileWriter fileWriter = new FileWriter(file)) {
-                    if (file.exists()){ file.delete();}
+                    Files.deleteIfExists(file.toPath());
                     fileWriter.write(fileContent);
                     fileWriter.flush();
                 } 

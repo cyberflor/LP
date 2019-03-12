@@ -210,7 +210,6 @@ public class LPPlatform {
         String tableEncrytedFields = Parameter.getParameterBundle(schemaName, parameterName);
         if ( (tableEncrytedFields==null) ){return diagnoses;}
         if ( ("".equals(tableEncrytedFields)) ){return diagnoses;}        
-        LabPLANETArray LabPLANETArray = new LabPLANETArray();
         return LabPLANETArray.valueInArray(tableEncrytedFields.split("\\|"), fieldName);        
     }
     
@@ -552,13 +551,11 @@ public class LPPlatform {
                 Integer fieldIndexSpecCode = Arrays.asList(mandatoryByDependency).indexOf(currField);
                 if (fieldIndexSpecCode!=-1){
                     String[] propertyEntryValue = mandatoryByDependency[fieldIndexSpecCode].split("\\*");
-                    if (propertyEntryValue.length==2) {
-                        if (Arrays.asList(propertyEntryValue[0]).contains(currField.toLowerCase())) {
-                            String[] fieldToAddByDependency = propertyEntryValue[1].split(" ");
-                            for (String fAdd: fieldToAddByDependency){
-                                if (Arrays.asList(fieldNames).indexOf(fAdd)==-1){
-                                    fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, fAdd);
-                                }    
+                    if ( (propertyEntryValue.length==2) && (Arrays.asList(propertyEntryValue[0]).contains(currField.toLowerCase())) ){
+                        String[] fieldToAddByDependency = propertyEntryValue[1].split(" ");
+                        for (String fAdd: fieldToAddByDependency){
+                            if (Arrays.asList(fieldNames).indexOf(fAdd)==-1){
+                                fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, fAdd);
                             }    
                         }    
                     }
@@ -671,11 +668,10 @@ public class LPPlatform {
                         specialFieldIndex = Arrays.asList(specialFields).indexOf(currField);
                         String aMethod = specialFieldsMethods[specialFieldIndex];
                         Method method = null;
-                        try {
-                            Class<?>[] paramTypes = {Rdbms.class, String[].class, Object[].class, String.class};
-                            method = getClass().getDeclaredMethod(aMethod, paramTypes);
-                        } catch (NoSuchMethodException | SecurityException ex) {
-                        }                        
+                        
+                        Class<?>[] paramTypes = {Rdbms.class, String[].class, Object[].class, String.class};
+                        method = getClass().getDeclaredMethod(aMethod, paramTypes);
+                        
                         Object specialFunctionReturn = LPNulls.replaceNull(method.invoke(this, fieldNames, fieldValues, schemaName));
                         if (specialFunctionReturn.toString().contains("ERROR")) {
                             errorCode = "LabPLANETPlatform_SpecialFunctionReturnedERROR";
@@ -684,7 +680,7 @@ public class LPPlatform {
                             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, specialFunctionReturn.toString());                            
                             return (String[]) trapErrorMessage(LAB_FALSE, errorCode, errorDetailVariables);
                         }
-                    } catch (IllegalAccessException|IllegalArgumentException|InvocationTargetException ex) {
+                    } catch (NoSuchMethodException | SecurityException|IllegalAccessException|IllegalArgumentException|InvocationTargetException ex) {
                             errorCode = "LabPLANETPlatform_SpecialFunctionCausedException";
                             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, currField);
                             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, ex.getCause());

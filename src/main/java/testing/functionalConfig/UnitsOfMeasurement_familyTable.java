@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.ResourceBundle;
 import javax.servlet.ServletException;
@@ -85,10 +86,8 @@ public class UnitsOfMeasurement_familyTable extends HttpServlet {
                 userName=null;                
                 String schemaPrefix=null;
                 String familyName=null;    
-                String[] fieldsToRetrieve=null;
-
-                Object[][] dataSample = null;
-
+                String[] fieldsToRetrieve= new String[0];
+                
                 if (configSpecTestingArray[i][0]!=null){schemaPrefix = (String) configSpecTestingArray[i][0];}
                 if (configSpecTestingArray[i][1]!=null){familyName = (String) configSpecTestingArray[i][1];}
                 if (configSpecTestingArray[i][2]!=null){fieldsToRetrieve = (String[]) configSpecTestingArray[i][2].toString().split("\\|");}            
@@ -132,7 +131,7 @@ public class UnitsOfMeasurement_familyTable extends HttpServlet {
         csvPathName = csvPathName.replace(".txt", ".html");
         File file = new File(csvPathName);
         try (FileWriter fileWriter = new FileWriter(file)){            
-            if (file.exists()){ file.delete();} 
+            Files.deleteIfExists(file.toPath());
             fileWriter.write(fileContent);
             fileWriter.flush();
 //            fileWriter.close();        
