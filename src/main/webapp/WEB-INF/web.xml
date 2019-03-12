@@ -5,10 +5,6 @@
         <servlet-class>com.labplanet.servicios.ProductoServicio</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>DataSampleStructure</servlet-name>
-        <servlet-class>com.labplanet.servicios.testing.data.DataSampleStructure</servlet-class>
-    </servlet>
-    <servlet>
         <servlet-name>DBQueries</servlet-name>
         <servlet-class>com.labplanet.servicios.testing.Platform.DBQueries</servlet-class>
     </servlet>
@@ -86,10 +82,6 @@
         <servlet-class>com.labplanet.servicios.app.SopUserAPIfrontend</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>TstDataBatchArraySequence</servlet-name>
-        <servlet-class>com.labplanet.servicios.testing.data.TstDataBatchArraySequence</servlet-class>
-    </servlet>
-    <servlet>
         <servlet-name>batchAPI</servlet-name>
         <servlet-class>com.labplanet.servicios.ModuleBatch.BatchAPI</servlet-class>
     </servlet>
@@ -100,6 +92,18 @@
     <servlet>
         <servlet-name>sampleAnalysisResultAPI</servlet-name>
         <servlet-class>com.labplanet.servicios.ModuleSample.SampleAnalysisResultAPI</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>Testing/DB/TstDataSample</servlet-name>
+        <servlet-class>com.labplanet.servicios.testing.data.TstDataSample</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>Testing/DB/TstDataBatchArr</servlet-name>
+        <servlet-class>com.labplanet.servicios.testing.data.TstDataBatchArr</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>Testing/DB/TstDataBatchArrSequence</servlet-name>
+        <servlet-class>com.labplanet.servicios.testing.data.TstDataBatchArrSequence</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>DBActions</servlet-name>
@@ -135,10 +139,6 @@
     <!--/ testing for the Config. End    
 
 // testing for the Data. Begin -->
-    <servlet-mapping>
-        <servlet-name>DataSampleStructure</servlet-name>
-        <url-pattern>/testing/data/DataSampleStructure</url-pattern>
-    </servlet-mapping>
     <!--/// testing for the Data. End   -->
     <servlet-mapping>
         <servlet-name>DBQueries</servlet-name>
@@ -189,10 +189,6 @@
         <url-pattern>/frontEnd/sopUserAPIfrontend</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>TstDataBatchArraySequence</servlet-name>
-        <url-pattern>/TstDataBatchArraySequence</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
         <servlet-name>batchAPI</servlet-name>
         <url-pattern>/moduleBatch/batchAPI</url-pattern>
     </servlet-mapping>
@@ -203,6 +199,18 @@
     <servlet-mapping>
         <servlet-name>sampleAnalysisResultAPI</servlet-name>
         <url-pattern>/moduleSample/sampleAnalysisResultAPI</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Testing/DB/TstDataSample</servlet-name>
+        <url-pattern>/TstDataSample</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Testing/DB/TstDataBatchArr</servlet-name>
+        <url-pattern>/TstDataBatchArr</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Testing/DB/TstDataBatchArrSequence</servlet-name>
+        <url-pattern>/TstDataBatchArrSequence</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

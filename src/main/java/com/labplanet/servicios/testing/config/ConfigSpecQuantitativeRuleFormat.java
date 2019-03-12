@@ -39,7 +39,7 @@ public class ConfigSpecQuantitativeRuleFormat extends HttpServlet {
             
             ConfigSpecRule mSpec = new ConfigSpecRule();
             
-/*            Integer numTesting = 30;
+            Integer numTesting = 30;
             Integer inumTesting = 0;
             Float[][] QuantitSpecTestingArray = new Float[numTesting][4];
             
@@ -244,7 +244,7 @@ public class ConfigSpecQuantitativeRuleFormat extends HttpServlet {
                 QuantitSpecTestingArray[inumTesting][2]=null;
                 QuantitSpecTestingArray[inumTesting][3]=null;
                 inumTesting++;}
-*/            
+            
 //            String fileName = "C:\\home\\judas\\"+this.getServletName()+".txt";             
 //            LabPLANETArray labArr = new LabPLANETArray();
             

@@ -5,13 +5,12 @@
  */
 package com.labplanet.servicios.testing.data;
 
-import LabPLANET.utilities.LabPLANETArray;
 import LabPLANET.utilities.LPNulls;
 import LabPLANET.utilities.LPPlatform;
 import LabPLANET.utilities.LPTestingOutFormat;
+import LabPLANET.utilities.LabPLANETArray;
 import databases.Rdbms;
 import functionalJava.ChangeOfCustody.ChangeOfCustody;
-import functionalJava.analysis.UserMethod;
 import functionalJava.sampleStructure.DataSample;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -21,7 +20,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import static java.lang.System.out;
 import java.lang.reflect.InvocationTargetException;
-import java.nio.file.Files;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.util.logging.Level;
@@ -34,13 +32,12 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import testing.functionalData.testingFileContentSections;
 
 /**
  *
  * @author Administrator
  */
-public class dataSampleStructure extends HttpServlet {
+public class TstDataSample extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -50,22 +47,21 @@ public class dataSampleStructure extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response)            throws ServletException, IOException {
+                
+        String csvFileName = "dataSampleStructure.txt";      
+        response = LPTestingOutFormat.responsePreparation(response);        
+        String fileContent = "";                          
+        String csvPathName = LPTestingOutFormat.TESTING_FILES_PATH+csvFileName; 
+        String csvFileSeparator=LPTestingOutFormat.TESTING_FILES_FIELD_SEPARATOR;
 
-        String fileContent = "";        
+        if (Rdbms.getRdbms().startRdbms(LPTestingOutFormat.TESTING_USER, LPTestingOutFormat.TESTING_PW)==null){
+            fileContent = fileContent + LPTestingOutFormat.MSG_DB_CON_ERROR;
+            LPTestingOutFormat.createLogFile(csvPathName, fileContent);
+            return;
+        }           
+
         try (PrintWriter out = response.getWriter()) {
-            
-            response.setContentType("text/html;charset=UTF-8");
-            UserMethod um = new UserMethod();
-
-            if (Rdbms.getRdbms().startRdbms("labplanet", "avecesllegaelmomento")==null){out.println("Connection to the database not established");return;}
-
-            String csvFileName = "dataSampleStructure.txt"; String csvFileSeparator=";";
-            String csvPathName = "\\\\FRANCLOUD\\fran\\LabPlanet\\testingRepository\\"+csvFileName; 
-            //csvFileName = "DataSampleStructure.txt";  csvFileSeparator=";";
-            //csvPathName = "C:\\home\\TestingRepository\\"+csvFileName; 
             
             Integer appSessionId = null;
  
@@ -106,7 +102,7 @@ public class dataSampleStructure extends HttpServlet {
                         
             fileContent = fileContent + "<td>"+i+"</td><td>"+schemaPrefix+"</td><td>"+userName+"</td><td>"+userRole+"</td><td>"+functionBeingTested+"</td>";
             Object[] actionEnabled = LPPlatform.procActionEnabled(schemaPrefix, functionBeingTested);
-            if ("LABPLANET_FALSE".equalsIgnoreCase(actionEnabled[0].toString())){
+            if (LPPlatform.LAB_FALSE.equalsIgnoreCase(actionEnabled[0].toString())){
                 if ("GETSAMPLEINFO".equalsIgnoreCase(functionBeingTested)){                
                         dataSample2D[0][0] = (String) actionEnabled[0];
                         dataSample2D[0][1] = actionEnabled[1]; dataSample2D[0][2] = actionEnabled[2]; 
@@ -120,8 +116,7 @@ public class dataSampleStructure extends HttpServlet {
             }else{            
 
                 Object[] actionEnabledForRole = LPPlatform.procUserRoleActionEnabled(schemaPrefix, userRole, functionBeingTested);
-                if ("LABPLANET_FALSE".equalsIgnoreCase(actionEnabledForRole[0].toString())){
-                    LPPlatform labPlat = new LPPlatform();
+                if (LPPlatform.LAB_FALSE.equalsIgnoreCase(actionEnabledForRole[0].toString())){
                     //StackTraceElement[] elementsDev = Thread.currentThread().getStackTrace();
                     if ("GETSAMPLEINFO".equalsIgnoreCase(functionBeingTested)){                
                             dataSample2D[0][0] = (String) actionEnabledForRole[0];
@@ -314,7 +309,7 @@ public class dataSampleStructure extends HttpServlet {
                                 try {
                                     engine.eval(new FileReader("C:\\home\\judas\\myResult.js"));
                                 } catch (ScriptException ex) {
-                                    Logger.getLogger(dataSampleStructure.class.getName()).log(Level.SEVERE, null, ex);
+                                    Logger.getLogger(TstDataSample.class.getName()).log(Level.SEVERE, null, ex);
                                 }
                                 Invocable invocable = (Invocable) engine;
                                 Object result;
@@ -322,8 +317,6 @@ public class dataSampleStructure extends HttpServlet {
                                 System.out.println(result);
                                 System.out.println(result.getClass());
                             } catch (FileNotFoundException | NoSuchMethodException | ScriptException e) {
-                                String errorCode = "LabPLANETPlatform_SpecialFunctionReturnedEXCEPTION";
-                                System.out.println(errorCode + "-"+ e.getMessage());
                             }
                             break;
                         case "COC_STARTCHANGE":
@@ -432,6 +425,7 @@ public class dataSampleStructure extends HttpServlet {
                     }        
                 }    
             }
+            LPNulls labNull = new LPNulls();
             if (functionBeingTested.equalsIgnoreCase("GETSAMPLEINFO")){
                 fileContent = fileContent + "<td>"+dataSample2D[0][0].toString();
                 fileContent = fileContent + ". "+LPNulls.replaceNull((String) dataSample2D[0][1]);
@@ -454,7 +448,7 @@ public class dataSampleStructure extends HttpServlet {
         csvPathName = csvPathName.replace(".txt", ".html");
         File file = new File(csvPathName);
             try (FileWriter fileWriter = new FileWriter(file)) {
-                Files.deleteIfExists(file.toPath());
+                if (file.exists()){ file.delete();}
                 fileWriter.write(fileContent);
                 fileWriter.flush();
             } 

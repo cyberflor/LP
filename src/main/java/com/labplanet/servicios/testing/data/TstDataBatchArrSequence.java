@@ -5,20 +5,22 @@
  */
 package com.labplanet.servicios.testing.data;
 
+import LabPLANET.utilities.LPTestingOutFormat;
 import LabPLANET.utilities.LabPLANETArray;
 import databases.Rdbms;
+import functionalJava.batch.BatchArray;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import functionalJava.batch.BatchArray;
+
 /**
  *
  * @author Administrator
  */
-public class tstDataBatchArraySequence extends HttpServlet {
+public class TstDataBatchArrSequence extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -28,9 +30,20 @@ public class tstDataBatchArraySequence extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
+    @SuppressWarnings("empty-statement")
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response)            throws ServletException, IOException {
+        String csvFileName = "tstDataBatchArray.txt"; 
+        response = LPTestingOutFormat.responsePreparation(response);        
+        String fileContent = "";                          
+        String csvPathName = LPTestingOutFormat.TESTING_FILES_PATH+csvFileName; 
+        String csvFileSeparator=LPTestingOutFormat.TESTING_FILES_FIELD_SEPARATOR;
+
+        if (Rdbms.getRdbms().startRdbms(LPTestingOutFormat.TESTING_USER, LPTestingOutFormat.TESTING_PW)==null){
+            fileContent = fileContent + LPTestingOutFormat.MSG_DB_CON_ERROR;
+            LPTestingOutFormat.createLogFile(csvPathName, fileContent);
+            return;
+        }           
+
         try (PrintWriter out = response.getWriter()) {
             
             String currentUser = "Fran";
@@ -46,8 +59,7 @@ public class tstDataBatchArraySequence extends HttpServlet {
             String[] keyFieldName = new String[1];
             Object[] keyFieldValue = new Object[1];                 
                        
-   //         DBTransac dbObj = null;          
-            if (Rdbms.getRdbms().startRdbms("labplanet", "avecesllegaelmomento")==null){out.println("Connection to the database not established");return;}
+
 
             String batchName = "Batch 22";
 
@@ -56,7 +68,6 @@ public class tstDataBatchArraySequence extends HttpServlet {
 
 //            dbObj = new DBTransac(rdbm, schemaName, currentUser, currentUSerRole, "Delete",tableName, null, null, keyFieldName, keyFieldValue);           
 //            dbObj.DBAction(rdbm);
-
             
             myBatchArray[0] = new BatchArray("oil-pl1", "tmpA", 1, batchName, currentUser,30, 5);                        
 
@@ -106,7 +117,7 @@ public class tstDataBatchArraySequence extends HttpServlet {
                 String comment = mb.batchCommentOpen("OperA", "");
                 if (!comment.isEmpty())
                 {comment = comment + " (Comment created by:" + mb.getBatchCommentAuthor() + ") <br>";
-                }
+                };
                 
                 out.println("Batch Position length is: " + mb.numTotalPositions + " in a " + mb.numRows + " x " + mb.numCols + " array.<br>");
                 
@@ -134,9 +145,10 @@ public class tstDataBatchArraySequence extends HttpServlet {
                 
                 out.println("The Sample 4 was found in " + mb.searchStringContent("Sample 4").size() + " positions." + "<br>");
                 
-                mb.searchStringContent("Sample 4").forEach((al) -> {
+                for (Object al: mb.searchStringContent("Sample 4") )
+                {
                     System.out.println("    " + al + "<br>");
-                });
+                }
                 
                 out.println("The Sample 1 was found in " + mb.searchStringContent("Sample 1").size() + " positions." + "<br>");
                 
@@ -144,9 +156,10 @@ public class tstDataBatchArraySequence extends HttpServlet {
                 
                 out.println("The Sample 4 was found in " + mb.searchStringContent("Sample 4").size() + " positions." + "<br>");
                 
-                mb.searchStringContent("Sample 4").forEach((al) -> {
+                for (Object al: mb.searchStringContent("Sample 4") )
+                {
                     out.println("    " + al + "<br>");
-                });
+                }
                 batchContent = myBatchArray[0].getBatchContent();
                 
                 batchContent1d = LabPLANETArray.array2dTo1d(batchContent);
