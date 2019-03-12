@@ -37,7 +37,7 @@ public class LabPLANETJson {
         String jsonStr ="{";
         
         for(int diagnItem = 0; diagnItem<diagn.length;diagnItem++){            
-            jsonStr=jsonStr+"diagn"+String.valueOf(diagnItem)+":"+diagn[diagnItem].toString();
+            jsonStr=jsonStr+"diagn"+(diagnItem)+":"+diagn[diagnItem].toString();
         }
         jsonStr=jsonStr+"}";
         return jsonStr;

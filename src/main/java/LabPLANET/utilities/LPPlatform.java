@@ -508,7 +508,7 @@ public class LPPlatform {
             StackTraceElement[] elements = Thread.currentThread().getStackTrace();
             diagnoses[0][0]= elements[1].getClassName() + "." + elements[1].getMethodName();
             diagnoses[0][1]= "-999";
-            diagnoses[0][2]= "Code Line " + String.valueOf(elements[1].getLineNumber());
+            diagnoses[0][2]= "Code Line " + elements[1].getLineNumber();
             diagnoses[0][3]="FALSE";
             diagnoses[0][4]="ERROR:Missing Mandatory Fields";
             diagnoses[0][5]="Mandatory fields not found: "+mandatoryFieldsMissing;
@@ -745,7 +745,7 @@ public class LPPlatform {
             if ( errorVariables.length>0){errorDetail = (String) errorVariables[0];
                 if (errorVariables!=null){
                     for (int iVarValue=1; iVarValue<errorVariables.length; iVarValue++){
-                        errorDetail = errorDetail.replace("<*"+String.valueOf(iVarValue)+"*>", errorVariables[iVarValue].toString());
+                        errorDetail = errorDetail.replace("<*"+iVarValue+"*>", errorVariables[iVarValue].toString());
                     }
                 }
             }            
@@ -754,7 +754,7 @@ public class LPPlatform {
             if (errorDetail.length()==0){errorDetail = Parameter.getParameterBundle(CONFIG_FILES_FOLDER, CONFIG_FILES_ERRORTRAPING, null, errorCode+"_detail", null);}
             if (errorVariables!=null){
                 for (int iVarValue=1; iVarValue<=errorVariables.length; iVarValue++){
-                    errorDetail = errorDetail.replace("<*"+String.valueOf(iVarValue)+"*>", errorVariables[iVarValue-1].toString());
+                    errorDetail = errorDetail.replace("<*"+iVarValue+"*>", errorVariables[iVarValue-1].toString());
                 }
             }
         }

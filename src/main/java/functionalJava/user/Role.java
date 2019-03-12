@@ -35,7 +35,7 @@ public class Role {
             StackTraceElement[] elements = Thread.currentThread().getStackTrace();
             diagnoses[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
             diagnoses[1]= classVersion;
-            diagnoses[2]= "Code Line " + String.valueOf(elements[1].getLineNumber());
+            diagnoses[2]= "Code Line " +(elements[1].getLineNumber());
             diagnoses[3]="FALSE";
             diagnoses[4]="ERROR ALL IS SPECIAL WORD";
             diagnoses[5]="The word ALL in roles is an special one, it means this privilege should be added to all the roles present in this procedure.";
@@ -46,7 +46,7 @@ public class Role {
             StackTraceElement[] elements = Thread.currentThread().getStackTrace();
             diagnoses[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
             diagnoses[1]= classVersion;
-            diagnoses[2]= "Code Line " + String.valueOf(elements[1].getLineNumber());
+            diagnoses[2]= "Code Line " + (elements[1].getLineNumber());
             diagnoses[3]="TRUE";
             diagnoses[4]=DIAGNOSES_SUCCESS;
             diagnoses[5]=" for role " + roleId + ". Success, The record is created.";
@@ -55,7 +55,7 @@ public class Role {
             StackTraceElement[] elements = Thread.currentThread().getStackTrace();
             diagnoses[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
             diagnoses[1]= classVersion;
-            diagnoses[2]= "Code Line " + String.valueOf(elements[1].getLineNumber());
+            diagnoses[2]= "Code Line " + (elements[1].getLineNumber());
             diagnoses[3]="FALSE";
             diagnoses[4]="ERROR CREATING ROLE RECORD IN DB";
             //diagnoses[5]=diagnoses[5];
@@ -110,7 +110,7 @@ public class Role {
                     StackTraceElement[] elements = Thread.currentThread().getStackTrace();
                     diagnoses[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
                     diagnoses[1]= classVersion;
-                    diagnoses[2]= "Code Line " + String.valueOf(elements[1].getLineNumber());
+                    diagnoses[2]= "Code Line " + (elements[1].getLineNumber());
                     diagnoses[3]="TRUE";
                     diagnoses[4]=DIAGNOSES_SUCCESS;
                     diagnoses[5]=" for role " + newRoleId + " and privilege " + privilegeId + ". The record created.";
@@ -119,7 +119,7 @@ public class Role {
                     StackTraceElement[] elements = Thread.currentThread().getStackTrace();
                     diagnoses[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
                     diagnoses[1]= classVersion;
-                    diagnoses[2]= "Code Line " + String.valueOf(elements[1].getLineNumber());
+                    diagnoses[2]= "Code Line " + (elements[1].getLineNumber());
                     diagnoses[3]="FALSE";
                     diagnoses[4]="ERROR ROLE_PRIVILEGE RECORD CANNOT BE CREATED";
                     //diagnoses[5]=diagnoses[5];
@@ -146,7 +146,7 @@ public class Role {
             StackTraceElement[] elements = Thread.currentThread().getStackTrace();
             diagnoses[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
             diagnoses[1]= classVersion;
-            diagnoses[2]= "Code Line " + String.valueOf(elements[1].getLineNumber());
+            diagnoses[2]= "Code Line " + (elements[1].getLineNumber());
             diagnoses[3]="TRUE";
             diagnoses[4]=DIAGNOSES_SUCCESS;
             diagnoses[5]=" for privilege " + privilegeId + ". Success, The record created.";
@@ -154,7 +154,7 @@ public class Role {
             StackTraceElement[] elements = Thread.currentThread().getStackTrace();
             diagnoses[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
             diagnoses[1]= classVersion;
-            diagnoses[2]= "Code Line " + String.valueOf(elements[1].getLineNumber());
+            diagnoses[2]= "Code Line " + (elements[1].getLineNumber());
             diagnoses[3]="FALSE";
             diagnoses[4]="ERROR PRIVILEGE RECORD NOT CREATED";
             //diagnoses[5]=diagnoses[5];

@@ -29,10 +29,10 @@ public class DataProjectScheduleAdhoc {
     Date FirstDay;
     Date endDay;
 
-    private static class dataProjectSchedule {
+    private static class DataProjectSchedule {
 
 
-        public dataProjectSchedule() {
+        public DataProjectSchedule() {
         // Not implemented yet            
         }
     }
@@ -137,7 +137,7 @@ public class DataProjectScheduleAdhoc {
      * @param projSchedId
      * @return
      */
-    public List<dataProjectSchedule> getDataProjectSchedulers( String schemaName, String pName, int projSchedId) {
+    public List<DataProjectSchedule> getDataProjectSchedulers( String schemaName, String pName, int projSchedId) {
         String tableName = "project_schedule";
         
         Object[][] projectSchedInfo = Rdbms.getRecordFieldsByFilter(schemaName, tableName, new String[]{"project", "id"}, new Object[]{pName, projSchedId}, 
@@ -146,7 +146,7 @@ public class DataProjectScheduleAdhoc {
         //Cursor cursor = this.db.query(TABLE_PROJECT, new String[] { "*"},
         //  condition + " ORDER BY pro_dateConfirm ASC" , null, null, null, null); 		
           //condition + "and (pro_finalTecnico = 'null' OR pro_finalTecnico = 'F') AND pro_dateConfirm <> 'null' ORDER BY pro_dateConfirm ASC" , null, null, null, null);
-        List<dataProjectSchedule>  project = setProjectSchedulerFromDb(projectSchedInfo);
+        List<DataProjectSchedule>  project = setProjectSchedulerFromDb(projectSchedInfo);
           
         return project;    	    	
     }   
@@ -156,11 +156,11 @@ public class DataProjectScheduleAdhoc {
      * @param projectSchedInfo
      * @return
      */
-    public List<dataProjectSchedule> setProjectSchedulerFromDb(Object[][] projectSchedInfo) {
-        List<dataProjectSchedule> project= new ArrayList<>();
+    public List<DataProjectSchedule> setProjectSchedulerFromDb(Object[][] projectSchedInfo) {
+        List<DataProjectSchedule> project= new ArrayList<>();
         
         for (Object[] projectSchedInfo1 : projectSchedInfo) {
-            dataProjectSchedule aux = new dataProjectSchedule();
+            DataProjectSchedule aux = new DataProjectSchedule();
   
             int i=0;
             this.project = (String) projectSchedInfo[0][i];

@@ -3,12 +3,16 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package databases;
+package LabPLANET.Reporting;
 
 /**
  *
  * @author Administrator
  */
-public class Rdbms_json {
+public class RunReport {
     
+    public static void runReportInternal(){
+//        JasperReport JRpt = new JasperReport();
+        
+    }
 }

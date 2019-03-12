@@ -2397,7 +2397,7 @@ private Map getDefaultValuesTemplate(String schema, String tsample, String templ
                     StackTraceElement[] elements = Thread.currentThread().getStackTrace();
                     diagnoses[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
                     diagnoses[1]= classVersion;
-                    diagnoses[2]= "Code Line " + String.valueOf(elements[1].getLineNumber());                    
+                    diagnoses[2]= "Code Line " + (elements[1].getLineNumber());                    
                     diagnoses[3]="FALSE";    
                     diagnoses[4]="RESULT ALREADY CANCELED";
                     diagnoses[5]="The result "+resultId.toString()+" has status "+currStatus+" then cannot be canceled in schema "+schemaDataName;                    

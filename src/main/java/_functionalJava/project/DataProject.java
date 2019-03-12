@@ -129,7 +129,7 @@ Object[] createProject( String schemaPrefix, String projectTemplate, Integer pro
             StackTraceElement[] elements = Thread.currentThread().getStackTrace();
             diagnosesProj[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
             diagnosesProj[1]= classVersionProj;
-            diagnosesProj[2]= "Code Line " + String.valueOf(elements[1].getLineNumber());   
+            diagnosesProj[2]= "Code Line " + (elements[1].getLineNumber());   
             diagnosesProj[3]="LABPLANET_FALSE";
             diagnosesProj[4]="ERROR:Field names and values arrays with different length";
             diagnosesProj[5]="The values in FieldName are:"+ Arrays.toString(sampleFieldName)+". and in FieldValue are:"+Arrays.toString(sampleFieldValue);
@@ -150,7 +150,7 @@ Object[] createProject( String schemaPrefix, String projectTemplate, Integer pro
             StackTraceElement[] elements = Thread.currentThread().getStackTrace();
             diagnosesProj[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
             diagnosesProj[1]= classVersionProj;
-            diagnosesProj[2]= "Code Line " + String.valueOf(elements[1].getLineNumber());
+            diagnosesProj[2]= "Code Line " + (elements[1].getLineNumber());
             diagnosesProj[3]="FALSE";
             diagnosesProj[4]="ERROR:Fields duplicated";
             diagnosesProj[5]="Detected any field duplicated in FieldName, the values are:"+(char) 10 + Arrays.toString(sampleFieldName);
@@ -191,7 +191,7 @@ Object[] createProject( String schemaPrefix, String projectTemplate, Integer pro
             StackTraceElement[] elements = Thread.currentThread().getStackTrace();
             diagnosesProj[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
             diagnosesProj[1]= classVersionProj;
-            diagnosesProj[2]= "Code Line " + String.valueOf(elements[1].getLineNumber());
+            diagnosesProj[2]= "Code Line " + (elements[1].getLineNumber());
             diagnosesProj[3]="FALSE";
             diagnosesProj[4]="ERROR:Missing Mandatory Fields";
             diagnosesProj[5]="Mandatory fields not found: "+mandatoryFieldsMissing;
@@ -202,7 +202,7 @@ Object[] createProject( String schemaPrefix, String projectTemplate, Integer pro
             StackTraceElement[] elements = Thread.currentThread().getStackTrace();
             diagnosesProj[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
             diagnosesProj[1]= classVersionProj;
-            diagnosesProj[2]= "Code Line " + String.valueOf(elements[1].getLineNumber());
+            diagnosesProj[2]= "Code Line " + (elements[1].getLineNumber());
             diagnosesProj[3]="FALSE";
             diagnosesProj[4]="ERROR:Sample Config Code NOT FOUND";
             diagnosesProj[5]="The sample config code "+projectTemplate+" in its version "+projectTemplateVersion+" was not found in the schema "+schemaConfigName+". Detail:"+diagnosis[5];
@@ -236,7 +236,7 @@ Object[] createProject( String schemaPrefix, String projectTemplate, Integer pro
                         StackTraceElement[] elements = Thread.currentThread().getStackTrace();
                         diagnosesProj[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
                         diagnosesProj[1]= classVersionProj;
-                        diagnosesProj[2]= "Code Line " + String.valueOf(elements[1].getLineNumber());
+                        diagnosesProj[2]= "Code Line " + (elements[1].getLineNumber());
                         diagnosesProj[3]="FALSE";
                         diagnosesProj[4]=specialFunctionReturn.toString();
                         diagnosesProj[5]="The field " + currField + " is considered special and its checker (" + aMethod + ") returned the Error above";

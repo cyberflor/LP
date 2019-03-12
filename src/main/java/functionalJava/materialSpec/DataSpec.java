@@ -313,8 +313,8 @@ public class DataSpec {
         if (maxStrict==null){maxStrict=true;}
 
         if (minSpec!=null){  
-            int compareMIN = minSpec.compareTo(result);
-            if ( (compareMIN==1) || (compareMIN==0 && minStrict) ) {
+            int comparingMIN = minSpec.compareTo(result);
+            if ( (comparingMIN==1) || (comparingMIN==0 && minStrict) ) {
                     String errorCode = "DataSpec_resultCheck_quantitativeOutMinStrict";
                     errorVariables = LabPLANETArray.addValueToArray1D(errorVariables, result.toString());
                     errorVariables = LabPLANETArray.addValueToArray1D(errorVariables, minSpec.toString());
@@ -324,8 +324,8 @@ public class DataSpec {
             }
         }                    
         if (maxSpec!=null){  
-            int compareMAX = result.compareTo(maxSpec);
-            if ( (compareMAX==1) || (compareMAX==0 && maxStrict) ) {
+            int comparingMAX = result.compareTo(maxSpec);
+            if ( (comparingMAX==1) || (comparingMAX==0 && maxStrict) ) {
                     String errorCode = "DataSpec_resultCheck_quantitativeOutMaxStrict";
                     errorVariables = LabPLANETArray.addValueToArray1D(errorVariables, result.toString());
                     errorVariables = LabPLANETArray.addValueToArray1D(errorVariables, maxSpec.toString());
@@ -546,8 +546,8 @@ public class DataSpec {
     
             if (minControlStrict==null){minControlStrict=true;}
             
-            int compareMIN = minControl.compareTo(result);
-            if ( (compareMIN==1) || (compareMIN==0 && minControlStrict) ) {
+            int comparingMIN = minControl.compareTo(result);
+            if ( (comparingMIN==1) || (comparingMIN==0 && minControlStrict) ) {
                     errorCode = "DataSpec_resultCheck_quantitativeOutMinControlInSpec";
                     errorVariables = LabPLANETArray.addValueToArray1D(errorVariables, minSpec.toString());
                     errorVariables = LabPLANETArray.addValueToArray1D(errorVariables, " < "+result.toString()+" < ");
@@ -581,8 +581,8 @@ public class DataSpec {
                     return diagnoses;                    
                 }                    
             }            
-            int compareMAX = result.compareTo(maxSpec);
-            if ( (compareMAX==1) || (compareMAX==0 && maxStrict) ) {
+            int comparingMAX = result.compareTo(maxSpec);
+            if ( (comparingMAX==1) || (comparingMAX==0 && maxStrict) ) {
                 errorCode = "DataSpec_resultCheck_quantitativeOutMaxControlInSpec";
                 errorVariables = LabPLANETArray.addValueToArray1D(errorVariables, maxControl.toString());
                 errorVariables = LabPLANETArray.addValueToArray1D(errorVariables, " > "+result.toString()+" > ");
