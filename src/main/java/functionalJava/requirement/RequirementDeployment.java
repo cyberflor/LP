@@ -57,8 +57,6 @@ public class RequirementDeployment {
         Integer queryInsertNum=0;
         FileWriter fw = null;  
         Writer wr = null;
-        Date  d = new Date();
-        Role rol = new Role();
 return "";
     }
 /*    

@@ -422,7 +422,6 @@ public class Rdbms {
      */
     public static Object[][] getRecordFieldsByFilter(String schemaName, String tableName, String[] whereFieldNames, Object[] whereFieldValues, String[] fieldsToRetrieve){
         
-        Object[][] diagnoses = new Object[1][7];                
         String[] errorDetailVariables = new String[0];        
         schemaName = LPPlatform.buildSchemaName(schemaName, "");
         
@@ -493,8 +492,6 @@ public class Rdbms {
      * @return
      */
     public static Object[][] getRecordFieldsByFilter(String schemaName, String[] tableName, String[] whereFieldNames, Object[] whereFieldValues, String[] fieldsToRetrieve){
-        
-        Object[][] diagnoses = new Object[1][6];        
         String[] errorDetailVariables = new String[0];        
         
         if (whereFieldNames.length==0){
@@ -577,8 +574,6 @@ public class Rdbms {
      * @return
      */
     public static Object[][] getRecordFieldsByFilter(String schemaName, String tableName, String[] whereFieldNames, Object[] whereFieldValues, String[] fieldsToRetrieve, String[] orderBy){
-        
-        Object[][] diagnoses = new Object[1][6];        
         String[] errorDetailVariables = new String[0];        
         
         if (whereFieldNames.length==0){
@@ -669,7 +664,6 @@ public class Rdbms {
      */
     public static Object[] insertRecordInTable(String schemaName, String tableName, String[] fieldNames, Object[] fieldValues){
         // fieldValues = LabPLANETArray.encryptTableFieldArray(schemaName, tableName, fieldNames, fieldValues);
-        String[] diagnoses = new String[7];
         String[] errorDetailVariables = new String[0];        
 
         if (fieldNames.length==0){
@@ -737,8 +731,6 @@ public class Rdbms {
      * @return
      */
     public static Object[] updateRecordFieldsByFilter(String schemaName, String tableName, String[] updateFieldNames, Object[] updateFieldValues, String[] whereFieldNames, Object[] whereFieldValues) {
-        
-        String[] diagnoses = new String[6];        
         updateFieldValues = LabPLANETArray.decryptTableFieldArray(schemaName, tableName, updateFieldNames, (Object[]) updateFieldValues);        
         String[] errorDetailVariables = new String[0];        
        

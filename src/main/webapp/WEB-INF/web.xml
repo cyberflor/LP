@@ -5,7 +5,7 @@
         <servlet-class>com.labplanet.servicios.ProductoServicio</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>dataSampleStructure</servlet-name>
+        <servlet-name>DataSampleStructure</servlet-name>
         <servlet-class>com.labplanet.servicios.testing.data.DataSampleStructure</servlet-class>
     </servlet>
     <servlet>
@@ -86,7 +86,7 @@
         <servlet-class>com.labplanet.servicios.app.SopUserAPIfrontend</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>tstDataBatchArraySequence</servlet-name>
+        <servlet-name>TstDataBatchArraySequence</servlet-name>
         <servlet-class>com.labplanet.servicios.testing.data.TstDataBatchArraySequence</servlet-class>
     </servlet>
     <servlet>
@@ -136,8 +136,8 @@
 
 // testing for the Data. Begin -->
     <servlet-mapping>
-        <servlet-name>dataSampleStructure</servlet-name>
-        <url-pattern>/testing/data/dataSampleStructure</url-pattern>
+        <servlet-name>DataSampleStructure</servlet-name>
+        <url-pattern>/testing/data/DataSampleStructure</url-pattern>
     </servlet-mapping>
     <!--/// testing for the Data. End   -->
     <servlet-mapping>
@@ -189,8 +189,8 @@
         <url-pattern>/frontEnd/sopUserAPIfrontend</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>tstDataBatchArraySequence</servlet-name>
-        <url-pattern>/tstDataBatchArraySequence</url-pattern>
+        <servlet-name>TstDataBatchArraySequence</servlet-name>
+        <url-pattern>/TstDataBatchArraySequence</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>batchAPI</servlet-name>

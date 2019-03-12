@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.labplanet.servicios.testing.config;
 
 import functionalJava.materialSpec.DataSpec;
@@ -16,6 +11,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import LabPLANET.utilities.LPPlatform;
+import LabPLANET.utilities.LPTestingOutFormat;
 
 /**
  *
@@ -31,9 +27,12 @@ public class TestingResultCheckSpecQuantitative extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response)            throws ServletException, IOException {        
+        String csvFileName = "noDBSchema_config_specQuantitative_resultCheck.txt"; 
+        response = LPTestingOutFormat.responsePreparation(response);        
+        String fileContent = "";                          
+        String csvPathName = LPTestingOutFormat.TESTING_FILES_PATH+csvFileName; 
+        String csvFileSeparator=LPTestingOutFormat.TESTING_FILES_FIELD_SEPARATOR;
         try (PrintWriter out = response.getWriter()) {
             DataSpec resChkSpec = new DataSpec();
                         
@@ -479,7 +478,6 @@ public class TestingResultCheckSpecQuantitative extends HttpServlet {
                 QuantitSpecTestingArray[inumTesting][8]=false;                
                 inumTesting++;}
             
-        String fileContent = "";
         fileContent = fileContent + "<!DOCTYPE html><html><head>" + "";
         fileContent = fileContent + "<style>";
             ResourceBundle prop = ResourceBundle.getBundle("parameter.config.labtimus");        
@@ -495,7 +493,6 @@ public class TestingResultCheckSpecQuantitative extends HttpServlet {
             String errorCodeMatch =prop.getString("labPLANET_errorCodeMatch");
             String errorCodeUnMatch =prop.getString("labPLANET_errorCodeUnMatch");
             String errorCodeUndefined =prop.getString("labPLANET_errorCodeUndefined");            
-
             
         fileContent = fileContent + "</style>";        
         fileContent = fileContent + "<title>Servlet TestingUnitConversion_ConversionTable</title>" + "";

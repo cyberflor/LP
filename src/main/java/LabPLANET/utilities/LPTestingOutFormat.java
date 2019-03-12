@@ -5,6 +5,10 @@
  */
 package LabPLANET.utilities;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.ResourceBundle;
 import javax.servlet.http.HttpServletResponse;
@@ -19,6 +23,7 @@ public class LPTestingOutFormat {
     public static String TESTING_FILES_FIELD_SEPARATOR=";";
     public static String TESTING_USER="labplanet";
     public static String TESTING_PW="avecesllegaelmomento";
+    public static String MSG_DB_CON_ERROR="<th>Error connecting to the database</th>";
     
     public static HttpServletResponse responsePreparation(HttpServletResponse response){
         response.setCharacterEncoding(LPPlatform.LAB_ENCODER_UTF8);
@@ -32,10 +37,12 @@ public class LPTestingOutFormat {
         return response;
     }      
     
-    public static String rowStart(){        return "<tr>";    }
-    public static String rowEnd(){        return "</tr>";    }
     public static String tableStart(){        return "<table>";    }
     public static String tableEnd(){        return "</table>";    }
+    public static String headerStart(){        return "<th>";    }
+    public static String headerEnd(){        return "</th>";    }
+    public static String rowStart(){        return "<tr>";    }
+    public static String rowEnd(){        return "</tr>";    }
 
     public static String rowAddField(Object field){
         String content="";
@@ -49,9 +56,22 @@ public class LPTestingOutFormat {
     }
     /**
      *
+     * @param csvPathName
+     * @param fileContent
      * @param servletName
      * @return
+     * @throws java.io.IOException
      */
+    
+    public static void createLogFile(String csvPathName, String fileContent) throws IOException{
+        csvPathName = csvPathName.replace(".txt", ".html");            
+        File file = new File(csvPathName);
+            try (FileWriter fileWriter = new FileWriter(file)) {
+                Files.deleteIfExists(file.toPath());
+                fileWriter.write(fileContent);
+                fileWriter.flush();
+            } 
+    }
     public static String getHtmlStyleHeader(String servletName) {
         String fileContent = "";
         fileContent = fileContent + "<!DOCTYPE html>" + "";

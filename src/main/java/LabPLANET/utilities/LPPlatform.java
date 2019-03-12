@@ -391,7 +391,6 @@ public class LPPlatform {
         Object[][] diagnoses = Rdbms.getRecordFieldsByFilter(schemaName, tableName, getFilterFldName, getFilterFldValue, getFields);
         if (LAB_FALSE.equalsIgnoreCase(diagnoses[0][0].toString())){        
             Object[] diagnosesInsert = Rdbms.insertRecordInTable(schemaName, tableName, fldName, fldValue);
-            String diag = diagnosesInsert[3].toString();
         }else{
             String[] fieldsUpdate = new String[0];
             Object[] fieldsUpdateValue = new Object[0];
@@ -536,8 +535,6 @@ public class LPPlatform {
  * @return String[] All prerrequisite fields for all the fields added to the fieldNames input argument array, when position 3 is set to FALSE then the template is not found.
  */   
     public static String[] mandatoryFieldsByDependency(String schemaName, String[] fieldNames, String tableName, String actionName){
-        String[] diagnoses = new String[6];
-        
         String propertyName = tableName+"_fieldsAddingMandatory"+actionName;
         String mandatoryFieldsByDependency = Parameter.getParameterBundle(schemaName.replace("\"", ""), propertyName);
         String[] mandatoryByDependency = mandatoryFieldsByDependency.split("\\|");

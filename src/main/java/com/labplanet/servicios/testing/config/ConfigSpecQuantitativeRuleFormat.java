@@ -5,6 +5,7 @@
  */
 package com.labplanet.servicios.testing.config;
 
+import LabPLANET.utilities.LPTestingOutFormat;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
@@ -27,14 +28,18 @@ public class ConfigSpecQuantitativeRuleFormat extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response)            throws ServletException, IOException {
+        String csvFileName = "Config_SpecQuantitativeRuleGeneratorChecker.txt"; 
+
+        response = LPTestingOutFormat.responsePreparation(response);        
+        String fileContent = "";                         
         try (PrintWriter out = response.getWriter()) {
-            ConfigSpecRule mSpec = new ConfigSpecRule();
-            //MaterialQuantitativeSpec mSpec = new MaterialQuantitativeSpec();            
+            String csvPathName = LPTestingOutFormat.TESTING_FILES_PATH+csvFileName; 
+            String csvFileSeparator=LPTestingOutFormat.TESTING_FILES_FIELD_SEPARATOR;
             
-            Integer numTesting = 30;
+            ConfigSpecRule mSpec = new ConfigSpecRule();
+            
+/*            Integer numTesting = 30;
             Integer inumTesting = 0;
             Float[][] QuantitSpecTestingArray = new Float[numTesting][4];
             
@@ -239,6 +244,7 @@ public class ConfigSpecQuantitativeRuleFormat extends HttpServlet {
                 QuantitSpecTestingArray[inumTesting][2]=null;
                 QuantitSpecTestingArray[inumTesting][3]=null;
                 inumTesting++;}
+*/            
 //            String fileName = "C:\\home\\judas\\"+this.getServletName()+".txt";             
 //            LabPLANETArray labArr = new LabPLANETArray();
             
