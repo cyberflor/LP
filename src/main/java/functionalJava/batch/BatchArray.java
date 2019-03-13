@@ -227,16 +227,15 @@ public final class BatchArray extends Batch{
     public ArrayList searchStringContent(String searchPattern) {  
         ArrayList foundPosic = new ArrayList();            
 //    Arrays.sort(batchPosic);        
-        for(int i = 0; i < this.numRows; i++)
-          for(int j = 0; j < this.numCols; j++)              
-            if (batchPosic[i][j] != null){    
-                if(batchPosic[i][j] == null ? searchPattern == null : batchPosic[i][j].equals(searchPattern)){
-                    int posicI = i + 1; int posicJ = j + 1;
-                    foundPosic.add(posicI + ", " + posicJ);
-                }           
-            }            
+        for(int i = 0; i < this.numRows; i++){
+          for(int j = 0; j < this.numCols; j++){              
+            if ((batchPosic[i][j] != null) && (batchPosic[i][j] == null ? searchPattern == null : batchPosic[i][j].equals(searchPattern)) ){
+                int posicI = i + 1; int posicJ = j + 1;
+                foundPosic.add(posicI + ", " + posicJ);}                   
+          }
+        }
         return foundPosic; //If not found, return null             
-    }     
+        }     
     public Object[] dbCreateBatchArray(String schemaName)
     {
         String ermessage="";
@@ -247,8 +246,6 @@ public final class BatchArray extends Batch{
         for (String[] array :this.batchPosic) {         
               singleDArray.addAll(Arrays.asList(array));
         }       
-        String[] sd = singleDArray.toArray(new String[singleDArray.size()]);       
-        
         schemaName = LPPlatform.buildSchemaName(schemaName, "data");
         
         Object[] insertRecordInTable = Rdbms.insertRecordInTable(schemaName, tableName, 

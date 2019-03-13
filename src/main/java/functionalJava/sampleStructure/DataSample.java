@@ -17,7 +17,6 @@ import functionalJava.materialSpec.DataSpec;
 import LabPLANET.utilities.LabPLANETArray;
 import LabPLANET.utilities.LabPLANETDate;
 import LabPLANET.utilities.LPPlatform;
-import static LabPLANET.utilities.LPPlatform.LAB_FALSE;
 import static LabPLANET.utilities.LPPlatform.trapErrorMessage;
 import databases.DataDataIntegrity;
 import functionalJava.ChangeOfCustody.ChangeOfCustody;

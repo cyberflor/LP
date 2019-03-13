@@ -168,12 +168,8 @@ public class LabPLANETQualityAssurance {
         String fieldName_lineName="line_name";
 
         String[] totalDiagnostic = new String[0];
-//        String[] totalDiagnosticHeader = new String[0];        
-        String[] keyFieldValues = new String[0];
-        String[] keyFieldNames = new String[0];
 
         String[] fileNames = new String[0];
-        
         fileNames = LabPLANETArray.addValueToArray1D(fileNames, "database.rdbms.Rdbms_NotUse");
 /*
         fileNames = LabPLANETArray.addValueToArray1D(fileNames, "databases.DataDataIntegrity");
@@ -209,7 +205,7 @@ public class LabPLANETQualityAssurance {
         fileNames = LabPLANETArray.addValueToArray1D(fileNames, "LabPLANET.utilities.LabPLANETPlatform");
         fileNames = LabPLANETArray.addValueToArray1D(fileNames, "LabPLANET.utilities.LabPLANETQualityAssurance");
 
-        Boolean isConnected = Rdbms.getRdbms().startRdbms("labplanet", "LabPlanet");       
+        Rdbms.getRdbms().startRdbms(LPTestingOutFormat.TESTING_USER, LPTestingOutFormat.TESTING_PW);       
 
 /*        totalDiagnosticHeader = LabPLANETArray.addValueToArray1D(totalDiagnosticHeader, "project_name");
         totalDiagnosticHeader = LabPLANETArray.addValueToArray1D(totalDiagnosticHeader, "package_name");
@@ -264,12 +260,12 @@ public class LabPLANETQualityAssurance {
                         }
                         
                         
-                        keyFieldNames = new String[0];
+                        String[] keyFieldNames = new String[0];
                         //keyFieldNames = LabPLANETArray.addValueToArray1D(keyFieldNames, "project_name");
                         keyFieldNames = LabPLANETArray.addValueToArray1D(keyFieldNames, "package");
                         keyFieldNames = LabPLANETArray.addValueToArray1D(keyFieldNames, "class");
                         keyFieldNames = LabPLANETArray.addValueToArray1D(keyFieldNames, "method");                        
-                        keyFieldValues = new String[0];
+                        String[] keyFieldValues = new String[0];
                         //keyFieldValues = LabPLANETArray.addValueToArray1D(keyFieldValues, projectName);
                         keyFieldValues = LabPLANETArray.addValueToArray1D(keyFieldValues, packsName);
                         keyFieldValues = LabPLANETArray.addValueToArray1D(keyFieldValues, className);

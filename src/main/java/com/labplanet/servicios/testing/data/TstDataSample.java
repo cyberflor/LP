@@ -317,6 +317,7 @@ public class TstDataSample extends HttpServlet {
                                 System.out.println(result);
                                 System.out.println(result.getClass());
                             } catch (FileNotFoundException | NoSuchMethodException | ScriptException e) {
+                                return;
                             }
                             break;
                         case "COC_STARTCHANGE":
@@ -425,7 +426,6 @@ public class TstDataSample extends HttpServlet {
                     }        
                 }    
             }
-            LPNulls labNull = new LPNulls();
             if (functionBeingTested.equalsIgnoreCase("GETSAMPLEINFO")){
                 fileContent = fileContent + "<td>"+dataSample2D[0][0].toString();
                 fileContent = fileContent + ". "+LPNulls.replaceNull((String) dataSample2D[0][1]);
@@ -445,13 +445,9 @@ public class TstDataSample extends HttpServlet {
         }
         fileContent = fileContent + "</table>";        
         out.println(fileContent);
+
         csvPathName = csvPathName.replace(".txt", ".html");
-        File file = new File(csvPathName);
-            try (FileWriter fileWriter = new FileWriter(file)) {
-                if (file.exists()){ file.delete();}
-                fileWriter.write(fileContent);
-                fileWriter.flush();
-            } 
+        LPTestingOutFormat.createLogFile(csvPathName, fileContent);
         Rdbms.closeRdbms();
         }   catch (SQLException|IOException ex) {
             Rdbms.closeRdbms();

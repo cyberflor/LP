@@ -202,15 +202,15 @@
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>Testing/DB/TstDataSample</servlet-name>
-        <url-pattern>/TstDataSample</url-pattern>
+        <url-pattern>/Testing/DB/TstDataSample</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>Testing/DB/TstDataBatchArr</servlet-name>
-        <url-pattern>/TstDataBatchArr</url-pattern>
+        <url-pattern>/Testing/DB/TstDataBatchArr</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>Testing/DB/TstDataBatchArrSequence</servlet-name>
-        <url-pattern>/TstDataBatchArrSequence</url-pattern>
+        <url-pattern>/Testing/DB/TstDataBatchArrSequence</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

@@ -13,6 +13,10 @@ import java.util.Arrays;
  */
 public class LPParadigm {
     
+  /*private LPParadigm() {
+    throw new IllegalStateException("Utility class");
+  }*/    
+    
     
     public static Object[] fieldNameValueArrayChecker (String[] fName, Object[] fValue){
         Object[] diagnoses = null;

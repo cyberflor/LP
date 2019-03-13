@@ -62,7 +62,6 @@ public class UserSop {
     private Object[] userSopCertifiedBySopInternalLogic( String schemaPrefixName, String userInfoId, String SopIdFieldName, String SopIdFieldValue ) throws SQLException{
                 
         String schemaConfigName = "config";
-        Object[] diagnoses = new Object[0];
         schemaConfigName = LPPlatform.buildSchemaName(schemaPrefixName, schemaConfigName);
         String actionEnabledUserSopCertification = Parameter.getParameterBundle(schemaConfigName, "actionEnabledUserSopCertification"); 
         
@@ -77,7 +76,7 @@ public class UserSop {
         }
         if (!schemaIsCorrect){
             String errorCode = "UserSop_UserWithNoRolesForThisGivenSchema";
-            diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, new Object[]{userInfoId, schemaPrefixName});
+            Object[] diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, new Object[]{userInfoId, schemaPrefixName});
             diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, "ERROR");
             diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, Parameter.getParameterBundle(schemaConfigName, "userSopCertificationLevelImage_ERROR"));
             return diagnoses;
@@ -99,25 +98,25 @@ public class UserSop {
         filterFieldValue[1]=SopIdFieldValue;                
         Object[][] getUserProfileFieldValues = getUserProfileFieldValues(filterFieldName, filterFieldValue, fieldsToReturn, userSchema);   
         if (LPPlatform.LAB_FALSE.equalsIgnoreCase(getUserProfileFieldValues[0][0].toString())){
-            diagnoses = LabPLANETArray.array2dTo1d(getUserProfileFieldValues);
+            Object[] diagnoses = LabPLANETArray.array2dTo1d(getUserProfileFieldValues);
             diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, "ERROR");
             return diagnoses;
         }
         if (getUserProfileFieldValues.length<=0){
-            diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, "UserSop_SopNotAssignedToThisUser", new Object[]{SopIdFieldValue, userInfoId, schemaPrefixName});
+            Object[] diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, "UserSop_SopNotAssignedToThisUser", new Object[]{SopIdFieldValue, userInfoId, schemaPrefixName});
             diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, "ERROR");
             diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, Parameter.getParameterBundle(schemaConfigName, "userSopCertificationLevelImage_NotAssigned"));
             return diagnoses;
         }
         if (getUserProfileFieldValues[0][3].toString().contains("GREEN")){
-            diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, "UserSop_SopNotAssignedToThisUser", 
+            Object[] diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, "UserSop_SopNotAssignedToThisUser", 
                     new Object[]{userInfoId, SopIdFieldValue, schemaPrefixName, "current status is "+getUserProfileFieldValues[0][2].toString()+" and the light is "+getUserProfileFieldValues[0][3].toString()});
             diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, "PASS");
             diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, Parameter.getParameterBundle(schemaConfigName, "userSopCertificationLevelImage_Certified"));
             return diagnoses;
         }
         else{
-            diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, "UserSop_UserNotCertifiedForSop", new Object[]{userInfoId, SopIdFieldValue, schemaPrefixName});
+            Object[] diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, "UserSop_UserNotCertifiedForSop", new Object[]{userInfoId, SopIdFieldValue, schemaPrefixName});
             diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, "NOTPASS");
             diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, Parameter.getParameterBundle(schemaConfigName, "userSopCertificationLevelImage_NotCertified"));
             return diagnoses;
@@ -315,10 +314,8 @@ public class UserSop {
     public Object[][] getUserProfileFieldValues(String[] filterFieldName, Object[] filterFieldValue, String[] fieldsToReturn, String[] schemaPrefix){                
         String tableName = "user_sop";
         
-        Object[] diagnoses = new Object[0];
-        
         if (fieldsToReturn.length<=0){
-            diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, "Rdbms_NotFilterSpecified", new Object[]{tableName, schemaPrefix});
+            Object[] diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, "Rdbms_NotFilterSpecified", new Object[]{tableName, schemaPrefix});
             String[][] getUserProfileNEW = new String[1][2];
             getUserProfileNEW[0][0]="ERROR";
             getUserProfileNEW[0][1]="No fields specified for fieldsToReturn";

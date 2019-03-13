@@ -12,8 +12,6 @@ import LabPLANET.utilities.LabPLANETArray;
 import databases.Rdbms;
 import functionalJava.analysis.UserMethod;
 import functionalJava.batch.DataBatch;
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import static java.lang.System.out;
@@ -30,7 +28,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author Administrator
  */
 public class TstDataBatchArr extends HttpServlet {
-    String classVersion = "0.1";
+
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      *
@@ -61,7 +59,6 @@ public class TstDataBatchArr extends HttpServlet {
             Integer numTesting = 1;
             Integer inumTesting = 0;
             Object[][] configSpecTestingArray = new Object[numTesting][9];
-            LabPLANETArray labArr = new LabPLANETArray();
             
             configSpecTestingArray = LabPLANETArray.convertCSVinArray(csvPathName, csvFileSeparator);                        
      
@@ -109,7 +106,7 @@ public class TstDataBatchArr extends HttpServlet {
                     //whereFieldsValueArr = labArr.addValueToArray1D(whereFieldsValueArr, labArr.convertStringWithDataTypeToObjectArray(whereFieldsValue.split("\\|")));                                                              
                 }                         
                 //Object[] fieldValues = labArr.convertStringWithDataTypeToObjectArray(fieldValue);
-                Object[] setFieldValues = labArr.convertStringWithDataTypeToObjectArray(setFieldValue);
+                Object[] setFieldValues = LabPLANETArray.convertStringWithDataTypeToObjectArray(setFieldValue);
                 
                 fileContent = fileContent + "<td>"+i+"</td><td>"+functionBeingTested+"</td><td>"+schemaPrefix+"</td><td>"+tableName
                         +"</td><td>"+Arrays.toString(fieldName)+"</td><td><b>"+Arrays.toString(fieldValue)+"</b></td><td>"+Arrays.toString(fieldsToRetrieve)
@@ -117,20 +114,20 @@ public class TstDataBatchArr extends HttpServlet {
                         +"</td><td>"+Arrays.toString(orderBy)+"</td><td><b>"+Arrays.toString(groupBy)+"</b></td>";
                 
                 Object[] allFunctionsBeingTested = new Object[0];                
-                allFunctionsBeingTested = labArr.addValueToArray1D(allFunctionsBeingTested, "CREATEBATCHARRAY");
-                allFunctionsBeingTested = labArr.addValueToArray1D(allFunctionsBeingTested, "INSERT");
-                allFunctionsBeingTested = labArr.addValueToArray1D(allFunctionsBeingTested, "GETRECORDFIELDSBYFILTER");
-                allFunctionsBeingTested = labArr.addValueToArray1D(allFunctionsBeingTested, "UPDATE");
+                allFunctionsBeingTested = LabPLANETArray.addValueToArray1D(allFunctionsBeingTested, "CREATEBATCHARRAY");
+                allFunctionsBeingTested = LabPLANETArray.addValueToArray1D(allFunctionsBeingTested, "INSERT");
+                allFunctionsBeingTested = LabPLANETArray.addValueToArray1D(allFunctionsBeingTested, "GETRECORDFIELDSBYFILTER");
+                allFunctionsBeingTested = LabPLANETArray.addValueToArray1D(allFunctionsBeingTested, "UPDATE");
                 
                 switch (functionBeingTested.toUpperCase()){
                     case "CREATEBATCHARRAY":   
                         //batch.dbCreateBatchArray();
                         Object[] exRec =  Rdbms.existsRecord(schemaPrefix, tableName, fieldName, fieldValues);
-                        dataSample2D = labArr.array1dTo2d(exRec, exRec.length);
+                        dataSample2D = LabPLANETArray.array1dTo2d(exRec, exRec.length);
                         break;
                     case "INSERT":                    
                         Object[] insRec = Rdbms.insertRecordInTable(schemaPrefix, tableName, fieldName, fieldValues);  
-                        dataSample2D = labArr.array1dTo2d(insRec, insRec.length);
+                        dataSample2D = LabPLANETArray.array1dTo2d(insRec, insRec.length);
                         break;
                     case "GETRECORDFIELDSBYFILTER":              
                         if (orderBy.length>0){
@@ -139,24 +136,23 @@ public class TstDataBatchArr extends HttpServlet {
                             dataSample2D = Rdbms.getRecordFieldsByFilter(schemaPrefix, tableName, fieldName, fieldValues, fieldsToRetrieve);
                         }
                         if (!LPPlatform.LAB_FALSE.equalsIgnoreCase(dataSample2D[0][0].toString())){
-                            dataSample2Din1D =  labArr.array2dTo1d(dataSample2D);
+                            dataSample2Din1D =  LabPLANETArray.array2dTo1d(dataSample2D);
                         }    
                         break;
                     case "UPDATE":                    
                         Object[] updRec = Rdbms.updateRecordFieldsByFilter(schemaPrefix, tableName, setFieldName, setFieldValues, fieldName, fieldValues);  
-                        dataSample2D = labArr.array1dTo2d(updRec, updRec.length);
+                        dataSample2D = LabPLANETArray.array1dTo2d(updRec, updRec.length);
                         break;                        
                     default:
                         String errorCode = "ERROR: FUNCTION NOT RECOGNIZED";
                         Object[] errorDetail = new Object [1];
                         errorDetail[0]="The function <*1*> is not one of the declared ones therefore nothing can be performed for it. Functions are: <*2*>";
-                        errorDetail = labArr.addValueToArray1D(errorDetail, functionBeingTested);
-                        errorDetail = labArr.addValueToArray1D(errorDetail, Arrays.toString(allFunctionsBeingTested));
+                        errorDetail = LabPLANETArray.addValueToArray1D(errorDetail, functionBeingTested);
+                        errorDetail = LabPLANETArray.addValueToArray1D(errorDetail, Arrays.toString(allFunctionsBeingTested));
                         Object[] trapErrorMessage = LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetail);            
-                        dataSample2D = labArr.array1dTo2d(trapErrorMessage, trapErrorMessage.length);
+                        dataSample2D = LabPLANETArray.array1dTo2d(trapErrorMessage, trapErrorMessage.length);
                         break;
                 }        
-                LPNulls labNull = new LPNulls();
                 if (dataSample2D[0].length==0){fileContent = fileContent + "<td>No content in the array dataSample2D returned for function "+functionBeingTested;}
                 if (dataSample2D[0].length>0){fileContent = fileContent + "<td>"+dataSample2D[0][0].toString();}
                 if (dataSample2D[0].length>1){fileContent = fileContent + ". "+LPNulls.replaceNull((String) dataSample2D[0][1]);}
@@ -175,12 +171,7 @@ public class TstDataBatchArr extends HttpServlet {
             out.println(fileContent);
 
             csvPathName = csvPathName.replace(".txt", ".html");
-            File file = new File(csvPathName);
-                try (FileWriter fileWriter = new FileWriter(file)) {
-                    if (file.exists()){ file.delete();}
-                    fileWriter.write(fileContent);
-                    fileWriter.flush();
-                } 
+            LPTestingOutFormat.createLogFile(csvPathName, fileContent);
             Rdbms.closeRdbms();
             }   catch (IOException ex) {
                 Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);   

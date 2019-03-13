@@ -41,8 +41,6 @@ public class DataBatch {
         for (String[] array :batchArray.batchPosic) {         
               singleDArray.addAll(Arrays.asList(array));
         }       
-        String[] sd = singleDArray.toArray(new String[singleDArray.size()]);       
-
         Object[] insertRecordInTable = Rdbms.insertRecordInTable(schemaName, tableName, 
                                                 new String[]{"name, template, template_version, array_num_rows,"
                                                     + "array_num_cols, array_total_positions, array_total_objects"},
@@ -71,8 +69,6 @@ public class DataBatch {
         for (String[] array :batchArray.batchPosic) {         
               singleDArray.addAll(Arrays.asList(array));
         }       
-        String[] sd = singleDArray.toArray(new String[singleDArray.size()]);       
-        
         Object[] insertRecordInTable = Rdbms.insertRecordInTable(schemaName, tableName, 
                                                 new String[]{"name, template, template_version, array_num_rows,"
                                                     + "array_num_cols, array_total_positions, array_total_objects"},

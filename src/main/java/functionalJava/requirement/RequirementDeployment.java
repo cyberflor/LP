@@ -568,7 +568,6 @@ return "";
         Integer queryInsertNum=0;
         FileWriter fw = null;  
         Writer wr = null;
-        Date  d = new Date();        
         
         String logFile = logDir + "/" + newLogFileName;
         logFile = logFile.replace("/", "\\");

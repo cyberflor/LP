@@ -185,18 +185,17 @@ public class SopList {
      * @return
      */
     public Object[] sopPositionIntoSopListLabPLANET(String sopId){
-        Object[] diagnoses = new Object[0];
         String[] currSopAssignedValue = getSopListSopAssigned();
         Integer arrayPosic = currSopAssignedValue.length;
         for (Integer i=0;i<arrayPosic;i++){
             if (currSopAssignedValue[i] == null ? sopId == null : currSopAssignedValue[i].equals(sopId)){ 
-                diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, "SOP FOUND IN SOP LIST", 
+                Object[] diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, "SOP FOUND IN SOP LIST", 
                         new Object[]{"SOP <*1*> found in SOP List <*2*> in position <*3>", sopId, currSopAssignedValue, i});
                 diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, i);
                 return diagnoses;
             }
         }
-        diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, "SOP NOT FOUND IN SOP LIST", 
+        Object[] diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, "SOP NOT FOUND IN SOP LIST", 
                 new Object[]{"SOP <*1*> NOT found in SOP List <*2*>", sopId, currSopAssignedValue});
         diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, -1);
         return diagnoses;
@@ -208,7 +207,6 @@ public class SopList {
      * @return
      */
     public Object[]  addSopToSopList(String sopId){
-        Object[] diagnoses = new Object[0];
         
         String[] currSopAssignedValue = getSopListSopAssigned();
         Integer arrayPosic = currSopAssignedValue.length;
@@ -220,7 +218,7 @@ public class SopList {
             newArray[arrayPosic++] = sopId;
             setSopListSopAssigned(newArray);
         }    
-        diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, "SopList_SopAssignedToSopList", 
+        Object[] diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, "SopList_SopAssignedToSopList", 
                 new Object[]{sopId, Arrays.toString(currSopAssignedValue),""});
         return diagnoses;
     }

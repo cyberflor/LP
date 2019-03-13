@@ -361,7 +361,6 @@ public class LPPlatform {
         Object[] fldValue = new Object[0];
         String currField = "";        
         String mandatoryFieldsStr = Parameter.getParameterBundle("labtimus", "mandatoryFields_requerimentsJavaDoc");
-        String[] mandatoryFields = mandatoryFieldsStr.split("\\|");
         
 
         fldName = LabPLANETArray.addValueToArray1D(fldName, JAVADOC_CLASS_FLDNAME);         fldValue = LabPLANETArray.addValueToArray1D(fldValue, elementsDev[1].getClassName()); 
@@ -452,10 +451,7 @@ public class LPPlatform {
         String mandatoryFieldsToCheck = Parameter.getParameterBundle(schemaName.replace("\"", ""), propertyName);
         String mandatoryFieldsToCheckDefault = Parameter.getParameterBundle(schemaName.replace("\"", ""), propertyName+"Default");
         
-        String[] mandatoryFields = mandatoryFieldsToCheck.split("\\|");
-        
-        mandatoryFields = mandatoryFieldsByDependency(schemaName, fieldNames, tableName, actionName);
-        String[] mandatoryFieldsDefault = mandatoryFieldsToCheckDefault.split("\\|");
+        String[] mandatoryFields = mandatoryFieldsByDependency(schemaName, fieldNames, tableName, actionName);
 
         String mandatoryFieldsMissing = "";
         for (Integer inumLines=0;inumLines<mandatoryFields.length;inumLines++){
@@ -658,7 +654,6 @@ public class LPPlatform {
         
         for (Integer inumLines=0;inumLines<fieldNames.length;inumLines++){
             String currField = fieldNames[inumLines];
-            String currFieldValue = fieldValues[inumLines].toString();
             boolean contains = Arrays.asList(specialFields).contains(currField);
             if (contains){                    
                     try {                    
@@ -727,7 +722,6 @@ public class LPPlatform {
                 
         Object[] fldValue = new Object[7];
         String errorDetail = "";
-        Object[] errorDetailVariables = new Object[0];
         String className = Thread.currentThread().getStackTrace()[CLIENT_CODE_STACK_INDEX].getFileName(); 
         String classFullName = Thread.currentThread().getStackTrace()[CLIENT_CODE_STACK_INDEX].getClassName(); 
         String methodName = Thread.currentThread().getStackTrace()[CLIENT_CODE_STACK_INDEX].getMethodName(); 

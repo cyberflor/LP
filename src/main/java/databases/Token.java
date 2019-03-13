@@ -66,7 +66,6 @@ public class Token {
     
     private Object[] isValidToken(String token){
         Object[] diagnoses = new Object[0];
-        Header header = Jwts.header();
         try {
             Algorithm algorithm = Algorithm.HMAC256(KEY);
             JWTVerifier verifier = JWT.require(algorithm)
@@ -74,7 +73,6 @@ public class Token {
                 .build(); //Reusable verifier instance
             //DecodedJWT decode = JWT.decode(token);
             DecodedJWT jwt = verifier.verify(token);            
-            Claim header1 = jwt.getHeaderClaim("userRole");        
             
             // Check that the fields in the header are present, not just verify that the token construction is ok.
             
