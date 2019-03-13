@@ -1,12 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app version="3.1" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
     <servlet>
-        <servlet-name>ProductoServicio</servlet-name>
-        <servlet-class>com.labplanet.servicios.ProductoServicio</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>DBQueries</servlet-name>
-        <servlet-class>com.labplanet.servicios.testing.Platform.DBQueries</servlet-class>
+        <servlet-name>TstDataSample</servlet-name>
+        <servlet-class>com.labplanet.servicios.testing.data.TstDataSample</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>DBActions</servlet-name>
@@ -14,11 +10,11 @@
     </servlet>
     <servlet>
         <servlet-name>specQualitative</servlet-name>
-        <servlet-class>com.labplanet.servicios.testing.config.SpecQualitative</servlet-class>
+        <servlet-class>com.labplanet.servicios.testing.config.specQualitative</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>config_specQuantitativeRuleFormat</servlet-name>
-        <servlet-class>com.labplanet.servicios.testing.config.ConfigSpecQuantitativeRuleFormat</servlet-class>
+        <servlet-class>com.labplanet.servicios.testing.config.config_specQuantitativeRuleFormat</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>TestingConfigSamplingPlanStructure</servlet-name>
@@ -51,11 +47,11 @@
     </servlet>
     <servlet>
         <servlet-name>sampleAPI</servlet-name>
-        <servlet-class>com.labplanet.servicios.ModuleSample.SampleAPI</servlet-class>
+        <servlet-class>com.labplanet.servicios.ModuleSample.sampleAPI</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>authenticationAPI</servlet-name>
-        <servlet-class>com.labplanet.servicios.app.AuthenticationAPI</servlet-class>
+        <servlet-class>com.labplanet.servicios.app.authenticationAPI</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>userInfoAPI</servlet-name>
@@ -63,11 +59,11 @@
     </servlet>
     <servlet>
         <servlet-name>appHeaderAPI</servlet-name>
-        <servlet-class>com.labplanet.servicios.app.AppHeaderAPI</servlet-class>
+        <servlet-class>com.labplanet.servicios.app.appHeaderAPI</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>sampleAPIfrontend</servlet-name>
-        <servlet-class>com.labplanet.servicios.ModuleSample.SampleAPIfrontend</servlet-class>
+        <servlet-class>com.labplanet.servicios.ModuleSample.sampleAPIfrontend</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>AppProcedureList</servlet-name>
@@ -75,43 +71,39 @@
     </servlet>
     <servlet>
         <servlet-name>sopUser</servlet-name>
-        <servlet-class>com.labplanet.servicios.app.SopUserAPI</servlet-class>
+        <servlet-class>com.labplanet.servicios.app.sopUserAPI</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>sopUserAPIfrontend</servlet-name>
-        <servlet-class>com.labplanet.servicios.app.SopUserAPIfrontend</servlet-class>
+        <servlet-class>com.labplanet.servicios.app.sopUserAPIfrontend</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>batchAPI</servlet-name>
-        <servlet-class>com.labplanet.servicios.ModuleBatch.BatchAPI</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>sampleAnalysisAPI</servlet-name>
-        <servlet-class>com.labplanet.servicios.ModuleSample.SampleAnalysisAPI</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>sampleAnalysisResultAPI</servlet-name>
-        <servlet-class>com.labplanet.servicios.ModuleSample.SampleAnalysisResultAPI</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>Testing/DB/TstDataSample</servlet-name>
-        <servlet-class>com.labplanet.servicios.testing.data.TstDataSample</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>Testing/DB/TstDataBatchArr</servlet-name>
+        <servlet-name>TstDataBatchArr</servlet-name>
         <servlet-class>com.labplanet.servicios.testing.data.TstDataBatchArr</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>Testing/DB/TstDataBatchArrSequence</servlet-name>
+        <servlet-name>TstDataBatchArrSequence</servlet-name>
         <servlet-class>com.labplanet.servicios.testing.data.TstDataBatchArrSequence</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>batchAPI</servlet-name>
+        <servlet-class>com.labplanet.servicios.ModuleBatch.batchAPI</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>sampleAnalysisAPI</servlet-name>
+        <servlet-class>com.labplanet.servicios.ModuleSample.sampleAnalysisAPI</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>sampleAnalysisResultAPI</servlet-name>
+        <servlet-class>com.labplanet.servicios.ModuleSample.sampleAnalysisResultAPI</servlet-class>
+    </servlet>
+    <!--// testing for the Platform. End  
+    
+// testing for the Config. Begin -->
     <servlet-mapping>
         <servlet-name>DBActions</servlet-name>
         <url-pattern>/testing/platform/DBActions</url-pattern>
     </servlet-mapping>
-    <!--// testing for the Platform. End  
-
-// testing for the Config. Begin -->
     <servlet-mapping>
         <servlet-name>specQualitative</servlet-name>
         <url-pattern>/testing/config/specQualitativeRuleFormat</url-pattern>
@@ -137,13 +129,12 @@
         <url-pattern>/testing/config/samplingPlanStructure</url-pattern>
     </servlet-mapping>
     <!--/ testing for the Config. End    
-
 // testing for the Data. Begin -->
-    <!--/// testing for the Data. End   -->
     <servlet-mapping>
-        <servlet-name>DBQueries</servlet-name>
-        <url-pattern>/DBQueries</url-pattern>
+        <servlet-name>TstDataSample</servlet-name>
+        <url-pattern>/Testing/DB/TstDataSample</url-pattern>
     </servlet-mapping>
+    <!--/// testing for the Data. End   -->
     <servlet-mapping>
         <servlet-name>TestingUOMConversionTable</servlet-name>
         <url-pattern>/testing/config/UOMConversionTable</url-pattern>
@@ -189,6 +180,14 @@
         <url-pattern>/frontEnd/sopUserAPIfrontend</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
+        <servlet-name>TstDataBatchArr</servlet-name>
+        <url-pattern>/Testing/DB/TstDataBatchArr</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>TstDataBatchArrSequence</servlet-name>
+        <url-pattern>/Testing/DB/TstDataBatchArrSequence</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
         <servlet-name>batchAPI</servlet-name>
         <url-pattern>/moduleBatch/batchAPI</url-pattern>
     </servlet-mapping>
@@ -199,18 +198,6 @@
     <servlet-mapping>
         <servlet-name>sampleAnalysisResultAPI</servlet-name>
         <url-pattern>/moduleSample/sampleAnalysisResultAPI</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>Testing/DB/TstDataSample</servlet-name>
-        <url-pattern>/Testing/DB/TstDataSample</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>Testing/DB/TstDataBatchArr</servlet-name>
-        <url-pattern>/Testing/DB/TstDataBatchArr</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>Testing/DB/TstDataBatchArrSequence</servlet-name>
-        <url-pattern>/Testing/DB/TstDataBatchArrSequence</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
