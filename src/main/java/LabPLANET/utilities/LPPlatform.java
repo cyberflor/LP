@@ -33,6 +33,12 @@ public class LPPlatform {
     public static String LAB_TRUE = "LABPLANET_TRUE";
     public static String LAB_FALSE = "LABPLANET_FALSE";
     
+    public static String SCHEMA_APP = "app";
+    public static String SCHEMA_CONFIG = "config";
+    public static String SCHEMA_DATA = "data";
+    public static String SCHEMA_DATA_AUDIT = "data-audit";
+    public static String SCHEMA_REQUIREMENTS = "requirements";
+    
     private static final String CONFIG_FILES_FOLDER = "LabPLANET";
     private static final String CONFIG_FILES_ERRORTRAPING = "\"errorTraping\"";
 

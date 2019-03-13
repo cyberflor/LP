@@ -13,12 +13,8 @@ import LabPLANET.utilities.LPPlatform;
  * @author Administrator
  */
 public class Role {
-
     String classVersion = "0.1";
 
-    String[] javaDocFields = new String[0];
-    Object[] javaDocValues = new Object[0];
-    String javaDocLineName = "";
     private static final String DIAGNOSES_SUCCESS = "SUCCESS";
     /**
      *

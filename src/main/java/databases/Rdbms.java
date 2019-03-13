@@ -34,17 +34,7 @@ import java.util.HashMap;
  * @author Administrator
  */
 public class Rdbms {
-    String classVersion = "0.1";
     String errorCode = "";
-
-    String[] javaDocFields = new String[0];
-    Object[] javaDocValues = new Object[0];
-    String javaDocLineName = "";
-
-    String schemaDataName = "data";
-    String schemaConfigName = "config";
-    String tableName = "user_method"; 
-    
 
     private static Connection conn = null;
     private static Boolean isStarted = false;
@@ -56,6 +46,8 @@ public class Rdbms {
     
     private static Rdbms rdbms;
     private static final String SQLSELECT = "SELECT";
+    public static final String TBL_NO_KEY="TABLE WITH NO KEY";
+    public static final String TBL_KEY_NOT_FIRST_TABLEFLD="PRIMARY KEY NOT FIRST FIELD IN TABLE";
     
     private Rdbms() {}                
    
@@ -863,13 +855,13 @@ public class Rdbms {
             if (rs.next()) {
               int newId = rs.getInt(indexposition);
               if (newId==0){
-                  pkValue = "PRIMARY KEY NOT FIRST FIELD IN TABLE";
+                  pkValue = TBL_KEY_NOT_FIRST_TABLEFLD; //"PRIMARY KEY NOT FIRST FIELD IN TABLE";
               }else{
                   pkValue = String.valueOf(newId);              
               }
             }
         }catch (SQLException er){
-            pkValue = "TABLE WITH NO KEY";
+            pkValue = TBL_NO_KEY; //"TABLE WITH NO KEY";
         }
         return pkValue; 
     }

@@ -15,19 +15,8 @@ import functionalJava.parameter.Parameter;
  * @author Fran Gomez
  */
 public class UserMethod {
-
-    String classVersion = "0.1";
-    
-    LPPlatform labPlat = new LPPlatform();
-    String[] javaDocFields = new String[0];
-    Object[] javaDocValues = new Object[0];
-    String javaDocLineName = "";
-
-    String schemaDataName = "data";
-    String schemaConfigName = "config";
-    
-    String[] diagnoses = new String[7];
-        
+   String classVersion = "0.1";
+ 
 /**
  * This function evaluate and return which is the current certification level for a given user and for one particular user method and version.
  *  It is considered: "Not assigned" when no records in table user_method found. // Inactive when found but expired // Certified when found and not expired.
@@ -47,8 +36,8 @@ public class UserMethod {
         String diagnostic = "";
         String tableName = "user_method";
         
-        schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, schemaDataName);  
-        schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, schemaConfigName);   
+        String schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, LPPlatform.SCHEMA_DATA);  
+        String schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, LPPlatform.SCHEMA_CONFIG);   
         
         String userMethodNotAssigned = Parameter.getParameterBundle(schemaConfigName, "userMethodCertificate_notAssigned");
         String userMethodInactive = Parameter.getParameterBundle(schemaConfigName, "userMethodCertificate_inactive");

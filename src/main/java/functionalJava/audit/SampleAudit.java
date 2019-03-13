@@ -23,17 +23,7 @@ import functionalJava.requirement.Requirement;
  * @version 0.1
  */
 public class SampleAudit {
-
     String classVersion = "0.1";
-//    
-//    LPPlatform labPlat = new LPPlatform();
-    String[] javaDocFields = new String[0];
-    Object[] javaDocValues = new Object[0];
-    String javaDocLineName = "";
-
-    String schemaDataName = "data";
-    String schemaConfigName = "config";
-    String tableName = "sample"; 
 
 /**
  * Add one record in the audit table when altering any of the levels belonging to the sample structure when not linked to any other statement.

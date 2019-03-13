@@ -132,7 +132,6 @@ public class DataProjectScheduleAdhoc {
 
     /**
      *
-     * @param rdbm
      * @param schemaName
      * @param pName
      * @param projSchedId
@@ -177,7 +176,6 @@ public class DataProjectScheduleAdhoc {
 
     /**
      *
-     * @param rdbm
      * @param schemaName
      * @param calendarCode
      * @param pName

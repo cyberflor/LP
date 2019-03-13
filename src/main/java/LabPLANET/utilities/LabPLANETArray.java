@@ -42,8 +42,6 @@ import java.util.logging.Logger;
 
 public class  LabPLANETArray {
         
-    String schemaDataName = "data";
-    String schemaConfigName = "config";    
     private static final String ENCRYPTION_KEY = "Bar12345Bar12345";
     private static final String ENCRYPTED_PREFIX = "encrypted_";
     /**

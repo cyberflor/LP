@@ -12,15 +12,7 @@ import java.util.Date;
  * @author Administrator
  */
 public class Batch {
-
     String classVersion = "0.1";
-    String[] javaDocFields = new String[0];
-    Object[] javaDocValues = new Object[0];
-    String javaDocLineName = "";
-
-    String schemaDataName = "data";
-    String schemaConfigName = "config";
-    String tableName = "user_method"; 
     
     String[] diagnoses = new String[7];    
 
@@ -132,7 +124,7 @@ public class Batch {
      * @param creator
      */
     public void newBatch(String template, Integer templateVersion, String name, String creator){
-        new Batch(template, templateVersion, name, creator);
+        Batch batch = new Batch(template, templateVersion, name, creator);
     }
 
     /**

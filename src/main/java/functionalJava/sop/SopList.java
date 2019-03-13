@@ -16,11 +16,7 @@ import java.util.Arrays;
  * @author Administrator
  */
 public class SopList {
-
     String classVersion = "0.1";
-    String[] javaDocFields = new String[0];
-    Object[] javaDocValues = new Object[0];
-    String javaDocLineName = "";
 
     String tableName = "sop_list";    
 

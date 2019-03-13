@@ -35,7 +35,6 @@ public class LabPLANETSession {
     
     /**
      *  get App Session and get record field values by appSessionId
-     * @param rdbm
      * @param appSessionId
      * @param fieldsToRetrieve
      * @return
@@ -59,7 +58,6 @@ public class LabPLANETSession {
      * When the user authenticates then one appSession is created but no ProcessSessions yet due to no action performed yet.<br>
      * This function will replicate to the ProcessSession the session once one action is audited in order to let that any action
      * on this procedure was performed as part of this given appSession.
-     * @param rdbm
      * @param processName
      * @param appSessionId
      * @param fieldsNamesToInsert

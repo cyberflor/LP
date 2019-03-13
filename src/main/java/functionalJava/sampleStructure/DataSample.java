@@ -44,19 +44,13 @@ public class DataSample {
     String errorCode ="";
     Object[] errorDetailVariables= new Object[0];
     
-    String lastError;
     Object[] diagnoses = new Object[7];
 
     String[] mandatoryFields = null;
     Object[] mandatoryFieldsValue = null;
 
     DataDataIntegrity labIntChecker = new DataDataIntegrity();
-    String[] javaDocFields = new String[0];
-    Object[] javaDocValues = new Object[0];
-    String javaDocLineName = "";
 
-    String schemaDataName = "data";
-    String schemaConfigName = "config";
     String tableName = "sample"; 
 
     String grouperName = "";
@@ -412,6 +406,8 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
             Object[] fieldsOnLogSample = LabPLANETArray.joinTwo1DArraysInOneOf1DString(sampleFieldName, sampleFieldValue, ":");
             diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, diagnoses[diagnoses.length-1]);
 
+            if (Rdbms.TBL_NO_KEY.equalsIgnoreCase(diagnoses[diagnoses.length-1].toString())){return diagnoses;}
+            
             Integer sampleId = Integer.parseInt(diagnoses[diagnoses.length-1].toString());
             
             SampleAudit smpAudit = new SampleAudit();            
@@ -441,7 +437,7 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
 
     String receptionStatus = "RECEIVED";
     String auditActionName = "SAMPLE_RECEPTION";
-    schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, schemaDataName); 
+    String schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, LPPlatform.SCHEMA_DATA); 
     
     Object[][] currSampleStatus = Rdbms.getRecordFieldsByFilter(schemaDataName, "sample", new String[]{"sample_id"}, 
                                                 new Object[]{sampleId}, new String[]{fieldName_status, "received_by","received_on", fieldName_status});
@@ -502,7 +498,7 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
      */
     public Object[] changeSamplingDate( String schemaPrefix, String userName, Integer sampleId, Date newDate, String userRole) throws SQLException{
 
-    schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, schemaDataName); 
+    String schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, LPPlatform.SCHEMA_DATA); 
     
     String auditActionName = "SAMPLE_CHANGE_SAMPLING_DATE";
 
@@ -542,7 +538,7 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
      */
     public Object[] sampleReceptionCommentAdd( String schemaPrefix, String userName, Integer sampleId, String comment, String userRole) throws SQLException{
 
-    schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, schemaDataName); 
+    String schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, LPPlatform.SCHEMA_DATA); 
     
     String auditActionName = "SAMPLE_RECEPTION_COMMENT_ADD";
 
@@ -580,7 +576,7 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
      * @throws SQLException
      */
     public Object[] sampleReceptionCommentRemove( String schemaPrefix, String userName, Integer sampleId, String comment, String userRole) throws SQLException{
-    schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, schemaDataName); 
+    String schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, LPPlatform.SCHEMA_DATA); 
 
     String auditActionName = "SAMPLE_RECEPTION_COMMENT_REMOVE";
     
@@ -618,7 +614,7 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
      */
     public Object[] setSampleStartIncubationDateTime( String schemaPrefix, String userName, Integer sampleId, String userRole) throws SQLException{
     
-    schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, schemaDataName); 
+    String schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, LPPlatform.SCHEMA_DATA); 
     
     String auditActionName = "SAMPLE_SET_INCUBATION_START";
 
@@ -659,7 +655,7 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
      * @throws SQLException
      */
     public Object[] setSampleEndIncubationDateTime( String schemaPrefix, String userName, Integer sampleId, String userRole) throws SQLException{
-    schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, schemaDataName); 
+    String schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, LPPlatform.SCHEMA_DATA); 
     
     String auditActionName = "SAMPLE_SET_INCUBATION_START";
 
@@ -726,8 +722,8 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
     tableName = "sample_analysis";
     String auditActionName = "SAMPLE_ANALYSIS_ANALYST_ASSIGNMENT";
 
-    schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, schemaDataName);  
-    schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, schemaConfigName); 
+    String schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, LPPlatform.SCHEMA_DATA); 
+    String schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, LPPlatform.SCHEMA_CONFIG); 
 
     String testStatusReviewed = Parameter.getParameterBundle(schemaDataName.replace("\"", ""), "sampleAnalysis_statusReviewed");
     String testStatusCanceled = Parameter.getParameterBundle(schemaDataName.replace("\"", ""), "sampleAnalysis_statusCanceled");    
@@ -861,8 +857,8 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
     String actionName = "Insert";
     String auditActionName = "ADD_SAMPLE_ANALYSIS";
 
-    schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, schemaDataName);  
-    schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, schemaConfigName); 
+    String schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, LPPlatform.SCHEMA_DATA); 
+    String schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, LPPlatform.SCHEMA_CONFIG); 
     
     String sampleLevel = "sample";
     if ((this.getSampleGrouper().length())>0){sampleLevel=this.getSampleGrouper()+"_"+sampleLevel;}
@@ -1203,8 +1199,8 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
     String auditActionName = "SAMPLE_EVALUATE_STATUS";
     if (parentAuditAction!=null){auditActionName = parentAuditAction + ":"+auditActionName;}
 
-    schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, schemaDataName);  
-    schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, schemaConfigName); 
+    String schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, LPPlatform.SCHEMA_DATA); 
+    String schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, LPPlatform.SCHEMA_CONFIG); 
     tableName = "sample_analysis";      
             
     String sampleStatusIncomplete = Parameter.getParameterBundle(schemaDataName.replace("\"", ""), "sample_statusIncomplete");
@@ -1244,8 +1240,7 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
      */
     public Object[] sampleAnalysisEvaluateStatus( String schemaPrefix, String userName, Integer sampleId, Integer testId, String parentAuditAction, String userRole){
     
-    schemaDataName = "data";
-    schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, schemaDataName);  
+    String schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, LPPlatform.SCHEMA_DATA); 
     
     tableName = "sample_analysis_result";      
     
@@ -1296,8 +1291,8 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
     tableName = "sample_analysis_result";  
     String actionName = "Insert";
     String auditActionName = "SAMPLE_ANALYSIS_RESULT_ENTRY";
-    schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, schemaDataName);  
-    schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, schemaConfigName); 
+    String schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, LPPlatform.SCHEMA_DATA); 
+    String schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, LPPlatform.SCHEMA_CONFIG); 
     
     String specEvalNoSpec = Parameter.getParameterBundle(schemaDataName.replace("\"", ""), "sampleAnalysisResult_statusSpecEvalNoSpec");
     String specEvalNoSpecParamLimit = Parameter.getParameterBundle(schemaDataName.replace("\"", ""), "sampleAnalysisResult_statusSpecEvalNoSpecParamLimit");
@@ -1704,8 +1699,8 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
     public Object[] sampleResultReview( String schemaPrefix, String userName, Integer sampleId, Integer testId, Integer resultId, String userRole) throws SQLException{
         
         tableName = "sample_analysis_result";  
-        schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, "data");  
-        schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, "config"); 
+        String schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, LPPlatform.SCHEMA_DATA); 
+        String schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, LPPlatform.SCHEMA_CONFIG); 
             
         String sampleAnalysisResultStatusCanceled = Parameter.getParameterBundle(schemaDataName.replace("\"", ""), "sampleAnalysisResult_statusCanceled");
         String sampleAnalysisResultStatusReviewed = Parameter.getParameterBundle(schemaDataName.replace("\"", ""), "sampleAnalysisResult_statusReviewed");
@@ -1956,7 +1951,7 @@ private Map getDefaultValuesTemplate(String schema, String tsample, String templ
     public String specialFieldCheckSampleAnalysisMethod( String schemaPrefix){ //, String schemaPrefix, String analysisList){                        
 
         String myDiagnoses = "";       
-                
+        String schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, LPPlatform.SCHEMA_CONFIG); 
 
         Integer specialFieldIndex = Arrays.asList(mandatoryFields).indexOf(fieldName_analysis);
         String analysis = (String) mandatoryFieldsValue[specialFieldIndex];     
@@ -1997,7 +1992,6 @@ private Map getDefaultValuesTemplate(String schema, String tsample, String templ
 
     /**
      *
-     * @param parameters
      * @param schemaPrefix
      * @param template
      * @param templateVersion
@@ -2103,8 +2097,8 @@ private Map getDefaultValuesTemplate(String schema, String tsample, String templ
         
         String actionName = "CANCEL_RESULT";
         tableName = "sample_analysis_result";  
-        schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, "data");  
-        schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, "config"); 
+        String schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, LPPlatform.SCHEMA_DATA); 
+        String schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, LPPlatform.SCHEMA_CONFIG); 
             
         String sampleAnalysisResultStatusCanceled = Parameter.getParameterBundle(schemaDataName.replace("\"", ""), "sampleAnalysisResult_statusCanceled");
         String sampleAnalysisResultStatusReviewed = Parameter.getParameterBundle(schemaDataName.replace("\"", ""), "sampleAnalysisResult_statusReviewed");
@@ -2238,8 +2232,8 @@ private Map getDefaultValuesTemplate(String schema, String tsample, String templ
         tableName = "sample_analysis_result";  
        
         String auditActionName = "SAMPLE_ANALYSIS_RESULT_UNCANCELING";
-        schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, schemaDataName);  
-        schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, schemaConfigName); 
+        String schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, LPPlatform.SCHEMA_DATA); 
+        String schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, LPPlatform.SCHEMA_CONFIG); 
             
 
         String sampleAnalysisResultStatusCanceled = Parameter.getParameterBundle(schemaDataName.replace("\"", ""), "sampleAnalysisResult_statusCanceled");
@@ -2368,8 +2362,8 @@ private Map getDefaultValuesTemplate(String schema, String tsample, String templ
         
         String actionName = "CANCEL_BACK";
         tableName = "sample_analysis_result";  
-        schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, "data");  
-        schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, "config"); 
+        String schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, LPPlatform.SCHEMA_DATA); 
+        String schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, LPPlatform.SCHEMA_CONFIG); 
         String[] diagnoses = new String[6];
             
         String sampleAnalysisResultStatusCanceled = Parameter.getParameterBundle(schemaDataName.replace("\"", ""), "sampleAnalysisResult_statusCanceled");
@@ -2521,13 +2515,12 @@ private Map getDefaultValuesTemplate(String schema, String tsample, String templ
     
     public void autoSampleAliquoting( String schemaPrefix, Integer sampleId, String userName, String userRole, String[] sampleFieldName, Object[] sampleFieldValue, String eventName, Integer appSessionId, Integer transactionId){
         Object[] fieldNameValueArrayChecker = LPParadigm.fieldNameValueArrayChecker(sampleFieldName, sampleFieldValue);
-        if (!LPPlatform.LAB_TRUE.equalsIgnoreCase(fieldNameValueArrayChecker[0].toString())){return;}        
-        
+        if (!LPPlatform.LAB_TRUE.equalsIgnoreCase(fieldNameValueArrayChecker[0].toString())){}                
     }
     
     public Object[] sarChangeUOM( String schemaPrefix, Integer resultId, String newUOM, String userName, String userRole){
         String auditActionName = "CHANGE_UOM";
-        schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, "data");
+        String schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, LPPlatform.SCHEMA_DATA); 
         tableName="sample_analysis_result";
         
         Object[][] resultInfo = Rdbms.getRecordFieldsByFilter(schemaDataName, tableName, 

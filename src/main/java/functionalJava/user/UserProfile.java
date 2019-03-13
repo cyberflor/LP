@@ -5,6 +5,7 @@
  */
 package functionalJava.user;
 
+import LabPLANET.utilities.LPPlatform;
 import LabPLANET.utilities.LabPLANETArray;
 import databases.Rdbms;
 
@@ -13,14 +14,8 @@ import databases.Rdbms;
  * @author Administrator
  */
 public class UserProfile {
-
-    String[] javaDocFields = new String[0];
-    Object[] javaDocValues = new Object[0];
-    String javaDocLineName = "";
-
     //String schemaDataName = "data";
-    String schemaAppName = "app";
-    
+    String schemaAppName = LPPlatform.SCHEMA_APP;
     /**
      *
      * @param userInfoId

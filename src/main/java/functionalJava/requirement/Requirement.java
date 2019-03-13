@@ -12,12 +12,7 @@ import databases.Rdbms;
  * @author Administrator
  */
 public class Requirement {
-
     String classVersion = "0.1";
-
-    String[] javaDocFields = new String[0];
-    Object[] javaDocValues = new Object[0];
-    String javaDocLineName = "";
 
     /**
      *

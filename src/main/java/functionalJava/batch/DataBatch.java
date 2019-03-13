@@ -16,13 +16,7 @@ import java.util.List;
  * @author Administrator
  */
 public class DataBatch {
-
     String classVersion = "0.1";
-    String[] javaDocFields = new String[0];
-    Object[] javaDocValues = new Object[0];
-    String javaDocLineName = "";
-
-    Object[] diagnoses = new Object[7];    
     
     /**
      *

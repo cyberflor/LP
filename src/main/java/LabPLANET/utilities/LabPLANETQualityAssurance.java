@@ -5,7 +5,6 @@
  */
 package LabPLANET.utilities;
 
-import static LabPLANET.utilities.LPPlatform.LAB_FALSE;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.jar.JarEntry;
@@ -73,6 +72,7 @@ public class LabPLANETQualityAssurance {
      * @param jarName
      * @param packageName
      * @return
+     * @throws java.io.IOException
      */
     public static List getClasseNamesInPackage(String jarName, String packageName) throws IOException{
         ArrayList classes = new ArrayList ();

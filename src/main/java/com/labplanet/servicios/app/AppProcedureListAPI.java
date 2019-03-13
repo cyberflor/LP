@@ -7,7 +7,6 @@ package com.labplanet.servicios.app;
 
 import LabPLANET.utilities.LabPLANETArray;
 import LabPLANET.utilities.LabPLANETFrontEnd;
-import LabPLANET.utilities.LabPLANETJson;
 import LabPLANET.utilities.LPPlatform;
 import LabPLANET.utilities.LabPLANETRequest;
 import databases.Rdbms;
@@ -24,7 +23,6 @@ import javax.ws.rs.core.Response;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONArray;
 import functionalJava.sop.UserSop;
-import java.util.ResourceBundle;
 
 /**
  *

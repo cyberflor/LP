@@ -38,7 +38,8 @@ public class UserSecurity {
         try {
             Object[] diagnoses = new Object[2];
             diagnoses[0] = false;
-            String schemaName = "config";
+            
+            String schemaConfigName = LPPlatform.SCHEMA_CONFIG;
             String tableName = "user_info";
             
             if (user==null || "null".equalsIgnoreCase(user)){diagnoses[1]="User Name cannot be set to null"; return diagnoses;}
@@ -50,7 +51,7 @@ public class UserSecurity {
                 diagnoses[1] = "Invalid password for the user "+user;   
             }
 
-            Object[] userExists = Rdbms.existsRecord(schemaName, tableName, new String[]{"user_info_name"}, new String[]{user});
+            Object[] userExists = Rdbms.existsRecord(schemaConfigName, tableName, new String[]{"user_info_name"}, new String[]{user});
             String diagn = userExists[0].toString();
             if ("LABPLANET_FALSE".equalsIgnoreCase(diagn)){
                 diagnoses[1] = userExists[5];           
@@ -61,7 +62,7 @@ public class UserSecurity {
                 diagnoses[1] = encrypted[1];           
                 return diagnoses;                
             }
-            Object[] updateRecordFieldsByFilter = Rdbms.updateRecordFieldsByFilter(schemaName, tableName, 
+            Object[] updateRecordFieldsByFilter = Rdbms.updateRecordFieldsByFilter(schemaConfigName, tableName, 
                     new String[]{"esign_value"}, new Object[]{encrypted[1]}, 
                     new String[]{"user_info_name"}, new String[]{user});
             if ("LABPLANET_FALSE".equalsIgnoreCase(updateRecordFieldsByFilter[0].toString())){            
@@ -89,7 +90,7 @@ public class UserSecurity {
     public Object[] isValidESign( String user, String eSign){
         Object[] diagnoses = new Object[2];  
         diagnoses[0]=false;
-        String schemaName = "config";
+        String schemaConfigName = LPPlatform.SCHEMA_CONFIG;
         String tableName = "user_info";
             
         if (user==null || "null".equalsIgnoreCase(user)){diagnoses[1]="User Name cannot be set to null"; return diagnoses;}
@@ -97,7 +98,7 @@ public class UserSecurity {
 
         
         Object[][] userExists;
-        userExists = Rdbms.getRecordFieldsByFilter(schemaName, tableName, new String[]{"user_info_name"}, new String[]{user}, new String[]{"user_info_name", "user_info_name", "user_info_name", "esign_value"});
+        userExists = Rdbms.getRecordFieldsByFilter(schemaConfigName, tableName, new String[]{"user_info_name"}, new String[]{user}, new String[]{"user_info_name", "user_info_name", "user_info_name", "esign_value"});
         String diagn = (String) userExists[0][3];
         if (diagn.equalsIgnoreCase("FALSE")) {
             

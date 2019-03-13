@@ -14,15 +14,7 @@ import java.math.BigDecimal;
  * @author Administrator
  */
 public class DataSpec {
-
     String classVersion = "0.1";
-    String[] javaDocFields = new String[0];
-    Object[] javaDocValues = new Object[0];
-    String javaDocLineName = "";
-
-    String schemaDataName = "data";
-    String schemaConfigName = "config";
-    String tableName = ""; 
     
 /**
  * There are some behaviors for interpret what the spec limits means.<br>

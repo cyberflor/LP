@@ -24,19 +24,10 @@ import LabPLANET.utilities.LPPlatform;
  * @author Administrator
  */
 public class RequirementDeployment {
-
     String classVersion = "0.1";
 
-    String[] javaDocFields = new String[0];
-    Object[] javaDocValues = new Object[0];
-    String javaDocLineName = "";
-
-    String schemaDataName = "data";
-    String schemaConfigName = "config";
     String tableName = "procedure";    
 
-    String schemaRequirements = "requirements";
-    
     String ermessage = "";
     
     // Originally 1196 lines
@@ -364,6 +355,7 @@ return "";
     public Integer createNav(String nodename,  String privilege_id, Integer fathernode, Boolean haschildren, String procedure, Integer version, String code, String sopName, String sopSection) throws SQLException   {            
         StackTraceElement[] elements = Thread.currentThread().getStackTrace();
         String methodName = elements[1].getMethodName();
+        String schemaConfigName = LPPlatform.SCHEMA_CONFIG; 
 
         Integer created = 0;
         Integer numr = 0;    
@@ -592,6 +584,7 @@ return "";
      * @throws SQLException
      */
     public void addProcRolesAndPrivileges( String procName, Integer procVersion) throws SQLException{
+        String schemaConfigName = LPPlatform.SCHEMA_CONFIG; 
     
         String methodName = "addProcRolesAndPrivileges";
         Role rol = new Role();

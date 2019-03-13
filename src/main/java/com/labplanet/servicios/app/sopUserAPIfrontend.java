@@ -5,6 +5,7 @@
  */
 package com.labplanet.servicios.app;
 
+import LabPLANET.utilities.LPPlatform;
 import LabPLANET.utilities.LabPLANETArray;
 import LabPLANET.utilities.LabPLANETFrontEnd;
 import LabPLANET.utilities.LabPLANETRequest;
@@ -85,7 +86,7 @@ public class sopUserAPIfrontend extends HttpServlet {
                
                 UserProfile usProf = new UserProfile();
                 String[] allUserProcedurePrefix = LabPLANETArray.ConvertObjectArrayToStringArray(usProf.getAllUserProcedurePrefix(dbUserName));
-                if ("LABPLANET_FALSE".equalsIgnoreCase(allUserProcedurePrefix[0].toString())){
+                if (LPPlatform.LAB_FALSE.equalsIgnoreCase(allUserProcedurePrefix[0])){
                     Object[] errMsg = LabPLANETFrontEnd.responseError(allUserProcedurePrefix, language, null);
                     response.sendError((int) errMsg[0], (String) errMsg[1]);   
                     Rdbms.closeRdbms();
@@ -95,7 +96,7 @@ public class sopUserAPIfrontend extends HttpServlet {
                 String[] fieldsToRetrieve = new String[]{"sop_id"};
                 for (String curProc: allUserProcedurePrefix){
                     Object[][] userProcSops = userSop.getNotCompletedUserSOP(internalUserID, curProc, fieldsToRetrieve);       
-                    if (!"LABPLANET_FALSE".equalsIgnoreCase(userProcSops[0][0].toString())){numPendingSOPs=numPendingSOPs+userProcSops.length;}
+                    if (!LPPlatform.LAB_FALSE.equalsIgnoreCase(userProcSops[0][0].toString())){numPendingSOPs=numPendingSOPs+userProcSops.length;}
                 }
                    JSONArray SopOptions = new JSONArray(); 
                     

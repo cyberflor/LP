@@ -23,14 +23,7 @@ import java.util.logging.Logger;
  * @author Administrator
  */
 public class UserSop {
-    
-    
     String classVersion = "0.1";
-
-    String[] javaDocFields = new String[0];
-    Object[] javaDocValues = new Object[0];
-    String javaDocLineName = "";
-
     /**
      *
      * @param schemaPrefixName
