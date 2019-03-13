@@ -147,9 +147,9 @@ public class DataProjectScheduleAdhoc {
         //Cursor cursor = this.db.query(TABLE_PROJECT, new String[] { "*"},
         //  condition + " ORDER BY pro_dateConfirm ASC" , null, null, null, null); 		
           //condition + "and (pro_finalTecnico = 'null' OR pro_finalTecnico = 'F') AND pro_dateConfirm <> 'null' ORDER BY pro_dateConfirm ASC" , null, null, null, null);
-        List<DataProjectSchedule>  project = setProjectSchedulerFromDb(projectSchedInfo);
+        List<DataProjectSchedule>  proj = setProjectSchedulerFromDb(projectSchedInfo);
           
-        return project;    	    	
+        return proj;    	    	
     }   
     
     /**
@@ -158,7 +158,7 @@ public class DataProjectScheduleAdhoc {
      * @return
      */
     public List<DataProjectSchedule> setProjectSchedulerFromDb(Object[][] projectSchedInfo) {
-        List<DataProjectSchedule> project= new ArrayList<>();
+        List<DataProjectSchedule> proj= new ArrayList<>();
         
         for (Object[] projectSchedInfo1 : projectSchedInfo) {
             DataProjectSchedule aux = new DataProjectSchedule();
@@ -170,9 +170,9 @@ public class DataProjectScheduleAdhoc {
             this.schedule_size=(int) projectSchedInfo[0][i++];
             this.FirstDay=(Date) projectSchedInfo[0][i++];
             this.endDay=(Date) projectSchedInfo[0][i++];
-            project.add(aux);
+            proj.add(aux);
         }    
-        return project;
+        return proj;
     }  
 
     /**

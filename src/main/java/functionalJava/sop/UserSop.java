@@ -9,8 +9,6 @@ import databases.Rdbms;
 import functionalJava.user.UserProfile;
 import LabPLANET.utilities.LabPLANETArray;
 import LabPLANET.utilities.LPPlatform;
-import static LabPLANET.utilities.LPPlatform.LAB_FALSE;
-import static LabPLANET.utilities.LPPlatform.trapErrorMessage;
 import functionalJava.parameter.Parameter;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -32,8 +30,6 @@ public class UserSop {
     String[] javaDocFields = new String[0];
     Object[] javaDocValues = new Object[0];
     String javaDocLineName = "";
-
-    String tableName = "user_sop";  
 
     /**
      *
@@ -372,7 +368,7 @@ public class UserSop {
             String errorCode = "LabPLANETPlatform_SpecialFunctionReturnedEXCEPTION";
             String[] errorDetailVariables = new String[0];
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, ex.getMessage());
-            Object[] trpErr =  trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);
+            Object[] trpErr=LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);
             return LabPLANETArray.array1dTo2d(trpErr, trpErr.length);            
         }
     }
@@ -448,7 +444,7 @@ public class UserSop {
         schemaName = LPPlatform.buildSchemaName(schemaName, schemaDataName);
         String diagnoses = "";
         Sop s = null;
-        tableName = "user_sop";
+        String tableName = "user_sop";
         Object[] exists = Rdbms.existsRecord(schemaName, tableName, new String[]{"user_id", sopIdFieldName}, new Object[]{userInfoId, sopIdFieldValue});
                 
         if (LPPlatform.LAB_TRUE.equalsIgnoreCase(exists[0].toString())){

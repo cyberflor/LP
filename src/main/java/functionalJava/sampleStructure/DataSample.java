@@ -5,9 +5,6 @@
  */
 package functionalJava.sampleStructure;
 
-//import com.sun.rowset.CachedRowSetImpl;
-//import java.util.HashMap;
-//import java.util.Map;
 import LabPLANET.utilities.LPNulls;
 import LabPLANET.utilities.LPParadigm;
 import databases.Rdbms;
@@ -47,7 +44,6 @@ public class DataSample {
     String errorCode ="";
     Object[] errorDetailVariables= new Object[0];
     
-    Rdbms rdbms;
     String lastError;
     Object[] diagnoses = new Object[7];
 
@@ -63,7 +59,6 @@ public class DataSample {
     String schemaConfigName = "config";
     String tableName = "sample"; 
 
-    SampleAudit smpAudit = new SampleAudit();
     String grouperName = "";
     
     /**
@@ -270,7 +265,8 @@ Object[] logSample(String schemaPrefix, String sampleTemplate, Integer sampleTem
 
         Object[] fieldsOnLogSample = LabPLANETArray.joinTwo1DArraysInOneOf1DString(sampleFieldName, sampleFieldValue, ":");
         diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, diagnoses[6]);
-
+        
+        SampleAudit smpAudit = new SampleAudit();
         smpAudit.sampleAuditAdd(schemaPrefix, auditActionName, tableName, Integer.parseInt(diagnoses[6].toString()), 
                 Integer.parseInt(diagnoses[6].toString()), null, null, 
                 fieldsOnLogSample, userName, userRole, appSessionId);
@@ -417,6 +413,8 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
             diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, diagnoses[diagnoses.length-1]);
 
             Integer sampleId = Integer.parseInt(diagnoses[diagnoses.length-1].toString());
+            
+            SampleAudit smpAudit = new SampleAudit();            
             smpAudit.sampleAuditAdd(schemaPrefix, auditActionName, tableName, sampleId, 
                     sampleId, null, null, 
                     fieldsOnLogSample, userName, userRole, appSessionId);
@@ -485,6 +483,8 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
                                             new String[] {"sample_id"}, new Object[]{sampleId});
     if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){
         String[] fieldsForAudit = LabPLANETArray.joinTwo1DArraysInOneOf1DString(sampleFieldName, sampleFieldValue, userName);
+
+        SampleAudit smpAudit = new SampleAudit();       
         smpAudit.sampleAuditAdd(schemaPrefix, auditActionName, this.getSampleGrouper()+"_"+"sample", sampleId, sampleId, null, null, fieldsForAudit, userName, userRole, appSessionId);
     }    
     return diagnoses;
@@ -523,6 +523,8 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
         diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, errorCode, errorDetailVariables);
 
         String[] fieldsForAudit = LabPLANETArray.joinTwo1DArraysInOneOf1DString(sampleFieldName, sampleFieldValue, userName);
+        
+        SampleAudit smpAudit = new SampleAudit();
         smpAudit.sampleAuditAdd(schemaPrefix, auditActionName, "sample", sampleId, sampleId, null, null, fieldsForAudit, userName, userRole);
     }    
     return diagnoses;
@@ -561,6 +563,7 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
         diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, errorCode, errorDetailVariables);                
         
         String[] fieldsForAudit = LabPLANETArray.joinTwo1DArraysInOneOf1DString(sampleFieldName, sampleFieldValue, userName);
+        SampleAudit smpAudit = new SampleAudit();
         smpAudit.sampleAuditAdd(schemaPrefix, auditActionName, "sample", sampleId, sampleId, null, null, fieldsForAudit, userName, userRole);
     } 
     return diagnoses;
@@ -598,6 +601,7 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
         diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);                
 
         String[] fieldsForAudit = LabPLANETArray.joinTwo1DArraysInOneOf1DString(sampleFieldName, sampleFieldValue, userName);
+        SampleAudit smpAudit = new SampleAudit();
         smpAudit.sampleAuditAdd(schemaPrefix, auditActionName, "sample", sampleId, sampleId, null, null, fieldsForAudit, userName, userRole);
     } 
     return diagnoses;
@@ -639,6 +643,7 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
         diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, errorCode, errorDetailVariables);                
         
         String[] fieldsForAudit = LabPLANETArray.joinTwo1DArraysInOneOf1DString(sampleFieldName, sampleFieldValue, userName);
+        SampleAudit smpAudit = new SampleAudit();
         smpAudit.sampleAuditAdd(schemaPrefix, auditActionName, "sample", sampleId, sampleId, null, null, fieldsForAudit, userName, userRole);
     } 
     return diagnoses;
@@ -688,6 +693,7 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
         diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, errorCode, errorDetailVariables);                
 
         String[] fieldsForAudit = LabPLANETArray.joinTwo1DArraysInOneOf1DString(sampleFieldName, sampleFieldValue, userName);
+        SampleAudit smpAudit = new SampleAudit();
         smpAudit.sampleAuditAdd(schemaPrefix, auditActionName, "sample", sampleId, sampleId, null, null, fieldsForAudit, userName, userRole);
     } 
     return diagnoses;
@@ -819,6 +825,7 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaDataName);
             diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, errorCode, errorDetailVariables);          
             String[] fieldsForAudit = LabPLANETArray.joinTwo1DArraysInOneOf1DString(updateFieldName, updateFieldValue, ":");            
+            SampleAudit smpAudit = new SampleAudit();
             smpAudit.sampleAuditAdd(schemaPrefix, auditActionName, "sample_analysis", testId, sampleId, testId, null, fieldsForAudit, userName, userRole);
         }else{    
             errorCode = "DataSample_SampleAnalysisAssignment_databaseReturnedError";
@@ -1118,7 +1125,7 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
     diagnoses = Rdbms.insertRecordInTable(schemaDataName, sampleLevel+"_analysis", fieldName, fieldValue);
     
     Integer testId = Integer.parseInt(diagnoses[diagnoses.length-1].toString());
-    
+    SampleAudit smpAudit = new SampleAudit();
     smpAudit.sampleAuditAdd(schemaPrefix, auditActionName, sampleLevel+"_analysis", testId, sampleId, testId, null, fieldsForAudit, userName, userRole);
     
     Integer valuePosic = Arrays.asList(getResultFields).indexOf("test_id");
@@ -1219,6 +1226,7 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
     if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){
         String[] fieldsForAudit = new String[0];
         fieldsForAudit = LabPLANETArray.addValueToArray1D(fieldsForAudit, "status:"+smpAnaNewStatus);
+        SampleAudit smpAudit = new SampleAudit();        
         smpAudit.sampleAuditAdd(schemaPrefix, auditActionName, "sample", sampleId, sampleId, null, null, fieldsForAudit, userName, userRole);        
     }      
     return diagnoses;
@@ -1264,6 +1272,7 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
     if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){
         String[] fieldsForAudit = new String[0];
         fieldsForAudit = LabPLANETArray.addValueToArray1D(fieldsForAudit, "status:"+smpAnaNewStatus);
+        SampleAudit smpAudit = new SampleAudit();
         smpAudit.sampleAuditAdd(schemaPrefix, auditActionName, "sample_analysis", testId, sampleId, testId, null, fieldsForAudit, userName, userRole);        
     }    
     Object[] diagnoses2 = sampleEvaluateStatus(schemaPrefix, userName, sampleId, parentAuditAction, userRole);
@@ -1421,6 +1430,7 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
         diagnoses = Rdbms.updateRecordFieldsByFilter(schemaDataName, tableName, fieldsName, fieldsValue, new String[] {"result_id"} , new Object[] {resultId});
         if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){
             String[] fieldsForAudit = LabPLANETArray.joinTwo1DArraysInOneOf1DString(fieldsName, fieldsValue, ":");
+            SampleAudit smpAudit = new SampleAudit();
             smpAudit.sampleAuditAdd(schemaPrefix, auditActionName, "sample_analysis_result", resultId, sampleId, testId, resultId, fieldsForAudit, userName, userRole);
         }
         if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){
@@ -1443,6 +1453,7 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
                 updFieldsValue = LabPLANETArray.addValueToArray1D(updFieldsValue, whereFieldsValue);
                 String[] fieldsForAudit = LabPLANETArray.joinTwo1DArraysInOneOf1DString(updFields, updFieldsValue, ":");
                 auditActionName = "UPDATE LAST ANALYSIS USER METHOD";
+                SampleAudit smpAudit = new SampleAudit();
                 smpAudit.sampleAuditAdd(schemaPrefix, auditActionName, "user_method", testId, sampleId, testId, null, fieldsForAudit, userName, userRole);
             }    
         }         
@@ -1468,6 +1479,7 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
         fieldsValue = LabPLANETArray.addValueToArray1D(fieldsValue, newResultStatus);
         diagnoses = Rdbms.updateRecordFieldsByFilter(schemaDataName, tableName, fieldsName, fieldsValue, new String[] {"result_id"} , new Object[] {resultId});
         if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){            String[] fieldsForAudit = LabPLANETArray.joinTwo1DArraysInOneOf1DString(fieldsName, fieldsValue, ":");
+            SampleAudit smpAudit = new SampleAudit();    
             smpAudit.sampleAuditAdd(schemaPrefix, auditActionName, "sample_analysis_result", resultId, sampleId, testId, resultId, fieldsForAudit, userName, userRole);
         }        
         if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){            Object[] diagnoses2 = sampleAnalysisEvaluateStatus(schemaPrefix, userName, sampleId,testId, auditActionName, userRole);
@@ -1488,6 +1500,7 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
                 updFieldsValue = LabPLANETArray.addValueToArray1D(updFieldsValue, whereFieldsValue);
                 String[] fieldsForAudit = LabPLANETArray.joinTwo1DArraysInOneOf1DString(updFields, updFieldsValue, ":");
                 auditActionName = "UPDATE LAST ANALYSIS USER METHOD";
+                SampleAudit smpAudit = new SampleAudit();
                 smpAudit.sampleAuditAdd(schemaPrefix, auditActionName, "user_method", testId, sampleId, testId, null, fieldsForAudit, userName, userRole);
             }    
         }         
@@ -1557,6 +1570,7 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
             diagnoses = Rdbms.updateRecordFieldsByFilter(schemaDataName, tableName, fieldsName, fieldsValue, new String[] {"result_id"} , new Object[] {resultId});
             if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){
                 String[] fieldsForAudit = LabPLANETArray.joinTwo1DArraysInOneOf1DString(fieldsName, fieldsValue, ":");
+                SampleAudit smpAudit = new SampleAudit();
                 smpAudit.sampleAuditAdd(schemaPrefix, auditActionName, "sample_analysis_result", resultId, sampleId, testId, resultId, fieldsForAudit, userName, userRole);
             }  
             if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){
@@ -1637,6 +1651,7 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
             diagnoses = Rdbms.updateRecordFieldsByFilter(schemaDataName, tableName, fieldsName, fieldsValue, new String[] {"result_id"} , new Object[] {resultId});
             if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){
                 String[] fieldsForAudit = LabPLANETArray.joinTwo1DArraysInOneOf1DString(fieldsName, fieldsValue, ":");
+                SampleAudit smpAudit = new SampleAudit();
                 smpAudit.sampleAuditAdd(schemaPrefix, auditActionName, "sample_analysis_result", resultId, sampleId, testId, resultId, fieldsForAudit, userName, userRole);
             }
             if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){
@@ -1659,6 +1674,7 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
                     updFieldsValue = LabPLANETArray.addValueToArray1D(updFieldsValue, whereFieldsValue);
                     String[] fieldsForAudit = LabPLANETArray.joinTwo1DArraysInOneOf1DString(updFields, updFieldsValue, ":");
                     auditActionName = auditActionName+":"+"UPDATE USER METHOD RECORD";
+                    SampleAudit smpAudit = new SampleAudit();
                     smpAudit.sampleAuditAdd(schemaPrefix, auditActionName, "user_method", testId, sampleId, testId, null, fieldsForAudit, userName, userRole);
                 }    
             }    
@@ -1731,6 +1747,7 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
                         String[] fieldsForAudit = new String[0];
                         fieldsForAudit = LabPLANETArray.addValueToArray1D(fieldsForAudit, "status:"+sampleAnalysisResultStatusReviewed);
                         fieldsForAudit = LabPLANETArray.addValueToArray1D(fieldsForAudit, "status_previous:"+currStatus);
+                        SampleAudit smpAudit = new SampleAudit();
                         smpAudit.sampleAuditAdd(schemaPrefix, "REVIEW_RESULT", "sample_analysis_result", resultId, sampleId, testId, resultId, fieldsForAudit, userName, userRole);        
                     }else{
                         return diagnoses;
@@ -1766,6 +1783,7 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
                         String[] fieldsForAudit = new String[0];
                         fieldsForAudit = LabPLANETArray.addValueToArray1D(fieldsForAudit, "status:"+sampleAnalysisStatusCanceled);
                         fieldsForAudit = LabPLANETArray.addValueToArray1D(fieldsForAudit, "status_previous:"+currStatus);
+                        SampleAudit smpAudit = new SampleAudit();
                         smpAudit.sampleAuditAdd(schemaPrefix, "REVIEW_RESULT", "sample_analysis", currTest, sampleId, currTest, null, fieldsForAudit, userName, userRole);        
                     }                        
                 }else{
@@ -1792,6 +1810,7 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
                         String[] fieldsForAudit = new String[0];
                         fieldsForAudit = LabPLANETArray.addValueToArray1D(fieldsForAudit, "status:"+sampleStatusCanceled);
                         fieldsForAudit = LabPLANETArray.addValueToArray1D(fieldsForAudit, "status_previous:"+currStatus);
+                        SampleAudit smpAudit = new SampleAudit();
                         smpAudit.sampleAuditAdd(schemaPrefix, "REVIEW_RESULT", "sample", currSample, currSample, null, null, fieldsForAudit, userName, userRole);                            
                     }                        
                 }else{
@@ -2128,6 +2147,7 @@ private Map getDefaultValuesTemplate(String schema, String tsample, String templ
                         String[] fieldsForAudit = new String[0];
                         fieldsForAudit = LabPLANETArray.addValueToArray1D(fieldsForAudit, "status:"+sampleAnalysisResultStatusCanceled);
                         fieldsForAudit = LabPLANETArray.addValueToArray1D(fieldsForAudit, "status_previous:"+currStatus);
+                        SampleAudit smpAudit = new SampleAudit();
                         smpAudit.sampleAuditAdd(schemaPrefix, actionName, "sample_analysis_result", resultId, sampleId, testId, resultId, fieldsForAudit, userName, userRole);        
                     }                        
                 }else{
@@ -2161,6 +2181,7 @@ private Map getDefaultValuesTemplate(String schema, String tsample, String templ
                         String[] fieldsForAudit = new String[0];
                         fieldsForAudit = LabPLANETArray.addValueToArray1D(fieldsForAudit, "status:"+sampleAnalysisStatusCanceled);
                         fieldsForAudit = LabPLANETArray.addValueToArray1D(fieldsForAudit, "status_previous:"+currStatus);
+                        SampleAudit smpAudit = new SampleAudit();
                         smpAudit.sampleAuditAdd(schemaPrefix, actionName, "sample_analysis", currTest, sampleId, currTest, null, fieldsForAudit, userName, userRole);        
                     }                        
                 }else{
@@ -2187,6 +2208,7 @@ private Map getDefaultValuesTemplate(String schema, String tsample, String templ
                     String[] fieldsForAudit = new String[0];
                     fieldsForAudit = LabPLANETArray.addValueToArray1D(fieldsForAudit, "status:"+sampleStatusCanceled);
                     fieldsForAudit = LabPLANETArray.addValueToArray1D(fieldsForAudit, "status_previous:"+currStatus);
+                    SampleAudit smpAudit = new SampleAudit();
                     smpAudit.sampleAuditAdd(schemaPrefix, actionName, "sample", currSample, currSample, null, null, fieldsForAudit, userName, userRole);        
                 }                        
                 }else{
@@ -2270,6 +2292,7 @@ private Map getDefaultValuesTemplate(String schema, String tsample, String templ
                 String[] fieldsForAudit = new String[0];
                 fieldsForAudit = LabPLANETArray.addValueToArray1D(fieldsForAudit, "status_previous:"+sampleAnalysisResultStatusCanceled);
                 fieldsForAudit = LabPLANETArray.addValueToArray1D(fieldsForAudit, "status:"+statusPrevious);
+                SampleAudit smpAudit = new SampleAudit();
                 smpAudit.sampleAuditAdd(schemaPrefix, auditActionName, this.getSampleGrouper()+"_"+"sample_analysis_result", resultId, sampleId, testId, resultId, fieldsForAudit, userName, userRole);
             }
             diagPerResult = LabPLANETArray.addValueToArray1D(diagPerResult, "Result "+ resultId.toString() + " UNCANCELED ");            
@@ -2296,6 +2319,7 @@ private Map getDefaultValuesTemplate(String schema, String tsample, String templ
                         String[] fieldsForAudit = new String[0];
                         fieldsForAudit = LabPLANETArray.addValueToArray1D(fieldsForAudit, "status_previous:"+sampleAnalysisResultStatusCanceled);
                         fieldsForAudit = LabPLANETArray.addValueToArray1D(fieldsForAudit, "status:"+currPrevStatus);
+                        SampleAudit smpAudit = new SampleAudit();
                         smpAudit.sampleAuditAdd(schemaPrefix, "UNCANCEL_RESULT", this.getSampleGrouper()+"_"+"sample_analysis", currTest, sampleId, currTest, null, fieldsForAudit, userName, userRole);        
                     }                        
                 }else{    
@@ -2318,6 +2342,7 @@ private Map getDefaultValuesTemplate(String schema, String tsample, String templ
                     String[] fieldsForAudit = new String[0];
                     fieldsForAudit = LabPLANETArray.addValueToArray1D(fieldsForAudit, "status_previous:"+sampleAnalysisResultStatusCanceled);
                     fieldsForAudit = LabPLANETArray.addValueToArray1D(fieldsForAudit, "status:"+currPrevStatus);
+                    SampleAudit smpAudit = new SampleAudit();
                     smpAudit.sampleAuditAdd(schemaPrefix, "UNCANCEL_RESULT", "sample", currSample, currSample, null, null, fieldsForAudit, userName, userRole);        
                 }                        
                 }else{    
@@ -2389,6 +2414,7 @@ private Map getDefaultValuesTemplate(String schema, String tsample, String templ
                             String[] fieldsForAudit = new String[0];
                             fieldsForAudit = LabPLANETArray.addValueToArray1D(fieldsForAudit, "status:"+sampleAnalysisResultStatusCanceled);
                             fieldsForAudit = LabPLANETArray.addValueToArray1D(fieldsForAudit, "status_previous:"+currStatus);
+                            SampleAudit smpAudit = new SampleAudit();
                             smpAudit.sampleAuditAdd(schemaPrefix, actionName, this.getSampleGrouper()+"_"+"sample_analysis_result", resultId, sampleId, testId, resultId, fieldsForAudit, userName, userRole);        
                         }    
 
@@ -2427,6 +2453,7 @@ private Map getDefaultValuesTemplate(String schema, String tsample, String templ
                             String[] fieldsForAudit = new String[0];
                             fieldsForAudit = LabPLANETArray.addValueToArray1D(fieldsForAudit, "status:"+sampleAnalysisStatusCanceled);
                             fieldsForAudit = LabPLANETArray.addValueToArray1D(fieldsForAudit, "status_previous:"+currStatus);
+                            SampleAudit smpAudit = new SampleAudit();
                             smpAudit.sampleAuditAdd(schemaPrefix, actionName, this.getSampleGrouper()+"_"+"sample_analysis", currTest, sampleId, currTest, null, fieldsForAudit, userName, userRole);        
                         }                        
                     }else{    
@@ -2450,6 +2477,7 @@ private Map getDefaultValuesTemplate(String schema, String tsample, String templ
                     String[] fieldsForAudit = new String[0];
                     fieldsForAudit = LabPLANETArray.addValueToArray1D(fieldsForAudit, "status:"+sampleStatusCanceled);
                     fieldsForAudit = LabPLANETArray.addValueToArray1D(fieldsForAudit, "status_previous:"+currStatus);
+                    SampleAudit smpAudit = new SampleAudit();
                     smpAudit.sampleAuditAdd(schemaPrefix, actionName, this.getSampleGrouper()+"_"+"sample", currSample, currSample, null, null, fieldsForAudit, userName, userRole);        
                 }                        
                 }else{    
@@ -2636,6 +2664,7 @@ public Object[] logSampleAliquot( String schemaPrefix, Integer sampleId, String[
                 smpVolFldName, smpVolFldValue, new String[]{"sample_id"}, new Object[]{sampleId});
         if (LPPlatform.LAB_FALSE.equalsIgnoreCase(updateSampleVolume[0].toString())){
             return updateSampleVolume;}    
+        SampleAudit smpAudit = new SampleAudit();
         smpAudit.sampleAuditAdd(schemaPrefix, auditActionName, parentTableName, sampleId, 
                 sampleId, null, null, 
                 LabPLANETArray.joinTwo1DArraysInOneOf1DString(smpVolFldName, smpVolFldValue, ":"), userName, userRole, appSessionId);        
@@ -2664,7 +2693,7 @@ public Object[] logSampleAliquot( String schemaPrefix, Integer sampleId, String[
     Integer aliquotId = Integer.parseInt(diagnoses[diagnoses.length-1].toString());
     Object[] fieldsOnLogSample = LabPLANETArray.joinTwo1DArraysInOneOf1DString(smpAliqFieldName, smpAliqFieldValue, ":");
     //diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, diagnoses[diagnoses.length-1]);
-
+    SampleAudit smpAudit = new SampleAudit();
     smpAudit.sampleAuditAdd(schemaPrefix, auditActionName, tableName, aliquotId, aliquotId,
             sampleId, null, null, 
             fieldsOnLogSample, userName, userRole, appSessionId);
@@ -2755,6 +2784,7 @@ public Object[] logSampleSubAliquot( String schemaPrefix, Integer aliquotId, Str
                 smpVolFldName, smpVolFldValue, new String[]{fieldName_aliquotId}, new Object[]{aliquotId});
         if (LPPlatform.LAB_FALSE.equalsIgnoreCase(updateSampleVolume[0].toString())){
             return updateSampleVolume;}    
+        SampleAudit smpAudit = new SampleAudit();
         smpAudit.sampleAuditAdd(schemaPrefix, auditActionName, parentTableName, aliquotId, aliquotId, 
                 sampleId, null, null, 
                 LabPLANETArray.joinTwo1DArraysInOneOf1DString(smpVolFldName, smpVolFldValue, ":"), userName, userRole, appSessionId);        
@@ -2785,7 +2815,7 @@ public Object[] logSampleSubAliquot( String schemaPrefix, Integer aliquotId, Str
     Integer subaliquotId = Integer.parseInt(diagnoses[diagnoses.length-1].toString());
     Object[] fieldsOnLogSample = LabPLANETArray.joinTwo1DArraysInOneOf1DString(smpSubAliqFieldName, smpSubAliqFieldValue, ":");
     //diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, diagnoses[diagnoses.length-1]);
-
+    SampleAudit smpAudit = new SampleAudit();
     smpAudit.sampleAuditAdd(schemaPrefix, auditActionName, tableName, subaliquotId, subaliquotId, aliquotId,
             sampleId, null, null, 
             fieldsOnLogSample, userName, userRole, appSessionId);

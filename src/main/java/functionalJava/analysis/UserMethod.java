@@ -25,7 +25,6 @@ public class UserMethod {
 
     String schemaDataName = "data";
     String schemaConfigName = "config";
-    String tableName = "user_method"; 
     
     String[] diagnoses = new String[7];
         

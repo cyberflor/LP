@@ -221,10 +221,9 @@ String sessionIdStr = "";
 if (1==1){
     sessionIdStr = "12";
 }else{                    
-                    LabPLANETSession labSession = new LabPLANETSession();
                     String[] fieldsName = new String[]{"person", "role_name"};
                     Object[] fieldsValue = new Object[]{internalUserStr, userRole};
-                    Object[] newAppSession = labSession.newAppSession(fieldsName, fieldsValue);
+                    Object[] newAppSession = LabPLANETSession.newAppSession(fieldsName, fieldsValue);
                     if ("LABPLANET_FALSE".equalsIgnoreCase(newAppSession[0].toString())){
                         errObject = LabPLANETArray.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
                         errObject = LabPLANETArray.addValueToArray1D(errObject, "API Error Message: App Session Id cannot be generated");                    

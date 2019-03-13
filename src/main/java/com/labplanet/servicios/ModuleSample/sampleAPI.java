@@ -27,8 +27,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-//import frontEnd.APIHandler;
 
 
 /**
@@ -37,7 +35,7 @@ import javax.ws.rs.core.Response.Status;
  */
 public class sampleAPI extends HttpServlet {
 
-    Status  responseOnERROR = Response.Status.BAD_REQUEST;
+    //Status  responseOnERROR = Response.Status.BAD_REQUEST;
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.

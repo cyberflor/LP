@@ -20,9 +20,6 @@ public class Role {
     Object[] javaDocValues = new Object[0];
     String javaDocLineName = "";
     private static final String DIAGNOSES_SUCCESS = "SUCCESS";
-    
-    Object[] diagnoses = new Object[7];
-    
     /**
      *
      * @param roleId
@@ -30,7 +27,7 @@ public class Role {
      * @throws SQLException
      */
     public Object[] createRole( String roleId) throws SQLException {        
-                
+        Object[] diagnoses = new Object[7];
         if (roleId.toUpperCase().contains("ALL")){            
             StackTraceElement[] elements = Thread.currentThread().getStackTrace();
             diagnoses[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
@@ -75,6 +72,7 @@ public class Role {
         Integer id;      
         Integer numRecords = 0;
         String schemaConfigName = "config";
+        Object[] diagnoses = new Object[7];
 
 //        ResultSet resRole = null;
         String newRoleId = "";
@@ -102,7 +100,7 @@ public class Role {
         }
         for (Integer inumRecords=0; inumRecords<numRecords; inumRecords++){
             if (roleId.toUpperCase().contains("ALL")){newRoleId = resRole[inumRecords][0].toString();}
-            Object[] diagnoses = Rdbms.existsRecord(schemaConfigName, "role_privilege", 
+            diagnoses = Rdbms.existsRecord(schemaConfigName, "role_privilege", 
                     new String[]{"privilege_id"}, new Object[]{privilegeId + "," + roleId} );
             if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){      
                 diagnoses = Rdbms.insertRecordInTable("config", "role_privilege", new String[]{"role_id", "privilege_id"}, new Object[]{newRoleId, privilegeId });
@@ -141,6 +139,7 @@ public class Role {
 /*        String methodName = "createPrivilege";
         Integer id;                
 */        
+        Object[] diagnoses = new Object[7];
         diagnoses = Rdbms.insertRecordInTable("config", "privilege", new String[]{"privilege_id"}, new Object[]{privilegeId});
         if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){
             StackTraceElement[] elements = Thread.currentThread().getStackTrace();

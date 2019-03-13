@@ -172,9 +172,8 @@ public class sampleAPIfrontend extends HttpServlet {
                     testFieldToRetrieveArr=LabPLANETArray.addValueToArray1D(testFieldToRetrieveArr, testFieldToRetrieve.split("\\|"));
                 }                
                 
-                LPPlatform labPlat = new LPPlatform();           
                 if (!whereFieldsName.contains("status")){
-                    Object[] recEncrypted = labPlat.encryptString("RECEIVED");
+                    Object[] recEncrypted = LPPlatform.encryptString("RECEIVED");
                     whereFieldsNameArr=LabPLANETArray.addValueToArray1D(whereFieldsNameArr, "status in|");                
                     whereFieldsValueArr=LabPLANETArray.addValueToArray1D(whereFieldsValueArr, "RECEIVED|"+recEncrypted[1]);                
                 }
@@ -182,8 +181,8 @@ public class sampleAPIfrontend extends HttpServlet {
                     whereFieldsNameArr=LabPLANETArray.addValueToArray1D(whereFieldsNameArr, whereFieldsName.split("\\|"));
                     whereFieldsValueArr = LabPLANETArray.addValueToArray1D(whereFieldsValueArr, LabPLANETArray.convertStringWithDataTypeToObjectArray(whereFieldsValue.split("\\|")));                                          
                     for (int iFields=0; iFields<whereFieldsNameArr.length; iFields++){
-                        if (labPlat.isEncryptedField(schemaPrefix+"-data", "sample", whereFieldsNameArr[iFields])){                
-                            HashMap<String, String> hm = labPlat.encryptEncryptableFieldsAddBoth(whereFieldsNameArr[iFields], whereFieldsNameArr[iFields]);
+                        if (LPPlatform.isEncryptedField(schemaPrefix+"-data", "sample", whereFieldsNameArr[iFields])){                
+                            HashMap<String, String> hm = LPPlatform.encryptEncryptableFieldsAddBoth(whereFieldsNameArr[iFields], whereFieldsNameArr[iFields]);
                             whereFieldsNameArr[iFields]= hm.keySet().iterator().next();    
                             SqlStatement sql = new SqlStatement();
                             String separator = sql.inSeparator(whereFieldsNameArr[iFields]);

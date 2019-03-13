@@ -30,11 +30,11 @@ public class LogTransac {
      * @param mainOutput
  */
     public LogTransac(String methodName, Object[] mainInputArguments, Object[] mainOutput){
-        Object[][] calledFunctions = null;
+        Object[][] calledFunct = null;
         this.mainMethodName = methodName;
         this.mainInputArguments = mainInputArguments;
         this.mainOutput = mainOutput;
-        this.calledFunctions = calledFunctions;
+        this.calledFunctions = calledFunct;
     }        
 
 /**
