@@ -68,49 +68,45 @@ public class LabPLANETJson {
             boolean first = res.first();
             String finalString = "";
             
-            try {
-                while (!res.isAfterLast()){
-                    jsonarrayf = res.getString(1);
-                    
-                    if (jsonarrayf==null){jsonarrayf="";}
-                        Integer numchars = jsonarrayf.length();
-                    
-                        if (numchars>2){
+            while (!res.isAfterLast()){
+                jsonarrayf = res.getString(1);
 
-                            String str1 = jsonarrayf.substring(2, numchars - 2);
-                            String [] strarr0 = str1.split("[}],[{]");
+                if (jsonarrayf==null){jsonarrayf="";}
+                    Integer numchars = jsonarrayf.length();
 
-                            Set<String> mySet = new HashSet(Arrays.asList(strarr0));
-                            String[] strarr = Arrays.copyOf(mySet.toArray(), mySet.toArray().length, String[].class);
+                    if (numchars>2){
 
-                            int index = 0;
+                        String str1 = jsonarrayf.substring(2, numchars - 2);
+                        String [] strarr0 = str1.split("[}],[{]");
 
-                            while(index < strarr.length)
-                            {
-                                String fieldar = strarr[index];
-                                String fieldarm = "";
+                        Set<String> mySet = new HashSet(Arrays.asList(strarr0));
+                        String[] strarr = Arrays.copyOf(mySet.toArray(), mySet.toArray().length, String[].class);
 
-                                if (!fieldar.startsWith("{")){
-                                    fieldarm = "{"+fieldar;
-                                }
+                        int index = 0;
 
-                                if (!fieldar.endsWith("}")){
-                                    fieldarm += "},";
-                                }
-                                fieldarm =   fieldar; 
-                                fieldarm = fieldarm.replace("\\\"", "\"");
+                        while(index < strarr.length)
+                        {
+                            String fieldar = strarr[index];
+                            String fieldarm = "";
 
-                                strarr[index] =  fieldarm;
-                                finalString = finalString + "{"+fieldarm+"}";
-                                if (index < strarr.length-1){finalString=finalString+",";}
-                                index++;
+                            if (!fieldar.startsWith("{")){
+                                fieldarm = "{"+fieldar;
                             }
+
+                            if (!fieldar.endsWith("}")){
+                                fieldarm += "},";
+                            }
+                            fieldarm =   fieldar; 
+                            fieldarm = fieldarm.replace("\\\"", "\"");
+
+                            strarr[index] =  fieldarm;
+                            finalString = finalString + "{"+fieldarm+"}";
+                            if (index < strarr.length-1){finalString=finalString+",";}
+                            index++;
                         }
+                    }
                     res.next();
-                }} catch (SQLException ex) {
-                    Logger.getLogger(LabPLANETJson.class.getName()).log(Level.SEVERE, null, ex);
-                    return ex.getMessage();
-                }             
+                }      
             finalString="["+finalString+"]";
             return finalString;
         } catch (SQLException ex) {

@@ -39,13 +39,10 @@ public class DataSample {
     public static String fieldName_statusPrevious = "status_previous";
     private static final String DIAGNOSES_SUCCESS = "SUCCESS";
     
-    
     String classVersion = "0.1";
     String errorCode ="";
     Object[] errorDetailVariables= new Object[0];
     
-    Object[] diagnoses = new Object[7];
-
     String[] mandatoryFields = null;
     Object[] mandatoryFieldsValue = null;
 
@@ -250,7 +247,7 @@ Object[] logSample(String schemaPrefix, String sampleTemplate, Integer sampleTem
         sampleFieldValue = LabPLANETArray.addValueToArray1D(sampleFieldValue, userName);           
         if (this.getSampleGrouper().length()>0){tableName=this.getSampleGrouper()+"_"+tableName;}               
         
-        diagnoses = Rdbms.insertRecordInTable(schemaDataName, tableName, sampleFieldName, sampleFieldValue);
+        Object[] diagnoses = Rdbms.insertRecordInTable(schemaDataName, tableName, sampleFieldName, sampleFieldValue);
         if (!LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){
             errorCode = "DataSample_errorInsertingSampleRecord";
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, diagnoses[5]);
@@ -270,7 +267,7 @@ Object[] logSample(String schemaPrefix, String sampleTemplate, Integer sampleTem
 
 Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTemplateVersion, String[] sampleFieldName, Object[] sampleFieldValue, String userName, String userRole, Integer appSessionId, Boolean devMode, Integer numSamplesToLog) {
     
-        
+    Object[] diagnoses = new Object[7];
         String query = "";
         tableName = "sample";
         String actionName = "Insert";
@@ -475,7 +472,7 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
     sampleFieldValue[iField] = (new Date(System.currentTimeMillis()));
     iField++;
     
-    diagnoses = Rdbms.updateRecordFieldsByFilter(schemaDataName, tableName, sampleFieldName, sampleFieldValue, 
+    Object[] diagnoses = Rdbms.updateRecordFieldsByFilter(schemaDataName, tableName, sampleFieldName, sampleFieldValue, 
                                             new String[] {"sample_id"}, new Object[]{sampleId});
     if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){
         String[] fieldsForAudit = LabPLANETArray.joinTwo1DArraysInOneOf1DString(sampleFieldName, sampleFieldValue, userName);
@@ -510,7 +507,7 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
     sampleFieldValue[iField] = newDate;
     iField++;
     
-    diagnoses = Rdbms.updateRecordFieldsByFilter(schemaDataName, tableName, sampleFieldName, sampleFieldValue, new String[] {"sample_id"}, new Object[]{sampleId});
+    Object[] diagnoses = Rdbms.updateRecordFieldsByFilter(schemaDataName, tableName, sampleFieldName, sampleFieldValue, new String[] {"sample_id"}, new Object[]{sampleId});
     if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){
         errorCode = "DataSample_SamplingDateChangedSuccessfully";
         errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, sampleId.toString());
@@ -550,7 +547,7 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
     sampleFieldValue[iField] = comment;
     iField++;
     
-    diagnoses = Rdbms.updateRecordFieldsByFilter(schemaDataName, tableName, sampleFieldName, sampleFieldValue, new String[] {"sample_id"}, new Object[]{sampleId});
+    Object[] diagnoses = Rdbms.updateRecordFieldsByFilter(schemaDataName, tableName, sampleFieldName, sampleFieldValue, new String[] {"sample_id"}, new Object[]{sampleId});
     if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){        
         errorCode = "DataSample_SampleReceptionCommentAdd";
         errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, sampleId);
@@ -588,7 +585,7 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
     sampleFieldValue[iField] = "";
     iField++;
     
-    diagnoses = Rdbms.updateRecordFieldsByFilter(schemaDataName, tableName, sampleFieldName, sampleFieldValue, new String[] {"sample_id"}, new Object[]{sampleId});
+    Object[] diagnoses = Rdbms.updateRecordFieldsByFilter(schemaDataName, tableName, sampleFieldName, sampleFieldValue, new String[] {"sample_id"}, new Object[]{sampleId});
     if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){
         errorCode = "DataSample_SampleReceptionCommentRemoved";
         errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, sampleId);
@@ -630,7 +627,7 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
     sampleFieldValue[iField] = false;
     iField++;
         
-    diagnoses = Rdbms.updateRecordFieldsByFilter(schemaDataName, tableName, sampleFieldName, sampleFieldValue, new String[] {"sample_id"}, new Object[]{sampleId});
+    Object[] diagnoses = Rdbms.updateRecordFieldsByFilter(schemaDataName, tableName, sampleFieldName, sampleFieldValue, new String[] {"sample_id"}, new Object[]{sampleId});
     if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){
         errorCode = "DataSample_SampleIncubationStartedSuccessfully";
         errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, sampleId);
@@ -680,7 +677,7 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
     sampleFieldValue[iField] = true;
     iField++;
 
-    diagnoses = Rdbms.updateRecordFieldsByFilter(schemaDataName, tableName, sampleFieldName, sampleFieldValue, new String[] {"sample_id"}, new Object[]{sampleId});
+    Object[] diagnoses = Rdbms.updateRecordFieldsByFilter(schemaDataName, tableName, sampleFieldName, sampleFieldValue, new String[] {"sample_id"}, new Object[]{sampleId});
     if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){
         errorCode = "DataSample_SampleIncubationEndedSuccessfully";
         errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, sampleId);
@@ -812,7 +809,7 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
         updateFieldName = LabPLANETArray.addValueToArray1D(updateFieldName, "analyst_assigned_by");
         updateFieldValue = LabPLANETArray.addValueToArray1D(updateFieldValue, userName);
         
-        diagnoses = Rdbms.updateRecordFieldsByFilter(schemaDataName, tableName, updateFieldName, updateFieldValue, new String[]{"test_id"}, new Object[]{testId}); 
+        Object[] diagnoses = Rdbms.updateRecordFieldsByFilter(schemaDataName, tableName, updateFieldName, updateFieldValue, new String[]{"test_id"}, new Object[]{testId}); 
                
         if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){   
               errorCode = "DataSample_SampleAnalysisAssignment_Successfully";
@@ -1118,7 +1115,7 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
     fieldName = LabPLANETArray.addValueToArray1D(fieldName, "added_by");
     fieldValue = LabPLANETArray.addValueToArray1D(fieldValue, userName);   
     String[] fieldsForAudit = LabPLANETArray.joinTwo1DArraysInOneOf1DString(fieldName, fieldValue, ":");
-    diagnoses = Rdbms.insertRecordInTable(schemaDataName, sampleLevel+"_analysis", fieldName, fieldValue);
+    Object[] diagnoses = Rdbms.insertRecordInTable(schemaDataName, sampleLevel+"_analysis", fieldName, fieldValue);
     
     Integer testId = Integer.parseInt(diagnoses[diagnoses.length-1].toString());
     SampleAudit smpAudit = new SampleAudit();
@@ -1208,7 +1205,7 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
     
     String smpPrevStatus=""; String smpAnaNewStatus="";
     
-    diagnoses =  Rdbms.existsRecord(schemaDataName, "sample_analysis", 
+    Object[] diagnoses =  Rdbms.existsRecord(schemaDataName, "sample_analysis", 
                                         new String[]{"sample_id","status in|"}, 
                                         new Object[]{sampleId, "NOT_STARTED|STARTED|INCOMPLETE"});
     if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){smpAnaNewStatus=sampleStatusIncomplete;}
@@ -1253,7 +1250,7 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
    
     String smpAnaPrevStatus=""; String smpAnaNewStatus="";
     
-    diagnoses = Rdbms.existsRecord(schemaDataName, tableName, 
+    Object[] diagnoses = Rdbms.existsRecord(schemaDataName, tableName, 
                                         new String[]{"test_id",fieldName_status,"mandatory"}, 
                                         new Object[]{testId, "BLANK", true});
     if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){smpAnaNewStatus=sampleAnalysisStatusIncomplete;}
@@ -1422,7 +1419,7 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
         fieldsValue = LabPLANETArray.addValueToArray1D(fieldsValue, Rdbms.getCurrentDate());
         fieldsName = LabPLANETArray.addValueToArray1D(fieldsName, fieldName_status);
         fieldsValue = LabPLANETArray.addValueToArray1D(fieldsValue, newResultStatus);
-        diagnoses = Rdbms.updateRecordFieldsByFilter(schemaDataName, tableName, fieldsName, fieldsValue, new String[] {"result_id"} , new Object[] {resultId});
+        Object[] diagnoses = Rdbms.updateRecordFieldsByFilter(schemaDataName, tableName, fieldsName, fieldsValue, new String[] {"result_id"} , new Object[] {resultId});
         if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){
             String[] fieldsForAudit = LabPLANETArray.joinTwo1DArraysInOneOf1DString(fieldsName, fieldsValue, ":");
             SampleAudit smpAudit = new SampleAudit();
@@ -1472,7 +1469,7 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
         fieldsValue = LabPLANETArray.addValueToArray1D(fieldsValue, Rdbms.getCurrentDate());
         fieldsName = LabPLANETArray.addValueToArray1D(fieldsName, fieldName_status);
         fieldsValue = LabPLANETArray.addValueToArray1D(fieldsValue, newResultStatus);
-        diagnoses = Rdbms.updateRecordFieldsByFilter(schemaDataName, tableName, fieldsName, fieldsValue, new String[] {"result_id"} , new Object[] {resultId});
+        Object[] diagnoses = Rdbms.updateRecordFieldsByFilter(schemaDataName, tableName, fieldsName, fieldsValue, new String[] {"result_id"} , new Object[] {resultId});
         if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){            String[] fieldsForAudit = LabPLANETArray.joinTwo1DArraysInOneOf1DString(fieldsName, fieldsValue, ":");
             SampleAudit smpAudit = new SampleAudit();    
             smpAudit.sampleAuditAdd(schemaPrefix, auditActionName, "sample_analysis_result", resultId, sampleId, testId, resultId, fieldsForAudit, userName, userRole);
@@ -1562,7 +1559,7 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
             fieldsValue = LabPLANETArray.addValueToArray1D(fieldsValue, Rdbms.getCurrentDate());
             fieldsName = LabPLANETArray.addValueToArray1D(fieldsName, fieldName_status);
             fieldsValue = LabPLANETArray.addValueToArray1D(fieldsValue, newResultStatus);
-            diagnoses = Rdbms.updateRecordFieldsByFilter(schemaDataName, tableName, fieldsName, fieldsValue, new String[] {"result_id"} , new Object[] {resultId});
+            Object[] diagnoses = Rdbms.updateRecordFieldsByFilter(schemaDataName, tableName, fieldsName, fieldsValue, new String[] {"result_id"} , new Object[] {resultId});
             if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){
                 String[] fieldsForAudit = LabPLANETArray.joinTwo1DArraysInOneOf1DString(fieldsName, fieldsValue, ":");
                 SampleAudit smpAudit = new SampleAudit();
@@ -1698,6 +1695,7 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
      */
     public Object[] sampleResultReview( String schemaPrefix, String userName, Integer sampleId, Integer testId, Integer resultId, String userRole) throws SQLException{
         
+        Object[] diagnoses = new Object[7];
         tableName = "sample_analysis_result";  
         String schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, LPPlatform.SCHEMA_DATA); 
         String schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, LPPlatform.SCHEMA_CONFIG); 
@@ -2094,6 +2092,7 @@ private Map getDefaultValuesTemplate(String schema, String tsample, String templ
      * @throws SQLException
      */
     public Object[] sampleAnalysisResultCancel( String schemaPrefix, String userName, Integer sampleId, Integer testId, Integer resultId, String userRole) throws SQLException{
+        Object[] diagnoses = new Object[7];
         
         String actionName = "CANCEL_RESULT";
         tableName = "sample_analysis_result";  
@@ -2228,6 +2227,7 @@ private Map getDefaultValuesTemplate(String schema, String tsample, String templ
      * @throws SQLException
      */
     public Object[] sampleAnalysisResultUnCancel( String schemaPrefix, String userName, Integer sampleId, Integer testId, Integer resultId, String userRole) throws SQLException{
+        Object[] diagnoses = new Object[7];
         
         tableName = "sample_analysis_result";  
        
@@ -2515,7 +2515,8 @@ private Map getDefaultValuesTemplate(String schema, String tsample, String templ
     
     public void autoSampleAliquoting( String schemaPrefix, Integer sampleId, String userName, String userRole, String[] sampleFieldName, Object[] sampleFieldValue, String eventName, Integer appSessionId, Integer transactionId){
         Object[] fieldNameValueArrayChecker = LPParadigm.fieldNameValueArrayChecker(sampleFieldName, sampleFieldValue);
-        if (!LPPlatform.LAB_TRUE.equalsIgnoreCase(fieldNameValueArrayChecker[0].toString())){}                
+// This code is commented because the method, at least by now, return void instead of anything else        
+//        if (!LPPlatform.LAB_TRUE.equalsIgnoreCase(fieldNameValueArrayChecker[0].toString())){}                
     }
     
     public Object[] sarChangeUOM( String schemaPrefix, Integer resultId, String newUOM, String userName, String userRole){
@@ -2677,7 +2678,7 @@ public Object[] logSampleAliquot( String schemaPrefix, Integer sampleId, String[
     smpAliqFieldName = LabPLANETArray.addValueToArray1D(smpAliqFieldName, "created_on");  
     smpAliqFieldValue = LabPLANETArray.addValueToArray1D(smpAliqFieldValue, LabPLANETDate.getTimeStampLocalDate());
 
-    diagnoses = Rdbms.insertRecordInTable(schemaDataName, tableName, smpAliqFieldName, smpAliqFieldValue);
+    Object[] diagnoses = Rdbms.insertRecordInTable(schemaDataName, tableName, smpAliqFieldName, smpAliqFieldValue);
     if (!LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){
         errorCode = "DataSample_errorInsertingSampleRecord";
         errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, diagnoses[diagnoses.length-2]);
@@ -2799,7 +2800,7 @@ public Object[] logSampleSubAliquot( String schemaPrefix, Integer aliquotId, Str
     smpSubAliqFieldName = LabPLANETArray.addValueToArray1D(smpSubAliqFieldName, "created_on");  
     smpSubAliqFieldValue = LabPLANETArray.addValueToArray1D(smpSubAliqFieldValue, LabPLANETDate.getTimeStampLocalDate());
     
-    diagnoses = Rdbms.insertRecordInTable(schemaDataName, tableName, smpSubAliqFieldName, smpSubAliqFieldValue);
+    Object[] diagnoses = Rdbms.insertRecordInTable(schemaDataName, tableName, smpSubAliqFieldName, smpSubAliqFieldValue);
     if (!LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){
         errorCode = "DataSample_errorInsertingSampleRecord";
         errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, diagnoses[diagnoses.length-2]);
