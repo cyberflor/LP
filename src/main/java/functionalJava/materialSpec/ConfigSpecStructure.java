@@ -87,7 +87,7 @@ public class ConfigSpecStructure {
         String schemaPrefix = parameters[0];
         String variationNames = parameters[1];
         
-        String schemaName = "config";
+        String schemaName = LPPlatform.SCHEMA_CONFIG;
         
         schemaName = LPPlatform.buildSchemaName(schemaPrefix, schemaName);
 
@@ -177,7 +177,7 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
         String myDiagnoses = "";        
         String query = "";
         String specVariations = "";
-        String schemaName = "config";
+        String schemaName = LPPlatform.SCHEMA_CONFIG;
         
         mandatoryFields = getSpecLimitsMandatoryFields();
 
@@ -217,7 +217,7 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
     public String specialFieldCheckSpecLimitsAnalysis(String schemaPrefix){ //, String schemaPrefix, String analysisList){                        
 
         String myDiagnoses = "";  
-        String schemaName = "config";
+        String schemaName = LPPlatform.SCHEMA_CONFIG;
         
         schemaName = LPPlatform.buildSchemaName(schemaPrefix, schemaName);
 
@@ -266,7 +266,7 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
      */
     public String specialFieldCheckSpecLimitsRuleType(String schemaPrefix){ //, String schemaPrefix, String analysisList){                        
         
-        String schemaName = "config";
+        String schemaName = LPPlatform.SCHEMA_CONFIG;
         
         schemaName = LPPlatform.buildSchemaName(schemaPrefix, schemaName);
 
@@ -341,7 +341,7 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
      */
     public Object[] specUpdate( String schemaPrefix, String specCode, Integer specCodeVersion, String[] specFieldName, Object[] specFieldValue) throws SQLException{
         
-        String schemaName = "config";        
+        String schemaName = LPPlatform.SCHEMA_CONFIG;        
         String errorCode = "DataSample_SpecialFunctionReturnedERROR";
         Object[] errorDetailVariables = new Object[0];
          
@@ -457,7 +457,7 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
      */
     public Object[] specNew( String schemaPrefix, String[] specFieldName, Object[] specFieldValue ) throws SQLException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{                          
         String newCode = "";
-        String schemaName = "config";
+        String schemaName = LPPlatform.SCHEMA_CONFIG;
         String query = "";
         String errorCode = "";
         String[] errorDetailVariables = new String[0];
@@ -569,7 +569,7 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
      */
     public Object[] specVariationGetNamesList( String schemaPrefix, String specCode){
 
-        String schemaName = "config";
+        String schemaName = LPPlatform.SCHEMA_CONFIG;
         Object[] diagnosis = new Object[6];
         String variationList = "";
         String errorCode ="";
@@ -651,7 +651,7 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
     public Object[] specLimitNew( String schemaPrefix, String[] specFieldName, Object[] specFieldValue ) throws SQLException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
                           
         String code = "";
-        String schemaName = "config";
+        String schemaName = LPPlatform.SCHEMA_CONFIG;
         String query = "";
         String errorCode="";
         Object[]  errorDetailVariables= new Object[0];

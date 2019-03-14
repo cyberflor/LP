@@ -190,7 +190,7 @@ public class DataProjectScheduleAdhoc {
         String conflictDetail = "This day was converted on holidays";
         Object[] diagn = new String[6];
         diagn[0] = ""; diagn[1] = ""; diagn[2] = ""; diagn[4] = ""; diagn[5] = "";
-        diagn[3] = "FALSE";
+        diagn[3] = LPPlatform.LAB_FALSE;
         
         String schemaNameConfig = "config";LPPlatform.buildSchemaName(schemaName, "config");   
         String schemaNameData = LPPlatform.buildSchemaName(schemaName, "data");   
@@ -228,7 +228,7 @@ public class DataProjectScheduleAdhoc {
                     new String[]{"project", "project_schedule_id", "date", "is_holidays"},
                     new Object[]{pName, projSchedId, calDate, false}, 
                     new String[]{"id", "project", "project_schedule_id", "project_sched_recursive_id", "date", "is_holidays"});
-            if (!"FALSE".equalsIgnoreCase(itemsSameDay[0][3].toString())){
+            if (!LPPlatform.LAB_FALSE.equalsIgnoreCase(itemsSameDay[0][3].toString())){
                 for (Object[] itemsSameDay1 : itemsSameDay) {
                     Long itemId = (Long) itemsSameDay1[0];
                     Object[] updateResult = Rdbms.updateRecordFieldsByFilter(schemaNameData, "project_schedule_item",
@@ -258,7 +258,7 @@ public class DataProjectScheduleAdhoc {
         String conflictDetail = "This day is marked as holidays";
         Object[] diagn = new String[6];
         diagn[0] = ""; diagn[1] = ""; diagn[2] = ""; diagn[4] = ""; diagn[5] = "";
-        diagn[3] = "FALSE";
+        diagn[3] = LPPlatform.LAB_FALSE;
                 
         schemaName = LPPlatform.buildSchemaName(schemaName, "data");       
         Object[] existsRecord = Rdbms.existsRecord(schemaName, tableName,  new String[]{"project", "id"}, new Object[]{pName, projSchedId});

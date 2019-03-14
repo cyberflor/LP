@@ -381,7 +381,7 @@ return "";
         privilege_id = privilege_id.trim();
         privilege_id = privilege_id.replace(" ", "");
 
-        Object[] diagnoses = Rdbms.insertRecordInTable("config", "nav", 
+        Object[] diagnoses = Rdbms.insertRecordInTable(LPPlatform.SCHEMA_CONFIG, "nav", 
                                     new String[]{"privilege_id", "has_children", "show_in_menu", "father_nav_id", "procedure", "proc_version", "proc_code", "sop_name", "sop_section"}, 
                                     new Object[]{privilege_id, haschildren, true, fathernode, procedure, version, code, sopName, sopSection});
         if ("LABPLANET_FALSE".equalsIgnoreCase(diagnoses[0].toString())){
@@ -395,7 +395,7 @@ return "";
             Integer pk=0;
 
             if (!haschildren){
-                Rdbms.updateRecordFieldsByFilter("config", "nav", 
+                Rdbms.updateRecordFieldsByFilter(LPPlatform.SCHEMA_CONFIG, "nav", 
                         new String[]{"header", "close_header", "footer"}, 
                         new Object []{"{id:'nav-"+numr+"', xtype:'tabpanel', title:gTr('paramView','"+nodename+"'), closable:true, activeTab:0, items:[","]", "}"}, 
                         new String[]{"nav_id"}, new Object []{numr});
@@ -418,7 +418,7 @@ return "";
         Integer numr = 0;
         String newEntry = "";
         
-        Object[] diagnoses = Rdbms.insertRecordInTable("config", "nav_tab", 
+        Object[] diagnoses = Rdbms.insertRecordInTable(LPPlatform.SCHEMA_CONFIG, "nav_tab", 
                                     new String[]{"nav_id", "has_child", "procedure", "proc_version", "proc_code", "sop_name", "sop_section"}, 
                                     new Object[]{navId, false, procName, procVersion, procCode, sopName, sopSection});
         if ("LABPLANET_FALSE".equalsIgnoreCase(diagnoses[0].toString())){
@@ -433,7 +433,7 @@ return "";
             try {requirementsLogEntry(methodName, newEntry,3);
             } catch (IOException ex) {Logger.getLogger(Requirement.class.getName()).log(Level.SEVERE, null, ex);}
 
-            diagnoses = Rdbms.updateRecordFieldsByFilter("config", "nav_tab", 
+            diagnoses = Rdbms.updateRecordFieldsByFilter(LPPlatform.SCHEMA_CONFIG, "nav_tab", 
                     new String[]{"header", "close_header", "footer"}, 
                     new Object []{"{title:gTr('paramView', '"+subtabname+"'), xtype:'container', id:'nav-"+navId+"_"+numr+"', glyph:'"+glypname+"', closable:true, activeTab:0, bodyPadding:5,fieldDefaults:{labelAlign:'left',labelWidth:120,anchor:'100%'},items:[", "]", "}"}, 
                     new String[]{"nav_tab_id"}, new Object []{numr});            
@@ -470,7 +470,7 @@ return "";
             String[] fieldsArr = null;
             Integer navTabCompId = 0;
 
-            Object[] diagnoses = Rdbms.insertRecordInTable("config", "nav_tab_comp", 
+            Object[] diagnoses = Rdbms.insertRecordInTable(LPPlatform.SCHEMA_CONFIG, "nav_tab_comp", 
                         new String[]{"nav_id", "nav_tab_id", "region", "xtype", "sql", "header", "footer", "close_header", "procedure", "proc_version", "proc_code", "widget_name", "sop_name", "sop_section"}, 
                         new Object[]{navId, navTabId, region, xtype, sql, header, footer, closeHeader, procName, procVersion, procCode, catw_widget_nameBase, sopName, sopSection });
             if (diagnoses[3].toString().equalsIgnoreCase("FALSE")){navTabCompId=0;}
@@ -494,7 +494,7 @@ return "";
                 if (fieldsArr==null){items = labJson.getJsonArrayFields(tableName, null, fieldPrefix);}
                 else{items = labJson.getJsonArrayFields(tableName, fieldsArr, fieldPrefix);}                   
 
-                Rdbms.updateRecordFieldsByFilter("config", "nav_tab_comp", 
+                Rdbms.updateRecordFieldsByFilter(LPPlatform.SCHEMA_CONFIG, "nav_tab_comp", 
                         new String[]{"item", "sql"}, new Object[]{items, tableName}, 
                         new String[]{"nav_tab_comp_id"}, new Object[]{navTabCompId});
 
@@ -635,7 +635,7 @@ return "";
                 for (String pr: priv){
                     pr = procName + "_" + pr;
                     pr = pr.replace(" ", "").replace("\n", "");
-                    Object[] diagnoses = Rdbms.existsRecord("config", "privilege", 
+                    Object[] diagnoses = Rdbms.existsRecord(LPPlatform.SCHEMA_CONFIG, "privilege", 
                             new String[]{"privilege_id"}, new Object[]{pr});
                     if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){
                         diagnoses = rol.createPrivilege(pr);
@@ -654,7 +654,7 @@ return "";
                             if (r.toUpperCase().contains("ALL")){
                                 //r = r;
                             }
-                            diagnoses = Rdbms.existsRecord("config", "role_privilege", 
+                            diagnoses = Rdbms.existsRecord(LPPlatform.SCHEMA_CONFIG, "role_privilege", 
                                     new String[]{"privilege_id"}, new Object[]{pr + "," + r} );
                             if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){                      
 
@@ -805,7 +805,7 @@ return "";
         String newEntry = "";
         String[] schemaNames = new String[0];
         
-        schemaNames = LabPLANETArray.addValueToArray1D(schemaNames, "config");
+        schemaNames = LabPLANETArray.addValueToArray1D(schemaNames, LPPlatform.SCHEMA_CONFIG);
         schemaNames = LabPLANETArray.addValueToArray1D(schemaNames, "data");        
         schemaNames = LabPLANETArray.addValueToArray1D(schemaNames, "data-audit"); 
 
@@ -939,7 +939,7 @@ return "";
 
             String foreignTableName = "user_info";
 
-            Object[] diagnoses = Rdbms.existsRecord("config", foreignTableName, 
+            Object[] diagnoses = Rdbms.existsRecord(LPPlatform.SCHEMA_CONFIG, foreignTableName, 
                     new String[]{fieldName1}, new Object[]{fieldValue1});
             if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){
                 schemaName = labPlat.buildSchemaName(schemaName, schemaName);
@@ -951,7 +951,7 @@ return "";
             } catch (IOException ex1) {Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex1);}
 
             foreignTableName = "role";
-            diagnoses = Rdbms.existsRecord("config", foreignTableName, 
+            diagnoses = Rdbms.existsRecord(LPPlatform.SCHEMA_CONFIG, foreignTableName, 
                     new String[]{fieldName2}, new Object[]{fieldValue2});
             if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){         
                 schemaName = labPlat.buildSchemaName(schemaName, schemaName);
@@ -964,7 +964,7 @@ return "";
 
             //user role    
             Integer userRoleCount = 0;
-            diagnoses = Rdbms.existsRecord("config", foreignTableName, new String[]{fieldName1, fieldName2}, new Object[]{fieldValue1, fieldValue2});
+            diagnoses = Rdbms.existsRecord(LPPlatform.SCHEMA_CONFIG, foreignTableName, new String[]{fieldName1, fieldName2}, new Object[]{fieldValue1, fieldValue2});
             if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){                                
                 schemaName = "\"" + schemaName + "\"";
                 if ( userRoleCount==0){

@@ -64,7 +64,7 @@ public class Sop {
      * @throws SQLException
      */
     public Object[] dbInsertSopId( String schemaPrefix, String userInfoId) throws SQLException{
-         String schemaConfigName = "config";
+         String schemaConfigName = LPPlatform.SCHEMA_CONFIG;
          schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, schemaConfigName);
 //        schemaPrefix = "\""+schemaPrefix+"\"";
         //requires added_on
@@ -100,7 +100,7 @@ public class Sop {
      * @throws SQLException
      */
     public Integer dbGetSopIdById( String schemaPrefix, Integer sopId) throws SQLException{     
-        String schemaConfigName = "config";
+        String schemaConfigName = LPPlatform.SCHEMA_CONFIG;
         schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, schemaConfigName);
         Object[][] sopInfo = Rdbms.getRecordFieldsByFilter(schemaConfigName, tableName, 
                                                                 new String[]{"sop_id"}, new Object[]{sopId}, new String[]{"sop_id"});
@@ -116,7 +116,7 @@ public class Sop {
      * @throws SQLException
      */
     public Integer dbGetSopIdByName( String schemaPrefix, String sopName) throws SQLException{
-        String schemaConfigName = "config";
+        String schemaConfigName = LPPlatform.SCHEMA_CONFIG;
         schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, schemaConfigName);
         Object[][] sopInfo = Rdbms.getRecordFieldsByFilter(schemaConfigName, tableName, 
                                                                 new String[]{"sop_name"}, new Object[]{sopName}, new String[]{"sop_id"});
@@ -134,7 +134,7 @@ public class Sop {
      * @throws SQLException
      */
     public Object[][] dbGetSopObjByName( String schemaPrefix, String sopName, String[] fields) throws SQLException{
-        String schemaConfigName = "config";
+        String schemaConfigName = LPPlatform.SCHEMA_CONFIG;
         schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, schemaConfigName);
         Object[][] sopInfo = Rdbms.getRecordFieldsByFilter(schemaConfigName, tableName, 
                                                                 new String[]{"sop_name"}, new Object[]{sopName}, fields);
@@ -149,7 +149,7 @@ public class Sop {
      * @throws SQLException
      */
     public Object[] createSop( String schemaPrefix, String sopName) throws SQLException {
-        String schemaConfigName = "config";
+        String schemaConfigName = LPPlatform.SCHEMA_CONFIG;
         schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, schemaConfigName); 
         String errorCode = "";        
         Object[] diagnoses = Rdbms.insertRecordInTable(schemaConfigName, "sop_meta_data", 
@@ -176,7 +176,7 @@ public class Sop {
      * @throws SQLException
      */
     public Object[] updateSop( String schemaName, String schemaPrefix, String fieldName, String fieldValue, String fieldType) throws SQLException {
-        String schemaConfigName = "config";
+        String schemaConfigName = LPPlatform.SCHEMA_CONFIG;
         schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, schemaConfigName);
         Object[] diagnoses = Rdbms.updateRecordFieldsByFilter(schemaConfigName, "sop_meta_data", 
                                         new String[]{fieldName}, new Object[]{fieldValue}, new String[]{"sop_name"}, new Object[]{sopName});

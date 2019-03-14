@@ -35,7 +35,7 @@ public class DataProject extends DataSample{
     private String javaDocLineNameProj = "";
     
 //    private final String schemaDataNameProj = "data";
-//    private final String schemaConfigNameProj = "config";
+//    private final String schemaConfigNameProj = LPPlatform.SCHEMA_CONFIG;
 
     /**
      *
@@ -103,8 +103,8 @@ Object[] createProject( String schemaPrefix, String projectTemplate, Integer pro
         String actionName = "Insert";
         String auditActionName = "ADD_SAMPLE_ANALYSIS";                        
         
-        String schemaDataName = "data";
-        String schemaConfigName = "config";
+        String schemaDataName = LPPlatform.SCHEMA_DATA;
+        String schemaConfigName = LPPlatform.SCHEMA_CONFIG;
         
         schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, schemaDataName);    
         schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, schemaConfigName); 
@@ -149,7 +149,7 @@ Object[] createProject( String schemaPrefix, String projectTemplate, Integer pro
             diagnosesProj[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
             diagnosesProj[1]= classVersionProj;
             diagnosesProj[2]= "Code Line " + (elements[1].getLineNumber());
-            diagnosesProj[3]="FALSE";
+            diagnosesProj[3]=LPPlatform.LAB_FALSE;
             diagnosesProj[4]="ERROR:Fields duplicated";
             diagnosesProj[5]="Detected any field duplicated in FieldName, the values are:"+(char) 10 + Arrays.toString(sampleFieldName);
             return diagnosesProj;
@@ -190,18 +190,18 @@ Object[] createProject( String schemaPrefix, String projectTemplate, Integer pro
             diagnosesProj[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
             diagnosesProj[1]= classVersionProj;
             diagnosesProj[2]= "Code Line " + (elements[1].getLineNumber());
-            diagnosesProj[3]="FALSE";
+            diagnosesProj[3]=LPPlatform.LAB_FALSE;
             diagnosesProj[4]="ERROR:Missing Mandatory Fields";
             diagnosesProj[5]="Mandatory fields not found: "+mandatoryFieldsMissing;
             return diagnosesProj;
         }        
-        Object[] diagnosis = Rdbms.existsRecord(schemaConfigName, tableName, new String[]{"config","config_version"}, new Object[]{projectTemplate, projectTemplateVersion});
+        Object[] diagnosis = Rdbms.existsRecord(schemaConfigName, tableName, new String[]{LPPlatform.SCHEMA_CONFIG,"config_version"}, new Object[]{projectTemplate, projectTemplateVersion});
         if (!"LABPLANET_TRUE".equalsIgnoreCase(diagnosis[0].toString())){	
             StackTraceElement[] elements = Thread.currentThread().getStackTrace();
             diagnosesProj[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
             diagnosesProj[1]= classVersionProj;
             diagnosesProj[2]= "Code Line " + (elements[1].getLineNumber());
-            diagnosesProj[3]="FALSE";
+            diagnosesProj[3]=LPPlatform.LAB_FALSE;
             diagnosesProj[4]="ERROR:Sample Config Code NOT FOUND";
             diagnosesProj[5]="The sample config code "+projectTemplate+" in its version "+projectTemplateVersion+" was not found in the schema "+schemaConfigName+". Detail:"+diagnosis[5];
             return diagnosesProj;
@@ -235,14 +235,14 @@ Object[] createProject( String schemaPrefix, String projectTemplate, Integer pro
                         diagnosesProj[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
                         diagnosesProj[1]= classVersionProj;
                         diagnosesProj[2]= "Code Line " + (elements[1].getLineNumber());
-                        diagnosesProj[3]="FALSE";
+                        diagnosesProj[3]=LPPlatform.LAB_FALSE;
                         diagnosesProj[4]=specialFunctionReturn.toString();
                         diagnosesProj[5]="The field " + currField + " is considered special and its checker (" + aMethod + ") returned the Error above";
                         return diagnosesProj;                            
                     }                
             }
         }
-        sampleFieldName = LabPLANETArray.addValueToArray1D(sampleFieldName, "config");    
+        sampleFieldName = LabPLANETArray.addValueToArray1D(sampleFieldName, LPPlatform.SCHEMA_CONFIG);    
         sampleFieldValue = LabPLANETArray.addValueToArray1D(sampleFieldValue, projectTemplate);
         sampleFieldName = LabPLANETArray.addValueToArray1D(sampleFieldName, "config_version");    
         sampleFieldValue = LabPLANETArray.addValueToArray1D(sampleFieldValue, projectTemplateVersion); 
@@ -289,9 +289,9 @@ Object[] createProject( String schemaPrefix, String projectTemplate, Integer pro
             fieldName = LabPLANETArray.addValueToArray1D(fieldName, "project");
             fieldValue = LabPLANETArray.addValueToArray1D(fieldValue, projectName);
             newProjSample = ds.logSample(schemaPrefix, projectTemplate, projectTemplateVersion, fieldName, fieldValue, userName, userRole, appSessionId);
-            /*if (!newProjSample[3].equalsIgnoreCase("FALSE")){
+            /*if (!newProjSample[3].equalsIgnoreCase(LPPlatform.LAB_FALSE)){
                 String schemaDataNameProj = "data";
-                String schemaConfigNameProj = "config";
+                String schemaConfigNameProj = LPPlatform.SCHEMA_CONFIG;
 
                 LPPlatform labPlat = new LPPlatform();
                 schemaDataNameProj = labPlat.buildSchemaName(schemaPrefix, schemaDataNameProj);    

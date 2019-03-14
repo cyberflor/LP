@@ -139,7 +139,7 @@ Object[] logSample(String schemaPrefix, String sampleTemplate, Integer sampleTem
         String auditActionName = "LOG_SAMPLE";
         
         String schemaDataName = "data";
-        String schemaConfigName = "config";
+        String schemaConfigName = LPPlatform.SCHEMA_CONFIG;
 
         schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, schemaDataName);    
         schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, schemaConfigName); 
@@ -274,7 +274,7 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
         String auditActionName = "LOG_SAMPLE";
         
         String schemaDataName = "data";
-        String schemaConfigName = "config";
+        String schemaConfigName = LPPlatform.SCHEMA_CONFIG;
 
         schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, schemaDataName);    
         schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, schemaConfigName); 
@@ -1903,7 +1903,7 @@ private Map getDefaultValuesTemplate(String schema, String tsample, String templ
     public String specialFieldCheckSampleStatus( String[] parameters, String schemaPrefix, String template, Integer templateVersion){ //, String schemaPrefix, String analysisList){                        
 
         String myDiagnoses = "";        
-        String schemaConfigName = "config";
+        String schemaConfigName = LPPlatform.SCHEMA_CONFIG;
         
         schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, schemaConfigName); 
         
@@ -1998,7 +1998,7 @@ private Map getDefaultValuesTemplate(String schema, String tsample, String templ
     public String specialFieldCheckSampleAnalysisAnalyst( String schemaPrefix, String template, Integer templateVersion){ //, String schemaPrefix, String analysisList){                        
 
         String myDiagnoses = "";        
-        String schemaConfigName = "config";
+        String schemaConfigName = LPPlatform.SCHEMA_CONFIG;
         
         schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, schemaConfigName); 
         
@@ -2053,7 +2053,7 @@ private Map getDefaultValuesTemplate(String schema, String tsample, String templ
     public String specialFieldCheckSampleSpecCode( String[] parameters, String schemaPrefix, String template, Integer templateVersion){ //, String schemaPrefix, String analysisList){                        
 
         String myDiagnoses = "";        
-        String schemaConfigName = "config";
+        String schemaConfigName = LPPlatform.SCHEMA_CONFIG;
         
         schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, schemaConfigName); 
 
@@ -2584,7 +2584,7 @@ public Object[] logSampleAliquot( String schemaPrefix, Integer sampleId, String[
     String auditActionName = "LOG_SAMPLE_ALIQUOT";
 
     String schemaDataName = "data";
-    String schemaConfigName = "config";
+    String schemaConfigName = LPPlatform.SCHEMA_CONFIG;
     
     Object[] fieldNameValueArrayChecker = LPParadigm.fieldNameValueArrayChecker(smpAliqFieldName, smpAliqFieldValue);
     if (!LPPlatform.LAB_TRUE.equalsIgnoreCase(fieldNameValueArrayChecker[0].toString())){return fieldNameValueArrayChecker;}        
@@ -2704,7 +2704,7 @@ public Object[] logSampleSubAliquot( String schemaPrefix, Integer aliquotId, Str
     String auditActionName = "LOG_SAMPLE_SUBALIQUOT";
 
     String schemaDataName = "data";
-    String schemaConfigName = "config";
+    String schemaConfigName = LPPlatform.SCHEMA_CONFIG;
 
     schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, schemaDataName);    
     schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, schemaConfigName); 

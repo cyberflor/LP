@@ -567,9 +567,10 @@ public class TestingResultCheckSpecQuantitative extends HttpServlet {
                     }
                 //}
             }                
-            fileContent = fileContent +"</table>";
+            
+            fileContent = fileContent +LPTestingOutFormat.tableEnd();
 
-            fileContent = fileContent +"<table>";
+            fileContent = fileContent +LPTestingOutFormat.tableStart();
             fileContent = fileContent +"<th>Test#</th><th>Min Spec</th><th>Min Strict</th><th>Min Control</th><th>Min Control Strict</th><th>Result</th><th>Max Cotnrol</th><th>Max Control Strict</th><th>Max Spec</th><th>Max Strict</th><th>Syntaxis</th><th>Code</th><th>Evaluation</th>";
             for (Integer i=0;i<QuantitSpecTestingArray.length;i++){
                 //if (QuantitSpecTestingArray[i][2]==null && QuantitSpecTestingArray[i][3]==null){
@@ -629,8 +630,8 @@ public class TestingResultCheckSpecQuantitative extends HttpServlet {
                     
                 //}
             }                
-            fileContent = fileContent +"</table>";
-            fileContent = fileContent +"<table>";
+            fileContent = fileContent +LPTestingOutFormat.tableEnd();
+            fileContent = fileContent +LPTestingOutFormat.tableStart();
             fileContent = fileContent +"<th>Total Tests</th><th>Total Match Boolean</th><th>Total Boolean Undefined</th><th>Total Boolean Unmatch</th>"
                                                        + "<th>Total Match ErrorCode</th><th>Total ErrorCode Undefined</th><th>Total ErrorCode Unmatch</th>";            
             fileContent = fileContent +"</tr>";
@@ -642,10 +643,10 @@ public class TestingResultCheckSpecQuantitative extends HttpServlet {
                 fileContent = fileContent +"<td>"+totalLabPlanetErrorCodeUndefined.toString()+"</td>";  
                 fileContent = fileContent +"<td>"+totalLabPlanetErrorCodeUnMatch.toString()+"</td>";  
             fileContent = fileContent +"<//tr>";
-            fileContent = fileContent +"</table>";
+            fileContent = fileContent +LPTestingOutFormat.tableEnd();
 
             out.println(fileContent);  
-/*            out.println("<table>");
+/*            out.println(LPTestingOutFormat.tableStart());
             out.println("<th>Min Spec</th><th>Min Control</th><th>Max Control</th><th>Max Spec</th><th>Evaluation</th>");
             for (Integer i=0;i<QuantitSpecTestingArray.length;i++){
                 out.println("<tr>");
@@ -666,7 +667,7 @@ public class TestingResultCheckSpecQuantitative extends HttpServlet {
                 out.println("<td>"+specEvaluation[0].toString()+". "+specEvaluation[1].toString()+"</td>");
                 out.println("</tr>");
             }                
-            out.println("</table>");
+            out.println("LPTestingOutFormat.tableEnd());
 */
             out.println("</body>");
             out.println("</html>");

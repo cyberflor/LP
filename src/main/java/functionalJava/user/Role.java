@@ -29,12 +29,12 @@ public class Role {
             diagnoses[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
             diagnoses[1]= classVersion;
             diagnoses[2]= "Code Line " +(elements[1].getLineNumber());
-            diagnoses[3]="FALSE";
+            diagnoses[3]=LPPlatform.LAB_FALSE;
             diagnoses[4]="ERROR ALL IS SPECIAL WORD";
             diagnoses[5]="The word ALL in roles is an special one, it means this privilege should be added to all the roles present in this procedure.";
             return diagnoses;
         }                
-        diagnoses = Rdbms.insertRecordInTable("config", "role", new String[]{"role_id", "active"}, new Object[]{roleId, true });
+        diagnoses = Rdbms.insertRecordInTable(LPPlatform.SCHEMA_CONFIG, "role", new String[]{"role_id", "active"}, new Object[]{roleId, true });
            if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){	
             StackTraceElement[] elements = Thread.currentThread().getStackTrace();
             diagnoses[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
@@ -49,7 +49,7 @@ public class Role {
             diagnoses[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
             diagnoses[1]= classVersion;
             diagnoses[2]= "Code Line " + (elements[1].getLineNumber());
-            diagnoses[3]="FALSE";
+            diagnoses[3]=LPPlatform.LAB_FALSE;
             diagnoses[4]="ERROR CREATING ROLE RECORD IN DB";
             //diagnoses[5]=diagnoses[5];
             return diagnoses;        
@@ -67,7 +67,7 @@ public class Role {
     public Object[] addPrivilegeToRole( String privilegeId, String roleId, String procName) throws SQLException {
         Integer id;      
         Integer numRecords = 0;
-        String schemaConfigName = "config";
+        String schemaConfigName = LPPlatform.SCHEMA_CONFIG;
         Object[] diagnoses = new Object[7];
 
 //        ResultSet resRole = null;
@@ -99,7 +99,7 @@ public class Role {
             diagnoses = Rdbms.existsRecord(schemaConfigName, "role_privilege", 
                     new String[]{"privilege_id"}, new Object[]{privilegeId + "," + roleId} );
             if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){      
-                diagnoses = Rdbms.insertRecordInTable("config", "role_privilege", new String[]{"role_id", "privilege_id"}, new Object[]{newRoleId, privilegeId });
+                diagnoses = Rdbms.insertRecordInTable(LPPlatform.SCHEMA_CONFIG, "role_privilege", new String[]{"role_id", "privilege_id"}, new Object[]{newRoleId, privilegeId });
                 if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){
                     StackTraceElement[] elements = Thread.currentThread().getStackTrace();
                     diagnoses[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
@@ -114,7 +114,7 @@ public class Role {
                     diagnoses[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
                     diagnoses[1]= classVersion;
                     diagnoses[2]= "Code Line " + (elements[1].getLineNumber());
-                    diagnoses[3]="FALSE";
+                    diagnoses[3]=LPPlatform.LAB_FALSE;
                     diagnoses[4]="ERROR ROLE_PRIVILEGE RECORD CANNOT BE CREATED";
                     //diagnoses[5]=diagnoses[5];
                     //return diagnoses;                
@@ -136,7 +136,7 @@ public class Role {
         Integer id;                
 */        
         Object[] diagnoses = new Object[7];
-        diagnoses = Rdbms.insertRecordInTable("config", "privilege", new String[]{"privilege_id"}, new Object[]{privilegeId});
+        diagnoses = Rdbms.insertRecordInTable(LPPlatform.SCHEMA_CONFIG, "privilege", new String[]{"privilege_id"}, new Object[]{privilegeId});
         if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){
             StackTraceElement[] elements = Thread.currentThread().getStackTrace();
             diagnoses[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
@@ -150,7 +150,7 @@ public class Role {
             diagnoses[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
             diagnoses[1]= classVersion;
             diagnoses[2]= "Code Line " + (elements[1].getLineNumber());
-            diagnoses[3]="FALSE";
+            diagnoses[3]=LPPlatform.LAB_FALSE;
             diagnoses[4]="ERROR PRIVILEGE RECORD NOT CREATED";
             //diagnoses[5]=diagnoses[5];
         }

@@ -56,7 +56,7 @@ public class UnitsOfMeasurement {
             conversion = LabPLANETArray.addValueToArray1D(conversion, valueToConvert);
             return conversion;
         }    
-        String schemaName = "config";
+        String schemaName = LPPlatform.SCHEMA_CONFIG;
         String tableName = "units_of_measurement";
         String familyFieldNameDataBase = "measurement_family";                
         schemaName = LPPlatform.buildSchemaName(schemaPrefix, schemaName);
@@ -101,7 +101,7 @@ public class UnitsOfMeasurement {
         String familyFieldNameDataBase = "measurement_family";
         BigDecimal valueConverted = valueToConvert;
         
-        String schemaName = "config";
+        String schemaName = LPPlatform.SCHEMA_CONFIG;
         schemaName = LPPlatform.buildSchemaName(schemaPrefix, schemaName);
              
         String[] fieldsToGet = new String[]{"name", familyFieldNameDataBase, "is_base", "factor_value", "offset_value"};
@@ -165,7 +165,7 @@ public class UnitsOfMeasurement {
     public Object[][] getAllUnitsPerFamily( String schemaPrefix, String family, String[] fieldsToRetrieve ){
        
         String tableName = "units_of_measurement";        
-        String schemaName = "config";
+        String schemaName = LPPlatform.SCHEMA_CONFIG;
         schemaName = LPPlatform.buildSchemaName(schemaPrefix, schemaName);
         if (family==null){
             Object[] conversion = LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, "UnitsOfMeasurement_FamilyArgumentMandatory",
@@ -188,7 +188,7 @@ public class UnitsOfMeasurement {
      */
     public String getFamilyBaseUnitName( String schemaPrefix, String family){
         String tableName = "units_of_measurement";                
-        String schemaName = "config";
+        String schemaName = LPPlatform.SCHEMA_CONFIG;
         schemaName = LPPlatform.buildSchemaName(schemaPrefix, schemaName);
        
         String baseUnitName="";

@@ -113,7 +113,7 @@ public class sampleAPIfrontend extends HttpServlet {
                 Rdbms.closeRdbms();
                 JSONObject proceduresList = new JSONObject();
                 JSONArray jArray = new JSONArray();
-                if ("LABPLANET_FALSE".equalsIgnoreCase(Datas[0][0].toString())){  
+                if (LPPlatform.LAB_FALSE.equalsIgnoreCase(Datas[0][0].toString())){  
                     Object[] errMsg = LabPLANETFrontEnd.responseError(LabPLANETArray.array2dTo1d(Datas), language, null);
                     response.sendError((int) errMsg[0], (String) errMsg[1]);    
                     return;
@@ -139,7 +139,7 @@ public class sampleAPIfrontend extends HttpServlet {
                         new String[] {"received_by is null"}, new Object[]{""},
                         sampleFieldToRetrieveArr, sortFieldsNameArr);
                 Rdbms.closeRdbms();
-                if (myData.contains("LABPLANET_FALSE")){  
+                if (myData.contains(LPPlatform.LAB_FALSE)){  
                     Object[] errMsg = LabPLANETFrontEnd.responseError(new String[]{myData}, language, null);
                     response.sendError((int) errMsg[0], (String) errMsg[1]);    
                 }else{
@@ -230,7 +230,7 @@ public class sampleAPIfrontend extends HttpServlet {
                         response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "No info found or error running the query for this sample "); 
                         return;
                     }
-                    if ( myData.contains("LABPLANET_FALSE")) {  
+                    if ( myData.contains(LPPlatform.LAB_FALSE)) {  
                         Object[] errMsg = LabPLANETFrontEnd.responseError(new String[]{myData}, language, null);
                         response.sendError((int) errMsg[0], (String) errMsg[1]);                            
                     }else{
@@ -244,7 +244,7 @@ public class sampleAPIfrontend extends HttpServlet {
                     JSONArray sampleArray = new JSONArray();    
                     Object[][] mySamples = Rdbms.getRecordFieldsByFilter(schemaPrefix+"-data", "sample",
                             whereFieldsNameArr, whereFieldsValueArr, sampleFieldToRetrieveArr);
-                    if ( "LABPLANET_FALSE".equalsIgnoreCase(mySamples[0][0].toString()) ){
+                    if ( LPPlatform.LAB_FALSE.equalsIgnoreCase(mySamples[0][0].toString()) ){
                         Rdbms.closeRdbms(); 
                         Object[] errMsg = LabPLANETFrontEnd.responseError(LabPLANETArray.array2dTo1d(mySamples), language, null);
                         response.sendError((int) errMsg[0], (String) errMsg[1]);                            
@@ -316,7 +316,7 @@ public class sampleAPIfrontend extends HttpServlet {
                     myData = Rdbms.getRecordFieldsByFilterJSON(schemaPrefix+"-config", "analysis_methods_view",
                             new String[]{"code is not null"},new Object[]{true}, fieldToRetrieveArr, sortFieldsNameArr);
                     Rdbms.closeRdbms();
-                    if (myData.contains("LABPLANET_FALSE")){  
+                    if (myData.contains(LPPlatform.LAB_FALSE)){  
                         Object[] errMsg = LabPLANETFrontEnd.responseError(new String[] {myData}, language, null);
                         response.sendError((int) errMsg[0], (String) errMsg[1]);                            
                     }else{
@@ -352,7 +352,7 @@ public class sampleAPIfrontend extends HttpServlet {
                     myData = Rdbms.getRecordFieldsByFilterJSON(schemaPrefix+"-data", "sample_analysis",
                             new String[]{"sample_id"},new Object[]{sampleId}, sampleAnalysisFieldToRetrieveArr, sortFieldsNameArr);
                     Rdbms.closeRdbms();
-                    if (myData.contains("LABPLANET_FALSE")){  
+                    if (myData.contains(LPPlatform.LAB_FALSE)){  
                         Object[] errMsg = LabPLANETFrontEnd.responseError(new String[] {myData}, language, null);
                         response.sendError((int) errMsg[0], (String) errMsg[1]);                            
                     }else{
@@ -395,7 +395,7 @@ public class sampleAPIfrontend extends HttpServlet {
                     myData = Rdbms.getRecordFieldsByFilterJSON(schemaPrefix+"-data", "sample_analysis_result",
                             new String[]{"sample_id"},new Object[]{sampleId}, resultFieldToRetrieveArr, sortFieldsNameArr);
                     Rdbms.closeRdbms();
-                    if (myData.contains("LABPLANET_FALSE")){  
+                    if (myData.contains(LPPlatform.LAB_FALSE)){  
                         Object[] errMsg = LabPLANETFrontEnd.responseError(new String[] {myData}, language, null);
                         response.sendError((int) errMsg[0], (String) errMsg[1]);                            
                     }else{
@@ -418,7 +418,7 @@ public class sampleAPIfrontend extends HttpServlet {
 /*                    myData = Rdbms.getRecordFieldsByFilterJSON(schemaPrefix+"-data", "sample_analysis_result",
                             new String[]{"sample_id"},new Object[]{resultIdStr}, resultFieldToRetrieveArr, sortFieldsNameArr);
                     Rdbms.closeRdbms();
-                    if (myData.contains("LABPLANET_FALSE")){  
+                    if (myData.contains(LPPlatform.LAB_FALSE)){  
                         Object[] errMsg = LabPLANETFrontEnd.responseError(new String[] {myData}, language, null);
                         response.sendError((int) errMsg[0], (String) errMsg[1]);                            
                     }else{

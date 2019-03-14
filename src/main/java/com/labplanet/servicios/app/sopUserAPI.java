@@ -110,7 +110,7 @@ public class sopUserAPI extends HttpServlet {
             case "MY_SOPS":    
                 UserProfile usProf = new UserProfile();
                 String[] allUserProcedurePrefix = LabPLANETArray.ConvertObjectArrayToStringArray(usProf.getAllUserProcedurePrefix(dbUserName));
-                if ("LABPLANET_FALSE".equalsIgnoreCase(allUserProcedurePrefix[0])){
+                if (LPPlatform.LAB_FALSE.equalsIgnoreCase(allUserProcedurePrefix[0])){
                     Object[] errMsg = LabPLANETFrontEnd.responseError(allUserProcedurePrefix, language, null);
                     response.sendError((int) errMsg[0], (String) errMsg[1]);    
                     Rdbms.closeRdbms(); 
@@ -129,7 +129,7 @@ public class sopUserAPI extends HttpServlet {
                 
                 Object[][] userSops = userSop.getUserProfileFieldValues( 
                         new String[]{"user_id"}, new Object[]{internalUserID}, fieldsToRetrieve, allUserProcedurePrefix);
-                if ("LABPLANET_FALSE".equalsIgnoreCase(allUserProcedurePrefix[0])){
+                if (LPPlatform.LAB_FALSE.equalsIgnoreCase(allUserProcedurePrefix[0])){
                     Object[] errMsg = LabPLANETFrontEnd.responseError(allUserProcedurePrefix, language, null);
                     response.sendError((int) errMsg[0], (String) errMsg[1]);    
                     Rdbms.closeRdbms();
@@ -163,7 +163,7 @@ public class sopUserAPI extends HttpServlet {
             case "MY_PENDING_SOPS":    
                 usProf = new UserProfile();
                 allUserProcedurePrefix = LabPLANETArray.ConvertObjectArrayToStringArray(usProf.getAllUserProcedurePrefix(dbUserName));
-                if ("LABPLANET_FALSE".equalsIgnoreCase(allUserProcedurePrefix[0])){
+                if (LPPlatform.LAB_FALSE.equalsIgnoreCase(allUserProcedurePrefix[0])){
                     Object[] errMsg = LabPLANETFrontEnd.responseError(allUserProcedurePrefix, language, null);
                     response.sendError((int) errMsg[0], (String) errMsg[1]);   
                     Rdbms.closeRdbms();
@@ -184,7 +184,7 @@ public class sopUserAPI extends HttpServlet {
                     Object[][] userProcSops = userSop.getNotCompletedUserSOP(internalUserID, currProc, fieldsToRetrieve);
                     //userSops = userSop.getUserProfileFieldValues(rdbm, 
                     //        new String[]{"user_id"}, new Object[]{internalUserID}, fieldsToRetrieve, allUserProcedurePrefix);
-                    if ("LABPLANET_FALSE".equalsIgnoreCase(Arrays.toString(userProcSops[0]))){
+                    if (LPPlatform.LAB_FALSE.equalsIgnoreCase(Arrays.toString(userProcSops[0]))){
                         Object[] errMsg = LabPLANETFrontEnd.responseError(userProcSops, language, null);
                         response.sendError((int) errMsg[0], (String) errMsg[1]);    
                         Rdbms.closeRdbms();

@@ -43,7 +43,7 @@ public class SampleAudit {
                         Integer sampleId, Integer testId, Integer resultId, Object[] auditlog, String userName, String userRole, Integer appSessionId) {
         
         String auditTableName = "sample";
-        String schemaName = "data-audit";                
+        String schemaName = LPPlatform.SCHEMA_DATA_AUDIT;                
         
         schemaName = LPPlatform.buildSchemaName(schemaPrefix, schemaName);                
         
@@ -52,7 +52,7 @@ public class SampleAudit {
         
         Requirement req = new Requirement();
         Object[][] procedureInfo = req.getProcedureBySchemaPrefix(schemaPrefix);
-        if (!(procedureInfo[0][3].toString().equalsIgnoreCase("FALSE"))){
+        if (!(procedureInfo[0][3].toString().equalsIgnoreCase(LPPlatform.LAB_FALSE))){
             fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "procedure");
             fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, procedureInfo[0][0]);
             fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "procedure_version");
@@ -115,7 +115,7 @@ public class SampleAudit {
 
     public void sampleAuditAdd(String schemaPrefix, String action, String tableName, Integer tableId, Integer aliquotId, Integer sampleId, Integer testId, Integer resultId, Object[] auditlog, String userName, String userRole, Integer sessionId) {
         String auditTableName = "sample";
-        String schemaName = "data-audit";                
+        String schemaName = LPPlatform.SCHEMA_DATA_AUDIT;                
         schemaName = LPPlatform.buildSchemaName(schemaPrefix, schemaName);                
         
         String[] fieldNames = new String[0];
@@ -123,7 +123,7 @@ public class SampleAudit {
         
         Requirement req = new Requirement();
         Object[][] procedureInfo = req.getProcedureBySchemaPrefix(schemaPrefix);
-        if (!(procedureInfo[0][3].toString().equalsIgnoreCase("FALSE"))){
+        if (!(procedureInfo[0][3].toString().equalsIgnoreCase(LPPlatform.LAB_FALSE))){
             fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "procedure");
             fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, procedureInfo[0][0]);
             fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "procedure_version");
@@ -182,7 +182,7 @@ public class SampleAudit {
 
     public void sampleAuditAdd( String schemaPrefix, String action, String tableName, Integer tableId, Integer subaliquotId, Integer aliquotId, Integer sampleId, Integer testId, Integer resultId, Object[] auditlog, String userName, String userRole, Integer sessionId) {
         String auditTableName = "sample";
-        String schemaName = "data-audit";                
+        String schemaName = LPPlatform.SCHEMA_DATA_AUDIT;                
         schemaName = LPPlatform.buildSchemaName(schemaPrefix, schemaName);                
         
         String[] fieldNames = new String[0];
@@ -190,7 +190,7 @@ public class SampleAudit {
         
         Requirement req = new Requirement();
         Object[][] procedureInfo = req.getProcedureBySchemaPrefix(schemaPrefix);
-        if (!(procedureInfo[0][3].toString().equalsIgnoreCase("FALSE"))){
+        if (!(procedureInfo[0][3].toString().equalsIgnoreCase(LPPlatform.LAB_FALSE))){
             fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "procedure");
             fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, procedureInfo[0][0]);
             fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "procedure_version");
@@ -254,7 +254,7 @@ public class SampleAudit {
     
     public void sampleAuditAdd( String schemaPrefix, String action, String tableName, Integer tableId, Integer sampleId, Integer testId, Integer resultId, Object[] auditlog, String userName, String userRole) {
         String auditTableName = "sample";
-        String schemaName = "data-audit";                
+        String schemaName = LPPlatform.SCHEMA_DATA_AUDIT;                
         schemaName = LPPlatform.buildSchemaName(schemaPrefix, schemaName);                
         
         String[] fieldNames = new String[0];
@@ -262,7 +262,7 @@ public class SampleAudit {
         
         Requirement req = new Requirement();
         Object[][] procedureInfo = req.getProcedureBySchemaPrefix(schemaPrefix);
-        if (!(procedureInfo[0][3].toString().equalsIgnoreCase("FALSE"))){
+        if (!(procedureInfo[0][3].toString().equalsIgnoreCase(LPPlatform.LAB_FALSE))){
             fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "procedure");
             fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, procedureInfo[0][0]);
             fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "procedure_version");
@@ -322,7 +322,7 @@ public class SampleAudit {
  */    
     public void sampleAuditAdd( String schemaPrefix, String action, String tableName, Integer tableId, Object[] auditlog, String userName){
         String auditTableName = "sample";
-        String schemaName = "data-audit";
+        String schemaName = LPPlatform.SCHEMA_DATA_AUDIT;
         schemaName = LPPlatform.buildSchemaName(schemaPrefix, schemaName);                
         
         String[] fieldNames = new String[0];
