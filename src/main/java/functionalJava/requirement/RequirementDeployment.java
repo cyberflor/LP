@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.io.Writer;
 import static java.lang.System.out;
 import java.sql.SQLException;
-import java.util.Date;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -35,7 +34,6 @@ public class RequirementDeployment {
 
     /**
      *
-     * @param rdbm
      * @param procedure
      * @param procVersion
      * @return
@@ -563,18 +561,19 @@ return "";
         
         String logFile = logDir + "/" + newLogFileName;
         logFile = logFile.replace("/", "\\");
-
-        fw = new FileWriter(logFile, true);                  
-        String newEntry = "";
-        if (numTabs!=null){
-            for (Integer i=0;i<numTabs;i++){
-                newEntry = newEntry + "     ";
+        try{
+            fw = new FileWriter(logFile, true);                  
+            String newEntry = "";
+            if (numTabs!=null){
+                for (Integer i=0;i<numTabs;i++){
+                    newEntry = newEntry + "     ";
+                }
             }
-        }
-        newEntry = newEntry + FunctionName + ": " + entryValue + "\n";            
-        fw.append(newEntry);
+            newEntry = newEntry + FunctionName + ": " + entryValue + "\n";            
+            fw.append(newEntry);
 
-        fw.close();        
+            fw.close();        
+        }finally{fw.close();}
     }    
 
     /**

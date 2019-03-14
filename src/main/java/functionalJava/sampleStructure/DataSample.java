@@ -716,127 +716,117 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
      */
     public Object[] sampleAnalysisAssignAnalyst( String schemaPrefix, String userName, Integer testId, String newAnalyst, String userRole) throws SQLException{
 
-    tableName = "sample_analysis";
-    String auditActionName = "SAMPLE_ANALYSIS_ANALYST_ASSIGNMENT";
+        String schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, LPPlatform.SCHEMA_DATA); 
+        String schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, LPPlatform.SCHEMA_CONFIG); 
+        tableName = "sample_analysis";
+        Boolean assignTestAnalyst = false;
+        String auditActionName = "SAMPLE_ANALYSIS_ANALYST_ASSIGNMENT";
 
-    String schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, LPPlatform.SCHEMA_DATA); 
-    String schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, LPPlatform.SCHEMA_CONFIG); 
+        String testStatusReviewed = Parameter.getParameterBundle(schemaDataName.replace("\"", ""), "sampleAnalysis_statusReviewed");
+        String testStatusCanceled = Parameter.getParameterBundle(schemaDataName.replace("\"", ""), "sampleAnalysis_statusCanceled");    
+       String assignmentModes = Parameter.getParameterBundle(schemaDataName.replace("\"", ""), "sampleAnalysis_analystAssigmentModes");
 
-    String testStatusReviewed = Parameter.getParameterBundle(schemaDataName.replace("\"", ""), "sampleAnalysis_statusReviewed");
-    String testStatusCanceled = Parameter.getParameterBundle(schemaDataName.replace("\"", ""), "sampleAnalysis_statusCanceled");    
-    
-    Boolean assignTestAnalyst = false;
-    
-    String assignmentModes = Parameter.getParameterBundle(schemaDataName.replace("\"", ""), "sampleAnalysis_analystAssigmentModes");
-    
-    Object[][] testData = Rdbms.getRecordFieldsByFilter(schemaDataName, tableName, new String[]{"test_id"}, new Object[]{testId}, new String[]{"sample_id", fieldName_status, "analyst", fieldName_analysis, "method_name", "method_version"});    
-     if (LPPlatform.LAB_FALSE.equalsIgnoreCase(testData[0][0].toString())){
-        errorCode = "DataSample_SampleAnalysisNotFound";
-        errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, testId.toString());
-        errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaPrefix);
-        return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);
-    }   
- 
-     
-    Integer sampleId = (Integer) testData[0][0];String testStatus = (String) testData[0][1];String testCurrAnalyst = (String) testData[0][2];
-    String testAnalysis = (String) testData[0][3];String testMethodName = (String) testData[0][4];Integer testMethodVersion = (Integer) testData[0][5];
-    
-    if (testCurrAnalyst == null ? newAnalyst == null : testCurrAnalyst.equals(newAnalyst)){
-        errorCode = "DataSample_SampleAnalysisAssignment_SameAnalyst";
-        errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, testCurrAnalyst);
-        errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, testId.toString());
-        errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaPrefix);
-        return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);
-    }
-    
-    // the test status cannot be reviewed or canceled, should be checked
-    if ( (testCurrAnalyst != null) && (testStatus.equalsIgnoreCase(testStatusReviewed) || testStatus.equalsIgnoreCase(testStatusCanceled)) ){
-        errorCode = "DataSample_SampleAnalysisAssignment_SameAnalyst";
-        errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, testStatus);
-        errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, testId.toString());
-        errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, newAnalyst);
-        errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaPrefix);
-        return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);
-    }       
-
-    Object[][] sampleData = Rdbms.getRecordFieldsByFilter(schemaDataName, "sample", new String[]{"sample_id"}, new Object[]{sampleId}, new String[]{"sample_config_code", "sample_config_code_version", fieldName_status, fieldName_status});
-    String sampleConfigCode = (String) sampleData[0][0]; Integer sampleConfigCodeVersion = (Integer) sampleData[0][1];
-    String sampleStatus = (String) sampleData[0][2];
- 
-    Object[][] sampleRulesData = Rdbms.getRecordFieldsByFilter(schemaConfigName, "sample_rules", new String[]{"code", "code_version"}, new Object[]{sampleConfigCode, sampleConfigCodeVersion}, new String[]{"code", "code_version", "analyst_assignment_mode", "analyst_assignment_mode"});
-    String testAssignmentMode = (String) sampleRulesData[0][2];
-    if (testAssignmentMode==null){testAssignmentMode="null";}
-    
-    if (!assignmentModes.contains(testAssignmentMode)){
-        errorCode = "DataSample_SampleAnalysisAssignment_SameAnalyst";
-        errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, "analyst_assignment_mode");
-        errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, sampleConfigCode);
-        errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, sampleConfigCodeVersion);
-        errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, testAssignmentMode);
-        errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, assignmentModes);
-        errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaPrefix);
-        errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, testId.toString());
-        errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, newAnalyst);              
-        return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);
-    }
-    if (testAssignmentMode.equalsIgnoreCase("DISABLE")){
-        assignTestAnalyst = true;
-    }else{            
-        UserMethod ana = new UserMethod();
-        String userMethodCertificationMode = ana.userMethodCertificationLevel(schemaPrefix, testAnalysis, testMethodName, testMethodVersion, newAnalyst);
-
-        String userCertifiedModes = Parameter.getParameterBundle(schemaDataName.replace("\"", ""), "sampleAnalysis_analystAssigmentMode"+testAssignmentMode);
-        String[] userMethodModesArr = userCertifiedModes.split("\\|");                                    
-
-        assignTestAnalyst = LabPLANETArray.valueInArray(userMethodModesArr, userMethodCertificationMode);        
-        if (!assignTestAnalyst){                            
-            errorCode = "DataSample_SampleAnalysisAssignment_AssignmentModeNotImplemented";
-            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, testAssignmentMode);
-            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, Arrays.toString(userMethodModesArr));
-            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, userMethodCertificationMode);
-            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaDataName);
+        Object[][] testData = Rdbms.getRecordFieldsByFilter(schemaDataName, tableName, new String[]{"test_id"}, new Object[]{testId}, new String[]{"sample_id", fieldName_status, "analyst", fieldName_analysis, "method_name", "method_version"});    
+         if (LPPlatform.LAB_FALSE.equalsIgnoreCase(testData[0][0].toString())){
+            errorCode = "DataSample_SampleAnalysisNotFound";
+            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, testId.toString());
+            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaPrefix);
             return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);
-        }        
-    }    
-
-    if (assignTestAnalyst){
-        String[] updateFieldName = new String[0];
-        Object[] updateFieldValue = new Object[0];
-        updateFieldName = LabPLANETArray.addValueToArray1D(updateFieldName, "analyst");
-        updateFieldValue = LabPLANETArray.addValueToArray1D(updateFieldValue, newAnalyst);
-        updateFieldName = LabPLANETArray.addValueToArray1D(updateFieldName, "analyst_assigned_on");
-        updateFieldValue = LabPLANETArray.addValueToArray1D(updateFieldValue, LabPLANETDate.getTimeStampLocalDate());
-        updateFieldName = LabPLANETArray.addValueToArray1D(updateFieldName, "analyst_assigned_by");
-        updateFieldValue = LabPLANETArray.addValueToArray1D(updateFieldValue, userName);
-        
-        Object[] diagnoses = Rdbms.updateRecordFieldsByFilter(schemaDataName, tableName, updateFieldName, updateFieldValue, new String[]{"test_id"}, new Object[]{testId}); 
-               
-        if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){   
-              errorCode = "DataSample_SampleAnalysisAssignment_Successfully";
+        }   
+        Integer sampleId = (Integer) testData[0][0];String testStatus = (String) testData[0][1];String testCurrAnalyst = (String) testData[0][2];
+        String testAnalysis = (String) testData[0][3];String testMethodName = (String) testData[0][4];Integer testMethodVersion = (Integer) testData[0][5];
+    
+        if (testCurrAnalyst == null ? newAnalyst == null : testCurrAnalyst.equals(newAnalyst)){
+            errorCode = "DataSample_SampleAnalysisAssignment_SameAnalyst";
+            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, testCurrAnalyst);
+            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, testId.toString());
+            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaPrefix);
+            return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);
+        }
+    
+        // the test status cannot be reviewed or canceled, should be checked
+        if ( (testCurrAnalyst != null) && (testStatus.equalsIgnoreCase(testStatusReviewed) || testStatus.equalsIgnoreCase(testStatusCanceled)) ){
+            errorCode = "DataSample_SampleAnalysisAssignment_SameAnalyst";
+            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, testStatus);
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, testId.toString());
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, newAnalyst);
-            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaDataName);
-            diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, errorCode, errorDetailVariables);          
-            String[] fieldsForAudit = LabPLANETArray.joinTwo1DArraysInOneOf1DString(updateFieldName, updateFieldValue, ":");            
-            SampleAudit smpAudit = new SampleAudit();
-            smpAudit.sampleAuditAdd(schemaPrefix, auditActionName, "sample_analysis", testId, sampleId, testId, null, fieldsForAudit, userName, userRole);
-        }else{    
+            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaPrefix);
+            return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);
+        }       
+        Object[][] sampleData = Rdbms.getRecordFieldsByFilter(schemaDataName, "sample", new String[]{"sample_id"}, new Object[]{sampleId}, new String[]{"sample_config_code", "sample_config_code_version", fieldName_status, fieldName_status});
+        String sampleConfigCode = (String) sampleData[0][0]; Integer sampleConfigCodeVersion = (Integer) sampleData[0][1];
+        String sampleStatus = (String) sampleData[0][2];
+ 
+        Object[][] sampleRulesData = Rdbms.getRecordFieldsByFilter(schemaConfigName, "sample_rules", new String[]{"code", "code_version"}, new Object[]{sampleConfigCode, sampleConfigCodeVersion}, new String[]{"code", "code_version", "analyst_assignment_mode", "analyst_assignment_mode"});
+        String testAssignmentMode = (String) sampleRulesData[0][2];
+        if (testAssignmentMode==null){testAssignmentMode="null";}
+    
+        if (!assignmentModes.contains(testAssignmentMode)){
+            errorCode = "DataSample_SampleAnalysisAssignment_SameAnalyst";
+            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, "analyst_assignment_mode");
+            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, sampleConfigCode);
+            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, sampleConfigCodeVersion);
+            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, testAssignmentMode);
+            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, assignmentModes);
+            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaPrefix);
+            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, testId.toString());
+            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, newAnalyst);              
+            return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);
+        }
+        if (testAssignmentMode.equalsIgnoreCase("DISABLE")){
+            assignTestAnalyst = true;
+        }else{            
+            UserMethod ana = new UserMethod();
+            String userMethodCertificationMode = ana.userMethodCertificationLevel(schemaPrefix, testAnalysis, testMethodName, testMethodVersion, newAnalyst);
+
+            String userCertifiedModes = Parameter.getParameterBundle(schemaDataName.replace("\"", ""), "sampleAnalysis_analystAssigmentMode"+testAssignmentMode);
+            String[] userMethodModesArr = userCertifiedModes.split("\\|");                                    
+
+            assignTestAnalyst = LabPLANETArray.valueInArray(userMethodModesArr, userMethodCertificationMode);        
+            if (!assignTestAnalyst){                            
+                errorCode = "DataSample_SampleAnalysisAssignment_AssignmentModeNotImplemented";
+                errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, testAssignmentMode);
+                errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, Arrays.toString(userMethodModesArr));
+                errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, userMethodCertificationMode);
+                errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaDataName);
+                return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);
+            }        
+        }    
+        if (assignTestAnalyst){
+            String[] updateFieldName = new String[0];
+            Object[] updateFieldValue = new Object[0];
+            updateFieldName = LabPLANETArray.addValueToArray1D(updateFieldName, "analyst");
+            updateFieldValue = LabPLANETArray.addValueToArray1D(updateFieldValue, newAnalyst);
+            updateFieldName = LabPLANETArray.addValueToArray1D(updateFieldName, "analyst_assigned_on");
+            updateFieldValue = LabPLANETArray.addValueToArray1D(updateFieldValue, LabPLANETDate.getTimeStampLocalDate());
+            updateFieldName = LabPLANETArray.addValueToArray1D(updateFieldName, "analyst_assigned_by");
+            updateFieldValue = LabPLANETArray.addValueToArray1D(updateFieldValue, userName);
+
+            Object[] diagnoses = Rdbms.updateRecordFieldsByFilter(schemaDataName, tableName, updateFieldName, updateFieldValue, new String[]{"test_id"}, new Object[]{testId}); 
+            if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){   
+                String msgCode = "DataSample_SampleAnalysisAssignment_Successfully";
+                errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, testId.toString());
+                errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, newAnalyst);
+                errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaDataName);
+                diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, msgCode, errorDetailVariables);          
+                String[] fieldsForAudit = LabPLANETArray.joinTwo1DArraysInOneOf1DString(updateFieldName, updateFieldValue, ":");            
+                SampleAudit smpAudit = new SampleAudit();
+                smpAudit.sampleAuditAdd(schemaPrefix, auditActionName, "sample_analysis", testId, sampleId, testId, null, fieldsForAudit, userName, userRole);
+            }
             errorCode = "DataSample_SampleAnalysisAssignment_databaseReturnedError";
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, testId.toString());
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, newAnalyst);
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaDataName);
             return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);               
-        }   
+        }
+        errorCode = "DataSample_SampleAnalysisAssignment_EscapeByUnhandledException";        
+        errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaPrefix);
+        errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, userName);
+        errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, testId.toString());
+        errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, newAnalyst);
+        errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, userRole);
+        return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);           
     }
-
-    errorCode = "DataSample_SampleAnalysisAssignment_EscapeByUnhandledException";        
-    errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaPrefix);
-    errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, userName);
-    errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, testId.toString());
-    errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, newAnalyst);
-    errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, userRole);
-    return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);           
-}
         
     /**
      *

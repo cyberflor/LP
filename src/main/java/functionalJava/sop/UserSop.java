@@ -24,6 +24,17 @@ import java.util.logging.Logger;
  */
 public class UserSop {
     String classVersion = "0.1";
+    private static final String SOP_ENABLE_CODE="SOP_ENABLE";
+    private static final String SOP_ENABLE_CODE_ICON="xf272@FontAwesome";
+    private static final String SOP_DISABLE_CODE="SOP_DISABLE";
+    private static final String SOP_DISABLE_CODE_ICON="xf133@FontAwesome";
+    private static final String SOP_CERTIF_EXPIRED_CODE="SOP_CERTIF_EXPIRED";
+    private static final String SOP_CERTIF_EXPIRED_CODE_ICON="xf06a@FontAwesome";
+    private static final String SOP_PASS_CODE="PASS";
+    private static final String SOP_PASS_CODE_ICON="xf046@FontAwesome";
+    private static final String SOP_NOTPASS_CODE="NOTPASS";
+    private static final String SOP_NOTPASS_CODE_ICON="xf05e@FontAwesome";
+
     /**
      *
      * @param schemaPrefixName
@@ -100,13 +111,13 @@ public class UserSop {
         if (getUserProfileFieldValues[0][3].toString().contains("GREEN")){
             Object[] diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, "UserSop_SopNotAssignedToThisUser", 
                     new Object[]{userInfoId, SopIdFieldValue, schemaPrefixName, "current status is "+getUserProfileFieldValues[0][2].toString()+" and the light is "+getUserProfileFieldValues[0][3].toString()});
-            diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, "PASS");
+            diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, SOP_PASS_CODE);
             diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, Parameter.getParameterBundle(schemaConfigName, "userSopCertificationLevelImage_Certified"));
             return diagnoses;
         }
         else{
             Object[] diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, "UserSop_UserNotCertifiedForSop", new Object[]{userInfoId, SopIdFieldValue, schemaPrefixName});
-            diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, "NOTPASS");
+            diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, SOP_NOTPASS_CODE);
             diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, Parameter.getParameterBundle(schemaConfigName, "userSopCertificationLevelImage_NotCertified"));
             return diagnoses;
         }               
@@ -207,20 +218,15 @@ public class UserSop {
         enableRecertification = (Boolean) procBusinessRule[0][2];
 
         if (!sopMode.equalsIgnoreCase("ALL")){
-            diagnoses[0]="SOP_DISABLE";
-            diagnoses[1]="SOP disabled.";
-            diagnoses[2]="xf133@FontAwesome";
-            diagnoses[3]="SOPs disabled";
+            diagnoses[0]=SOP_DISABLE_CODE;            diagnoses[1]="SOP disabled.";
+            diagnoses[2]=SOP_DISABLE_CODE_ICON;  diagnoses[3]="SOPs disabled";
             return diagnoses;
         }        
         if (!certifyManagement){
-            diagnoses[0]="SOP_ENABLE_";
-            diagnoses[1]="SOP enable but Certifications disabled, SOP merely info";
-            diagnoses[2]="xf272@FontAwesome";
-            diagnoses[3]="SOP enable but Certifications disabled, SOP merely info";
+            diagnoses[0]=SOP_ENABLE_CODE;            diagnoses[1]="SOP enable but Certifications disabled, SOP merely info";
+            diagnoses[2]=SOP_ENABLE_CODE_ICON;  diagnoses[3]="SOP enable but Certifications disabled, SOP merely info";
             return diagnoses;
-        }
-        
+        }       
         UserProfile usProf = new UserProfile();
         String[] userSchemas = (String[]) usProf.getAllUserProcedurePrefix(userInfoId);
         Boolean schemaIsCorrect = false;
@@ -228,62 +234,35 @@ public class UserSop {
             if (us.equalsIgnoreCase(schemaPrefixName)){schemaIsCorrect=true;break;}            
         }
         if (!schemaIsCorrect){
-            diagnoses[0]="ERROR";
-            diagnoses[1]="The user "+userInfoId+" has no roles assigned for working on schema"+schemaPrefixName;
-            diagnoses[2]="";
-            diagnoses[3]="";
+            diagnoses[0]="ERROR";  diagnoses[1]="The user "+userInfoId+" has no roles assigned for working on schema"+schemaPrefixName;
+            diagnoses[2]="";            diagnoses[3]="";
             return diagnoses;
         }
-        String[] userSchema = new String[1];
-        userSchema[0]=schemaPrefixName;
-        
-        String[] filterFieldName = new String[2];
-        Object[] filterFieldValue = new Object[2];
-        String[] fieldsToReturn = new String[5];
-
-        fieldsToReturn[0] = "sop_id";
-        fieldsToReturn[1] = "sop_name";
-        fieldsToReturn[2] = "status";
-        fieldsToReturn[3] = "light";
-        fieldsToReturn[4] = "expiration_date";
-        filterFieldName[0]="user_id";
-        filterFieldValue[0]=userInfoId;
-        filterFieldName[1]=sopIdFieldName;
-        filterFieldValue[1]=sopIdFieldValue;                
-        Object[][] getUserProfileFieldValues = getUserProfileFieldValues(filterFieldName, filterFieldValue, fieldsToReturn, userSchema);   
+        Object[][] getUserProfileFieldValues = getUserProfileFieldValues(
+                new String[]{"user_id", sopIdFieldName}, new Object[]{userInfoId, sopIdFieldValue}, 
+                new String[]{"light", "expiration_date"}, new String[]{schemaPrefixName});   
         if (getUserProfileFieldValues.length<=0){
             diagnoses[0]="ERROR";
             diagnoses[1]="The user "+userInfoId+" has no the sop "+sopIdFieldValue+ " assigned to.";
             return diagnoses;
         }
-        String usrProfLight=getUserProfileFieldValues[0][3].toString();
-        Date usrProfExpDate=(Date) getUserProfileFieldValues[0][4];
-                
-        if (usrProfLight.contains("GREEN")){
-            
-            if (certifyManagement && getUserProfileFieldValues[0][4]!=null){                
-                Date now = new Date();
-                if (now.after(usrProfExpDate)){
-                    diagnoses[0]="SOP_CERTIF_EXPIRED";
-                    diagnoses[1]="The user "+userInfoId+" was certified for the sop "+sopIdFieldValue+" but it expired on "+getUserProfileFieldValues[0][4].toString();
-                    diagnoses[2]="xf06a@FontAwesome";
-                    diagnoses[3]="The user "+userInfoId+" was certified for the sop "+sopIdFieldValue+" but it expired on "+getUserProfileFieldValues[0][4].toString();
-                    return diagnoses;
-                }
-            }
-            
-            diagnoses[0]="PASS";  
-            diagnoses[2]="xf046@FontAwesome"; 
-            diagnoses[3]="The user "+userInfoId+" is currently certified for the sop "+sopIdFieldValue;
-            //xf24e --> Certification near expire
-            
+        String usrProfLight=getUserProfileFieldValues[0][0].toString();
+        Date usrProfExpDate=(Date) getUserProfileFieldValues[0][1];    
+        
+        if (!usrProfLight.contains("GREEN")){            
+            diagnoses[0]=SOP_NOTPASS_CODE;              diagnoses[1]="The user "; //+userInfoId+" has the sop "+replaceNull(getUserProfileFieldValues[0][1].toString())+ " assigned to which current status is "+replaceNull(getUserProfileFieldValues[0][2].toString())+" and the light is "+replaceNull(getUserProfileFieldValues[0][3].toString());
+            diagnoses[2]=SOP_NOTPASS_CODE_ICON;    diagnoses[3]="The user "+userInfoId+" is currently NOT certified for the sop "+sopIdFieldValue;
             return diagnoses;
-        }
-        else{
-            diagnoses[0]="NOTPASS";            
-            diagnoses[1]="The user "; //+userInfoId+" has the sop "+replaceNull(getUserProfileFieldValues[0][1].toString())+ " assigned to which current status is "+replaceNull(getUserProfileFieldValues[0][2].toString())+" and the light is "+replaceNull(getUserProfileFieldValues[0][3].toString());
-            diagnoses[2]="xf05e@FontAwesome"; 
-            diagnoses[3]="The user "+userInfoId+" is currently NOT certified for the sop "+sopIdFieldValue;
+        }else{
+            Date now = new Date();
+            if ( (certifyManagement && usrProfExpDate!=null) && (now.after(usrProfExpDate)) ){                
+                diagnoses[0]=SOP_CERTIF_EXPIRED_CODE;              diagnoses[1]="The user "+userInfoId+" was certified for the sop "+sopIdFieldValue+" but it expired on "+usrProfExpDate.toString();
+                diagnoses[2]=SOP_CERTIF_EXPIRED_CODE_ICON;    diagnoses[3]="The user "+userInfoId+" was certified for the sop "+sopIdFieldValue+" but it expired on "+usrProfExpDate.toString();
+                return diagnoses;
+            }
+            diagnoses[0]=SOP_PASS_CODE;              diagnoses[1]="";  
+            diagnoses[2]=SOP_PASS_CODE_ICON;    diagnoses[3]="The user "+userInfoId+" is currently certified for the sop "+sopIdFieldValue;
+            //xf24e --> Certification near expire
             return diagnoses;
         }               
     }
@@ -319,14 +298,14 @@ public class UserSop {
             return getUserProfileNEW;}       
                 
         String query = "";
-        for(String sPref: schemaPrefix){                    
+        for(String currSchemaPrefix: schemaPrefix){                    
             query = query+"(select ";
             for(String fRet: fieldsToReturn){
                 query = query+" "+fRet+","; 
             }
             query=query.substring(0, query.length()-1);
-            if (sPref.contains("data")){query = query+" from \""+ sPref+"\"."+tableName+" where 1=1";}
-            else{query = query+" from \""+ sPref+"-data\"."+tableName+" where 1=1";}
+            if (currSchemaPrefix.contains("data")){query = query+" from \""+ currSchemaPrefix+"\"."+tableName+" where 1=1";}
+            else{query = query+" from \""+ currSchemaPrefix+"-data\"."+tableName+" where 1=1";}
             for(String fFN: filterFieldName){
                 query = query+" and "+fFN;
                 if (!fFN.contains("null")){query=query+"= ?";}
@@ -336,11 +315,11 @@ public class UserSop {
         query=query.substring(0, query.length()-6);
         
         Object[] filterFieldValueAllSchemas = new Object[filterFieldValue.length*schemaPrefix.length];
-        Integer i=0;
+        Integer iFldValue=0;
         for(String sPref: schemaPrefix){
             for(Object fVal: filterFieldValue){
-                filterFieldValueAllSchemas[i]=fVal;    
-                i++;
+                filterFieldValueAllSchemas[iFldValue]=fVal;    
+                iFldValue++;
             }
         }               
         try{

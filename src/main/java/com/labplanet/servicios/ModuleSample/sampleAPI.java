@@ -645,6 +645,11 @@ public class sampleAPI extends HttpServlet {
             errObject = new String[]{e.getMessage()};
             Object[] errMsg = LabPLANETFrontEnd.responseError(errObject, language, null);
             response.sendError((int) errMsg[0], (String) errMsg[1]);           
+        }finally{try {
+                con.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(sampleAPI.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 

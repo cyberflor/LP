@@ -82,7 +82,6 @@ public class LabPLANETQualityAssurance {
         System.out.println("Jar " + jarName + " looking for " + packageName);
             JarInputStream jarFile =null;
             try{                
-
                 jarFile = new JarInputStream(new FileInputStream (jarName));
                 JarEntry jarEntry;
 
@@ -98,7 +97,9 @@ public class LabPLANETQualityAssurance {
                              classes.add (jarEntry.getName().replaceAll("/", "\\."));
                          }                    
                 }
-            }catch( IOException e){jarFile.close();}        
+            }catch( IOException e){jarFile.close();
+            }finally{jarFile.close();}
+            
         return (List) classes;
     }
 

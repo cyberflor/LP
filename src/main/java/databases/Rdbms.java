@@ -772,40 +772,31 @@ public class Rdbms {
      * @throws SQLException
      */
     public  static CachedRowSetImpl prepRdQuery(String consultaconinterrogaciones, Object [] valoresinterrogaciones) throws SQLException, NullPointerException{
-    //prepare statement para evitar sql injection
-    Object[] filteredValoresConInterrogaciones = new Object[0];     
-//    PreparedStatement prep=new PreparedStatement();
+        Object[] filteredValoresConInterrogaciones = new Object[0];     
         PreparedStatement prepareStatement = conn.prepareStatement(consultaconinterrogaciones);
-        
+        CachedRowSetImpl crs =null;
         try{
-            //PreparedStatement prep=getConnection().prepareStatement(consultaconinterrogaciones);
-            //Connection conn = prep.getConnection();
             prepareStatement.setQueryTimeout(rdbms.getTimeout());
             if (valoresinterrogaciones!=null){
-                for (Integer i=0;i<valoresinterrogaciones.length;i++){
+                for (Object curVal: valoresinterrogaciones){
                     Boolean addToFilter = true;
-                    if (valoresinterrogaciones[i].toString().equalsIgnoreCase("IN()")){addToFilter=false;}
-                    if (valoresinterrogaciones[i].toString().equalsIgnoreCase("IS NULL")){addToFilter=false;}
-                    if (valoresinterrogaciones[i].toString().equalsIgnoreCase("IS NOT NULL")){addToFilter=false;}
+                    if (curVal.toString().equalsIgnoreCase("IN()")){addToFilter=false;}
+                    if (curVal.toString().equalsIgnoreCase("IS NULL")){addToFilter=false;}
+                    if (curVal.toString().equalsIgnoreCase("IS NOT NULL")){addToFilter=false;}
                     if (addToFilter){
-                        filteredValoresConInterrogaciones = LabPLANETArray.addValueToArray1D(filteredValoresConInterrogaciones, valoresinterrogaciones[i]);}
+                        filteredValoresConInterrogaciones = LabPLANETArray.addValueToArray1D(filteredValoresConInterrogaciones, curVal);}                    
                 }
-            }
-                
+            }                
             buildPreparedStatement(filteredValoresConInterrogaciones, prepareStatement, null); 
+            ResultSet res = prepareStatement.executeQuery();
+            crs = new CachedRowSetImpl();
+            crs.populate(res);
+            return crs;             
         }catch(SQLException er){
-            String errMessage = er.getMessage();  
-            conn.close();            
+            conn.close();     
+            crs.close();
             return new CachedRowSetImpl();
-        }
-        
-    ResultSet res = prepareStatement.executeQuery();
-    CachedRowSetImpl crs =null;
-    try{
-        crs = new CachedRowSetImpl();
-        crs.populate(res);
-    }catch(SQLException e){crs.close();}
-    return crs; 
+        }finally{crs.close();conn.close();}
     }
     
 
@@ -833,37 +824,34 @@ public class Rdbms {
             return res; 
         }catch (SQLException er){
             return -999;
+        }finally{
+            prep.close();
         }
     }
     
     private static String prepUpQueryK(String consultaconinterrogaciones, Object [] valoresinterrogaciones, Integer indexposition) throws SQLException, SQLFeatureNotSupportedException{
         String pkValue = "";
-
+        PreparedStatement prep=getConnection().prepareStatement(consultaconinterrogaciones, Statement.RETURN_GENERATED_KEYS);            
+        setTimeout(rdbms.getTimeout());
+        buildPreparedStatement(valoresinterrogaciones, prep, null);         
+        ResultSet rs = prep.getGeneratedKeys();
         try{
-        
 //            PreparedStatement prep=getConnection().prepareStatement(consultaconinterrogaciones);            
-
-            PreparedStatement prep=getConnection().prepareStatement(consultaconinterrogaciones, Statement.RETURN_GENERATED_KEYS);            
-            setTimeout(rdbms.getTimeout());
-            buildPreparedStatement(valoresinterrogaciones, prep, null);         
-            Integer res = prep.executeUpdate();
-        
+            Integer res = prep.executeUpdate();        
         // When the table has no numeric field as single query then no key is generated so nothing to return
         //if (prep.NO_GENERATED_KEYS==2){return 0;}
-            ResultSet rs = prep.getGeneratedKeys();
-
             if (rs.next()) {
               int newId = rs.getInt(indexposition);
               if (newId==0){
-                  pkValue = TBL_KEY_NOT_FIRST_TABLEFLD; //"PRIMARY KEY NOT FIRST FIELD IN TABLE";
+                  return pkValue = TBL_KEY_NOT_FIRST_TABLEFLD; //"PRIMARY KEY NOT FIRST FIELD IN TABLE";
               }else{
-                  pkValue = String.valueOf(newId);              
+                  return pkValue = String.valueOf(newId);              
               }
             }
         }catch (SQLException er){
-            pkValue = TBL_NO_KEY; //"TABLE WITH NO KEY";
-        }
-        return pkValue; 
+            return pkValue = TBL_NO_KEY; //"TABLE WITH NO KEY";
+        }finally{rs.close();}
+        return pkValue;
     }
     
     /**
