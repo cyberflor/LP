@@ -56,7 +56,7 @@ public class ChangeOfCustody {
                 new Object[]{objectId, cocStartChangeStatus});
         if (LPPlatform.LAB_TRUE.equalsIgnoreCase(existsRecord[0].toString())){
                 String errorCode = "ChainOfCustody_requestAlreadyInCourse";
-                errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, objectId);
+                errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, objectId.toString());
                 errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, objectTable);
                 errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaName);
                 return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);                  

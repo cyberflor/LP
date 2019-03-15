@@ -117,7 +117,9 @@ public class Rdbms {
         schemaName = LPPlatform.buildSchemaName(schemaName, "");
         String qry = "select nextval('"+ schemaName + ".transaction_id')";
         Integer transactionIdNextVal = prepUpQuery(qry, null);
-        
+        if (transactionIdNextVal==-999){
+            transactionIdNextVal=12;
+        }
         rdbms.transactionId = transactionIdNextVal;
         
     }
@@ -774,7 +776,7 @@ public class Rdbms {
     public  static CachedRowSetImpl prepRdQuery(String consultaconinterrogaciones, Object [] valoresinterrogaciones) throws SQLException, NullPointerException{
         Object[] filteredValoresConInterrogaciones = new Object[0];     
         PreparedStatement prepareStatement = conn.prepareStatement(consultaconinterrogaciones);
-        CachedRowSetImpl crs =null;
+        CachedRowSetImpl crs =new CachedRowSetImpl();
         try{
             prepareStatement.setQueryTimeout(rdbms.getTimeout());
             if (valoresinterrogaciones!=null){
@@ -789,14 +791,14 @@ public class Rdbms {
             }                
             buildPreparedStatement(filteredValoresConInterrogaciones, prepareStatement, null); 
             ResultSet res = prepareStatement.executeQuery();
-            crs = new CachedRowSetImpl();
+//            crs = new CachedRowSetImpl();
             crs.populate(res);
             return crs;             
         }catch(SQLException er){
-            conn.close();     
-            crs.close();
-            return new CachedRowSetImpl();
-        }finally{crs.close();conn.close();}
+//            conn.close();     
+//            crs.close();
+            return crs;
+        }//finally{crs.close();conn.close();}
     }
     
 
@@ -824,9 +826,7 @@ public class Rdbms {
             return res; 
         }catch (SQLException er){
             return -999;
-        }finally{
-            prep.close();
-        }
+        }//finally{            prep.close();        }
     }
     
     private static String prepUpQueryK(String consultaconinterrogaciones, Object [] valoresinterrogaciones, Integer indexposition) throws SQLException, SQLFeatureNotSupportedException{
@@ -834,10 +834,10 @@ public class Rdbms {
         PreparedStatement prep=getConnection().prepareStatement(consultaconinterrogaciones, Statement.RETURN_GENERATED_KEYS);            
         setTimeout(rdbms.getTimeout());
         buildPreparedStatement(valoresinterrogaciones, prep, null);         
-        ResultSet rs = prep.getGeneratedKeys();
         try{
 //            PreparedStatement prep=getConnection().prepareStatement(consultaconinterrogaciones);            
             Integer res = prep.executeUpdate();        
+            ResultSet rs = prep.getGeneratedKeys();
         // When the table has no numeric field as single query then no key is generated so nothing to return
         //if (prep.NO_GENERATED_KEYS==2){return 0;}
             if (rs.next()) {
@@ -850,7 +850,7 @@ public class Rdbms {
             }
         }catch (SQLException er){
             return pkValue = TBL_NO_KEY; //"TABLE WITH NO KEY";
-        }finally{rs.close();}
+        }//finally{rs.close();}
         return pkValue;
     }
     
@@ -1028,9 +1028,7 @@ public class Rdbms {
             }
         crs.populate(res);    
         return crs;    
-        }finally{
-            sta.close();
-        }        
+        }//finally{            sta.close();        }        
     }
     
     public Connection createTransaction(){

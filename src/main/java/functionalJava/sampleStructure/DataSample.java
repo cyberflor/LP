@@ -310,8 +310,6 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
             boolean contains = Arrays.asList(sampleFieldName).contains(currField.toLowerCase());
             if (!contains){
                 Object[] sampleDefaultFieldValues = labIntChecker.getTableFieldsDefaulValues(schemaDataName, sampleLevel, actionName);                
-                
-                                
                 if (mandatoryFieldsMissing.length()>0){mandatoryFieldsMissing = mandatoryFieldsMissing + ",";}
                 mandatoryFieldsMissing = mandatoryFieldsMissing + currField;
             }else{

@@ -40,7 +40,7 @@ public class LPPlatform {
     public static String SCHEMA_REQUIREMENTS = "requirements";
     
     private static final String CONFIG_FILES_FOLDER = "LabPLANET";
-    private static final String CONFIG_FILES_ERRORTRAPING = "\"errorTraping\"";
+    private static final String CONFIG_FILES_ERRORTRAPING = "errorTraping";
 
     private static final String CONFIG_PROC_FILE_NAME = "-procedure";
     private static final String ENCRYPTION_KEY = "Bar12345Bar12345";

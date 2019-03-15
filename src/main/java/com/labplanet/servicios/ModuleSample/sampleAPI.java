@@ -17,7 +17,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.Date;
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -144,19 +143,22 @@ public class sampleAPI extends HttpServlet {
             Rdbms.closeRdbms(); 
             return ;               
         }        
+        
         Connection con = Rdbms.createTransactionWithSavePoint();        
         if (con==null){
              response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "The Transaction cannot be created, the action should be aborted");
              return;
         }
+        
 /*        try {
             con.close();
         } catch (SQLException ex) {
             Logger.getLogger(sampleAPI.class.getName()).log(Level.SEVERE, null, ex);
-        }*/       
+        }*/
 
-
-        Rdbms.setTransactionId(schemaPrefix);
+        String schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, LPPlatform.SCHEMA_DATA);    
+        String schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, LPPlatform.SCHEMA_CONFIG);    
+        Rdbms.setTransactionId(schemaConfigName);
         //ResponseEntity<String121> responsew;        
         
         response.setContentType("application/json");
@@ -467,8 +469,7 @@ public class sampleAPI extends HttpServlet {
                     String sampleFieldToRetrieve = request.getParameter("sampleFieldToRetrieve");                                                                                     
 
                     String[] sampleFieldToRetrieveArr = (String[]) sampleFieldToRetrieve.split("\\|");                           
-                    String schemaDataName = "data";
-                    schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, schemaDataName);              
+                    schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, LPPlatform.SCHEMA_DATA);              
 
                     String[] sortFieldsNameArr = null;
                     String sortFieldsName = request.getParameter("sortFieldsName"); 
@@ -625,31 +626,29 @@ public class sampleAPI extends HttpServlet {
                 Rdbms.rollbackWithSavePoint();
                 con.rollback();
                 con.setAutoCommit(true);
+                
                 Object[] errMsg = LabPLANETFrontEnd.responseError(dataSample, language, schemaPrefix);
                 response.sendError((int) errMsg[0], (String) errMsg[1]);    
             }else{
                 con.commit();
                 con.setAutoCommit(true);
+                
                 Response.ok().build();
                 response.getWriter().write(Arrays.toString(dataSample));      
             }            
             Rdbms.closeRdbms();
         }catch(Exception e){   
-            try {
+ /*           try {
                 con.rollback();
                 con.setAutoCommit(true);
             } catch (SQLException ex) {
                 Logger.getLogger(sampleAPI.class.getName()).log(Level.SEVERE, null, ex);
             }
+*/            
             Rdbms.closeRdbms();                   
             errObject = new String[]{e.getMessage()};
             Object[] errMsg = LabPLANETFrontEnd.responseError(errObject, language, null);
             response.sendError((int) errMsg[0], (String) errMsg[1]);           
-        }finally{try {
-                con.close();
-            } catch (SQLException ex) {
-                Logger.getLogger(sampleAPI.class.getName()).log(Level.SEVERE, null, ex);
-            }
         }
     }
 
