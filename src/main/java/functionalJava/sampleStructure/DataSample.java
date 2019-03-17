@@ -15,6 +15,7 @@ import LabPLANET.utilities.LabPLANETArray;
 import LabPLANET.utilities.LabPLANETDate;
 import LabPLANET.utilities.LPPlatform;
 import static LabPLANET.utilities.LPPlatform.trapErrorMessage;
+import LabPLANET.utilities.LabPLANETMath;
 import databases.DataDataIntegrity;
 import functionalJava.ChangeOfCustody.ChangeOfCustody;
 import functionalJava.parameter.Parameter;
@@ -53,7 +54,7 @@ public class DataSample {
     String grouperName = "";
     
     /**
-     *
+     * Este es el constructor para DataSample
      * @param grouperName
      */
     public DataSample(String grouperName){
@@ -70,7 +71,10 @@ public class DataSample {
      *
      * @return
      */
-    public String getSampleGrouper(){return this.grouperName;}
+    public String getSampleGrouper(){
+        return String.valueOf(1);                
+    //    return this.grouperName;
+    }
 
     /**
      *
@@ -92,7 +96,7 @@ public class DataSample {
      * @return
      */
     public Object[] logSampleDev( String schemaPrefix, String sampleTemplate, Integer sampleTemplateVersion, String[] sampleFieldName, Object[] sampleFieldValue, String userName, String userRole, Integer appSessionId) {
-        Object[] diag = logSample(schemaPrefix, sampleTemplate, sampleTemplateVersion, sampleFieldName, sampleFieldValue, userName, userRole, appSessionId, true);
+        Object[] diag = logSample(schemaPrefix, sampleTemplate, sampleTemplateVersion, sampleFieldName, sampleFieldValue, userName, userRole, appSessionId, true, 1);
     return diag;
 }
 
@@ -109,7 +113,7 @@ public class DataSample {
      * @return
      */
     public Object[] logSample(String schemaPrefix, String sampleTemplate, Integer sampleTemplateVersion, String[] sampleFieldName, Object[] sampleFieldValue, String userName, String userRole, Integer appSessionId) {
-        Object[] diag = logSample(schemaPrefix, sampleTemplate, sampleTemplateVersion, sampleFieldName, sampleFieldValue, userName, userRole, appSessionId, false);
+        Object[] diag = logSample(schemaPrefix, sampleTemplate, sampleTemplateVersion, sampleFieldName, sampleFieldValue, userName, userRole, appSessionId, false, 1);
         return diag;
     }
 
@@ -131,7 +135,7 @@ public class DataSample {
         return diag;
     }
 
-Object[] logSample(String schemaPrefix, String sampleTemplate, Integer sampleTemplateVersion, String[] sampleFieldName, Object[] sampleFieldValue, String userName, String userRole, Integer appSessionId, Boolean devMode) {
+Object[] _logSample(String schemaPrefix, String sampleTemplate, Integer sampleTemplateVersion, String[] sampleFieldName, Object[] sampleFieldValue, String userName, String userRole, Integer appSessionId, Boolean devMode) {
     
         String query = "";
         tableName = "sample";
@@ -429,7 +433,6 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
      * @return
      */
     public Object[] sampleReception( String schemaPrefix, String userName, Integer sampleId, String userRole, Integer appSessionId) {
-
     String receptionStatus = "RECEIVED";
     String auditActionName = "SAMPLE_RECEPTION";
     String schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, LPPlatform.SCHEMA_DATA); 
@@ -450,24 +453,15 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
     }
     String currentStatus = (String) currSampleStatus[0][0];
     
-    String[] sampleFieldName = new String[4];
-    Object[] sampleFieldValue = new Object[4];
+    String[] sampleFieldName = new String[4];    Object[] sampleFieldValue = new Object[4];
     Integer iField = 0;
-
-    sampleFieldName[iField] = fieldName_status;    
-    sampleFieldValue[iField] = receptionStatus;
+    sampleFieldName[iField] = fieldName_status;                     sampleFieldValue[iField] = receptionStatus;
     iField++;
-
-    sampleFieldName[iField] = fieldName_statusPrevious;    
-    sampleFieldValue[iField] = currentStatus;
+    sampleFieldName[iField] = fieldName_statusPrevious;        sampleFieldValue[iField] = currentStatus;
     iField++;    
-
-    sampleFieldName[iField] = "received_by";    
-    sampleFieldValue[iField] = userName;
+    sampleFieldName[iField] = "received_by";                         sampleFieldValue[iField] = userName;
     iField++;
-
-    sampleFieldName[iField] = "received_on";    
-    sampleFieldValue[iField] = (new Date(System.currentTimeMillis()));
+    sampleFieldName[iField] = "received_on";                         sampleFieldValue[iField] = (new Date(System.currentTimeMillis()));
     iField++;
     
     Object[] diagnoses = Rdbms.updateRecordFieldsByFilter(schemaDataName, tableName, sampleFieldName, sampleFieldValue, 
@@ -2590,54 +2584,25 @@ public Object[] logSampleAliquot( String schemaPrefix, Integer sampleId, String[
         Object[][] sampleInfo = Rdbms.getRecordFieldsByFilter(schemaDataName, parentTableName, new String[] {"sample_id"}, new Object[]{sampleId}, mandatorySampleFields);
         if ( (sampleInfo[0][0]!=null) && (LPPlatform.LAB_FALSE.equalsIgnoreCase(sampleInfo[0][0].toString())) ){
             return LabPLANETArray.array2dTo1d(sampleInfo);}    
-        for (String fv: mandatorySampleAliqFields){
-            if (LabPLANETArray.valuePosicInArray(smpAliqFieldName, fv) == -1){
-                errorCode = "DataSample_sampleAliquoting_volumeAndUomMandatory";
-                errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, "sampleAliquot_volumeRequired");
-                errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, Arrays.toString(smpAliqFieldName));
-                errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, sampleId.toString());
-                errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaPrefix);
-                return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);                
-            }
-        }      
-        if (aliqVolume.compareTo(BigDecimal.ZERO)==-1) {
-            errorCode = "DataSample_sampleAliquoting_volumeCannotBeNegativeorZero";
-            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, aliqVolume.toString());
-            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, sampleId.toString());
-            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaPrefix);
-            return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);                 
-        }        
 
-        if (sampleInfo[0][0]==null) {
+        if (sampleInfo[0][1]==null) {
             errorCode = "DataSample_sampleAliquoting_volumeCannotBeNegativeorZero";
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, "null");
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, sampleId.toString());
             errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaPrefix);
             return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);                 
-        }        
+        }          
         
-
-        BigDecimal smpVolume = new BigDecimal(sampleInfo[0][0].toString()); 
-        String smpVolumeUOM = (String) LPNulls.replaceNull(sampleInfo[0][1]);
+        BigDecimal smpVolume = new BigDecimal(sampleInfo[0][0].toString());           
+        String smpVolumeUOM = (String) sampleInfo[0][1];  
         
-        aliqVolume = new BigDecimal(smpAliqFieldValue[LabPLANETArray.valuePosicInArray(smpAliqFieldName, mandatorySampleAliqFields[0])].toString());        
-        aliqVolumeUOM = smpAliqFieldValue[LabPLANETArray.valuePosicInArray(smpAliqFieldName, mandatorySampleAliqFields[1])].toString();
-        if (sampleInfo[0][1]!=null){
-            UnitsOfMeasurement uom = new UnitsOfMeasurement();
-            if (aliqVolumeUOM == null ? smpVolumeUOM != null : !aliqVolumeUOM.equals(smpVolumeUOM)){
-                Object[] valueConverted = uom.convertValue(schemaPrefix, aliqVolume, aliqVolumeUOM, smpVolumeUOM);
-                aliqVolume = (BigDecimal) valueConverted[1];
-            }
-        }
-        if ( smpVolume.compareTo(BigDecimal.ZERO)==-1) {
-            errorCode = "DataSample_sampleAliquoting_notEnoughVolumeToAliquoting";
-            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, "sample "+sampleId.toString());
-            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, smpVolume.toString());
-            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, "aliquoting");
-            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, aliqVolume.toString());
-            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaPrefix);
-            return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);                     
-        }
+        aliqVolume = new BigDecimal(smpAliqFieldValue[LabPLANETArray.valuePosicInArray(smpAliqFieldName, smpAliqFieldName[0])].toString());         
+        aliqVolumeUOM = (String) smpAliqFieldValue[LabPLANETArray.valuePosicInArray(mandatorySampleAliqFields, smpAliqFieldName[1])];
+        
+        Object[] diagnoses = LabPLANETMath.extractPortion(schemaPrefix, smpVolume, smpVolumeUOM, sampleId, aliqVolume, aliqVolumeUOM, -999);
+        if (LPPlatform.LAB_FALSE.equalsIgnoreCase(diagnoses[0].toString())){return diagnoses;}    
+        
+        aliqVolume = new BigDecimal(diagnoses[diagnoses.length-1].toString());
         
         smpVolume = smpVolume.add(aliqVolume.negate());
         String[] smpVolFldName = new String[]{"volume_for_aliq"};
@@ -2670,6 +2635,10 @@ public Object[] logSampleAliquot( String schemaPrefix, Integer sampleId, String[
     if (!LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){
         errorCode = "DataSample_errorInsertingSampleRecord";
         errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, diagnoses[diagnoses.length-2]);
+        return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);
+    }
+    if (Rdbms.TBL_NO_KEY.equalsIgnoreCase(diagnoses[diagnoses.length-1].toString())){
+        errorCode = "Object created but aliquot id cannot be get back to continue with the logic";
         return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);
     }
     Integer aliquotId = Integer.parseInt(diagnoses[diagnoses.length-1].toString());
@@ -2731,33 +2700,14 @@ public Object[] logSampleSubAliquot( String schemaPrefix, Integer aliquotId, Str
         }          
         sampleId = (Integer) aliquotInfo[0][0];
         BigDecimal aliqVolume = new BigDecimal(aliquotInfo[0][1].toString());           
-        String aliqVolumeUOM = (String) aliquotInfo[0][2];        
+        String aliqVolumeUOM = (String) aliquotInfo[0][2];  
+        
         BigDecimal subAliqVolume = new BigDecimal(smpSubAliqFieldValue[LabPLANETArray.valuePosicInArray(smpSubAliqFieldName, smpSubAliqFieldName[0])].toString());         
         String subAliqVolumeUOM = (String) smpSubAliqFieldValue[LabPLANETArray.valuePosicInArray(mandatorySampleSubAliqFields, smpSubAliqFieldName[1])];
-        if (aliquotInfo[0][1]!=null){
-            UnitsOfMeasurement uom = new UnitsOfMeasurement();
-            if (subAliqVolumeUOM == null ? aliqVolumeUOM != null : !subAliqVolumeUOM.equals(aliqVolumeUOM)){
-                Object[] valueConverted = uom.convertValue(schemaPrefix, subAliqVolume, subAliqVolumeUOM, aliqVolumeUOM);
-                subAliqVolume = (BigDecimal) valueConverted[1];
-            }
-        }
-        if ( subAliqVolume.compareTo(BigDecimal.ZERO)==-1) {
-            errorCode = "DataSample_sampleAliquoting_volumeCannotBeNegativeorZero";
-            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, subAliqVolume.toString());
-            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, aliquotId.toString());
-            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaPrefix);
-            return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);                 
-        }        
         
-       if ( aliqVolume.compareTo(BigDecimal.ZERO)==-1) {
-            errorCode = "DataSample_sampleAliquoting_notEnoughVolumeToAliquoting";
-            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, "aliquot  "+sampleId.toString());
-            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, aliqVolume.toString());
-            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, "subaliquoting");
-            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, subAliqVolume.toString());
-            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaPrefix);
-            return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);                          
-        }
+        Object[] diagnoses = LabPLANETMath.extractPortion(schemaPrefix, aliqVolume, aliqVolumeUOM, sampleId, subAliqVolume, subAliqVolumeUOM, aliquotId);
+        if (LPPlatform.LAB_FALSE.equalsIgnoreCase(diagnoses[0].toString())){return diagnoses;}    
+        subAliqVolume = new BigDecimal(diagnoses[diagnoses.length-1].toString());
         
         aliqVolume = aliqVolume.add(subAliqVolume.negate());
         String[] smpVolFldName = new String[]{"volume_for_aliq"};

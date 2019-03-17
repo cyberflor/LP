@@ -414,7 +414,11 @@ public class Rdbms {
      * @param fieldsToRetrieve
      * @return
      */
-    public static Object[][] getRecordFieldsByFilter(String schemaName, String tableName, String[] whereFieldNames, Object[] whereFieldValues, String[] fieldsToRetrieve){
+    public static Object[][] getRecordFieldsByFilter(String schemaName, 
+            String tableName, 
+            String[] whereFieldNames, 
+            Object[] whereFieldValues, 
+            String[] fieldsToRetrieve){
         
         String[] errorDetailVariables = new String[0];        
         schemaName = LPPlatform.buildSchemaName(schemaName, "");
@@ -800,7 +804,7 @@ public class Rdbms {
             return crs;
         }//finally{crs.close();conn.close();}
     }
-    
+  
 
     private static Integer prepUpQuery(String consultaconinterrogaciones, Object [] valoresinterrogaciones) {
         Integer reg;    

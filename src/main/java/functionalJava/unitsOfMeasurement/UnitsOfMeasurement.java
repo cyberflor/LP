@@ -147,7 +147,7 @@ public class UnitsOfMeasurement {
         //valueConverted = valueConverted + ((float)newUnitInfo[0][4] - (float)currentUnitInfo[0][4]);
         //valueConverted = Float.valueOf(String.format("%.10f",valueConverted));
         
-        conversion = LPPlatform.trapErrorMessage("LABPLANET_TRUE", "UnitsOfMeasurement_convertedSuccesfully",
+        conversion = LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, "UnitsOfMeasurement_convertedSuccesfully",
                         new Object[]{currentUnit , newUnitInfo, valueToConvert, valueConverted, schemaPrefix,
                              "valueToConvert: "+valueToConvert+", : currentUnit"+LPNulls.replaceNull(currentUnit)+", : newUnit"+LPNulls.replaceNull(newUnit)});
         conversion = LabPLANETArray.addValueToArray1D(conversion, valueConverted);

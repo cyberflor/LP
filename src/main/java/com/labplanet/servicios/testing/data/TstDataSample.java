@@ -73,7 +73,7 @@ public class TstDataSample extends HttpServlet {
             
         fileContent = LPTestingOutFormat.getHtmlStyleHeader(this.getServletName());
             
-        DataSample smp = new DataSample("");
+        DataSample smp = new DataSample("");        
             
         for (Integer j=0;j<configSpecTestingArray[0].length;j++){
             fileContent = fileContent + "<th>"+configSpecTestingArray[0][j]+"</th>";

@@ -5,6 +5,7 @@
  */
 package databases;
 
+import LabPLANET.utilities.LPPlatform;
 import LabPLANET.utilities.LabPLANETArray;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
@@ -103,7 +104,7 @@ public class Token {
     public String validateToken(String token, String paramName){       
        Object[] tokenObj = isValidToken(token);
         
-       if ((Boolean) tokenObj[0]==false) return "LABPLANET_FALSE";
+       if ((Boolean) tokenObj[0]==false) return LPPlatform.LAB_FALSE;
 
        DecodedJWT jwt = (DecodedJWT) tokenObj[1];
        Claim header1 = jwt.getHeaderClaim(paramName);            

@@ -21,6 +21,7 @@ public class DataProjectSample extends DataSample{
         String tableName = "project_sample";            
     }
     
+    public void EdisonPower(){}
     
     
 }

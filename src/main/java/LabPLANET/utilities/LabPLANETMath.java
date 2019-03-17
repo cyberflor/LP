@@ -5,6 +5,9 @@
  */
 package LabPLANET.utilities;
 
+import functionalJava.unitsOfMeasurement.UnitsOfMeasurement;
+import java.math.BigDecimal;
+
 /**
  * LabPLANETMath is a library for adding extra maths to the standard ones.
  * @author Fran Gomez
@@ -35,5 +38,53 @@ public class LabPLANETMath {
 	}
 	return x;
     }  
+    
+    public static Object[] extractPortion(String schemaPrefix, BigDecimal volume, String volumeUOM, Integer volumeObjectId, BigDecimal portion, String portionUOM, Integer portionObjectId){
+        
+        String errorCode="";
+        Object[] errorDetailVariables = new Object[0];
+        
+        if (volume!=null){
+            UnitsOfMeasurement uom = new UnitsOfMeasurement();
+            if (portionUOM == null ? volumeUOM != null : !portionUOM.equals(volumeUOM)){
+                Object[] valueConverted = uom.convertValue(schemaPrefix, portion, portionUOM, volumeUOM);
+                portion = (BigDecimal) valueConverted[valueConverted.length-2];
+            }
+        }
+        if ( portion.compareTo(BigDecimal.ZERO)==-1) {
+            errorCode = "DataSample_sampleAliquoting_volumeCannotBeNegativeorZero";
+            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, portion.toString());
+            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, portionObjectId.toString());
+            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaPrefix);
+            return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);                 
+        }        
+       volume = volume.add(portion.negate());        
+       if ( volume.compareTo(BigDecimal.ZERO)==-1) {
+            errorCode = "DataSample_sampleAliquoting_notEnoughVolumeToAliquoting";
+            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, "aliquot  "+volumeObjectId.toString());
+            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, volume.toString());
+            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, "subaliquoting");
+            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, portion.toString());
+            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaPrefix);
+            return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);                          
+        }        
+       if (!(volume.compareTo(portion)==1) ) {
+            errorCode = "DataSample_sampleAliquoting_notEnoughVolumeForExtraction";
+            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, "aliquot  "+volumeObjectId.toString());
+            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, volume.toString());
+            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, "subaliquoting");
+            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, portion.toString());
+            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaPrefix);
+            return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);                          
+        }        
+       
+       String conclusionMsg = "It is possible to extract ";
+       if (volumeUOM.equalsIgnoreCase(portionUOM)){
+           conclusionMsg=conclusionMsg+portion.toString()+" from "+volume.toString()+" expressed in "+volumeUOM;
+       }else{
+           conclusionMsg=conclusionMsg+portion.toString()+" of "+portionUOM+" from "+volume.toString()+" of "+volumeUOM;
+       }
+        return new Object[]{LPPlatform.LAB_TRUE, conclusionMsg, portion};
+    }
     
 } // end class
