@@ -7,7 +7,7 @@ package com.labplanet.servicios.testing.data;
 
 import LabPLANET.utilities.LPNulls;
 import LabPLANET.utilities.LPPlatform;
-import LabPLANET.utilities.LPTestingOutFormat;
+import functionalJava.testingScripts.LPTestingOutFormat;
 import LabPLANET.utilities.LabPLANETArray;
 import databases.Rdbms;
 import functionalJava.analysis.UserMethod;

@@ -5,15 +5,20 @@
  */
 package com.labplanet.servicios.testing.config;;
 
+import LabPLANET.utilities.LPPlatform;
+import LabPLANET.utilities.LabPLANETArray;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-//import result.specifications.MaterialQualitativeSpec;
 import functionalJava.materialSpec.DataSpec;
+import functionalJava.testingScripts.LPTestingOutFormat;
+import functionalJava.testingScripts.TestingAssert;
+import functionalJava.testingScripts.TestingAssertSummary;
 import java.util.Arrays;
+import java.util.HashMap;
 
 /**
  *
@@ -30,9 +35,74 @@ public class TestingResultCheckSpecQualitative extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response)            throws ServletException, IOException {
+        DataSpec resChkSpec = new DataSpec();   
+        
+        TestingAssertSummary tstAssertSummary = new TestingAssertSummary();
+
+        String csvFileName = "noDBSchema_config_specQualitative_resultCheck.txt"; 
+        response = LPTestingOutFormat.responsePreparation(response);        
+                             
+        String csvPathName = LPTestingOutFormat.TESTING_FILES_PATH+csvFileName; 
+        String csvFileSeparator=LPTestingOutFormat.TESTING_FILES_FIELD_SEPARATOR;
+        
+        Object[][] csvFileContent = LabPLANETArray.convertCSVinArray(csvPathName, csvFileSeparator); 
+                
+        try (PrintWriter out = response.getWriter()) {
+            String fileContent = LPTestingOutFormat.getHtmlStyleHeader(this.getClass().getSimpleName());
+            HashMap<String, Object> csvHeaderTags = LPTestingOutFormat.getCSVHeader(LabPLANETArray.convertCSVinArray(csvPathName, "="));
+            if (csvHeaderTags.containsKey(LPPlatform.LAB_FALSE)){
+                fileContent=fileContent+"There are missing tags in the file header: "+csvHeaderTags.get(LPPlatform.LAB_FALSE);                        
+                out.println(fileContent); 
+                return;
+            }            
+            
+            Integer numEvaluationArguments = Integer.valueOf(csvHeaderTags.get(LPTestingOutFormat.FILEHEADER_numEvaluationArguments).toString());   
+            Integer numHeaderLines = Integer.valueOf(csvHeaderTags.get(LPTestingOutFormat.FILEHEADER_numHeaderLinesTagName).toString());   
+            //numEvaluationArguments=numEvaluationArguments+1;
+            String table1Header = csvHeaderTags.get(LPTestingOutFormat.FILEHEADER_tableNameTagName+"1").toString();               
+            String fileContentTable1 = LPTestingOutFormat.createTableWithHeader(table1Header, numEvaluationArguments);
+
+            Integer iLines =numHeaderLines; 
+            for (iLines=iLines;iLines<csvFileContent.length;iLines++){
+                tstAssertSummary.increaseTotalTests();
+                TestingAssert tstAssert = new TestingAssert(csvFileContent[iLines], numEvaluationArguments);
+                String schemaName = "";
+                
+                String result = LPTestingOutFormat.csvExtractFieldValueString(csvFileContent[iLines][numEvaluationArguments]);
+                String ruleType = LPTestingOutFormat.csvExtractFieldValueString(csvFileContent[iLines][numEvaluationArguments+1]);
+                String values = LPTestingOutFormat.csvExtractFieldValueString(csvFileContent[iLines][numEvaluationArguments+2]);
+                String separator = LPTestingOutFormat.csvExtractFieldValueString(csvFileContent[iLines][numEvaluationArguments+3]);
+                String listName = LPTestingOutFormat.csvExtractFieldValueString(csvFileContent[iLines][numEvaluationArguments+4]);
+
+                fileContentTable1=fileContentTable1+LPTestingOutFormat.rowAddFields(
+                        new Object[]{iLines, result, ruleType, values, separator, listName});
+                    
+                Object[] resSpecEvaluation = resChkSpec.resultCheck(schemaName, result, ruleType, values, separator, listName);
+                if (numEvaluationArguments==0){                    
+                    fileContentTable1=fileContentTable1+LPTestingOutFormat.rowAddField(Arrays.toString(resSpecEvaluation));                     
+                }
+                if (numEvaluationArguments>0){                    
+                    Object[] evaluate = tstAssert.evaluate(numEvaluationArguments, tstAssertSummary, resSpecEvaluation);
+                    fileContentTable1=fileContentTable1+LPTestingOutFormat.rowAddFields(evaluate);                        
+                }
+                fileContentTable1=fileContentTable1+LPTestingOutFormat.rowEnd();                                                
+            }                          
+            tstAssertSummary.notifyResults();
+            fileContentTable1 = fileContentTable1 +LPTestingOutFormat.tableEnd();
+            String fileContentSummary = LPTestingOutFormat.CreateSummaryTable(tstAssertSummary);
+            fileContent=fileContent+fileContentSummary+fileContentTable1;
+            fileContent=fileContent+LPTestingOutFormat.bodyEnd()+LPTestingOutFormat.htmlEnd();
+            out.println(fileContent);            
+            LPTestingOutFormat.createLogFile(csvPathName, fileContent);
+            tstAssertSummary=null; resChkSpec=null;
+        }
+        catch(IOException error){
+            tstAssertSummary=null; resChkSpec=null;
+        }        
+    }
+
+        /*        response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {            
             DataSpec resChkSpec = new DataSpec();
                        
@@ -384,7 +454,6 @@ public class TestingResultCheckSpecQualitative extends HttpServlet {
                 QualitSpecTestingArray[inumTesting][4]=null;
                 inumTesting++;}
             
-            /* TODO output your page here. You may use following sample code. */
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
@@ -420,7 +489,7 @@ public class TestingResultCheckSpecQualitative extends HttpServlet {
             out.println("</html>");        
         }        
     }
-
+*/
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.

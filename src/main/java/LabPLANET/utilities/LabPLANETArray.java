@@ -5,7 +5,6 @@
  */
 package LabPLANET.utilities;
 
-import static LabPLANET.utilities.LPPlatform.LAB_FALSE;
 import static LabPLANET.utilities.LPPlatform.trapErrorMessage;
 import functionalJava.parameter.Parameter;
 import java.io.BufferedReader;

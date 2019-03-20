@@ -10,7 +10,7 @@ import functionalJava.analysis.UserMethod;
 import _functionalJava.project.DataProject;
 import LabPLANET.utilities.LabPLANETArray;
 import LabPLANET.utilities.LPNulls;
-import LabPLANET.utilities.LPTestingOutFormat;
+import functionalJava.testingScripts.LPTestingOutFormat;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;

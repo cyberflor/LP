@@ -778,10 +778,10 @@ public class Rdbms {
      * @throws SQLException
      */
     public  static CachedRowSetImpl prepRdQuery(String consultaconinterrogaciones, Object [] valoresinterrogaciones) throws SQLException, NullPointerException{
-        Object[] filteredValoresConInterrogaciones = new Object[0];     
-        PreparedStatement prepareStatement = conn.prepareStatement(consultaconinterrogaciones);
         CachedRowSetImpl crs =new CachedRowSetImpl();
         try{
+        Object[] filteredValoresConInterrogaciones = new Object[0];     
+        PreparedStatement prepareStatement = conn.prepareStatement(consultaconinterrogaciones);
             prepareStatement.setQueryTimeout(rdbms.getTimeout());
             if (valoresinterrogaciones!=null){
                 for (Object curVal: valoresinterrogaciones){

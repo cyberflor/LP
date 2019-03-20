@@ -5,7 +5,9 @@
  */
 package com.labplanet.servicios.testing.config;
 
-import LabPLANET.utilities.LPTestingOutFormat;
+import LabPLANET.utilities.LPPlatform;
+import LabPLANET.utilities.LabPLANETArray;
+import functionalJava.testingScripts.LPTestingOutFormat;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
@@ -13,7 +15,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import functionalJava.materialSpec.ConfigSpecRule;
+import functionalJava.testingScripts.TestingAssert;
+import functionalJava.testingScripts.TestingAssertSummary;
 import java.util.Arrays;
+import java.util.HashMap;
 /**
  *
  * @author Administrator
@@ -29,6 +34,97 @@ public class ConfigSpecQuantitativeRuleFormat extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)            throws ServletException, IOException {
+        ConfigSpecRule mSpec = new ConfigSpecRule();
+        
+        TestingAssertSummary tstAssertSummary = new TestingAssertSummary();
+
+        String csvFileName = "Config_SpecQuantitativeRuleGeneratorChecker.txt"; 
+        response = LPTestingOutFormat.responsePreparation(response);        
+                             
+        String csvPathName = LPTestingOutFormat.TESTING_FILES_PATH+csvFileName; 
+        String csvFileSeparator=LPTestingOutFormat.TESTING_FILES_FIELD_SEPARATOR;
+        
+        Object[][] csvFileContent = LabPLANETArray.convertCSVinArray(csvPathName, csvFileSeparator); 
+                
+        try (PrintWriter out = response.getWriter()) {
+            String fileContent = LPTestingOutFormat.getHtmlStyleHeader(this.getClass().getSimpleName());
+            HashMap<String, Object> csvHeaderTags = LPTestingOutFormat.getCSVHeader(LabPLANETArray.convertCSVinArray(csvPathName, "="));
+            if (csvHeaderTags.containsKey(LPPlatform.LAB_FALSE)){
+                fileContent=fileContent+"There are missing tags in the file header: "+csvHeaderTags.get(LPPlatform.LAB_FALSE);                        
+                out.println(fileContent); 
+                return;
+            }            
+            
+            Integer numEvaluationArguments = Integer.valueOf(csvHeaderTags.get(LPTestingOutFormat.FILEHEADER_numEvaluationArguments).toString());   
+            Integer numHeaderLines = Integer.valueOf(csvHeaderTags.get(LPTestingOutFormat.FILEHEADER_numHeaderLinesTagName).toString());   
+            //numEvaluationArguments=numEvaluationArguments+1;
+            
+            String table1Header = csvHeaderTags.get(LPTestingOutFormat.FILEHEADER_tableNameTagName+"1").toString();               
+            String fileContentTable1 = LPTestingOutFormat.createTableWithHeader(table1Header, numEvaluationArguments);
+
+            String table2Header = csvHeaderTags.get(LPTestingOutFormat.FILEHEADER_tableNameTagName+"2").toString();            
+            String fileContentTable2 = LPTestingOutFormat.createTableWithHeader(table2Header, numEvaluationArguments);
+
+            Integer iLines =numHeaderLines; 
+            for (iLines=iLines;iLines<csvFileContent.length;iLines++){
+                tstAssertSummary.increaseTotalTests();
+                String schemaName = "";
+                    
+                TestingAssert tstAssert = new TestingAssert(csvFileContent[iLines], numEvaluationArguments);
+                
+                if (csvFileContent[iLines][0]==null){tstAssertSummary.increasetotalLabPlanetBooleanUndefined();}
+                if (csvFileContent[iLines][1]==null){tstAssertSummary.increasetotalLabPlanetErrorCodeUndefined();}
+                
+                Float minSpec = LPTestingOutFormat.csvExtractFieldValueFloat(csvFileContent[iLines][numEvaluationArguments]);
+                Float minControl = LPTestingOutFormat.csvExtractFieldValueFloat(csvFileContent[iLines][numEvaluationArguments+1]);
+                Float maxControl = LPTestingOutFormat.csvExtractFieldValueFloat(csvFileContent[iLines][numEvaluationArguments+2]);
+                Float maxSpec = LPTestingOutFormat.csvExtractFieldValueFloat(csvFileContent[iLines][numEvaluationArguments+3]);
+                    
+                Object[] resSpecEvaluation = new Object[0];                
+                if (minControl==null){
+                    fileContentTable1=fileContentTable1+LPTestingOutFormat.rowAddFields(
+                            new Object[]{iLines, minSpec, maxSpec});
+                    resSpecEvaluation = mSpec.specLimitIsCorrectQuantitative(minSpec,maxSpec, minControl, maxControl);
+                }else{
+                    fileContentTable2=fileContentTable2+LPTestingOutFormat.rowAddFields(
+                            new Object[]{iLines, minSpec, minControl, maxControl, maxSpec});
+                    resSpecEvaluation = mSpec.specLimitIsCorrectQuantitative(minSpec,maxSpec, minControl, maxControl);
+                }        
+                if (numEvaluationArguments==0){                    
+                    if (minControl==null){
+                        fileContentTable1=fileContentTable1+LPTestingOutFormat.rowAddField(Arrays.toString(resSpecEvaluation));                     
+                    }else{
+                        fileContentTable2=fileContentTable2+LPTestingOutFormat.rowAddField(Arrays.toString(resSpecEvaluation));                     
+                    }
+                }                                
+                if (numEvaluationArguments>0){                    
+                    Object[] evaluate = tstAssert.evaluate(numEvaluationArguments, tstAssertSummary, resSpecEvaluation);
+                    if (minControl==null){
+                        fileContentTable1=fileContentTable1+LPTestingOutFormat.rowAddFields(evaluate);                        
+                        fileContentTable1=fileContentTable1+LPTestingOutFormat.rowEnd();                                                
+                    }else{
+                        fileContentTable2=fileContentTable2+LPTestingOutFormat.rowAddFields(evaluate);                        
+                        fileContentTable2=fileContentTable2+LPTestingOutFormat.rowEnd();                                                                        
+                    }
+                }
+            }    
+            tstAssertSummary.notifyResults();
+            fileContentTable1 = fileContentTable1 +LPTestingOutFormat.tableEnd();
+            fileContentTable2 = fileContentTable2 +LPTestingOutFormat.tableEnd();         
+            if (numEvaluationArguments>0){
+                String fileContentSummary = LPTestingOutFormat.CreateSummaryTable(tstAssertSummary);
+                fileContent=fileContent+fileContentSummary+fileContentTable1+fileContentTable2;
+            }
+            fileContent=fileContent+LPTestingOutFormat.bodyEnd()+LPTestingOutFormat.htmlEnd();
+            out.println(fileContent);            
+            LPTestingOutFormat.createLogFile(csvPathName, fileContent);
+            tstAssertSummary=null; mSpec=null;
+        }
+        catch(IOException error){
+            tstAssertSummary=null; mSpec=null;
+        }        
+    }
+/*
         String csvFileName = "Config_SpecQuantitativeRuleGeneratorChecker.txt"; 
 
         response = LPTestingOutFormat.responsePreparation(response);        
@@ -253,7 +349,7 @@ public class ConfigSpecQuantitativeRuleFormat extends HttpServlet {
     
 //    if (1==1){return;}
     
-            /* TODO output your page here. You may use following sample code. */
+           
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
@@ -305,7 +401,7 @@ public class ConfigSpecQuantitativeRuleFormat extends HttpServlet {
             out.println("</html>");
         }
     }
-
+*/
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.

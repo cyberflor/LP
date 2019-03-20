@@ -5,7 +5,7 @@
  */
 package com.labplanet.servicios.testing.config;
 
-import LabPLANET.utilities.LPTestingOutFormat;
+import functionalJava.testingScripts.LPTestingOutFormat;
 import LabPLANET.utilities.LabPLANETArray;
 import functionalJava.sop.*;
 import java.io.IOException;

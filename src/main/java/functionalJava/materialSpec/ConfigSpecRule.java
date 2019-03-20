@@ -131,7 +131,8 @@ public class ConfigSpecRule {
             errorCode = "specLimits_quantitativeMinSpecSuccessfully"; return LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, errorCode, errorDetailVariables);}                                    
         if ((minSpec==null) && (maxSpec!=null)){
             errorCode = "specLimits_quantitativeMaxSpecSuccessfully"; return LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, errorCode, errorDetailVariables);}                                           
-        if (minSpec.compareTo(maxSpec)==1){
+        int comparsion = minSpec.compareTo(maxSpec);
+         if (comparsion!=1){
             errorCode = "specLimits_quantitativeMinSpecMaxSpec_Successfully"; return LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, errorCode, errorDetailVariables);}                                    
         
         errorCode = "specLimits_quantitativeMinSpecMaxSpec_MinSpecGreaterOrEqualToMaxSpec"; 

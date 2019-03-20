@@ -8,7 +8,7 @@ package com.labplanet.servicios.testing.Platform;
 import LabPLANET.utilities.LabPLANETArray;
 import LabPLANET.utilities.LPNulls;
 import LabPLANET.utilities.LPPlatform;
-import LabPLANET.utilities.LPTestingOutFormat;
+import functionalJava.testingScripts.LPTestingOutFormat;
 import databases.Rdbms;
 import databases.SqlStatement;
 import java.io.IOException;
@@ -94,7 +94,7 @@ public class DBActions extends HttpServlet {
                     }                                    
                 }                         
                 Object[] setFieldValues = LabPLANETArray.convertStringWithDataTypeToObjectArray(setFieldValue);                    
-                fileContent=fileContent+LPTestingOutFormat.rowAddField(i)+LPTestingOutFormat.rowAddField(functionBeingTested)
+                fileContent=fileContent+LPTestingOutFormat.rowAddField(i.toString())+LPTestingOutFormat.rowAddField(functionBeingTested)
                         +LPTestingOutFormat.rowAddField(schemaPrefix)+LPTestingOutFormat.rowAddField(tableName)
                         +LPTestingOutFormat.rowAddField(Arrays.toString(fieldName))+LPTestingOutFormat.rowAddField(Arrays.toString(fieldValue))
                         +LPTestingOutFormat.rowAddField(Arrays.toString(fieldsToRetrieve))

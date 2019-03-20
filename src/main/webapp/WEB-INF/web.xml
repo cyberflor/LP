@@ -13,8 +13,8 @@
         <servlet-class>com.labplanet.servicios.testing.config.specQualitative</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>config_specQuantitativeRuleFormat</servlet-name>
-        <servlet-class>com.labplanet.servicios.testing.config.config_specQuantitativeRuleFormat</servlet-class>
+        <servlet-name>configSpecQuantitativeRuleFormat</servlet-name>
+        <servlet-class>com.labplanet.servicios.testing.config.ConfigSpecQuantitativeRuleFormat</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>TestingConfigSamplingPlanStructure</servlet-name>
@@ -109,8 +109,8 @@
         <url-pattern>/testing/config/specQualitativeRuleFormat</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>config_specQuantitativeRuleFormat</servlet-name>
-        <url-pattern>/testing/config/specQuantitativeRuleFormat</url-pattern>
+        <servlet-name>configSpecQuantitativeRuleFormat</servlet-name>
+        <url-pattern>/testing/config/ConfigSpecQuantitativeRuleFormat</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>TestingResultCheckSpecQualitative</servlet-name>

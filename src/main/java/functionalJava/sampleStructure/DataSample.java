@@ -421,7 +421,7 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
             
         }
         return diagnoses;  
-}
+    }
 
     /**
      *

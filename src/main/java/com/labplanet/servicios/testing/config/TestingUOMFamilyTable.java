@@ -5,17 +5,17 @@
  */
 package com.labplanet.servicios.testing.config;
 
+import LabPLANET.utilities.LPPlatform;
 import databases.Rdbms;
-import functionalJava.materialSpec.ConfigSpecStructure;
 import functionalJava.unitsOfMeasurement.UnitsOfMeasurement;
 import LabPLANET.utilities.LabPLANETArray;
-import java.io.File;
-import java.io.FileWriter;
+import functionalJava.testingScripts.LPTestingOutFormat;
+import functionalJava.testingScripts.TestingAssert;
+import functionalJava.testingScripts.TestingAssertSummary;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.nio.file.Files;
 import java.util.Arrays;
-import java.util.ResourceBundle;
+import java.util.HashMap;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -36,113 +36,88 @@ public class TestingUOMFamilyTable extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-    try (PrintWriter out = response.getWriter()) {
-        response.setContentType("text/html;charset=UTF-8");
-        ConfigSpecStructure configSpec = new ConfigSpecStructure();
-        String csvFileName = "uom_familyTable.txt"; String csvFileSeparator=";";
-        String csvPathName = "\\\\FRANCLOUD\\fran\\LabPlanet\\testingRepository\\"+csvFileName; 
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response)            throws ServletException, IOException {
+        TestingAssertSummary tstAssertSummary = new TestingAssertSummary();
+
+        String csvFileName = "uom_familyTable.txt"; 
+        response = LPTestingOutFormat.responsePreparation(response);        
+                             
+        String csvPathName = LPTestingOutFormat.TESTING_FILES_PATH+csvFileName; 
+        String csvFileSeparator=LPTestingOutFormat.TESTING_FILES_FIELD_SEPARATOR;
+        Object[][] csvFileContent = LabPLANETArray.convertCSVinArray(csvPathName, csvFileSeparator); 
+
+        String fileContent = LPTestingOutFormat.getHtmlStyleHeader(this.getClass().getSimpleName());
+
+        if (Rdbms.getRdbms().startRdbms("labplanet", "avecesllegaelmomento")==null){fileContent=fileContent+"Connection to the database not established";return;}
         
-        String userName=null;
-
-        if (Rdbms.getRdbms().startRdbms("labplanet", "avecesllegaelmomento")==null){out.println("Connection to the database not established");return;}
-
-        Integer numTesting = 20;
-        Integer inumTesting = 0;
-        Object[][] configSpecTestingArray = new Object[numTesting][6]; 
-                
-        configSpecTestingArray = LabPLANETArray.convertCSVinArray(csvPathName, csvFileSeparator);
-
-        /* TODO output your page here. You may use following sample code. */
-        String fileContent = "";
-        fileContent = fileContent + "<!DOCTYPE html><html><head>" + "";
-        fileContent = fileContent + "<style>";
-            ResourceBundle prop = ResourceBundle.getBundle("parameter.config.labtimus");        
-            fileContent = fileContent+prop.getString("testingTableStyle1");                
-            fileContent = fileContent+prop.getString("testingTableStyle2");                
-            fileContent = fileContent+prop.getString("testingTableStyle3");                
-            fileContent = fileContent+prop.getString("testingTableStyle4");                
-            fileContent = fileContent+prop.getString("testingTableStyle5");                
-        fileContent = fileContent + "</style>";        
-        fileContent = fileContent + "<title>Servlet TestingUnitConversion_ConversionTable</title>" + "";
-        fileContent = fileContent + "</head>" + "";
-        fileContent = fileContent + "<body>" + "\n";
-        fileContent = fileContent + "<h1>Servlet TestingUnitConversion at " + request.getContextPath() + "</h1>" + "";
-        fileContent = fileContent + "</body>" + "";
-        fileContent = fileContent + "</html>" + "";
-        fileContent = fileContent + "<table id=\"scriptTable\">";        
-        
-        for (Integer i=0;i<configSpecTestingArray.length;i++){
+        try (PrintWriter out = response.getWriter()) {
+            HashMap<String, Object> csvHeaderTags = LPTestingOutFormat.getCSVHeader(LabPLANETArray.convertCSVinArray(csvPathName, "="));
+            if (csvHeaderTags.containsKey(LPPlatform.LAB_FALSE)){
+                fileContent=fileContent+"There are missing tags in the file header: "+csvHeaderTags.get(LPPlatform.LAB_FALSE);                        
+                out.println(fileContent); 
+                return;
+            }            
             
-            if (i==0){
-                fileContent = fileContent + "<th>Test#</th><th>"+configSpecTestingArray[i][0]+"</th>"
-                                          + "<th>family</th><th>"+configSpecTestingArray[i][1]+"</th>"
-                                          + "<th>Number of units</th><th>"+configSpecTestingArray[i][2]+"</th>";                       
-            }else{    
-                //if (configSpecTestingArray[i][2]==null && configSpecTestingArray[i][3]==null){
-                fileContent = fileContent + "<tr>";
+            Integer numEvaluationArguments = Integer.valueOf(csvHeaderTags.get(LPTestingOutFormat.FILEHEADER_numEvaluationArguments).toString());   
+            Integer numHeaderLines = Integer.valueOf(csvHeaderTags.get(LPTestingOutFormat.FILEHEADER_numHeaderLinesTagName).toString());   
+            //numEvaluationArguments=numEvaluationArguments+1;
+            String table1Header = csvHeaderTags.get(LPTestingOutFormat.FILEHEADER_tableNameTagName+"1").toString();               
+            String fileContentTable1 = LPTestingOutFormat.createTableWithHeader(table1Header, numEvaluationArguments);
 
-                userName=null;                
-                String schemaPrefix=null;
-                String familyName=null;    
-                String[] fieldsToRetrieve= new String[0];
+            Integer iLines =numHeaderLines; 
+            for (iLines=iLines;iLines<csvFileContent.length;iLines++){
+                tstAssertSummary.increaseTotalTests();
+                TestingAssert tstAssert = new TestingAssert(csvFileContent[iLines], numEvaluationArguments);
 
-                Object[][] dataSample = null;
-
-                if (configSpecTestingArray[i][0]!=null){schemaPrefix = (String) configSpecTestingArray[i][0];}
-                if (configSpecTestingArray[i][1]!=null){familyName = (String) configSpecTestingArray[i][1];}
-                if (configSpecTestingArray[i][2]!=null){fieldsToRetrieve = (String[]) configSpecTestingArray[i][2].toString().split("\\|");}            
-
+                String schemaPrefix = LPTestingOutFormat.csvExtractFieldValueString(csvFileContent[iLines][numEvaluationArguments]);
+                String familyName = LPTestingOutFormat.csvExtractFieldValueString(csvFileContent[iLines][numEvaluationArguments+1]);
+                String[] fieldsToRetrieve = LPTestingOutFormat.csvExtractFieldValueStringArr(csvFileContent[iLines][numEvaluationArguments+2]);
+                
                 UnitsOfMeasurement UOM = new UnitsOfMeasurement();
 
-                Object[][] tableGet = UOM.getAllUnitsPerFamily(schemaPrefix, familyName, fieldsToRetrieve);
-
-                fileContent = fileContent + "<td>"+i+"</td><td>"+schemaPrefix+"</td><td>"+familyName+"</td><td>"+Arrays.toString(fieldsToRetrieve)+"</td><td><b>"+tableGet.length+"</b></td>";
-                if ("LABPLANET_FALSE".equalsIgnoreCase(tableGet[0][0].toString())) {
-                     fileContent = fileContent + "<td>"+tableGet[0][3].toString()+": "+tableGet[0][5].toString()+"</td>";                
-                }else{
-
-                     fileContent = fileContent + "<td>The units are:";  
-                     fileContent = fileContent + "<table id=\"scriptTable2\">"; 
-                     fileContent = fileContent + "<tr><th>"+"#"+"</th>";
-                    for (String fieldsToRetrieve1 : fieldsToRetrieve) {
-                        fileContent = fileContent + "<th>" + fieldsToRetrieve1 + "</th>";
-                    }
-                     fileContent = fileContent + "</tr>"; 
-                     for (int iRows=0;iRows<tableGet.length;iRows++){
-                        fileContent = fileContent + "<tr>"; 
-                        fileContent = fileContent + "<td>"+iRows+"</td>";     
-                        for (int iColumns=0;iColumns<fieldsToRetrieve.length;iColumns++){
-                            fileContent = fileContent + "<td>"+tableGet[iRows][iColumns]+"</td>";                               
-                        }    
-                        fileContent = fileContent + "</tr>"; 
-                     }                 
-
-                     fileContent = fileContent + "</table>"; 
-
-                }                   
-                //out.println("<td>"+dataSample[0].toString()+". "+dataSample[1].toString()+". "+dataSample[2].toString()+". "+dataSample[3].toString()+". "+dataSample[4].toString()+". "+dataSample[5].toString()+"</td>");
-                fileContent = fileContent + "</tr>";
-            }    
+                Object[][] tableGet = UOM.getAllUnitsPerFamily(schemaPrefix, familyName, fieldsToRetrieve);    
+                fileContentTable1 = fileContentTable1 +LPTestingOutFormat.tableStart();
+                for (int iRows=0;iRows<tableGet.length;iRows++){
+                   fileContentTable1 = fileContentTable1 +LPTestingOutFormat.rowStart(); 
+                   fileContentTable1 = fileContentTable1 + LPTestingOutFormat.rowAddField(String.valueOf(iRows));     
+                   for (int iColumns=0;iColumns<fieldsToRetrieve.length;iColumns++){
+                        if ("LABPLANET_FALSE".equalsIgnoreCase(tableGet[0][0].toString())) {
+                             fileContentTable1 = fileContentTable1+ 
+                                     LPTestingOutFormat.rowAddField(String.valueOf(tableGet[0][3]))+
+                                     LPTestingOutFormat.rowAddField(String.valueOf(tableGet[0][5]));
+                        }else{                       
+                           fileContentTable1 = fileContentTable1 + LPTestingOutFormat.rowAddField(String.valueOf(tableGet[iRows][iColumns]));     
+                        }
+                   }    
+                   fileContentTable1 = fileContentTable1 +LPTestingOutFormat.rowEnd(); 
+                   
+                }    
+                fileContentTable1 = fileContentTable1 +LPTestingOutFormat.tableEnd();
+                
+                if (numEvaluationArguments>0){                    
+                    Object[] evaluate = tstAssert.evaluate(numEvaluationArguments, tstAssertSummary, new Object[0]);
+                    fileContentTable1=fileContentTable1+LPTestingOutFormat.rowAddFields(evaluate);                        
+                }
+                fileContentTable1 = fileContentTable1 +LPTestingOutFormat.rowEnd();                        
+            }   
+            tstAssertSummary.notifyResults();
+            Rdbms.closeRdbms();
+            fileContentTable1 = fileContentTable1 +LPTestingOutFormat.tableEnd();
+            fileContent=fileContent+fileContentTable1;
+            if (numEvaluationArguments>0){
+                String fileContentSummary = LPTestingOutFormat.CreateSummaryTable(tstAssertSummary);
+                fileContent=fileContent+fileContentSummary;
+            }
+            fileContent=fileContent+LPTestingOutFormat.bodyEnd()+LPTestingOutFormat.htmlEnd();
+            out.println(fileContent);            
+            LPTestingOutFormat.createLogFile(csvPathName, fileContent);
+            //testingSummary=null; resChkSpec=null;
         }
-
-        fileContent = fileContent + "</table>";   
-        out.println(fileContent);  
-        
-        csvPathName = csvPathName.replace(".txt", ".html");
-        File file = new File(csvPathName);
-        try (FileWriter fileWriter = new FileWriter(file)){
-            Files.deleteIfExists(file.toPath());
-            fileWriter.write(fileContent);
-            fileWriter.flush();
-            fileWriter.close();        
-        }
-        
-        Rdbms.closeRdbms();       
-    }            
-}
-
+        catch(IOException error){
+            //testingSummary=null; resChkSpec=null;
+            Rdbms.closeRdbms();
+        }        
+    }        
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
