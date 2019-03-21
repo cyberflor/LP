@@ -43,6 +43,7 @@ public class  LabPLANETArray {
         
     private static final String ENCRYPTION_KEY = "Bar12345Bar12345";
     private static final String ENCRYPTED_PREFIX = "encrypted_";
+    private static final String ERRORTRAPPING_EXCEPTION= "LabPLANETPlatform_SpecialFunctionReturnedEXCEPTION";
     /**
      *
      * @param zipcodelist
@@ -130,7 +131,7 @@ public class  LabPLANETArray {
     //                System.err.println("decrypted:" + decrypted);                
         }
                 catch(InvalidKeyException | NoSuchAlgorithmException | BadPaddingException | IllegalBlockSizeException | NoSuchPaddingException e){
-                    String errorCode = "LabPLANETPlatform_SpecialFunctionReturnedEXCEPTION";
+                    String errorCode = ERRORTRAPPING_EXCEPTION;
                     Object[] errorDetailVariables = new Object[0];
                     errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, e.getMessage());
                     return (String[]) trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);
@@ -177,7 +178,7 @@ public class  LabPLANETArray {
                     }        
         }
                 catch(InvalidKeyException | NoSuchAlgorithmException | BadPaddingException | IllegalBlockSizeException | NoSuchPaddingException e){
-                    String errorCode = "LabPLANETPlatform_SpecialFunctionReturnedEXCEPTION";
+                    String errorCode = ERRORTRAPPING_EXCEPTION;
                     Object[] errorDetailVariables = new Object[0];
                     errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, e.getMessage());
                     return LabPLANETArray.array1dTo2d(
@@ -219,7 +220,7 @@ public class  LabPLANETArray {
                     fieldValue[iFields] = decrypted;
                 }
                 catch(InvalidKeyException | NoSuchAlgorithmException | BadPaddingException | IllegalBlockSizeException | NoSuchPaddingException e){
-                    String errorCode = "LabPLANETPlatform_SpecialFunctionReturnedEXCEPTION";
+                    String errorCode = ERRORTRAPPING_EXCEPTION;
                     Object[] errorDetailVariables = new Object[0];
                     errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, e.getMessage());
                     return (String[]) trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);

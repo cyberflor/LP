@@ -31,6 +31,8 @@ import org.json.simple.JSONObject;
  * @author Administrator
  */
 public class sampleAPIfrontend extends HttpServlet {
+    public static String ERRORMSG_ERROR_STATUS_CODE="Error Status Code";
+    public static String ERRORMSG_MANDATORY_PARAMS_MISSING="API Error Message: There are mandatory params for this API method not being passed";
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -80,7 +82,7 @@ public class sampleAPIfrontend extends HttpServlet {
             isConnected = Rdbms.getRdbms().startRdbms(dbUserName, dbUserPassword);
             if (!isConnected){
                 Rdbms.closeRdbms();                
-                errObject = LabPLANETArray.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
+                errObject = LabPLANETArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
                 errObject = LabPLANETArray.addValueToArray1D(errObject, "API Error Message: db User Name and Password not correct, connection to the database is not possible");                    
                 Object[] errMsg = LabPLANETFrontEnd.responseError(errObject, language, null);
                 response.sendError((int) errMsg[0], (String) errMsg[1]);    
@@ -90,7 +92,7 @@ public class sampleAPIfrontend extends HttpServlet {
             String actionName = request.getParameter("actionName");
             if (actionName==null) {
                 Rdbms.closeRdbms();                
-                errObject = LabPLANETArray.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
+                errObject = LabPLANETArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
                 errObject = LabPLANETArray.addValueToArray1D(errObject, "API Error Message: actionName is one mandatory param for this API");                    
                 Object[] errMsg = LabPLANETFrontEnd.responseError(errObject, language, null);
                 response.sendError((int) errMsg[0], (String) errMsg[1]);    
@@ -99,7 +101,7 @@ public class sampleAPIfrontend extends HttpServlet {
             String schemaPrefix = request.getParameter("schemaPrefix");
             if (schemaPrefix==null) {
                 Rdbms.closeRdbms();                
-                errObject = LabPLANETArray.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
+                errObject = LabPLANETArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
                 errObject = LabPLANETArray.addValueToArray1D(errObject, "API Error Message: schemaPrefix is one mandatory param for this API");                    
                 Object[] errMsg = LabPLANETFrontEnd.responseError(errObject, language, null);
                 response.sendError((int) errMsg[0], (String) errMsg[1]);    
@@ -328,7 +330,7 @@ public class sampleAPIfrontend extends HttpServlet {
                 case "GET_SAMPLE_ANALYSIS_LIST":
                     String sampleIdStr = request.getParameter("sampleId");                             
                     if ( (sampleIdStr==null) || (sampleIdStr.contains("undefined")) ) {
-                        errObject = LabPLANETArray.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
+                        errObject = LabPLANETArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
                         errObject = LabPLANETArray.addValueToArray1D(errObject, "sampleId="+request.getParameter("sampleId"));
                         errObject = LabPLANETArray.addValueToArray1D(errObject, "API Error Message: sampleId is one mandatory param and should be one integer value for this API");                    
                         Object[] errMsg = LabPLANETFrontEnd.responseError(errObject, language, schemaPrefix);
@@ -365,7 +367,7 @@ public class sampleAPIfrontend extends HttpServlet {
                 case "GET_SAMPLE_ANALYSIS_RESULT_LIST":
                     sampleIdStr = request.getParameter("sampleId");                             
                     if ( (sampleIdStr==null) || (sampleIdStr.contains("undefined")) ) {
-                        errObject = LabPLANETArray.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
+                        errObject = LabPLANETArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
                         errObject = LabPLANETArray.addValueToArray1D(errObject, "sampleId="+request.getParameter("sampleId"));
                         errObject = LabPLANETArray.addValueToArray1D(errObject, "API Error Message: sampleId is one mandatory param and should be one integer value for this API");                    
                         Object[] errMsg = LabPLANETFrontEnd.responseError(errObject, language, schemaPrefix);
@@ -407,7 +409,7 @@ public class sampleAPIfrontend extends HttpServlet {
                 case "GET_SAMPLE_ANALYSIS_RESULT_SPECK":
                     String resultIdStr = request.getParameter("result_id");
                     if ( (resultIdStr==null) || (resultIdStr.contains("undefined")) ) {
-                        errObject = LabPLANETArray.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
+                        errObject = LabPLANETArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
                         errObject = LabPLANETArray.addValueToArray1D(errObject, "sampleId="+request.getParameter("sampleId"));
                         errObject = LabPLANETArray.addValueToArray1D(errObject, "API Error Message: sampleId is one mandatory param and should be one integer value for this API");                    
                         Object[] errMsg = LabPLANETFrontEnd.responseError(errObject, language, schemaPrefix);
@@ -457,7 +459,7 @@ public class sampleAPIfrontend extends HttpServlet {
             Rdbms.closeRdbms();    
 return;
                 default:      
-                    errObject = LabPLANETArray.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
+                    errObject = LabPLANETArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
                     errObject = LabPLANETArray.addValueToArray1D(errObject, "API Error Message: actionName "+actionName+ " not recognized as an action by this API");                                                            
                     Object[] errMsg = LabPLANETFrontEnd.responseError(errObject, language, schemaPrefix);
                     response.sendError((int) errMsg[0], (String) errMsg[1]);    

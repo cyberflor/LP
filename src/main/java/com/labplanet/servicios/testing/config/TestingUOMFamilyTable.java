@@ -69,9 +69,16 @@ public class TestingUOMFamilyTable extends HttpServlet {
                 tstAssertSummary.increaseTotalTests();
                 TestingAssert tstAssert = new TestingAssert(csvFileContent[iLines], numEvaluationArguments);
 
-                String schemaPrefix = LPTestingOutFormat.csvExtractFieldValueString(csvFileContent[iLines][numEvaluationArguments]);
-                String familyName = LPTestingOutFormat.csvExtractFieldValueString(csvFileContent[iLines][numEvaluationArguments+1]);
-                String[] fieldsToRetrieve = LPTestingOutFormat.csvExtractFieldValueStringArr(csvFileContent[iLines][numEvaluationArguments+2]);
+                Integer lineNumCols = csvFileContent[0].length-1;
+                String schemaPrefix = null;
+                if (lineNumCols>=numEvaluationArguments)                
+                    schemaPrefix = LPTestingOutFormat.csvExtractFieldValueString(csvFileContent[iLines][numEvaluationArguments]);
+                String familyName = null;
+                if (lineNumCols>=numEvaluationArguments+1)                
+                    familyName = LPTestingOutFormat.csvExtractFieldValueString(csvFileContent[iLines][numEvaluationArguments+1]);
+                String[] fieldsToRetrieve = null;
+                if (lineNumCols>=numEvaluationArguments+2)                
+                    fieldsToRetrieve = LPTestingOutFormat.csvExtractFieldValueStringArr(csvFileContent[iLines][numEvaluationArguments+2]);
                 
                 UnitsOfMeasurement UOM = new UnitsOfMeasurement();
 

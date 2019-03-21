@@ -29,6 +29,8 @@ import org.json.simple.JSONObject;
  * @author Administrator
  */
 public class sopUserAPI extends HttpServlet {
+    public static String ERRORMSG_ERROR_STATUS_CODE="Error Status Code";
+    public static String ERRORMSG_MANDATORY_PARAMS_MISSING="API Error Message: There are mandatory params for this API method not being passed";
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -80,7 +82,7 @@ public class sopUserAPI extends HttpServlet {
             boolean isConnected = false;
             isConnected = Rdbms.getRdbms().startRdbms(dbUserName, dbUserPassword);
             if (!isConnected){
-                errObject = LabPLANETArray.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
+                errObject = LabPLANETArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
                 errObject = LabPLANETArray.addValueToArray1D(errObject, "API Error Message: db User Name and Password not correct, connection to the database is not possible");                    
                 Object[] errMsg = LabPLANETFrontEnd.responseError(errObject, language, null);
                 response.sendError((int) errMsg[0], (String) errMsg[1]);  
@@ -90,7 +92,7 @@ public class sopUserAPI extends HttpServlet {
         
             String actionName = request.getParameter("actionName");
             if (actionName==null) {
-                errObject = LabPLANETArray.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
+                errObject = LabPLANETArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
                 errObject = LabPLANETArray.addValueToArray1D(errObject, "API Error Message: actionName is one mandatory param for this API");                    
                 Object[] errMsg = LabPLANETFrontEnd.responseError(errObject, language, null);
                 response.sendError((int) errMsg[0], (String) errMsg[1]);    
@@ -100,7 +102,7 @@ public class sopUserAPI extends HttpServlet {
 /*            String schemaPrefix = request.getParameter("schemaPrefix");
             if (actionName==null) {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);                
-                errObject = LabPLANETArray.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
+                errObject = LabPLANETArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
                 errObject = LabPLANETArray.addValueToArray1D(errObject, "API Error Message: schemaPrefix is one mandatory param for this API");                    
                 out.println(Arrays.toString(errObject));
                 return ;
@@ -260,7 +262,7 @@ public class sopUserAPI extends HttpServlet {
                 Rdbms.closeRdbms();
                 return;
             default:                
-                errObject = LabPLANETArray.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
+                errObject = LabPLANETArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
                 errObject = LabPLANETArray.addValueToArray1D(errObject, "No action linked to actionName "+actionName+" in this API");                     
                 Object[] errMsg = LabPLANETFrontEnd.responseError(errObject, language, null);
                 response.sendError((int) errMsg[0], (String) errMsg[1]);    
@@ -269,7 +271,7 @@ public class sopUserAPI extends HttpServlet {
         }catch(Exception e){
             String errMessage = e.getMessage();
             String[] errObject = new String[0];
-            errObject = LabPLANETArray.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
+            errObject = LabPLANETArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
             errObject = LabPLANETArray.addValueToArray1D(errObject, "This call raised one unhandled exception. Error:"+errMessage);     
             Object[] errMsg = LabPLANETFrontEnd.responseError(errObject, language, null);
             response.sendError((int) errMsg[0], (String) errMsg[1]);    

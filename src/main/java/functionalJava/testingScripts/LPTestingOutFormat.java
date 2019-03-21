@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.sql.Date;
 import java.util.HashMap;
 import java.util.ResourceBundle;
 import javax.servlet.http.HttpServletResponse;
@@ -229,7 +230,7 @@ public class LPTestingOutFormat {
             return new BigDecimal(value.toString());        
         }catch(Exception e){return null;}        
     }
-    public static Boolean csvExtractFieldValueBoolean(Object value){
+    public static Boolean csvExtractFieldValueBoolean(Object value){        
         if (value==null) return null;
         if (value.toString().length()==0){return null;}
         try{
@@ -256,5 +257,17 @@ public class LPTestingOutFormat {
             return Float.valueOf(value.toString());
         }catch(NumberFormatException e){return null;}        
     }
+    public static Integer csvExtractFieldValueInteger(Object value){
+        if (value==null) return null;
+        try{
+            return Integer.valueOf(value.toString());
+        }catch(NumberFormatException e){return null;}        
+    }    
+    public static Date csvExtractFieldValueDate(Object value){
+        if (value==null) return null;
+        try{
+            return Date.valueOf(value.toString());
+        }catch(NumberFormatException e){return null;}        
+    }    
     
 }

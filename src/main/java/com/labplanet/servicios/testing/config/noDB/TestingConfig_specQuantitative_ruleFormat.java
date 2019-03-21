@@ -3,27 +3,28 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.labplanet.servicios.testing.config;
+package com.labplanet.servicios.testing.config.noDB;
 
 import LabPLANET.utilities.LPPlatform;
 import LabPLANET.utilities.LabPLANETArray;
+import functionalJava.materialSpec.ConfigSpecRule;
 import functionalJava.testingScripts.LPTestingOutFormat;
+import functionalJava.testingScripts.TestingAssert;
+import functionalJava.testingScripts.TestingAssertSummary;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Arrays;
+import java.util.HashMap;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import functionalJava.materialSpec.ConfigSpecRule;
-import functionalJava.testingScripts.TestingAssert;
-import functionalJava.testingScripts.TestingAssertSummary;
-import java.util.Arrays;
-import java.util.HashMap;
+
 /**
  *
  * @author Administrator
  */
-public class ConfigSpecQuantitativeRuleFormat extends HttpServlet {
+public class TestingConfig_specQuantitative_ruleFormat extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -133,7 +134,6 @@ public class ConfigSpecQuantitativeRuleFormat extends HttpServlet {
             tstAssertSummary=null; mSpec=null;
         }        
     }
-
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.

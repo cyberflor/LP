@@ -69,11 +69,22 @@ public class TestingResultCheckSpecQualitative extends HttpServlet {
                 TestingAssert tstAssert = new TestingAssert(csvFileContent[iLines], numEvaluationArguments);
                 String schemaName = "";
                 
-                String result = LPTestingOutFormat.csvExtractFieldValueString(csvFileContent[iLines][numEvaluationArguments]);
-                String ruleType = LPTestingOutFormat.csvExtractFieldValueString(csvFileContent[iLines][numEvaluationArguments+1]);
-                String values = LPTestingOutFormat.csvExtractFieldValueString(csvFileContent[iLines][numEvaluationArguments+2]);
-                String separator = LPTestingOutFormat.csvExtractFieldValueString(csvFileContent[iLines][numEvaluationArguments+3]);
-                String listName = LPTestingOutFormat.csvExtractFieldValueString(csvFileContent[iLines][numEvaluationArguments+4]);
+                Integer lineNumCols = csvFileContent[0].length-1;
+                String result = null;
+                if (lineNumCols>=numEvaluationArguments)                               
+                     result = LPTestingOutFormat.csvExtractFieldValueString(csvFileContent[iLines][numEvaluationArguments]);
+                String ruleType = null;
+                if (lineNumCols>=numEvaluationArguments+1)                               
+                     ruleType = LPTestingOutFormat.csvExtractFieldValueString(csvFileContent[iLines][numEvaluationArguments+1]);
+                String values = null;
+                if (lineNumCols>=numEvaluationArguments+2)                               
+                     values = LPTestingOutFormat.csvExtractFieldValueString(csvFileContent[iLines][numEvaluationArguments+2]);
+                String separator = null;
+                if (lineNumCols>=numEvaluationArguments+3)                               
+                     separator = LPTestingOutFormat.csvExtractFieldValueString(csvFileContent[iLines][numEvaluationArguments+3]);
+                String listName = null;
+                if (lineNumCols>=numEvaluationArguments+4)                               
+                     listName = LPTestingOutFormat.csvExtractFieldValueString(csvFileContent[iLines][numEvaluationArguments+4]);
 
                 fileContentTable1=fileContentTable1+LPTestingOutFormat.rowAddFields(
                         new Object[]{iLines, result, ruleType, values, separator, listName});

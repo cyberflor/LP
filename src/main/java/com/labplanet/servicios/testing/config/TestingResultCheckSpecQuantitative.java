@@ -65,15 +65,34 @@ public class TestingResultCheckSpecQuantitative extends HttpServlet {
                 TestingAssert tstAssert = new TestingAssert(csvFileContent[iLines], numEvaluationArguments);
                 String schemaName = "";
                 
-                BigDecimal result = LPTestingOutFormat.csvExtractFieldValueBigDecimal(csvFileContent[iLines][numEvaluationArguments]);
-                BigDecimal minSpec = LPTestingOutFormat.csvExtractFieldValueBigDecimal(csvFileContent[iLines][numEvaluationArguments+1]);
-                Boolean minStrict = LPTestingOutFormat.csvExtractFieldValueBoolean(csvFileContent[iLines][numEvaluationArguments+2]);
-                BigDecimal maxSpec = LPTestingOutFormat.csvExtractFieldValueBigDecimal(csvFileContent[iLines][numEvaluationArguments+3]);
-                Boolean maxStrict = LPTestingOutFormat.csvExtractFieldValueBoolean(csvFileContent[iLines][numEvaluationArguments+4]);
-                BigDecimal minControl = LPTestingOutFormat.csvExtractFieldValueBigDecimal(csvFileContent[iLines][numEvaluationArguments+5]);
-                Boolean minControlStrict = LPTestingOutFormat.csvExtractFieldValueBoolean(csvFileContent[iLines][numEvaluationArguments+6]);
-                BigDecimal maxControl = LPTestingOutFormat.csvExtractFieldValueBigDecimal(csvFileContent[iLines][numEvaluationArguments+7]);
-                Boolean maxControlStrict = LPTestingOutFormat.csvExtractFieldValueBoolean(csvFileContent[iLines][numEvaluationArguments+8]);
+                Integer lineNumCols = csvFileContent[0].length-1;
+                BigDecimal result = null;
+                if (lineNumCols>=numEvaluationArguments)
+                    {result = LPTestingOutFormat.csvExtractFieldValueBigDecimal(csvFileContent[iLines][numEvaluationArguments]);}
+                BigDecimal minSpec = null;
+                if (lineNumCols>=numEvaluationArguments+1)
+                    {minSpec = LPTestingOutFormat.csvExtractFieldValueBigDecimal(csvFileContent[iLines][numEvaluationArguments+1]);}
+                Boolean minStrict = null;
+                if (lineNumCols>=numEvaluationArguments+2)
+                    {minStrict = LPTestingOutFormat.csvExtractFieldValueBoolean(csvFileContent[iLines][numEvaluationArguments+2]);}
+                BigDecimal maxSpec = null;
+                if (lineNumCols>=numEvaluationArguments+3)
+                    {maxSpec = LPTestingOutFormat.csvExtractFieldValueBigDecimal(csvFileContent[iLines][numEvaluationArguments+3]);}
+                Boolean maxStrict = null;
+                if (lineNumCols>=numEvaluationArguments+4)
+                    { maxStrict = LPTestingOutFormat.csvExtractFieldValueBoolean(csvFileContent[iLines][numEvaluationArguments+4]);}
+                BigDecimal minControl = null;
+                if (lineNumCols>=numEvaluationArguments+5)
+                    { minControl = LPTestingOutFormat.csvExtractFieldValueBigDecimal(csvFileContent[iLines][numEvaluationArguments+5]);}
+                Boolean minControlStrict = null;
+                if (lineNumCols>=numEvaluationArguments+6)
+                    { minControlStrict = LPTestingOutFormat.csvExtractFieldValueBoolean(csvFileContent[iLines][numEvaluationArguments+6]);}
+                BigDecimal maxControl = null;
+                if (lineNumCols>=numEvaluationArguments+7)
+                    {maxControl = LPTestingOutFormat.csvExtractFieldValueBigDecimal(csvFileContent[iLines][numEvaluationArguments+7]);}
+                Boolean maxControlStrict = null;
+                if (lineNumCols>=numEvaluationArguments+8)
+                    {maxControlStrict = LPTestingOutFormat.csvExtractFieldValueBoolean(csvFileContent[iLines][numEvaluationArguments+8]);}
                     
                 Object[] resSpecEvaluation = new Object[0];
                 if (minControl==null){

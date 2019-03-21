@@ -93,7 +93,7 @@ public class DataSpec {
                     errorCode = "DataSpec_resultCheck_qualitativeNotEqualToOUT";
                     errorVariables = LabPLANETArray.addValueToArray1D(errorVariables, result);
                     errorVariables = LabPLANETArray.addValueToArray1D(errorVariables, values);
-                    diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, errorCode, errorVariables);
+                    diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorVariables);
                     diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, "OUT");
                     return diagnoses;                                                                               
                 }else{
@@ -167,19 +167,17 @@ public class DataSpec {
                     return diagnoses;
                 }else{
                     String[] textSpecArray = values.split(separator);
-                    for (Integer itextSpecArrayLen=0;itextSpecArrayLen<textSpecArray.length;itextSpecArrayLen++){
-                        if (result.equalsIgnoreCase(textSpecArray[itextSpecArrayLen])){
-                            errorCode = "DataSpec_resultCheck_qualitativeIsNotOneOfOUT";
-                            errorVariables = LabPLANETArray.addValueToArray1D(errorVariables, result);
-                            errorVariables = LabPLANETArray.addValueToArray1D(errorVariables, String.valueOf((Integer)textSpecArray.length+1));
-                            errorVariables = LabPLANETArray.addValueToArray1D(errorVariables, values);
-                            diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, errorCode, errorVariables);
-                            diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, "OUT");
-                            return diagnoses;
-                        }
+                    if (!LabPLANETArray.valueInArray(textSpecArray, result)){
+                        errorCode = "DataSpec_resultCheck_qualitativeIsNotOneOfOUT";
+                        errorVariables = LabPLANETArray.addValueToArray1D(errorVariables, result);
+                        errorVariables = LabPLANETArray.addValueToArray1D(errorVariables, String.valueOf((Integer)textSpecArray.length+1));
+                        errorVariables = LabPLANETArray.addValueToArray1D(errorVariables, values);
+                        diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, errorCode, errorVariables);
+                        diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, "OUT");
+                        return diagnoses;
                     }
                     errorCode = "DataSpec_resultCheck_qualitativeIN";
-                    diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, errorCode, null);
+                    diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, null);
                     diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, "IN");
                     return diagnoses;                    
                 }
