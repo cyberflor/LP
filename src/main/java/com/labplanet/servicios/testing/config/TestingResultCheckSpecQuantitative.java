@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import LabPLANET.utilities.LPPlatform;
 import functionalJava.testingScripts.LPTestingOutFormat;
-import LabPLANET.utilities.LabPLANETArray;
+import LabPLANET.utilities.LPArray;
 import functionalJava.testingScripts.TestingAssert;
 import functionalJava.testingScripts.TestingAssertSummary;
 import java.util.HashMap;
@@ -30,20 +30,20 @@ public class TestingResultCheckSpecQuantitative extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)            throws ServletException, IOException {        
+        response = LPTestingOutFormat.responsePreparation(response);        
         DataSpec resChkSpec = new DataSpec();   
         TestingAssertSummary tstAssertSummary = new TestingAssertSummary();
 
         String csvFileName = "noDBSchema_config_specQuantitative_resultCheck.txt"; 
-        response = LPTestingOutFormat.responsePreparation(response);        
                              
         String csvPathName = LPTestingOutFormat.TESTING_FILES_PATH+csvFileName; 
         String csvFileSeparator=LPTestingOutFormat.TESTING_FILES_FIELD_SEPARATOR;
         
-        Object[][] csvFileContent = LabPLANETArray.convertCSVinArray(csvPathName, csvFileSeparator); 
+        Object[][] csvFileContent = LPArray.convertCSVinArray(csvPathName, csvFileSeparator); 
                 
         try (PrintWriter out = response.getWriter()) {
             String fileContent = LPTestingOutFormat.getHtmlStyleHeader(this.getClass().getSimpleName());
-            HashMap<String, Object> csvHeaderTags = LPTestingOutFormat.getCSVHeader(LabPLANETArray.convertCSVinArray(csvPathName, "="));
+            HashMap<String, Object> csvHeaderTags = LPTestingOutFormat.getCSVHeader(LPArray.convertCSVinArray(csvPathName, "="));
             if (csvHeaderTags.containsKey(LPPlatform.LAB_FALSE)){
                 fileContent=fileContent+"There are missing tags in the file header: "+csvHeaderTags.get(LPPlatform.LAB_FALSE);                        
                 out.println(fileContent); 

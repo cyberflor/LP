@@ -29,15 +29,15 @@ import databases.Rdbms;
 public class LPPlatform {
     String classVersion = "0.1";
     
-    public static String LAB_ENCODER_UTF8 = "utf-8";
-    public static String LAB_TRUE = "LABPLANET_TRUE";
-    public static String LAB_FALSE = "LABPLANET_FALSE";
+    public static final String LAB_ENCODER_UTF8 = "utf-8";
+    public static final String LAB_TRUE = "LABPLANET_TRUE";
+    public static final String LAB_FALSE = "LABPLANET_FALSE";
     
-    public static String SCHEMA_APP = "app";
-    public static String SCHEMA_CONFIG = "config";
-    public static String SCHEMA_DATA = "data";
-    public static String SCHEMA_DATA_AUDIT = "data-audit";
-    public static String SCHEMA_REQUIREMENTS = "requirements";
+    public static final String SCHEMA_APP = "app";
+    public static final String SCHEMA_CONFIG = "config";
+    public static final String SCHEMA_DATA = "data";
+    public static final String SCHEMA_DATA_AUDIT = "data-audit";
+    public static final String SCHEMA_REQUIREMENTS = "requirements";
     
     private static final String CONFIG_FILES_FOLDER = "LabPLANET";
     private static final String CONFIG_FILES_ERRORTRAPING = "errorTraping";
@@ -56,31 +56,31 @@ public class LPPlatform {
      */
     public static Object[] procActionEnabled(String schemaPrefix, String actionName){
         actionName = actionName.toUpperCase();
-        String errorCode = ""; String errorDetail = "";
+        String errorCode = ""; 
         Object[] errorDetailVariables = new Object[0];                
         String[] procedureActions = Parameter.getParameterBundle(schemaPrefix.replace("\"", "")+CONFIG_PROC_FILE_NAME, "procedureActions").split("\\|");
         
-        if (LabPLANETArray.valueInArray(procedureActions, "ALL")){
+        if (LPArray.valueInArray(procedureActions, "ALL")){
             errorCode = "ACTION_ENABLED_BY_ALL";
-            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaPrefix);
-            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, actionName);
+            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, schemaPrefix);
+            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, actionName);
             return trapErrorMessage(LAB_TRUE, errorCode, errorDetailVariables);
         }
         if ( (procedureActions.length==1 && "".equals(procedureActions[0])) ){
             errorCode = "userRoleActionEnabled_denied_ruleNotFound";
-            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaPrefix);
-            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, Arrays.toString(procedureActions));
+            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, schemaPrefix);
+            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, Arrays.toString(procedureActions));
             return trapErrorMessage(LAB_FALSE, errorCode, errorDetailVariables);
-        }else if(!LabPLANETArray.valueInArray(procedureActions, actionName)){    
+        }else if(!LPArray.valueInArray(procedureActions, actionName)){    
             errorCode = "userRoleActionEnabled_denied";
-            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, actionName);
-            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaPrefix);
-            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, Arrays.toString(procedureActions));
+            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, actionName);
+            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, schemaPrefix);
+            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, Arrays.toString(procedureActions));
             return trapErrorMessage(LAB_FALSE, errorCode, errorDetailVariables);            
         }else{
             errorCode = "userRoleActionEnabled_enabled";
-            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaPrefix);
-            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, actionName);
+            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, schemaPrefix);
+            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, actionName);
             return trapErrorMessage(LAB_TRUE, errorCode, errorDetailVariables);               
         }    
     }    
@@ -93,32 +93,32 @@ public class LPPlatform {
      * @return
      */
     public static Object[] procUserRoleActionEnabled(String schemaPrefix, String userRole, String actionName){
-        String errorCode = ""; String errorDetail = "";
+        String errorCode = ""; 
         Object[] errorDetailVariables = new Object[0];            
         String[] procedureActionsUserRoles = Parameter.getParameterBundle(schemaPrefix.replace("\"", "")+CONFIG_PROC_FILE_NAME, "actionEnabled"+actionName).split("\\|");
         
-        if (LabPLANETArray.valueInArray(procedureActionsUserRoles, "ALL")){
+        if (LPArray.valueInArray(procedureActionsUserRoles, "ALL")){
             errorCode = "userRoleActionEnabled_ALL";
-            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaPrefix);            
+            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, schemaPrefix);            
             return trapErrorMessage(LAB_TRUE, errorCode, errorDetailVariables);                    
         }
         if ( (procedureActionsUserRoles.length==1 && "".equals(procedureActionsUserRoles[0])) ){
             errorCode = "userRoleActionEnabled_missedParameter";
-            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, actionName);            
-            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaPrefix);
-            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, procedureActionsUserRoles);                        
+            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, actionName);            
+            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, schemaPrefix);
+            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, procedureActionsUserRoles);                        
             return trapErrorMessage(LAB_FALSE, errorCode, errorDetailVariables);        
-        }else if(!LabPLANETArray.valueInArray(procedureActionsUserRoles, userRole)){    
+        }else if(!LPArray.valueInArray(procedureActionsUserRoles, userRole)){    
             errorCode = "userRoleActionEnabled_roleNotIncluded";
-            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaPrefix);
-            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, actionName);
-            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, userRole);
-            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, Arrays.toString(procedureActionsUserRoles));            
+            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, schemaPrefix);
+            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, actionName);
+            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, userRole);
+            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, Arrays.toString(procedureActionsUserRoles));            
             return trapErrorMessage(LAB_FALSE, errorCode, errorDetailVariables);      
         }else{
             errorCode = "userRoleActionEnabled_enabled";
-            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaPrefix);
-            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, actionName);
+            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, schemaPrefix);
+            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, actionName);
             return trapErrorMessage(LAB_TRUE, errorCode, errorDetailVariables);        
         }            
     }
@@ -132,31 +132,31 @@ public class LPPlatform {
     public static Object[] procActionRequiresUserConfirmation(String schemaPrefix, String actionName){
         
         actionName = actionName.toUpperCase();
-        String errorCode = ""; String errorDetail = "";
+        String errorCode = ""; 
         Object[] errorDetailVariables = new Object[0];
         String[] procedureActions = Parameter.getParameterBundle(schemaPrefix.replace("\"", "")+CONFIG_PROC_FILE_NAME, "verifyUserRequired").split("\\|");
         
-        if (LabPLANETArray.valueInArray(procedureActions, "ALL")){
+        if (LPArray.valueInArray(procedureActions, "ALL")){
             errorCode = "VERIFY_USER_REQUIRED_BY_ALL";
-            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaPrefix);
-            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, actionName);
+            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, schemaPrefix);
+            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, actionName);
             return trapErrorMessage(LAB_TRUE, errorCode, errorDetailVariables);
         }
         if ( (procedureActions.length==1 && "".equals(procedureActions[0])) ){
             errorCode = "verifyUserRequired_denied_ruleNotFound";
-            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaPrefix);
-            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, Arrays.toString(procedureActions));
+            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, schemaPrefix);
+            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, Arrays.toString(procedureActions));
             return trapErrorMessage(LAB_FALSE, errorCode, errorDetailVariables);
-        }else if(!LabPLANETArray.valueInArray(procedureActions, actionName)){    
+        }else if(!LPArray.valueInArray(procedureActions, actionName)){    
             errorCode = "verifyUserRequired_denied";
-            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, actionName);
-            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaPrefix);
-            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, Arrays.toString(procedureActions));
+            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, actionName);
+            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, schemaPrefix);
+            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, Arrays.toString(procedureActions));
             return trapErrorMessage(LAB_FALSE, errorCode, errorDetailVariables);            
         }else{
             errorCode = "verifyUserRequired_enabled";
-            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaPrefix);
-            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, actionName);
+            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, schemaPrefix);
+            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, actionName);
             return trapErrorMessage(LAB_TRUE, errorCode, errorDetailVariables);               
         }    
     }    
@@ -170,31 +170,31 @@ public class LPPlatform {
     public static Object[] procActionRequiresEsignConfirmation(String schemaPrefix, String actionName){
         
         actionName = actionName.toUpperCase();
-        String errorCode = ""; String errorDetail = "";
+        String errorCode = ""; 
         Object[] errorDetailVariables = new Object[0];
         String[] procedureActions = Parameter.getParameterBundle(schemaPrefix.replace("\"", "")+CONFIG_PROC_FILE_NAME, "eSignRequired").split("\\|");
         
-        if (LabPLANETArray.valueInArray(procedureActions, "ALL")){
+        if (LPArray.valueInArray(procedureActions, "ALL")){
             errorCode = "ESIGN_REQUIRED_BY_ALL";
-            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaPrefix);
-            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, actionName);
+            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, schemaPrefix);
+            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, actionName);
             return trapErrorMessage(LAB_TRUE, errorCode, errorDetailVariables);
         }
         if ( (procedureActions.length==1 && "".equals(procedureActions[0])) ){
             errorCode = "eSignRequired_denied_ruleNotFound";
-            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaPrefix);
-            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, Arrays.toString(procedureActions));
+            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, schemaPrefix);
+            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, Arrays.toString(procedureActions));
             return trapErrorMessage(LAB_FALSE, errorCode, errorDetailVariables);
-        }else if(!LabPLANETArray.valueInArray(procedureActions, actionName)){    
+        }else if(!LPArray.valueInArray(procedureActions, actionName)){    
             errorCode = "eSignRequired_denied";
-            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, actionName);
-            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaPrefix);
-            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, Arrays.toString(procedureActions));
+            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, actionName);
+            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, schemaPrefix);
+            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, Arrays.toString(procedureActions));
             return trapErrorMessage(LAB_FALSE, errorCode, errorDetailVariables);            
         }else{
             errorCode = "eSignRequired_enabled";
-            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaPrefix);
-            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, actionName);
+            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, schemaPrefix);
+            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, actionName);
             return trapErrorMessage(LAB_TRUE, errorCode, errorDetailVariables);               
         }    
     }    
@@ -216,7 +216,7 @@ public class LPPlatform {
         String tableEncrytedFields = Parameter.getParameterBundle(schemaName, parameterName);
         if ( (tableEncrytedFields==null) ){return diagnoses;}
         if ( ("".equals(tableEncrytedFields)) ){return diagnoses;}        
-        return LabPLANETArray.valueInArray(tableEncrytedFields.split("\\|"), fieldName);        
+        return LPArray.valueInArray(tableEncrytedFields.split("\\|"), fieldName);        
     }
     
     /**
@@ -366,44 +366,42 @@ public class LPPlatform {
         String[] fldName = new String[0];
         Object[] fldValue = new Object[0];
         String currField = "";        
-        String mandatoryFieldsStr = Parameter.getParameterBundle("labtimus", "mandatoryFields_requerimentsJavaDoc");
-        
 
-        fldName = LabPLANETArray.addValueToArray1D(fldName, JAVADOC_CLASS_FLDNAME);         fldValue = LabPLANETArray.addValueToArray1D(fldValue, elementsDev[1].getClassName()); 
-        fldName = LabPLANETArray.addValueToArray1D(fldName, JAVADOC_METHOD_FLDNAME);         fldValue = LabPLANETArray.addValueToArray1D(fldValue, elementsDev[1].getMethodName());     
-        fldName = LabPLANETArray.addValueToArray1D(fldName, JAVADOC_LINE_FLDNAME);         fldValue = LabPLANETArray.addValueToArray1D(fldValue, elementsDev[1].getLineNumber());
+        fldName = LPArray.addValueToArray1D(fldName, JAVADOC_CLASS_FLDNAME);         fldValue = LPArray.addValueToArray1D(fldValue, elementsDev[1].getClassName()); 
+        fldName = LPArray.addValueToArray1D(fldName, JAVADOC_METHOD_FLDNAME);         fldValue = LPArray.addValueToArray1D(fldValue, elementsDev[1].getMethodName());     
+        fldName = LPArray.addValueToArray1D(fldName, JAVADOC_LINE_FLDNAME);         fldValue = LPArray.addValueToArray1D(fldValue, elementsDev[1].getLineNumber());
         
         for (Integer iNumFields=0;iNumFields<fields.length;iNumFields++){
             if ( (fields[iNumFields]!=null) && (values[iNumFields]!=null) ){
-                fldName = LabPLANETArray.addValueToArray1D(fldName, fields[iNumFields]);         fldValue = LabPLANETArray.addValueToArray1D(fldValue, values[iNumFields]); 
+                fldName = LPArray.addValueToArray1D(fldName, fields[iNumFields]);         fldValue = LPArray.addValueToArray1D(fldValue, values[iNumFields]); 
             }
         }
         
         String[] getFilterFldName = new String[0];
         Object[] getFilterFldValue = new Object[0];    
-        getFilterFldName = LabPLANETArray.addValueToArray1D(getFilterFldName, JAVADOC_CLASS_FLDNAME);        getFilterFldValue = LabPLANETArray.addValueToArray1D(getFilterFldValue, elementsDev[1].getClassName()); 
-        getFilterFldName = LabPLANETArray.addValueToArray1D(getFilterFldName, JAVADOC_METHOD_FLDNAME);       getFilterFldValue = LabPLANETArray.addValueToArray1D(getFilterFldValue, elementsDev[1].getMethodName());     
+        getFilterFldName = LPArray.addValueToArray1D(getFilterFldName, JAVADOC_CLASS_FLDNAME);        getFilterFldValue = LPArray.addValueToArray1D(getFilterFldValue, elementsDev[1].getClassName()); 
+        getFilterFldName = LPArray.addValueToArray1D(getFilterFldName, JAVADOC_METHOD_FLDNAME);       getFilterFldValue = LPArray.addValueToArray1D(getFilterFldValue, elementsDev[1].getMethodName());     
         currField = "class_version";
         Integer specialFieldIndex = Arrays.asList(fldName).indexOf(currField);
         if (specialFieldIndex==-1){return;}
-        getFilterFldName = LabPLANETArray.addValueToArray1D(getFilterFldName, currField);      getFilterFldValue = LabPLANETArray.addValueToArray1D(getFilterFldValue, fldValue[specialFieldIndex]);     
+        getFilterFldName = LPArray.addValueToArray1D(getFilterFldName, currField);      getFilterFldValue = LPArray.addValueToArray1D(getFilterFldValue, fldValue[specialFieldIndex]);     
         currField = "line_name";
         specialFieldIndex = Arrays.asList(fldName).indexOf(currField);
         if (specialFieldIndex==-1){return;}
-        getFilterFldName = LabPLANETArray.addValueToArray1D(getFilterFldName, currField);      getFilterFldValue = LabPLANETArray.addValueToArray1D(getFilterFldValue, fldValue[specialFieldIndex]);     
+        getFilterFldName = LPArray.addValueToArray1D(getFilterFldName, currField);      getFilterFldValue = LPArray.addValueToArray1D(getFilterFldValue, fldValue[specialFieldIndex]);     
         
         String[] getFields = new String[] {"id",JAVADOC_LINE_FLDNAME,"last_update_on","created_on"};        
         Object[][] diagnoses = Rdbms.getRecordFieldsByFilter(schemaName, tableName, getFilterFldName, getFilterFldValue, getFields);
         if (LAB_FALSE.equalsIgnoreCase(diagnoses[0][0].toString())){        
-            Object[] diagnosesInsert = Rdbms.insertRecordInTable(schemaName, tableName, fldName, fldValue);
+            Rdbms.insertRecordInTable(schemaName, tableName, fldName, fldValue);
         }else{
             String[] fieldsUpdate = new String[0];
             Object[] fieldsUpdateValue = new Object[0];
             currField = JAVADOC_LINE_FLDNAME;
             if (elementsDev[1].getLineNumber()!=(Integer) fldValue[Arrays.asList(fldName).indexOf(currField)]){
-                fieldsUpdate = LabPLANETArray.addValueToArray1D(fieldsUpdate, currField);        fieldsUpdateValue = LabPLANETArray.addValueToArray1D(fieldsUpdateValue, elementsDev[1].getLineNumber());                 
+                fieldsUpdate = LPArray.addValueToArray1D(fieldsUpdate, currField);        fieldsUpdateValue = LPArray.addValueToArray1D(fieldsUpdateValue, elementsDev[1].getLineNumber());                 
             }
-            if (fieldsUpdate.length>0){Object[] updateRecordFieldsByFilter = Rdbms.updateRecordFieldsByFilter(schemaName, tableName, fieldsUpdate, fieldsUpdateValue, getFilterFldName, getFilterFldValue);
+            if (fieldsUpdate.length>0){Rdbms.updateRecordFieldsByFilter(schemaName, tableName, fieldsUpdate, fieldsUpdateValue, getFilterFldName, getFilterFldValue);
             }
         }    
     }
@@ -454,7 +452,6 @@ public class LPPlatform {
        
         String propertyName = tableName+"_mandatoryFields"+actionName;
         
-        String mandatoryFieldsToCheck = Parameter.getParameterBundle(schemaName.replace("\"", ""), propertyName);
         String mandatoryFieldsToCheckDefault = Parameter.getParameterBundle(schemaName.replace("\"", ""), propertyName+"Default");
         
         String[] mandatoryFields = mandatoryFieldsByDependency(schemaName, fieldNames, tableName, actionName);
@@ -492,8 +489,8 @@ public class LPPlatform {
                                 break;
                         }
                         if (!contains){
-                            fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, currField);
-                            fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, defValueFormat);
+                            fieldNames = LPArray.addValueToArray1D(fieldNames, currField);
+                            fieldValues = LPArray.addValueToArray1D(fieldValues, defValueFormat);
                         }else{
                             fieldValues[inumLines] = defValueFormat;
                         }    
@@ -516,7 +513,7 @@ public class LPPlatform {
             return diagnoses;
         }        
         for (Integer i=0;i<fieldNames.length;i++){
-            if (i>=6){diagnoses = LabPLANETArray.addColumnToArray2D(diagnoses, "");}
+            if (i>=6){diagnoses = LPArray.addColumnToArray2D(diagnoses, "");}
             diagnoses[1][i] = fieldNames[i];}
         for (Integer i=0;i<fieldNames.length;i++){diagnoses[2][i] = fieldValues[i];}
         diagnoses[0][0] = LAB_TRUE;
@@ -544,8 +541,6 @@ public class LPPlatform {
         for (Integer inumLines=0;inumLines<fieldNames.length;inumLines++){
             String currField = fieldNames[inumLines];
             Boolean contains = mandatoryFieldsByDependency.contains(currField);            
-            String defValueType = "";
-            Object defValueFormat = null;
             if ( contains ){
                 Integer fieldIndexSpecCode = Arrays.asList(mandatoryByDependency).indexOf(currField);
                 if (fieldIndexSpecCode!=-1){
@@ -554,7 +549,7 @@ public class LPPlatform {
                         String[] fieldToAddByDependency = propertyEntryValue[1].split(" ");
                         for (String fAdd: fieldToAddByDependency){
                             if (Arrays.asList(fieldNames).indexOf(fAdd)==-1){
-                                fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, fAdd);
+                                fieldNames = LPArray.addValueToArray1D(fieldNames, fAdd);
                             }    
                         }    
                     }
@@ -578,7 +573,7 @@ public class LPPlatform {
  * @return String[] when position 3 is set to FALSE then the template is not found.
  */   
     public static Object[] configObjectExists( String schemaName, String[] fieldNames, Object[] fieldValues, String tableName){
-        String errorCode = ""; String errorDetail = "";
+        String errorCode = ""; 
         Object[] errorDetailVariables = new Object[0];        
         String configTableNamePropertyName = tableName+"_configTableName";
         String configTableKeyFieldsPropertyName = tableName+"_configTableKeyFields";        
@@ -613,18 +608,18 @@ public class LPPlatform {
                         break;
                 }                
                 configTableKeyFieldName[i] = currField;
-                configTableKeyFielValue = LabPLANETArray.addValueToArray1D(configTableKeyFielValue, currFieldInFormat);
+                configTableKeyFielValue = LPArray.addValueToArray1D(configTableKeyFielValue, currFieldInFormat);
             }
                 
         }       
         Object[] diagnosis = Rdbms.existsRecord(schemaName, configTableName, configTableKeyFieldName, configTableKeyFielValue);
         if (!LAB_TRUE.equalsIgnoreCase(diagnosis[0].toString())){            
-           String[] configTableFilter = LabPLANETArray.joinTwo1DArraysInOneOf1DString(configTableKeyFieldName, configTableKeyFielValue, ":");
+           String[] configTableFilter = LPArray.joinTwo1DArraysInOneOf1DString(configTableKeyFieldName, configTableKeyFielValue, ":");
            errorCode = "LabPLANETPlatform_MissingTableConfigCode";
-           errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, tableName);
-           errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, Arrays.toString(configTableFilter));
-           errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaName);
-           errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, diagnosis[5]);
+           errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, tableName);
+           errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, Arrays.toString(configTableFilter));
+           errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, schemaName);
+           errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, diagnosis[5]);
            return (String[]) trapErrorMessage(LAB_FALSE, errorCode, errorDetailVariables);
         }    
 
@@ -646,7 +641,7 @@ public class LPPlatform {
  * @return String[] - Returns detailed info about the evaluation and where it ends, position 3 set to TRUE means all is ok otherwise FALSE.
  */    
     public String[] specialFieldsCheck(String schemaName, String[] fieldNames, Object[] fieldValues, String tableName, String actionName){
-        String errorCode = ""; String errorDetail = "";
+        String errorCode = ""; 
         Object[] errorDetailVariables = new Object[0];        
         String specialFieldNamePropertyName = tableName+"_specialFieldsCheck";
         String specialFieldMethodNamePropertyName = tableName+"_specialFieldsCheck_methodName";        
@@ -673,22 +668,22 @@ public class LPPlatform {
                         Object specialFunctionReturn = LPNulls.replaceNull(method.invoke(this, fieldNames, fieldValues, schemaName));
                         if (specialFunctionReturn.toString().contains("ERROR")) {
                             errorCode = "LabPLANETPlatform_SpecialFunctionReturnedERROR";
-                            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, currField);
-                            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, aMethod);
-                            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, specialFunctionReturn.toString());                            
+                            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, currField);
+                            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, aMethod);
+                            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, specialFunctionReturn.toString());                            
                             return (String[]) trapErrorMessage(LAB_FALSE, errorCode, errorDetailVariables);
                         }
                     } catch (NoSuchMethodException | SecurityException|IllegalAccessException|IllegalArgumentException|InvocationTargetException ex) {
                             errorCode = "LabPLANETPlatform_SpecialFunctionCausedException";
-                            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, currField);
-                            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, ex.getCause());
-                            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, ex.getMessage());                            
+                            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, currField);
+                            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, ex.getCause());
+                            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, ex.getMessage());                            
                             return (String[]) trapErrorMessage(LAB_FALSE, errorCode, errorDetailVariables);                      
                     }
             }
         }         
         errorCode = "LabPLANETPlatform_SpecialFunctionAllSuccess";
-        errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, specialFieldName.replace("\\|", ", "));
+        errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, specialFieldName.replace("\\|", ", "));
         return (String[]) trapErrorMessage(LAB_TRUE, errorCode, errorDetailVariables);                      
     }
 /**

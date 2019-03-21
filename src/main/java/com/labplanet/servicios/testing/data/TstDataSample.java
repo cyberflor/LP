@@ -5,10 +5,9 @@
  */
 package com.labplanet.servicios.testing.data;
 
-import LabPLANET.utilities.LPNulls;
 import LabPLANET.utilities.LPPlatform;
 import functionalJava.testingScripts.LPTestingOutFormat;
-import LabPLANET.utilities.LabPLANETArray;
+import LabPLANET.utilities.LPArray;
 import databases.Rdbms;
 import functionalJava.ChangeOfCustody.ChangeOfCustody;
 import functionalJava.sampleStructure.DataSample;
@@ -49,6 +48,7 @@ public class TstDataSample extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)            throws ServletException, IOException {
+        response = LPTestingOutFormat.responsePreparation(response);        
                 
         String csvFileName = "dataSampleStructure.txt";      
         Object[][] dataSample2D = new Object[1][6];
@@ -58,16 +58,14 @@ public class TstDataSample extends HttpServlet {
         
         TestingAssertSummary tstAssertSummary = new TestingAssertSummary();
 
-        response = LPTestingOutFormat.responsePreparation(response);        
-                             
         String csvPathName = LPTestingOutFormat.TESTING_FILES_PATH+csvFileName; 
         String csvFileSeparator=LPTestingOutFormat.TESTING_FILES_FIELD_SEPARATOR;
         
-        Object[][] csvFileContent = LabPLANETArray.convertCSVinArray(csvPathName, csvFileSeparator); 
+        Object[][] csvFileContent = LPArray.convertCSVinArray(csvPathName, csvFileSeparator); 
                 
         try (PrintWriter out = response.getWriter()) {
             String fileContent = LPTestingOutFormat.getHtmlStyleHeader(this.getClass().getSimpleName());
-            HashMap<String, Object> csvHeaderTags = LPTestingOutFormat.getCSVHeader(LabPLANETArray.convertCSVinArray(csvPathName, "="));
+            HashMap<String, Object> csvHeaderTags = LPTestingOutFormat.getCSVHeader(LPArray.convertCSVinArray(csvPathName, "="));
             if (csvHeaderTags.containsKey(LPPlatform.LAB_FALSE)){
                 fileContent=fileContent+"There are missing tags in the file header: "+csvHeaderTags.get(LPPlatform.LAB_FALSE);                        
                 out.println(fileContent); 
@@ -85,7 +83,6 @@ public class TstDataSample extends HttpServlet {
             for (iLines=iLines;iLines<csvFileContent.length;iLines++){
                 tstAssertSummary.increaseTotalTests();
                 TestingAssert tstAssert = new TestingAssert(csvFileContent[iLines], numEvaluationArguments);
-                String schemaName = "";
                 
                 Integer lineNumCols = csvFileContent[0].length-1;                                
                 String schemaPrefix = null;
@@ -216,7 +213,7 @@ public class TstDataSample extends HttpServlet {
                             String[] fieldValueStrArr=null;
                             if (lineNumCols>=numEvaluationArguments+6)
                                  fieldValueStrArr = LPTestingOutFormat.csvExtractFieldValueStringArr(csvFileContent[iLines][numEvaluationArguments+6]);
-                            Object[] fieldValueObjArr=LabPLANETArray.convertStringWithDataTypeToObjectArray(fieldValueStrArr);
+                            Object[] fieldValueObjArr=LPArray.convertStringWithDataTypeToObjectArray(fieldValueStrArr);
                             fileContentTable1=fileContentTable1+LPTestingOutFormat.rowAddFields(
                                 new Object[]{"sampleId, userName, fieldNames, fieldValues", 
                                     sampleId.toString()+", "+userName+", "+Arrays.toString(fieldName)+", "+Arrays.toString(fieldValueObjArr)});                              
@@ -411,7 +408,7 @@ public class TstDataSample extends HttpServlet {
                             fieldValueStrArr=null;
                             if (lineNumCols>=numEvaluationArguments+7)
                                  fieldValueStrArr = LPTestingOutFormat.csvExtractFieldValueStringArr(csvFileContent[iLines][numEvaluationArguments+7]);
-                            fieldValueObjArr=LabPLANETArray.convertStringWithDataTypeToObjectArray(fieldValueStrArr);
+                            fieldValueObjArr=LPArray.convertStringWithDataTypeToObjectArray(fieldValueStrArr);
                             
                             fileContentTable1=fileContentTable1+LPTestingOutFormat.rowAddFields(
                                 new Object[]{"sample_id, fieldNames, fieldValues", 
@@ -439,7 +436,7 @@ public class TstDataSample extends HttpServlet {
                             fieldValueStrArr=null;
                             if (lineNumCols>=numEvaluationArguments+7)
                                  fieldValueStrArr = LPTestingOutFormat.csvExtractFieldValueStringArr(csvFileContent[iLines][numEvaluationArguments+7]);
-                            fieldValueObjArr=LabPLANETArray.convertStringWithDataTypeToObjectArray(fieldValueStrArr);
+                            fieldValueObjArr=LPArray.convertStringWithDataTypeToObjectArray(fieldValueStrArr);
                             
                             fileContentTable1=fileContentTable1+LPTestingOutFormat.rowAddFields(
                                 new Object[]{"aliquot_id, fieldNames, fieldValues", 
@@ -478,7 +475,7 @@ public class TstDataSample extends HttpServlet {
                             +". "+dataSample[dataSample.length-1].toString());
                 }    
 */                
-                if ("GETSAMPLEINFO".equalsIgnoreCase(functionBeingTested))  dataSample = LabPLANETArray.array2dTo1d(dataSample2D);
+                if ("GETSAMPLEINFO".equalsIgnoreCase(functionBeingTested))  dataSample = LPArray.array2dTo1d(dataSample2D);
 
                 if (numEvaluationArguments==0){                    
                     fileContentTable1=fileContentTable1+LPTestingOutFormat.rowAddField(Arrays.toString(dataSample));                     

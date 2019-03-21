@@ -5,10 +5,10 @@
  */
 package com.labplanet.servicios.app;
 
-import LabPLANET.utilities.LabPLANETArray;
+import LabPLANET.utilities.LPArray;
 import LabPLANET.utilities.LabPLANETFrontEnd;
 import LabPLANET.utilities.LPPlatform;
-import LabPLANET.utilities.LabPLANETRequest;
+import LabPLANET.utilities.LPHttp;
 import databases.Rdbms;
 import databases.Token;
 import functionalJava.user.UserProfile;
@@ -39,8 +39,8 @@ public class AppProcedureListAPI extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)            throws ServletException, IOException {   
-            response = LabPLANETRequest.responsePreparation(response);
-            request = LabPLANETRequest.requestPreparation(request);      
+            response = LPHttp.responsePreparation(response);
+            request = LPHttp.requestPreparation(request);      
                 
             String language = "en";
             String sopFieldName = "sop";
@@ -50,7 +50,7 @@ public class AppProcedureListAPI extends HttpServlet {
             String finalToken = request.getParameter("finalToken");                      
 
             if (finalToken==null) {                  
-                errObject = LabPLANETArray.addValueToArray1D(errObject, "API Error Message: finalToken is one mandatory param for this API");                    
+                errObject = LPArray.addValueToArray1D(errObject, "API Error Message: finalToken is one mandatory param for this API");                    
                 Object[] errMsg = LabPLANETFrontEnd.responseError(errObject, language, null);
                 response.sendError((int) errMsg[0], (String) errMsg[1]);    
                 Rdbms.closeRdbms(); 
@@ -61,14 +61,14 @@ public class AppProcedureListAPI extends HttpServlet {
             String[] tokenParams = token.tokenParamsList();
             String[] tokenParamsValues = token.validateToken(finalToken, tokenParams);
 
-            String dbUserName = tokenParamsValues[LabPLANETArray.valuePosicInArray(tokenParams, "userDB")];
-            String dbUserPassword = tokenParamsValues[LabPLANETArray.valuePosicInArray(tokenParams, "userDBPassword")];         
-            String internalUserID = tokenParamsValues[LabPLANETArray.valuePosicInArray(tokenParams, "internalUserID")];         
-            String userRole = tokenParamsValues[LabPLANETArray.valuePosicInArray(tokenParams, "userRole")];         
+        String dbUserName = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, Token.TOKEN_PARAM_USERDB)];
+        String dbUserPassword = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, Token.TOKEN_PARAM_USERDB)];
+        String internalUserID = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, Token.TOKEN_PARAM_INTERNAL_USERID)];         
+        String userRole = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, Token.TOKEN_PARAM_USER_ROLE)];                     
                         
         if (Rdbms.getRdbms().startRdbms(dbUserName, dbUserPassword)==null){
-                errObject = LabPLANETArray.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
-                errObject = LabPLANETArray.addValueToArray1D(errObject, "API Error Message: db User Name and Password not correct, connection to the database is not possible");                    
+                errObject = LPArray.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
+                errObject = LPArray.addValueToArray1D(errObject, "API Error Message: db User Name and Password not correct, connection to the database is not possible");                    
                 Object[] errMsg = LabPLANETFrontEnd.responseError(errObject, language, null);
                 response.sendError((int) errMsg[0], (String) errMsg[1]);    
                 Rdbms.closeRdbms(); 
@@ -83,19 +83,19 @@ public class AppProcedureListAPI extends HttpServlet {
                 response.sendError((int) errMsg[0], (String) errMsg[1]);                    
             }
             String[] procFldNameArray = new String[0];
-            procFldNameArray = LabPLANETArray.addValueToArray1D(procFldNameArray, "name");
-            procFldNameArray = LabPLANETArray.addValueToArray1D(procFldNameArray, "version");
-            procFldNameArray = LabPLANETArray.addValueToArray1D(procFldNameArray, "label_en");
-            procFldNameArray = LabPLANETArray.addValueToArray1D(procFldNameArray, "label_es");
-            //procFldNameArray = LabPLANETArray.addValueToArray1D(procFldNameArray, "schemaPrefix");
+            procFldNameArray = LPArray.addValueToArray1D(procFldNameArray, "name");
+            procFldNameArray = LPArray.addValueToArray1D(procFldNameArray, "version");
+            procFldNameArray = LPArray.addValueToArray1D(procFldNameArray, "label_en");
+            procFldNameArray = LPArray.addValueToArray1D(procFldNameArray, "label_es");
+            //procFldNameArray = LPArray.addValueToArray1D(procFldNameArray, "schemaPrefix");
             
             String[] procEventFldNameArray = new String[0];
-            procEventFldNameArray = LabPLANETArray.addValueToArray1D(procEventFldNameArray, "name");
-            procEventFldNameArray = LabPLANETArray.addValueToArray1D(procEventFldNameArray, "label_en");
-            procEventFldNameArray = LabPLANETArray.addValueToArray1D(procEventFldNameArray, "label_es");
-            procEventFldNameArray = LabPLANETArray.addValueToArray1D(procEventFldNameArray, "branch_level");
-            procEventFldNameArray = LabPLANETArray.addValueToArray1D(procEventFldNameArray, "type");
-            procEventFldNameArray = LabPLANETArray.addValueToArray1D(procEventFldNameArray, "mode");
+            procEventFldNameArray = LPArray.addValueToArray1D(procEventFldNameArray, "name");
+            procEventFldNameArray = LPArray.addValueToArray1D(procEventFldNameArray, "label_en");
+            procEventFldNameArray = LPArray.addValueToArray1D(procEventFldNameArray, "label_es");
+            procEventFldNameArray = LPArray.addValueToArray1D(procEventFldNameArray, "branch_level");
+            procEventFldNameArray = LPArray.addValueToArray1D(procEventFldNameArray, "type");
+            procEventFldNameArray = LPArray.addValueToArray1D(procEventFldNameArray, "mode");
             
             Object[][] notCompletedUserSOP = null;
             Object[] notCompletedUserSOP1D = null;
@@ -113,18 +113,18 @@ public class AppProcedureListAPI extends HttpServlet {
                     response.sendError((int) errMsg[0], (String) errMsg[1]);                    
                 }                       
                 for (int yProc=0; yProc<procInfo[0].length; yProc++){              
-                    //procArray = LabPLANETArray.addValueToArray1D(procArray, procInfo[0][yProc]);
+                    //procArray = LPArray.addValueToArray1D(procArray, procInfo[0][yProc]);
                     procedure.put(procFldNameArray[yProc], procInfo[0][yProc]);
                 }
-                //procArray = LabPLANETArray.addValueToArray1D(procArray, curProc);
+                //procArray = LPArray.addValueToArray1D(procArray, curProc);
                 procedure.put("schemaPrefix", curProc);
                 
                 Boolean isProcedureSopEnable = userSop.isProcedureSopEnable((String) curProc);
                 if (!isProcedureSopEnable) procedure.put("SopCertification", "Disabled");                 
                 if (isProcedureSopEnable){
                     notCompletedUserSOP = userSop.getNotCompletedUserSOP(internalUserID, curProc.toString(), new String[]{"sop_name"});
-                    notCompletedUserSOP1D = LabPLANETArray.array2dTo1d(notCompletedUserSOP);
-                    procEventFldNameArray = LabPLANETArray.addValueToArray1D(procEventFldNameArray, sopFieldName);
+                    notCompletedUserSOP1D = LPArray.array2dTo1d(notCompletedUserSOP);
+                    procEventFldNameArray = LPArray.addValueToArray1D(procEventFldNameArray, sopFieldName);
                 }
                 
                 Object[][] procEvent = Rdbms.getRecordFieldsByFilter(curProc.toString()+"-config", "procedure_events", 
@@ -136,12 +136,12 @@ public class AppProcedureListAPI extends HttpServlet {
                     for (Object[] procEvent1 : procEvent) {
                         JSONObject procEventJson = new JSONObject();
                         for (int yProcEv = 0; yProcEv<procEvent[0].length; yProcEv++) {
-                            //procArray = LabPLANETArray.addValueToArray1D(procArray, procEvent[xProcEv][yProcEv]);
+                            //procArray = LPArray.addValueToArray1D(procArray, procEvent[xProcEv][yProcEv]);
                             procEventJson.put(procEventFldNameArray[yProcEv], procEvent1[yProcEv]);
                         }
                         Boolean userHasNotCompletedSOP = false;
                         JSONObject procEventSopDetail = new JSONObject();
-                        String procEventSops = (String) procEvent1[LabPLANETArray.valuePosicInArray(procEventFldNameArray, sopFieldName)];
+                        String procEventSops = (String) procEvent1[LPArray.valuePosicInArray(procEventFldNameArray, sopFieldName)];
                         if (procEventSops==null){
                             userHasNotCompletedSOP = false;
                             procEventJson.put("sops_passed", true);
@@ -168,7 +168,7 @@ public class AppProcedureListAPI extends HttpServlet {
                                     JSONObject procEventSopDetailJson = new JSONObject();   
                                     sopTotal++;
                                     procEventSopDetailJson.put("sop_name", curProcEvSop);
-                                    if (LabPLANETArray.valuePosicInArray(notCompletedUserSOP1D, curProcEvSop)==-1) {
+                                    if (LPArray.valuePosicInArray(notCompletedUserSOP1D, curProcEvSop)==-1) {
                                         sopTotalNotCompleted++;
                                         sopListStr=sopListStr+curProcEvSop.toString()+"*NO, ";
                                         userHasNotCompletedSOP = true;
@@ -192,8 +192,8 @@ public class AppProcedureListAPI extends HttpServlet {
                 }        
                 procedures.add(procedure);
             }
-            procFldNameArray = LabPLANETArray.addValueToArray1D(procFldNameArray, "schemaPrefix");
-            //Object[][] procArray2d = LabPLANETArray.array1dTo2d(procArray, procFldNameArray.length);              
+            procFldNameArray = LPArray.addValueToArray1D(procFldNameArray, "schemaPrefix");
+            //Object[][] procArray2d = LPArray.array1dTo2d(procArray, procFldNameArray.length);              
             JSONObject proceduresList = new JSONObject();
             proceduresList.put("procedures", procedures);
 

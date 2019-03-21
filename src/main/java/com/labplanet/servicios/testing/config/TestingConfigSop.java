@@ -6,7 +6,7 @@
 package com.labplanet.servicios.testing.config;
 
 import functionalJava.testingScripts.LPTestingOutFormat;
-import LabPLANET.utilities.LabPLANETArray;
+import LabPLANET.utilities.LPArray;
 import functionalJava.sop.*;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -30,7 +30,8 @@ import testing.functionalData.testingFileContentSections;
  * @author Administrator
  */
 public class TestingConfigSop extends HttpServlet {
-
+    public static final String FIELDNAME_SOP_ID="sop_id";
+    public static final String FIELDNAME_SOP_NAME="sop_name";
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -43,12 +44,13 @@ public class TestingConfigSop extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try (PrintWriter out = response.getWriter()) {
-            response.setContentType("text/html;charset=UTF-8");
+            response = LPTestingOutFormat.responsePreparation(response);        
             
-            String csvFileName = "config-Sop.txt"; String csvFileSeparator=";";
-            String csvPathName = "\\\\FRANCLOUD\\fran\\LabPlanet\\testingRepository\\"+csvFileName;     
+            String csvFileName = "config-Sop.txt"; 
+            String csvPathName = LPTestingOutFormat.TESTING_FILES_PATH+csvFileName; 
+            String csvFileSeparator=LPTestingOutFormat.TESTING_FILES_FIELD_SEPARATOR;
 
-            Object[][] configSpecTestingArray = LabPLANETArray.convertCSVinArray(csvPathName, csvFileSeparator);                        
+            Object[][] configSpecTestingArray = LPArray.convertCSVinArray(csvPathName, csvFileSeparator);                        
      
             String fileContent = LPTestingOutFormat.getHtmlStyleHeader(this.getServletName());
             fileContent = fileContent + "<table>";
@@ -77,11 +79,11 @@ public class TestingConfigSop extends HttpServlet {
 
             String userInfoId = "1"; 
             Object[] userProfileField = usProf.getProcedureUserProfileFieldValues(schemaDataName, userInfoId);  
-            fileContent = fileContent + "<tr><td>"+"getUserProfileFieldValues"+"</td>";                                   
-            fileContent = fileContent + "<td>"+"filterFieldName: "+Arrays.toString(filterFieldName)+"</td>";                                   
-            fileContent = fileContent + "<td>"+"filterFieldValue: "+Arrays.toString(filterFieldValue)+"</td>";                                   
-            fileContent = fileContent + "<td>"+"fieldsToReturn: "+Arrays.toString(fieldsToReturn)+"</td>";                                   
-            fileContent = fileContent + "<td>"+Arrays.toString(userProfileField)+"</td></tr>";    
+            fileContent = fileContent + LPTestingOutFormat.rowStart()+LPTestingOutFormat.fieldStart()+"getUserProfileFieldValues"+LPTestingOutFormat.fieldEnd();                                   
+            fileContent = fileContent + LPTestingOutFormat.fieldStart()+"filterFieldName: "+Arrays.toString(filterFieldName)+LPTestingOutFormat.fieldEnd();                                   
+            fileContent = fileContent + LPTestingOutFormat.fieldStart()+"filterFieldValue: "+Arrays.toString(filterFieldValue)+LPTestingOutFormat.fieldEnd();                                   
+            fileContent = fileContent + LPTestingOutFormat.fieldStart()+"fieldsToReturn: "+Arrays.toString(fieldsToReturn)+LPTestingOutFormat.fieldEnd();                                   
+            fileContent = fileContent + LPTestingOutFormat.fieldStart()+Arrays.toString(userProfileField)+LPTestingOutFormat.fieldEnd()+LPTestingOutFormat.rowEnd();    
             
             String[] schemaPrefix = new String[userProfileField.length];
             for(Integer i=0;i<userProfileField.length;i++){
@@ -89,12 +91,12 @@ public class TestingConfigSop extends HttpServlet {
             }
             
             Object[] userSchemas = usProf.getAllUserProcedurePrefix( "1");
-            fileContent = fileContent + "<tr><td>"+"getAllUserSchemaPrefix"+"</td>";  
-            fileContent = fileContent + "<td>"+"UserInfoId: 1"+"</td>";                                               
-            fileContent = fileContent + "<td>"+Arrays.toString(userSchemas)+"</td></tr>";    
+            fileContent = fileContent + LPTestingOutFormat.rowStart()+LPTestingOutFormat.fieldStart()+"getAllUserSchemaPrefix"+LPTestingOutFormat.fieldEnd();  
+            fileContent = fileContent + LPTestingOutFormat.fieldStart()+"UserInfoId: 1"+LPTestingOutFormat.fieldEnd();                                               
+            fileContent = fileContent + LPTestingOutFormat.fieldStart()+Arrays.toString(userSchemas)+LPTestingOutFormat.fieldEnd()+LPTestingOutFormat.rowEnd();    
             
-            fieldsToReturn[0] = "sop_id";
-            fieldsToReturn[1] = "sop_name";
+            fieldsToReturn[0] = FIELDNAME_SOP_ID;
+            fieldsToReturn[1] = FIELDNAME_SOP_NAME;
             filterFieldName[0]="user_id";
             filterFieldValue[0]="1";
             filterFieldName[1]="user_id";
@@ -102,12 +104,12 @@ public class TestingConfigSop extends HttpServlet {
             filterFieldName[2]="understood is null";            
 
             Object[][] userSOP = usSop.getUserProfileFieldValues(filterFieldName, filterFieldValue, fieldsToReturn, schemaPrefix);
-            fileContent = fileContent + "<tr><td>"+"getUserProfileFieldValues"+"</td>";          
-            fileContent = fileContent + "<td>"+"filterFieldName: "+Arrays.toString(filterFieldName)+"</td>";                                   
-            fileContent = fileContent + "<td>"+"filterFieldValue: "+Arrays.toString(filterFieldValue)+"</td>";                                   
-            fileContent = fileContent + "<td>"+"fieldsToReturn: "+Arrays.toString(fieldsToReturn)+"</td>";                                   
-            fileContent = fileContent + "<td>"+"schemaPrefix: "+Arrays.toString(schemaPrefix)+"</td>";   
-            fileContent = fileContent + "<td>"+Arrays.toString(LabPLANETArray.array2dTo1d(userSOP))+"</td></tr>";  
+            fileContent = fileContent + LPTestingOutFormat.rowStart()+LPTestingOutFormat.fieldStart()+"getUserProfileFieldValues"+LPTestingOutFormat.fieldEnd();          
+            fileContent = fileContent + LPTestingOutFormat.fieldStart()+"filterFieldName: "+Arrays.toString(filterFieldName)+LPTestingOutFormat.fieldEnd();                                   
+            fileContent = fileContent + LPTestingOutFormat.fieldStart()+"filterFieldValue: "+Arrays.toString(filterFieldValue)+LPTestingOutFormat.fieldEnd();                                   
+            fileContent = fileContent + LPTestingOutFormat.fieldStart()+"fieldsToReturn: "+Arrays.toString(fieldsToReturn)+LPTestingOutFormat.fieldEnd();                                   
+            fileContent = fileContent + LPTestingOutFormat.fieldStart()+"schemaPrefix: "+Arrays.toString(schemaPrefix)+LPTestingOutFormat.fieldEnd();   
+            fileContent = fileContent + LPTestingOutFormat.fieldStart()+Arrays.toString(LPArray.array2dTo1d(userSOP))+LPTestingOutFormat.fieldEnd()+LPTestingOutFormat.rowEnd();  
             
             
 //            if ("LABPLANET_FALSE".equalsIgnoreCase(userSOP[0][0].toString())){
@@ -115,55 +117,55 @@ public class TestingConfigSop extends HttpServlet {
 //            }
 
             Object[][] userPendingSOPs = usSop.getNotCompletedUserSOP("1", "ALL", null);
-            fileContent = fileContent + "<tr><td>"+"getNotCompletedUserSOP"+"</td>";                                   
-            fileContent = fileContent + "<td>"+"UserInfoId: 1"+"</td>";      
-            fileContent = fileContent + "<td>"+"schemaPrefix: ALL"+"</td>";          
-            Object[] userPendingSOPs1D = LabPLANETArray.array2dTo1d(userPendingSOPs);
-            fileContent = fileContent + "<td>"+Arrays.toString(userPendingSOPs1D)+"</td></tr>";                
+            fileContent = fileContent + LPTestingOutFormat.rowStart()+LPTestingOutFormat.fieldStart()+"getNotCompletedUserSOP"+LPTestingOutFormat.fieldEnd();                                   
+            fileContent = fileContent + LPTestingOutFormat.fieldStart()+"UserInfoId: 1"+LPTestingOutFormat.fieldEnd();      
+            fileContent = fileContent + LPTestingOutFormat.fieldStart()+"schemaPrefix: ALL"+LPTestingOutFormat.fieldEnd();          
+            Object[] userPendingSOPs1D = LPArray.array2dTo1d(userPendingSOPs);
+            fileContent = fileContent + LPTestingOutFormat.fieldStart()+Arrays.toString(userPendingSOPs1D)+LPTestingOutFormat.fieldEnd()+LPTestingOutFormat.rowEnd();                
             
             Object[] certificationStatus = usSop.userSopCertifiedBySopId("oil-pl11", "1", "58");
-            fileContent = fileContent + "<tr><td>"+"userSopCertifiedBySopId"+"</td>";                                   
-            fileContent = fileContent + "<td>"+"schemaPrefix: "+"oil-pl11"+"</td>";  
-            fileContent = fileContent + "<td>"+"UserInfoId: 1"+"</td>";      
-            fileContent = fileContent + "<td>"+"SopId: 58"+"</td>";      
-            fileContent = fileContent + "<td>"+Arrays.toString(certificationStatus)+"</td></tr>";           
+            fileContent = fileContent + LPTestingOutFormat.rowStart()+LPTestingOutFormat.fieldStart()+"userSopCertifiedBySopId"+LPTestingOutFormat.fieldEnd();                                   
+            fileContent = fileContent + LPTestingOutFormat.fieldStart()+"schemaPrefix: "+"oil-pl11"+LPTestingOutFormat.fieldEnd();  
+            fileContent = fileContent + LPTestingOutFormat.fieldStart()+"UserInfoId: 1"+LPTestingOutFormat.fieldEnd();      
+            fileContent = fileContent + LPTestingOutFormat.fieldStart()+"SopId: 58"+LPTestingOutFormat.fieldEnd();      
+            fileContent = fileContent + LPTestingOutFormat.fieldStart()+Arrays.toString(certificationStatus)+LPTestingOutFormat.fieldEnd()+LPTestingOutFormat.rowEnd();           
 
             certificationStatus = usSop.userSopCertifiedBySopId("oil-pl1", "1", "58");
-            fileContent = fileContent + "<tr><td>"+"userSopCertifiedBySopId"+"</td>";                                   
-            fileContent = fileContent + "<td>"+"schemaPrefix: "+"oil-pl1"+"</td>";  
-            fileContent = fileContent + "<td>"+"UserInfoId: 1"+"</td>";      
-            fileContent = fileContent + "<td>"+"SopId: 58"+"</td>";      
-            fileContent = fileContent + "<td>"+Arrays.toString(certificationStatus)+"</td></tr>";               
+            fileContent = fileContent + LPTestingOutFormat.rowStart()+LPTestingOutFormat.fieldStart()+"userSopCertifiedBySopId"+LPTestingOutFormat.fieldEnd();                                   
+            fileContent = fileContent + LPTestingOutFormat.fieldStart()+"schemaPrefix: "+"oil-pl1"+LPTestingOutFormat.fieldEnd();  
+            fileContent = fileContent + LPTestingOutFormat.fieldStart()+"UserInfoId: 1"+LPTestingOutFormat.fieldEnd();      
+            fileContent = fileContent + LPTestingOutFormat.fieldStart()+"SopId: 58"+LPTestingOutFormat.fieldEnd();      
+            fileContent = fileContent + LPTestingOutFormat.fieldStart()+Arrays.toString(certificationStatus)+LPTestingOutFormat.fieldEnd()+LPTestingOutFormat.rowEnd();               
             
 //            if (1==1)return;
 //            System.exit(1);
             String sopName = "Demo UAT";
             
             Sop s = new Sop(sopId, sopName, 1, 1, "ACTIVE", "READ");
-            Object[][] dbGetSopIdByName = s.dbGetSopObjByName(schemaConfigName, sopName,new String[]{"sop_id", "sop_name"});            
+            Object[][] dbGetSopIdByName = s.dbGetSopObjByName(schemaConfigName, sopName,new String[]{FIELDNAME_SOP_ID, FIELDNAME_SOP_NAME});            
             if ("LABPLANET_FALSE".equalsIgnoreCase(dbGetSopIdByName[0][0].toString())){
                 Object[] recordCreated = s.dbInsertSopId(schemaConfigName, sopName);
-                fileContent = fileContent + "<tr><td>"+"dbInsertSopId"+"</td>";                                   
-                fileContent = fileContent + "<td>"+"schemaConfigName: "+schemaConfigName+"</td>";  
-                fileContent = fileContent + "<td>"+"sopName:"+sopName+"</td>";      
-                fileContent = fileContent + "<td>"+"[sop_id, sop_name]"+"</td>";      
-                fileContent = fileContent + "<td>"+Arrays.toString(recordCreated)+"</td></tr>";                  
+                fileContent = fileContent + LPTestingOutFormat.rowStart()+LPTestingOutFormat.fieldStart()+"dbInsertSopId"+LPTestingOutFormat.fieldEnd();                                   
+                fileContent = fileContent + LPTestingOutFormat.fieldStart()+"schemaConfigName: "+schemaConfigName+LPTestingOutFormat.fieldEnd();  
+                fileContent = fileContent + LPTestingOutFormat.fieldStart()+"sopName:"+sopName+LPTestingOutFormat.fieldEnd();      
+                fileContent = fileContent + LPTestingOutFormat.fieldStart()+"[sop_id, sop_name]"+LPTestingOutFormat.fieldEnd();      
+                fileContent = fileContent + LPTestingOutFormat.fieldStart()+Arrays.toString(recordCreated)+LPTestingOutFormat.fieldEnd()+LPTestingOutFormat.rowEnd();                  
             }
-            dbGetSopIdByName = s.dbGetSopObjByName(schemaConfigName, sopName,new String[]{"sop_id", "sop_name"});
-            fileContent = fileContent + "<tr><td>"+"dbGetSopObjByName"+"</td>";                                   
-            fileContent = fileContent + "<td>"+"schemaConfigName: "+schemaConfigName+"</td>";  
-            fileContent = fileContent + "<td>"+"sopName:"+sopName+"</td>";      
-            fileContent = fileContent + "<td>"+"[sop_id, sop_name]"+"</td>";      
-            Object[] dbGetSopIdByName1D = LabPLANETArray.array2dTo1d(dbGetSopIdByName);
-            fileContent = fileContent + "<td>"+Arrays.toString(dbGetSopIdByName1D)+"</td></tr>";                  
+            dbGetSopIdByName = s.dbGetSopObjByName(schemaConfigName, sopName,new String[]{FIELDNAME_SOP_ID, FIELDNAME_SOP_NAME});
+            fileContent = fileContent + LPTestingOutFormat.rowStart()+LPTestingOutFormat.fieldStart()+"dbGetSopObjByName"+LPTestingOutFormat.fieldEnd();                                   
+            fileContent = fileContent + LPTestingOutFormat.fieldStart()+"schemaConfigName: "+schemaConfigName+LPTestingOutFormat.fieldEnd();  
+            fileContent = fileContent + LPTestingOutFormat.fieldStart()+"sopName:"+sopName+LPTestingOutFormat.fieldEnd();      
+            fileContent = fileContent + LPTestingOutFormat.fieldStart()+"[sop_id, sop_name]"+LPTestingOutFormat.fieldEnd();      
+            Object[] dbGetSopIdByName1D = LPArray.array2dTo1d(dbGetSopIdByName);
+            fileContent = fileContent + LPTestingOutFormat.fieldStart()+Arrays.toString(dbGetSopIdByName1D)+LPTestingOutFormat.fieldEnd()+LPTestingOutFormat.rowEnd();                  
 
             UserSop userSop = new UserSop();
             Object[] addSopToUserById = userSop.addSopToUserById(schemaDataName, currentUser, sopId);
-            fileContent = fileContent + "<tr><td>"+"addSopToUserById"+"</td>";                                   
-            fileContent = fileContent + "<td>"+"schemaDataName: "+schemaDataName+"</td>";  
-            fileContent = fileContent + "<td>"+"currentUser:"+currentUser+"</td>";      
-            fileContent = fileContent + "<td>"+"sopId:"+sopId+"</td>";      
-            fileContent = fileContent + "<td>"+Arrays.toString(addSopToUserById)+"</td></tr>";                             
+            fileContent = fileContent + LPTestingOutFormat.rowStart()+LPTestingOutFormat.fieldStart()+"addSopToUserById"+LPTestingOutFormat.fieldEnd();                                   
+            fileContent = fileContent + LPTestingOutFormat.fieldStart()+"schemaDataName: "+schemaDataName+LPTestingOutFormat.fieldEnd();  
+            fileContent = fileContent + LPTestingOutFormat.fieldStart()+"currentUser:"+currentUser+LPTestingOutFormat.fieldEnd();      
+            fileContent = fileContent + LPTestingOutFormat.fieldStart()+"sopId:"+sopId+LPTestingOutFormat.fieldEnd();      
+            fileContent = fileContent + LPTestingOutFormat.fieldStart()+Arrays.toString(addSopToUserById)+LPTestingOutFormat.fieldEnd()+LPTestingOutFormat.rowEnd();                             
             
             Integer sopListId = 1;
             String sopListName = "My first SOP List";
@@ -182,37 +184,37 @@ public class TestingConfigSop extends HttpServlet {
             
             Integer sopsInSopList = sList.getSopListSopAssigned().length;
             Object[] addSopToSopList = sList.addSopToSopList(sopName);
-            fileContent = fileContent + "<tr><td>"+"addSopToSopList"+"</td>";                                   
-            fileContent = fileContent + "<td>"+"sopName:"+sopName+"</td>";      
-            fileContent = fileContent + "<td>"+Arrays.toString(addSopToSopList)+"</td></tr>";        
+            fileContent = fileContent + LPTestingOutFormat.rowStart()+LPTestingOutFormat.fieldStart()+"addSopToSopList"+LPTestingOutFormat.fieldEnd();                                   
+            fileContent = fileContent + LPTestingOutFormat.fieldStart()+"sopName:"+sopName+LPTestingOutFormat.fieldEnd();      
+            fileContent = fileContent + LPTestingOutFormat.fieldStart()+Arrays.toString(addSopToSopList)+LPTestingOutFormat.fieldEnd()+LPTestingOutFormat.rowEnd();        
             
             sopsInSopList = sList.getSopListSopAssigned().length;          
             Object[] addSopToSopList1 = sList.addSopToSopList("SOP-DEMO3");
-            fileContent = fileContent + "<tr><td>"+"addSopToSopList"+"</td>";                                   
-            fileContent = fileContent + "<td>"+"sopName:"+"SOP-DEMO3"+"</td>";      
-            fileContent = fileContent + "<td>"+Arrays.toString(addSopToSopList1)+"</td></tr>";        
+            fileContent = fileContent + LPTestingOutFormat.rowStart()+LPTestingOutFormat.fieldStart()+"addSopToSopList"+LPTestingOutFormat.fieldEnd();                                   
+            fileContent = fileContent + LPTestingOutFormat.fieldStart()+"sopName:"+"SOP-DEMO3"+LPTestingOutFormat.fieldEnd();      
+            fileContent = fileContent + LPTestingOutFormat.fieldStart()+Arrays.toString(addSopToSopList1)+LPTestingOutFormat.fieldEnd()+LPTestingOutFormat.rowEnd();        
             
             sopsInSopList = sList.getSopListSopAssigned().length;          
             Object[] addSopToSopList2 = sList.addSopToSopList(sopName);
-            fileContent = fileContent + "<tr><td>"+"addSopToSopList"+"</td>";                                   
-            fileContent = fileContent + "<td>"+"sopName:"+sopName+"</td>";      
-            fileContent = fileContent + "<td>"+Arrays.toString(addSopToSopList2)+"</td></tr>";     
+            fileContent = fileContent + LPTestingOutFormat.rowStart()+LPTestingOutFormat.fieldStart()+"addSopToSopList"+LPTestingOutFormat.fieldEnd();                                   
+            fileContent = fileContent + LPTestingOutFormat.fieldStart()+"sopName:"+sopName+LPTestingOutFormat.fieldEnd();      
+            fileContent = fileContent + LPTestingOutFormat.fieldStart()+Arrays.toString(addSopToSopList2)+LPTestingOutFormat.fieldEnd()+LPTestingOutFormat.rowEnd();     
 
             sList.dbInsertSopList(schemaConfigName, currentUser);
 
             sopsInSopList = sList.getSopListSopAssigned().length;  
             Object[] dbUpdateSopListSopAssigned = sList.dbUpdateSopListSopAssigned(schemaConfigName, sList.getSopListSopAssigned());
-            fileContent = fileContent + "<tr><td>"+"dbUpdateSopListSopAssigned"+"</td>";                                   
-            fileContent = fileContent + "<td>"+"schemaConfigName: "+schemaConfigName+"</td>";  
-            fileContent = fileContent + "<td>"+"getSopListSopAssigned: "+Arrays.toString(sList.getSopListSopAssigned())+"</td>";              
-            fileContent = fileContent + "<td>"+Arrays.toString(dbUpdateSopListSopAssigned)+"</td></tr>";        
+            fileContent = fileContent + LPTestingOutFormat.rowStart()+LPTestingOutFormat.fieldStart()+"dbUpdateSopListSopAssigned"+LPTestingOutFormat.fieldEnd();                                   
+            fileContent = fileContent + LPTestingOutFormat.fieldStart()+"schemaConfigName: "+schemaConfigName+LPTestingOutFormat.fieldEnd();  
+            fileContent = fileContent + LPTestingOutFormat.fieldStart()+"getSopListSopAssigned: "+Arrays.toString(sList.getSopListSopAssigned())+LPTestingOutFormat.fieldEnd();              
+            fileContent = fileContent + LPTestingOutFormat.fieldStart()+Arrays.toString(dbUpdateSopListSopAssigned)+LPTestingOutFormat.fieldEnd()+LPTestingOutFormat.rowEnd();        
 
             sopsInSopList = sList.getSopListSopAssigned().length;  
             dbUpdateSopListSopAssigned = sList.dbUpdateSopListSopAssigned(schemaConfigName, sList.getSopListSopAssigned());
-            fileContent = fileContent + "<tr><td>"+"dbUpdateSopListSopAssigned"+"</td>";                                   
-            fileContent = fileContent + "<td>"+"schemaConfigName: "+schemaConfigName+"</td>";  
-            fileContent = fileContent + "<td>"+"getSopListSopAssigned: "+Arrays.toString(sList.getSopListSopAssigned())+"</td>";              
-            fileContent = fileContent + "<td>"+Arrays.toString(dbUpdateSopListSopAssigned)+"</td></tr>";        
+            fileContent = fileContent + LPTestingOutFormat.rowStart()+LPTestingOutFormat.fieldStart()+"dbUpdateSopListSopAssigned"+LPTestingOutFormat.fieldEnd();                                   
+            fileContent = fileContent + LPTestingOutFormat.fieldStart()+"schemaConfigName: "+schemaConfigName+LPTestingOutFormat.fieldEnd();  
+            fileContent = fileContent + LPTestingOutFormat.fieldStart()+"getSopListSopAssigned: "+Arrays.toString(sList.getSopListSopAssigned())+LPTestingOutFormat.fieldEnd();              
+            fileContent = fileContent + LPTestingOutFormat.fieldStart()+Arrays.toString(dbUpdateSopListSopAssigned)+LPTestingOutFormat.fieldEnd()+LPTestingOutFormat.rowEnd();        
             
             sopsInSopList++;
 

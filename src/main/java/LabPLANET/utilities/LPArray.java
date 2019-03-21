@@ -34,12 +34,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * LabPLANETArray is a library for methods for building and modeling 1D and 2D arrays.
+ * LPArray is a library for methods for building and modeling 1D and 2D arrays.
  * @author Fran Gomez
  * @version 0.1
  */
 
-public class  LabPLANETArray {
+public class  LPArray {
         
     private static final String ENCRYPTION_KEY = "Bar12345Bar12345";
     private static final String ENCRYPTED_PREFIX = "encrypted_";
@@ -133,7 +133,7 @@ public class  LabPLANETArray {
                 catch(InvalidKeyException | NoSuchAlgorithmException | BadPaddingException | IllegalBlockSizeException | NoSuchPaddingException e){
                     String errorCode = ERRORTRAPPING_EXCEPTION;
                     Object[] errorDetailVariables = new Object[0];
-                    errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, e.getMessage());
+                    errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, e.getMessage());
                     return (String[]) trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);
                 }
             }
@@ -180,8 +180,8 @@ public class  LabPLANETArray {
                 catch(InvalidKeyException | NoSuchAlgorithmException | BadPaddingException | IllegalBlockSizeException | NoSuchPaddingException e){
                     String errorCode = ERRORTRAPPING_EXCEPTION;
                     Object[] errorDetailVariables = new Object[0];
-                    errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, e.getMessage());
-                    return LabPLANETArray.array1dTo2d(
+                    errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, e.getMessage());
+                    return LPArray.array1dTo2d(
                             trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables), errorDetailVariables.length);
                 }
             }
@@ -222,7 +222,7 @@ public class  LabPLANETArray {
                 catch(InvalidKeyException | NoSuchAlgorithmException | BadPaddingException | IllegalBlockSizeException | NoSuchPaddingException e){
                     String errorCode = ERRORTRAPPING_EXCEPTION;
                     Object[] errorDetailVariables = new Object[0];
-                    errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, e.getMessage());
+                    errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, e.getMessage());
                     return (String[]) trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);
                 }
             }
@@ -266,7 +266,7 @@ public class  LabPLANETArray {
                             try {
                                 myObjectsArray[i]= format.parse((String) rowParse[0]);
                             } catch (ParseException ex) {
-                                Logger.getLogger(LabPLANETArray.class.getName()).log(Level.SEVERE, null, ex);
+                                Logger.getLogger(LPArray.class.getName()).log(Level.SEVERE, null, ex);
                             }
                         }
                         break;                                                            
@@ -290,7 +290,7 @@ public class  LabPLANETArray {
         String[][] myArray = new String[0][0];
         String[] myArray1D = new String[0];
         Scanner scanIn = null;
-        int rowc = 0; int row = 0;   int colc = 0; int col = 0; double xnum = 0; Integer columnsInCsv=0;
+        Integer columnsInCsv=0;
         String inputLine = ""; 
         try{
             scanIn = new Scanner(new BufferedReader(new FileReader(xfileLocation)));
@@ -327,7 +327,7 @@ public class  LabPLANETArray {
         String[][] myArray = new String[0][0];
         String[] myArray1D = new String[0];
         Scanner scanIn = null;
-        int rowc = 0; int row = 0;   int colc = 0; int col = 0; double xnum = 0; Integer columnsInCsv=0;
+        Integer columnsInCsv=0;
         String inputLine = ""; 
         try{
             scanIn = new Scanner(new BufferedReader(new FileReader(xfileLocation)));
@@ -466,7 +466,6 @@ public class  LabPLANETArray {
  * @return boolean
  */
     public static Integer valuePosicInArray(Object[] array, Object value){        
-        boolean diagnoses = false;
         Integer specialFieldIndex = Arrays.asList(array).indexOf(value);
         if (specialFieldIndex!=-1){return specialFieldIndex;}
         return -1;

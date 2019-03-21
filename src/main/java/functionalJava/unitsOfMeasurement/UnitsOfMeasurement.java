@@ -6,7 +6,7 @@
 package functionalJava.unitsOfMeasurement;
 
 import databases.Rdbms;
-import LabPLANET.utilities.LabPLANETArray;
+import LabPLANET.utilities.LPArray;
 import LabPLANET.utilities.LPNulls;
 import LabPLANET.utilities.LPPlatform;
 import java.math.BigDecimal;
@@ -53,7 +53,7 @@ public class UnitsOfMeasurement {
         if (newUnit.equals(currentUnit)){
             conversion = LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, "UnitsOfMeasurement_sameValueNotConverted",
                         new Object[]{schemaPrefix,  "valueToConvert: "+valueToConvert+", : currentUnit"+LPNulls.replaceNull(currentUnit)+", : newUnit"+LPNulls.replaceNull(newUnit)});
-            conversion = LabPLANETArray.addValueToArray1D(conversion, valueToConvert);
+            conversion = LPArray.addValueToArray1D(conversion, valueToConvert);
             return conversion;
         }    
         String schemaName = LPPlatform.SCHEMA_CONFIG;
@@ -150,8 +150,8 @@ public class UnitsOfMeasurement {
         conversion = LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, "UnitsOfMeasurement_convertedSuccesfully",
                         new Object[]{currentUnit , newUnitInfo, valueToConvert, valueConverted, schemaPrefix,
                              "valueToConvert: "+valueToConvert+", : currentUnit"+LPNulls.replaceNull(currentUnit)+", : newUnit"+LPNulls.replaceNull(newUnit)});
-        conversion = LabPLANETArray.addValueToArray1D(conversion, valueConverted);
-        conversion = LabPLANETArray.addValueToArray1D(conversion, newUnit);
+        conversion = LPArray.addValueToArray1D(conversion, valueConverted);
+        conversion = LPArray.addValueToArray1D(conversion, newUnit);
         return conversion;
     }
 /**
@@ -170,7 +170,7 @@ public class UnitsOfMeasurement {
         if (family==null){
             Object[] conversion = LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, "UnitsOfMeasurement_FamilyArgumentMandatory",
                                     new Object[]{schemaPrefix});
-            return LabPLANETArray.array1dTo2d(conversion, conversion.length);
+            return LPArray.array1dTo2d(conversion, conversion.length);
         }
       
         Object[][] unitsList = Rdbms.getRecordFieldsByFilter(schemaName, tableName, 

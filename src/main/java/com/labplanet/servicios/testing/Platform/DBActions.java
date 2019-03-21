@@ -5,12 +5,11 @@
  */
 package com.labplanet.servicios.testing.Platform;
 
-import LabPLANET.utilities.LabPLANETArray;
+import LabPLANET.utilities.LPArray;
 import LabPLANET.utilities.LPNulls;
 import LabPLANET.utilities.LPPlatform;
 import functionalJava.testingScripts.LPTestingOutFormat;
 import databases.Rdbms;
-import databases.SqlStatement;
 import functionalJava.testingScripts.TestingAssert;
 import functionalJava.testingScripts.TestingAssertSummary;
 import java.io.IOException;
@@ -36,22 +35,22 @@ public class DBActions extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)            throws ServletException, IOException {
+        response=LPTestingOutFormat.responsePreparation(response);
+
         Object[][] dataSample2D = new Object[1][6];
         Object[] dataSample2Din1D = new Object[0];
         
         String csvFileName = "dbActions.txt"; 
         TestingAssertSummary tstAssertSummary = new TestingAssertSummary();
 
-        response = LPTestingOutFormat.responsePreparation(response);        
-                             
         String csvPathName = LPTestingOutFormat.TESTING_FILES_PATH+csvFileName; 
         String csvFileSeparator=LPTestingOutFormat.TESTING_FILES_FIELD_SEPARATOR;
         
-        Object[][] csvFileContent = LabPLANETArray.convertCSVinArray(csvPathName, csvFileSeparator); 
+        Object[][] csvFileContent = LPArray.convertCSVinArray(csvPathName, csvFileSeparator); 
                 
         try (PrintWriter out = response.getWriter()) {
             String fileContent = LPTestingOutFormat.getHtmlStyleHeader(this.getClass().getSimpleName());
-            HashMap<String, Object> csvHeaderTags = LPTestingOutFormat.getCSVHeader(LabPLANETArray.convertCSVinArray(csvPathName, "="));
+            HashMap<String, Object> csvHeaderTags = LPTestingOutFormat.getCSVHeader(LPArray.convertCSVinArray(csvPathName, "="));
             if (csvHeaderTags.containsKey(LPPlatform.LAB_FALSE)){
                 fileContent=fileContent+"There are missing tags in the file header: "+csvHeaderTags.get(LPPlatform.LAB_FALSE);                        
                 out.println(fileContent); 
@@ -69,7 +68,6 @@ public class DBActions extends HttpServlet {
             for (iLines=iLines;iLines<csvFileContent.length;iLines++){
                 tstAssertSummary.increaseTotalTests();
                 TestingAssert tstAssert = new TestingAssert(csvFileContent[iLines], numEvaluationArguments);
-                String schemaName = "";
                 
                 Integer lineNumCols = csvFileContent[0].length-1;
                 String functionBeingTested = null;
@@ -103,14 +101,12 @@ public class DBActions extends HttpServlet {
                 if (lineNumCols>=numEvaluationArguments+9)
                     {groupBy=LPTestingOutFormat.csvExtractFieldValueStringArr(csvFileContent[iLines][numEvaluationArguments+9]);}
                 
-                Object[] fieldValues = LabPLANETArray.convertStringWithDataTypeToObjectArray(fieldValue);
+                Object[] fieldValues = LPArray.convertStringWithDataTypeToObjectArray(fieldValue);
                 if ( (fieldName!=null) && (fieldValue!=null) ){
                     for (int iFields=0; iFields<fieldName.length; iFields++){
                         if (LPPlatform.isEncryptedField(schemaPrefix, "sample", fieldName[iFields])){                
                             HashMap<String, String> hm = LPPlatform.encryptEncryptableFieldsAddBoth(fieldName[iFields], fieldValues[iFields].toString());
                             fieldName[iFields]= hm.keySet().iterator().next();    
-                            SqlStatement sql = new SqlStatement();
-                            String separator = sql.inSeparator(fieldName[iFields]);
                             if ( hm.get(fieldName[iFields]).length()!=fieldValues[iFields].toString().length()){
                                 String newWhereFieldValues = hm.get(fieldName[iFields]);
                                 fieldValues[iFields]=newWhereFieldValues;
@@ -120,7 +116,7 @@ public class DBActions extends HttpServlet {
                 }     
                 Object[] setFieldValues = null;
                 if (setFieldValue!=null){
-                    setFieldValues = LabPLANETArray.convertStringWithDataTypeToObjectArray(setFieldValue);}
+                    setFieldValues = LPArray.convertStringWithDataTypeToObjectArray(setFieldValue);}
                 fileContentTable1=fileContentTable1+LPTestingOutFormat.rowAddField(iLines.toString())+LPTestingOutFormat.rowAddField(functionBeingTested)
                         +LPTestingOutFormat.rowAddField(schemaPrefix)+LPTestingOutFormat.rowAddField(tableName)
                         +LPTestingOutFormat.rowAddField(Arrays.toString(fieldName))+LPTestingOutFormat.rowAddField(Arrays.toString(fieldValue))
@@ -129,21 +125,21 @@ public class DBActions extends HttpServlet {
                         +LPTestingOutFormat.rowAddField(Arrays.toString(orderBy))+LPTestingOutFormat.rowAddField(Arrays.toString(groupBy));
 
                 Object[] allFunctionsBeingTested = new Object[0];                
-                allFunctionsBeingTested = LabPLANETArray.addValueToArray1D(allFunctionsBeingTested, "EXISTSRECORD");
-                allFunctionsBeingTested = LabPLANETArray.addValueToArray1D(allFunctionsBeingTested, "INSERT");
-                allFunctionsBeingTested = LabPLANETArray.addValueToArray1D(allFunctionsBeingTested, "GETRECORDFIELDSBYFILTER");
-                allFunctionsBeingTested = LabPLANETArray.addValueToArray1D(allFunctionsBeingTested, "UPDATE");
+                allFunctionsBeingTested = LPArray.addValueToArray1D(allFunctionsBeingTested, "EXISTSRECORD");
+                allFunctionsBeingTested = LPArray.addValueToArray1D(allFunctionsBeingTested, "INSERT");
+                allFunctionsBeingTested = LPArray.addValueToArray1D(allFunctionsBeingTested, "GETRECORDFIELDSBYFILTER");
+                allFunctionsBeingTested = LPArray.addValueToArray1D(allFunctionsBeingTested, "UPDATE");
 
 //                fileContentTable1=fileContentTable1+LPTestingOutFormat.rowAddFields(
 //                        new Object[]{iLines, result, ruleType, values, separator, listName});
                 switch (functionBeingTested.toUpperCase()){
                     case "EXISTSRECORD":   
                         Object[] exRec =  Rdbms.existsRecord(schemaPrefix, tableName, fieldName, fieldValues);
-                        dataSample2D = LabPLANETArray.array1dTo2d(exRec, exRec.length);
+                        dataSample2D = LPArray.array1dTo2d(exRec, exRec.length);
                         break;
                     case "INSERT":                    
                         Object[] insRec = Rdbms.insertRecordInTable(schemaPrefix, tableName, fieldName, fieldValues);  
-                        dataSample2D = LabPLANETArray.array1dTo2d(insRec, insRec.length);
+                        dataSample2D = LPArray.array1dTo2d(insRec, insRec.length);
                         break;
                     case "GETRECORDFIELDSBYFILTER":              
                         if (orderBy!=null && orderBy.length>0){
@@ -152,21 +148,21 @@ public class DBActions extends HttpServlet {
                             dataSample2D = Rdbms.getRecordFieldsByFilter(schemaPrefix, tableName, fieldName, fieldValues, fieldsToRetrieve);
                         }
                         if (!LPPlatform.LAB_FALSE.equalsIgnoreCase(dataSample2D[0][0].toString())){
-                            dataSample2Din1D =  LabPLANETArray.array2dTo1d(dataSample2D);
+                            dataSample2Din1D =  LPArray.array2dTo1d(dataSample2D);
                         }    
                         break;
                     case "UPDATE":                    
                         Object[] updRec = Rdbms.updateRecordFieldsByFilter(schemaPrefix, tableName, setFieldName, setFieldValues, fieldName, fieldValues);  
-                        dataSample2D = LabPLANETArray.array1dTo2d(updRec, updRec.length);
+                        dataSample2D = LPArray.array1dTo2d(updRec, updRec.length);
                         break;                        
                     default:
                         String errorCode = "ERROR: FUNCTION NOT RECOGNIZED";
                         Object[] errorDetail = new Object [1];
                         errorDetail[0]="The function <*1*> is not one of the declared ones therefore nothing can be performed for it. Functions are: <*2*>";
-                        errorDetail = LabPLANETArray.addValueToArray1D(errorDetail, functionBeingTested);
-                        errorDetail = LabPLANETArray.addValueToArray1D(errorDetail, Arrays.toString(allFunctionsBeingTested));
+                        errorDetail = LPArray.addValueToArray1D(errorDetail, functionBeingTested);
+                        errorDetail = LPArray.addValueToArray1D(errorDetail, Arrays.toString(allFunctionsBeingTested));
                         Object[] trapErrorMessage = LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetail);            
-                        dataSample2D = LabPLANETArray.array1dTo2d(trapErrorMessage, trapErrorMessage.length);
+                        dataSample2D = LPArray.array1dTo2d(trapErrorMessage, trapErrorMessage.length);
                         break;
                 }    
                 

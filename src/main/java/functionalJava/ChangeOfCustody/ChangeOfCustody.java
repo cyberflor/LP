@@ -5,7 +5,7 @@
  */
 package functionalJava.ChangeOfCustody;
 
-import LabPLANET.utilities.LabPLANETArray;
+import LabPLANET.utilities.LPArray;
 import LabPLANET.utilities.LabPLANETDate;
 import LabPLANET.utilities.LPPlatform;
 import databases.Rdbms;
@@ -20,7 +20,7 @@ public class ChangeOfCustody {
     String cocStartChangeStatus = "STARTED";
     String cocConfirmedChangeStatus = "CONFIRMED";
     String cocAbortedChangeStatus = "ABORTED";
-    public static String fieldName_status = "status";
+    public static final String fieldName_status = "status";
     
     public Object[] cocStartChange(String schemaPrefix, String objectTable, String ObjectFieldName, Object objectId, String currCustodian, String custodianCandidate, String userRole, Integer appSessionId) {
         
@@ -32,18 +32,18 @@ public class ChangeOfCustody {
 
         if ((custodianCandidate==null) || (custodianCandidate.length()==0) ) {
                 String errorCode = "ChainOfCustody_noCustodian";
-                errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, objectId);
-                errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, objectTable);
-                errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaName);
+                errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, objectId);
+                errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, objectTable);
+                errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, schemaName);
                 return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);                              
         }        
         
         if (currCustodian.equalsIgnoreCase(custodianCandidate)){
                 String errorCode = "ChainOfCustody_sameCustodian";
-                errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, currCustodian);
-                errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, objectId);
-                errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, objectTable);
-                errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaName);
+                errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, currCustodian);
+                errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, objectId);
+                errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, objectTable);
+                errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, schemaName);
                 return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);                              
         }        
 
@@ -56,9 +56,9 @@ public class ChangeOfCustody {
                 new Object[]{objectId, cocStartChangeStatus});
         if (LPPlatform.LAB_TRUE.equalsIgnoreCase(existsRecord[0].toString())){
                 String errorCode = "ChainOfCustody_requestAlreadyInCourse";
-                errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, objectId.toString());
-                errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, objectTable);
-                errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaName);
+                errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, objectId.toString());
+                errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, objectTable);
+                errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, schemaName);
                 return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);                  
         }
         Object[] updateRecordFieldsByFilter = Rdbms.updateRecordFieldsByFilter( schemaName, objectTable.toLowerCase(), 
@@ -78,7 +78,7 @@ public class ChangeOfCustody {
         
         switch (objectTable.toLowerCase()){
             case "sample":
-                Object[] fieldsOnLogSample = LabPLANETArray.joinTwo1DArraysInOneOf1DString(sampleFieldName, sampleFieldValue, ":");
+                Object[] fieldsOnLogSample = LPArray.joinTwo1DArraysInOneOf1DString(sampleFieldName, sampleFieldValue, ":");
                 SampleAudit smpAudit = new SampleAudit();
                 smpAudit.sampleAuditAdd(schemaPrefix, auditActionName, objectTable, Integer.valueOf(objectId.toString()), 
                         Integer.valueOf(objectId.toString()), null, null, 
@@ -88,9 +88,9 @@ public class ChangeOfCustody {
                 break;
         }        
         String errorCode = "ChainOfCustody_requestStarted";
-        errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, objectId);
-        errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, objectTable);
-        errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaName);
+        errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, objectId);
+        errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, objectTable);
+        errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, schemaName);
         return LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, errorCode, errorDetailVariables);                  
     }
 
@@ -121,9 +121,9 @@ public class ChangeOfCustody {
                 new String[]{"id", fieldName_status, "custodian_candidate"});
         if (LPPlatform.LAB_FALSE.equalsIgnoreCase(startedProcessData[0][0].toString())){            
             String errorCode = "ChainOfCustody_noChangeInProgress";
-            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, objectId);
-            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, objectTable);
-            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaName);
+            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, objectId);
+            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, objectTable);
+            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, schemaName);
             return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);}                                       
         
         String custodianCandidate = "";
@@ -134,17 +134,17 @@ public class ChangeOfCustody {
 
         if ( (startedProcessData[0][2]==null) || (!userName.equalsIgnoreCase(custodianCandidate)) ){
             String errorCode = "ChainOfCustody_noCustodianCandidate";
-            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, objectId);
-            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, objectTable);
-            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaName);
+            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, objectId);
+            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, objectTable);
+            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, schemaName);
             return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);}                                                   
         
         
         String[] sampleFieldName=new String[]{fieldName_status, "coc_confirmed_on" };
         Object[] sampleFieldValue=new Object[]{actionName,LabPLANETDate.getTimeStampLocalDate()};
         if (comment!=null){            
-            sampleFieldName = LabPLANETArray.addValueToArray1D(sampleFieldName, "coc_new_custodian_notes");
-            sampleFieldValue = LabPLANETArray.addValueToArray1D(sampleFieldValue, comment);
+            sampleFieldName = LPArray.addValueToArray1D(sampleFieldName, "coc_new_custodian_notes");
+            sampleFieldValue = LPArray.addValueToArray1D(sampleFieldValue, comment);
         }
         Object[] updateRecordInTable = Rdbms.updateRecordFieldsByFilter( schemaName, cocTableName, 
                 sampleFieldName, sampleFieldValue,
@@ -155,8 +155,8 @@ public class ChangeOfCustody {
          String[] updSampleTblFlds=new String[]{"coc_confirmed_on", "custodian_candidate"}; // , "coc_requested_on"
          Object[] updSampleTblVls=new Object[]{LabPLANETDate.getTimeStampLocalDate(), "null*String"}; // , "null*Date"
          if (actionName.equalsIgnoreCase(cocConfirmedChangeStatus)){
-            updSampleTblFlds = LabPLANETArray.addValueToArray1D(updSampleTblFlds, "custodian");
-            updSampleTblVls = LabPLANETArray.addValueToArray1D(updSampleTblVls, userName);
+            updSampleTblFlds = LPArray.addValueToArray1D(updSampleTblFlds, "custodian");
+            updSampleTblVls = LPArray.addValueToArray1D(updSampleTblVls, userName);
          }
          Object[] updateRecordFieldsByFilter = Rdbms.updateRecordFieldsByFilter( schemaName, objectTable.toLowerCase(), 
                 updSampleTblFlds, updSampleTblVls,                
@@ -166,7 +166,7 @@ public class ChangeOfCustody {
                 
         switch (objectTable.toLowerCase()){
             case "sample":
-                Object[] fieldsOnLogSample = LabPLANETArray.joinTwo1DArraysInOneOf1DString(sampleFieldName, sampleFieldValue, ":");
+                Object[] fieldsOnLogSample = LPArray.joinTwo1DArraysInOneOf1DString(sampleFieldName, sampleFieldValue, ":");
                 SampleAudit smpAudit = new SampleAudit();
                 smpAudit.sampleAuditAdd( schemaPrefix, auditActionName, objectTable, Integer.valueOf(objectId.toString()), 
                         Integer.valueOf(objectId.toString()), null, null, 
@@ -176,10 +176,10 @@ public class ChangeOfCustody {
                 break;
         }      
         String errorCode = "ChainOfCustody_requestCompleted";
-        errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaName);
-        errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, objectTable);
-        errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, objectId);
-        errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, actionName.toLowerCase());
+        errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, schemaName);
+        errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, objectTable);
+        errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, objectId);
+        errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, actionName.toLowerCase());
         return LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, errorCode, errorDetailVariables);                          
     }
     

@@ -5,10 +5,10 @@
  */
 package com.labplanet.servicios.ModuleBatch;
 
-import LabPLANET.utilities.LabPLANETArray;
+import LabPLANET.utilities.LPArray;
 import LabPLANET.utilities.LabPLANETFrontEnd;
 import LabPLANET.utilities.LPPlatform;
-import LabPLANET.utilities.LabPLANETRequest;
+import LabPLANET.utilities.LPHttp;
 import databases.Rdbms;
 import databases.Token;
 import functionalJava.batch.BatchArray;
@@ -31,8 +31,15 @@ import javax.ws.rs.core.Response;
  * @author Administrator
  */
 public class batchAPI extends HttpServlet {
-    public static String ERRORMSG_ERROR_STATUS_CODE="Error Status Code";
-    public static String ERRORMSG_MANDATORY_PARAMS_MISSING="API Error Message: There are mandatory params for this API method not being passed";
+    public static final String ERRORMSG_ERROR_STATUS_CODE="Error Status Code";
+    public static final String ERRORMSG_MANDATORY_PARAMS_MISSING="API Error Message: There are mandatory params for this API method not being passed";
+
+    public static final String PARAMS_SCHEMA_PREFIX="schemaPrefix"; 
+    public static final String PARAMS_ACTION_NAME="actionName"; 
+    public static final String PARAMS_FINAL_TOKEN="finalToken"; 
+
+    public static final String PARAMS_BATCH_NAME="batchName"; 
+    public static final String PARAMS_BATCH_TEMPLATE="batchTemplate"; 
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -43,43 +50,45 @@ public class batchAPI extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)            throws ServletException, IOException {
+            request=LPHttp.requestPreparation(request);
+            response=LPHttp.responsePreparation(response);
+
         Connection con = null;
+        
             String language = "es";
             String[] errObject = new String[]{"Servlet sampleAPI at " + request.getServletPath()};   
 
-            String[] mandatoryParams = new String[]{"schemaPrefix"};
-            mandatoryParams = LabPLANETArray.addValueToArray1D(mandatoryParams, "actionName");
-            mandatoryParams = LabPLANETArray.addValueToArray1D(mandatoryParams, "finalToken");
-            Object[] areMandatoryParamsInResponse = LabPLANETRequest.areMandatoryParamsInApiRequest(request, mandatoryParams);
+            String[] mandatoryParams = new String[]{PARAMS_SCHEMA_PREFIX};
+            mandatoryParams = LPArray.addValueToArray1D(mandatoryParams, PARAMS_ACTION_NAME);
+            mandatoryParams = LPArray.addValueToArray1D(mandatoryParams, PARAMS_FINAL_TOKEN);
+            Object[] areMandatoryParamsInResponse = LPHttp.areMandatoryParamsInApiRequest(request, mandatoryParams);
             if (LPPlatform.LAB_FALSE.equalsIgnoreCase(areMandatoryParamsInResponse[0].toString())){
-                errObject = LabPLANETArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
-                errObject = LabPLANETArray.addValueToArray1D(errObject, ERRORMSG_MANDATORY_PARAMS_MISSING+": "+areMandatoryParamsInResponse[1].toString());                    
+                errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
+                errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_MANDATORY_PARAMS_MISSING+": "+areMandatoryParamsInResponse[1].toString());                    
                 Object[] errMsg = LabPLANETFrontEnd.responseError(errObject, language, areMandatoryParamsInResponse[1].toString());
                 response.sendError((int) errMsg[0], (String) errMsg[1]);                
                 return ;                
             }            
 
-            String schemaPrefix = request.getParameter("schemaPrefix");            
-            String actionName = request.getParameter("actionName");
-            String finalToken = request.getParameter("finalToken");                   
+            String schemaPrefix = request.getParameter(PARAMS_SCHEMA_PREFIX);            
+            String actionName = request.getParameter(PARAMS_ACTION_NAME);
+            String finalToken = request.getParameter(PARAMS_FINAL_TOKEN);                   
 
             Token token = new Token();
             String[] tokenParams = token.tokenParamsList();
             String[] tokenParamsValues = token.validateToken(finalToken, tokenParams);
 
-            String dbUserName = tokenParamsValues[LabPLANETArray.valuePosicInArray(tokenParams, "userDB")];
-            String dbUserPassword = tokenParamsValues[LabPLANETArray.valuePosicInArray(tokenParams, "userDBPassword")];
-            String internalUserID = tokenParamsValues[LabPLANETArray.valuePosicInArray(tokenParams, "internalUserID")];         
-            String userRole = tokenParamsValues[LabPLANETArray.valuePosicInArray(tokenParams, "userRole")];                     
-            String appSessionIdStr = tokenParamsValues[LabPLANETArray.valuePosicInArray(tokenParams, "appSessionId")];
-            String appSessionStartedDate = tokenParamsValues[LabPLANETArray.valuePosicInArray(tokenParams, "appSessionStartedDate")];                              
+            String dbUserName = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, "userDB")];
+            String dbUserPassword = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, "userDBPassword")];
+            String internalUserID = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, "internalUserID")];         
+            String userRole = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, "userRole")];                     
+//            String appSessionIdStr = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, "appSessionId")];
+//            String appSessionStartedDate = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, "appSessionStartedDate")];                              
 
-            boolean isConnected = false;
-
-            isConnected = Rdbms.getRdbms().startRdbms(dbUserName, dbUserPassword);
+            boolean isConnected = Rdbms.getRdbms().startRdbms(dbUserName, dbUserPassword);
             if (!isConnected){
-                errObject = LabPLANETArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
-                errObject = LabPLANETArray.addValueToArray1D(errObject, "API Error Message: db User Name and Password not correct, connection to the database is not possible");                    
+                errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
+                errObject = LPArray.addValueToArray1D(errObject, "API Error Message: db User Name and Password not correct, connection to the database is not possible");                    
                 Object[] errMsg = LabPLANETFrontEnd.responseError(errObject, language, schemaPrefix);
                 response.sendError((int) errMsg[0], (String) errMsg[1]);   
                 Rdbms.closeRdbms(); 
@@ -91,14 +100,7 @@ public class batchAPI extends HttpServlet {
                  return;
             }
             Rdbms.setTransactionId(schemaPrefix);
-            //ResponseEntity<String121> responsew;        
-
-            response.setContentType("application/json");
-            response.setCharacterEncoding("UTF-8");
-            request.setCharacterEncoding("UTF-8");
-
             try (PrintWriter out = response.getWriter()) {
-
                 Object[] actionEnabled = LPPlatform.procActionEnabled(schemaPrefix, actionName);
                 if (LPPlatform.LAB_FALSE.equalsIgnoreCase(actionEnabled[0].toString())){
                     Object[] errMsg = LabPLANETFrontEnd.responseError(actionEnabled, language, schemaPrefix);
@@ -113,28 +115,26 @@ public class batchAPI extends HttpServlet {
                     Rdbms.closeRdbms(); 
                     return ;                           
                 }
-
-                DataSample smp = new DataSample("");            
                 Object[] dataSample = null;            
 
                 switch (actionName.toUpperCase()){
                     case "CREATEBATCHARRAY":   
-                        mandatoryParams = new String[]{"batchName"};
-                        mandatoryParams = LabPLANETArray.addValueToArray1D(mandatoryParams, "batchTemplate");
-                        mandatoryParams = LabPLANETArray.addValueToArray1D(mandatoryParams, "batchTemplateVersion");
-                        mandatoryParams = LabPLANETArray.addValueToArray1D(mandatoryParams, "numRows");
-                        mandatoryParams = LabPLANETArray.addValueToArray1D(mandatoryParams, "numCols");
-                        areMandatoryParamsInResponse = LabPLANETRequest.areMandatoryParamsInApiRequest(request, mandatoryParams);
+                        mandatoryParams = new String[]{PARAMS_BATCH_NAME};
+                        mandatoryParams = LPArray.addValueToArray1D(mandatoryParams, PARAMS_BATCH_TEMPLATE);
+                        mandatoryParams = LPArray.addValueToArray1D(mandatoryParams, "batchTemplateVersion");
+                        mandatoryParams = LPArray.addValueToArray1D(mandatoryParams, "numRows");
+                        mandatoryParams = LPArray.addValueToArray1D(mandatoryParams, "numCols");
+                        areMandatoryParamsInResponse = LPHttp.areMandatoryParamsInApiRequest(request, mandatoryParams);
                         if (LPPlatform.LAB_FALSE.equalsIgnoreCase(areMandatoryParamsInResponse[0].toString())){
-                            errObject = LabPLANETArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
-                            errObject = LabPLANETArray.addValueToArray1D(errObject, ERRORMSG_MANDATORY_PARAMS_MISSING+": "+areMandatoryParamsInResponse[1].toString());                    
+                            errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
+                            errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_MANDATORY_PARAMS_MISSING+": "+areMandatoryParamsInResponse[1].toString());                    
                             Object[] errMsg = LabPLANETFrontEnd.responseError(errObject, language, areMandatoryParamsInResponse[1].toString());
                             response.sendError((int) errMsg[0], (String) errMsg[1]);                
                             return ;                
                         }            
 
-                        String batchName = request.getParameter("batchName");                        
-                        String batchTemplate = request.getParameter("batchTemplate");                        
+                        String batchName = request.getParameter(PARAMS_BATCH_NAME);                        
+                        String batchTemplate = request.getParameter(PARAMS_BATCH_TEMPLATE);                        
                         String batchTemplateVersionStr = request.getParameter("batchTemplateVersion");                        
                         String numRowsStr = request.getParameter("numRows");                        
                         String numColsStr = request.getParameter("numCols");       
@@ -145,21 +145,21 @@ public class batchAPI extends HttpServlet {
                                 internalUserID,  Integer.valueOf(numRowsStr),  Integer.valueOf(numColsStr));
                         break;
                     case "LOADBATCHARRAY":
-                            mandatoryParams = new String[]{"batchName"};
+                            mandatoryParams = new String[]{PARAMS_BATCH_NAME};
                             if (LPPlatform.LAB_FALSE.equalsIgnoreCase(areMandatoryParamsInResponse[0].toString())){
-                                errObject = LabPLANETArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
-                                errObject = LabPLANETArray.addValueToArray1D(errObject, ERRORMSG_MANDATORY_PARAMS_MISSING+": "+areMandatoryParamsInResponse[1].toString());                    
+                                errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
+                                errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_MANDATORY_PARAMS_MISSING+": "+areMandatoryParamsInResponse[1].toString());                    
                                 Object[] errMsg = LabPLANETFrontEnd.responseError(errObject, language, areMandatoryParamsInResponse[1].toString());
                                 response.sendError((int) errMsg[0], (String) errMsg[1]);                
                                 return ;                
                             }            
-                            batchName = request.getParameter("batchName");                          
+                            batchName = request.getParameter(PARAMS_BATCH_NAME);                          
                             bArray = BatchArray.dbGetBatchArray(schemaPrefix, batchName);
 
                             break;
                     default:
-                        errObject = LabPLANETArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
-                        errObject = LabPLANETArray.addValueToArray1D(errObject, "API Error Message: actionName "+actionName+ " not recognized as an action by this API");                                                            
+                        errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
+                        errObject = LPArray.addValueToArray1D(errObject, "API Error Message: actionName "+actionName+ " not recognized as an action by this API");                                                            
                         Object[] errMsg = LabPLANETFrontEnd.responseError(errObject, language, schemaPrefix);
                         response.sendError((int) errMsg[0], (String) errMsg[1]);    
                         Rdbms.closeRdbms();                    

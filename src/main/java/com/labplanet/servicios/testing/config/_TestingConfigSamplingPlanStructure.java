@@ -12,13 +12,14 @@ import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import LabPLANET.utilities.LabPLANETArray;
+import LabPLANET.utilities.LPArray;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import databases.Rdbms;
 import functionalJava.materialSpec._ConfigSamplingPlanForSpec;
+import functionalJava.testingScripts.LPTestingOutFormat;
 
 /**
  *
@@ -35,11 +36,9 @@ public class _TestingConfigSamplingPlanStructure extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response)            throws ServletException, IOException {
+        response = LPTestingOutFormat.responsePreparation(response);        
         try (PrintWriter out = response.getWriter()) {
-            response.setContentType("text/html;charset=UTF-8");
             _ConfigSamplingPlanForSpec smpPlan = new _ConfigSamplingPlanForSpec();
 
             if (Rdbms.getRdbms().startRdbms("labplanet", "avecesllegaelmomento")==null){out.println("Connection to the database not established");return;}
@@ -56,12 +55,12 @@ public class _TestingConfigSamplingPlanStructure extends HttpServlet {
                 String schemaPrefix="oil-pl1";
                 String actionName="NEWSAMPLINGDETAIL";
                 String samplingPlan = "84";
-                fieldName = LabPLANETArray.addValueToArray1D(fieldName, "analysis");
-                fieldValue = LabPLANETArray.addValueToArray1D(fieldValue, "pH");
-                fieldName = LabPLANETArray.addValueToArray1D(fieldName, "method_name");
-                fieldValue = LabPLANETArray.addValueToArray1D(fieldValue, "pH method");
-                fieldName = LabPLANETArray.addValueToArray1D(fieldName, "method_version");
-                fieldValue = LabPLANETArray.addValueToArray1D(fieldValue, 2);
+                fieldName = LPArray.addValueToArray1D(fieldName, "analysis");
+                fieldValue = LPArray.addValueToArray1D(fieldValue, "pH");
+                fieldName = LPArray.addValueToArray1D(fieldName, "method_name");
+                fieldValue = LPArray.addValueToArray1D(fieldValue, "pH method");
+                fieldName = LPArray.addValueToArray1D(fieldName, "method_version");
+                fieldValue = LPArray.addValueToArray1D(fieldValue, 2);
                 configSamplingPlanTestingArray[inumTesting][0]=schemaPrefix;
                 configSamplingPlanTestingArray[inumTesting][1]=samplingPlan;
                 configSamplingPlanTestingArray[inumTesting][2]=userName;
@@ -88,7 +87,6 @@ public class _TestingConfigSamplingPlanStructure extends HttpServlet {
                 String[] fieldName=null;    
                 Object[] fieldValue=null;
                 String schemaPrefix=null;
-                String samplingPlan=null;
                 userName=null;                
                 String functionBeingTested=null;
                 Object[] dataSample = null;
@@ -96,14 +94,14 @@ public class _TestingConfigSamplingPlanStructure extends HttpServlet {
                 if (configSamplingPlanTestingArray[i][0]!=null){schemaPrefix = (String) configSamplingPlanTestingArray[i][0];}
                 if (configSamplingPlanTestingArray[i][5]!=null){functionBeingTested = (String) configSamplingPlanTestingArray[i][5];}
                     
-                out.println("<td>"+i+"</td><td>"+schemaPrefix+"</td><td>"+functionBeingTested+"</td><td>"+Arrays.toString(fieldName)+"</td><td><b>"+Arrays.toString(fieldValue)+"</b></td>");
+                out.println(LPTestingOutFormat.fieldStart()+i+LPTestingOutFormat.fieldStart()+LPTestingOutFormat.fieldEnd()+schemaPrefix+LPTestingOutFormat.fieldStart()+LPTestingOutFormat.fieldEnd()+functionBeingTested+LPTestingOutFormat.fieldStart()+LPTestingOutFormat.fieldEnd()+Arrays.toString(fieldName)+LPTestingOutFormat.fieldStart()+LPTestingOutFormat.fieldEnd()+"<b>"+Arrays.toString(fieldValue)+"</b>"+LPTestingOutFormat.fieldEnd());
 
                 switch (LPNulls.replaceNull((String) functionBeingTested).toUpperCase()){
                     case "NEWSAMPLINGDETAIL":
                         String sampleTemplate=null;
                         Integer sampleTemplateVersion=null;
                         if (configSamplingPlanTestingArray[i][1]!=null){schemaPrefix = (String) configSamplingPlanTestingArray[i][0];}
-                        if (configSamplingPlanTestingArray[i][2]!=null){samplingPlan = (String) configSamplingPlanTestingArray[i][1];}
+                        if (configSamplingPlanTestingArray[i][2]!=null){String samplingPlan = (String) configSamplingPlanTestingArray[i][1];}
                         if (configSamplingPlanTestingArray[i][1]!=null){userName = (String) configSamplingPlanTestingArray[i][2];}
                         if (configSamplingPlanTestingArray[i][3]!=null){fieldName = (String[]) configSamplingPlanTestingArray[i][3];}              
                         if (configSamplingPlanTestingArray[i][4]!=null){fieldValue = (Object[]) configSamplingPlanTestingArray[i][4];}                         

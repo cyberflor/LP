@@ -28,8 +28,6 @@ public class Parameter {
      **/
     public static String getParameterBundle(String parameterFolder, String schemaName, String AreaName, String parameterName, String language) {
         ResourceBundle prop = null;
-        FileWriter fw = null;
-        String newEntry = "";
         if (parameterFolder==null){parameterFolder="config";}
         String filePath = "parameter."+parameterFolder+"."+schemaName;
         if (AreaName!=null){filePath=filePath+"-"+AreaName;}
@@ -57,8 +55,6 @@ public class Parameter {
      * @return
      */
     public static String getParameterBundleInConfigFile(String configFile, String parameterName, String language) {
-        FileWriter fw = null;
-        String newEntry = "";
         ResourceBundle prop = ResourceBundle.getBundle("parameter.config." + configFile + "_" + language);
         if (!prop.containsKey(parameterName)) {
             return "";
@@ -75,8 +71,6 @@ public class Parameter {
      * @return
      */
     public static String getParameterBundle(String configFile, String parameterName) {
-        FileWriter fw = null;
-        String newEntry = "";
         try {
             ResourceBundle prop = ResourceBundle.getBundle("parameter.config." + configFile);
             if (!prop.containsKey(parameterName)) {
@@ -98,8 +92,7 @@ public class Parameter {
         String translationsDir = prop.getString("translationDirPath");
         translationsDir = translationsDir.replace("/", "\\");
           
-        String fileidt = translationsDir + "\\" + fileName + "_es_CO.properties";
-        
+        String fileidt = translationsDir + "\\" + fileName + "_es_CO.properties";        
         String currFileName = fileName + "_es_CO.properties";
         
         //String existingEntryValue = prop.getString(entryName);
@@ -123,7 +116,7 @@ public class Parameter {
      * @param entryName
      * @param entryValue
      * @return
-     * @throws Exception
+     * @throws java.io.IOException
      */
     public String addTagInPropertiesFile(String fileName, String entryName, String entryValue) throws IOException{
 
@@ -142,7 +135,7 @@ public class Parameter {
 
             ResourceBundle prop = ResourceBundle.getBundle(translationPath);        
             try{    
-                String existingEntryValue = prop.getString(entryName);                
+//                String existingEntryValue = prop.getString(entryName);                
                 String newLogEntry = " Exists the tag in " + f.getName() + " for the entry " + entryName + " and value " + entryValue;
                 return newLogEntry;
                 
@@ -174,10 +167,6 @@ public class Parameter {
      * @return
      */
     public File[] PropertiesFiles(String fileName){
-
-        FileWriter fw = null;
-        String newEntry = "";
-        String curFiles = "";
 
         ResourceBundle propConfig = ResourceBundle.getBundle("parameter.config.conf");        
         String translationsDir = propConfig.getString("translationDirPath");

@@ -6,9 +6,10 @@
 package testing.platform;
 
 import LabPLANET.utilities.LPNulls;
-import LabPLANET.utilities.LabPLANETArray;
+import LabPLANET.utilities.LPArray;
 import databases.Rdbms;
 import functionalJava.materialSpec.ConfigSpecStructure;
+import functionalJava.testingScripts.LPTestingOutFormat;
 import functionalJava.user.UserSecurity;
 import java.io.File;
 import java.io.FileWriter;
@@ -53,7 +54,7 @@ public class eSign extends HttpServlet {
         String csvFileName = "userSecurity.txt"; String csvFileSeparator=";";
         String csvPathName = "\\\\FRANCLOUD\\fran\\LabPlanet\\testingRepository\\"+csvFileName; 
         
-        configSpecTestingArray = LabPLANETArray.convertCSVinArray(csvPathName, csvFileSeparator);
+        configSpecTestingArray = LPArray.convertCSVinArray(csvPathName, csvFileSeparator);
 
         if (Rdbms.getRdbms().startRdbms("labplanet", "avecesllegaelmomento")==null){out.println("Connection to the database not established");return;}
                
@@ -86,7 +87,7 @@ public class eSign extends HttpServlet {
 
         for (Integer i=1;i<configSpecTestingArray.length;i++){
             //if (configSpecTestingArray[i][2]==null && configSpecTestingArray[i][3]==null){
-            fileContent = fileContent + "<tr>";
+            fileContent = fileContent + LPTestingOutFormat.rowStart();
             String functionBeingTested=null;
             userName=null;                
             String userPass=null;                
@@ -99,52 +100,52 @@ public class eSign extends HttpServlet {
             if (configSpecTestingArray[i][2]!=null){userPass = (String) configSpecTestingArray[i][2];}
             if (configSpecTestingArray[i][3]!=null){userEsign = (String) configSpecTestingArray[i][3];}
 
-            fileContent = fileContent + "<td>"+i+"</td><td>"+functionBeingTested+"</td>";
+            fileContent = fileContent + LPTestingOutFormat.fieldStart()+i+LPTestingOutFormat.fieldEnd()+LPTestingOutFormat.fieldStart()+functionBeingTested+LPTestingOutFormat.fieldEnd();
 
                 switch (LPNulls.replaceNull((String) functionBeingTested).toUpperCase()){
                 case "SETUSERESIGN":
                     //fileContent = fileContent + "<td>User Name</td><td>Password</td>";
-                    fileContent = fileContent + "<td>"+userName+"</td><td>"+userPass+"</td><td>"+userEsign+"</td>";
+                    fileContent = fileContent + LPTestingOutFormat.fieldStart()+userName+LPTestingOutFormat.fieldEnd()+LPTestingOutFormat.fieldStart()+userPass+LPTestingOutFormat.fieldEnd()+LPTestingOutFormat.fieldStart()+userEsign+LPTestingOutFormat.fieldEnd();
                     try {
                         usrSecDiag = usrSec.setUserEsig(userName, userPass, userEsign);
-                        fileContent = fileContent + "<td>"+usrSecDiag[0].toString()+". "+usrSecDiag[1].toString();
+                        fileContent = fileContent + LPTestingOutFormat.fieldStart()+usrSecDiag[0].toString()+". "+usrSecDiag[1].toString();
                     } catch (IllegalArgumentException ex) {
                         Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
                     }
                     break;       
                 case "ISVALIDESIGN":
                     //fileContent = fileContent + "<td>User Name</td><td>Password</td>";
-                    fileContent = fileContent + "<td>"+userName+"</td><td>"+userPass+"</td><td>"+userEsign+"</td>";
+                    fileContent = fileContent + LPTestingOutFormat.fieldStart()+userName+LPTestingOutFormat.fieldEnd()+LPTestingOutFormat.fieldStart()+userPass+LPTestingOutFormat.fieldEnd()+LPTestingOutFormat.fieldStart()+userEsign+LPTestingOutFormat.fieldEnd();
                     try {
                         usrSecDiag = usrSec.isValidESign(userName, userEsign);
-                        fileContent = fileContent + "<td>"+usrSecDiag[0].toString()+". "+usrSecDiag[1].toString();
+                        fileContent = fileContent + LPTestingOutFormat.fieldStart()+usrSecDiag[0].toString()+". "+usrSecDiag[1].toString();
                     } catch (IllegalArgumentException ex) {
                         Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
                     }
                     break;      
                 case "ISVALIDUSERANDESIGN":
                     //fileContent = fileContent + "<td>User Name</td><td>Password</td>";
-                    fileContent = fileContent + "<td>"+userName+"</td><td>"+userPass+"</td><td>"+userEsign+"</td>";
+                    fileContent = fileContent + LPTestingOutFormat.fieldStart()+userName+LPTestingOutFormat.fieldEnd()+LPTestingOutFormat.fieldStart()+userPass+LPTestingOutFormat.fieldEnd()+LPTestingOutFormat.fieldStart()+userEsign+LPTestingOutFormat.fieldEnd();
                     try {
                         usrSecDiag = usrSec.isValidESign(userName, userPass, userEsign);
-                        fileContent = fileContent + "<td>"+usrSecDiag[0].toString()+". "+usrSecDiag[1].toString();
+                        fileContent = fileContent + LPTestingOutFormat.fieldStart()+usrSecDiag[0].toString()+". "+usrSecDiag[1].toString();
                     } catch (IllegalArgumentException ex) {
                         Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
                     }
                     break;                       
                /* LabPLANETNullValue labNull = new LabPLANETNullValue();
                 if (functionBeingTested.equalsIgnoreCase("GETSAMPLEINFO")){
-                    fileContent = fileContent + "<td>"+usrSecDiag[0].toString();
+                    fileContent = fileContent + LPTestingOutFormat.fieldStart()+usrSecDiag[0].toString();
                     fileContent = fileContent + ". "+labNull.replaceNull((String) usrSecDiag[1]);
                     fileContent = fileContent + ". "+labNull.replaceNull((String) usrSecDiag[2]);
-                    fileContent = fileContent + ". "+labNull.replaceNull((String) usrSecDiag[3])+"</td>";
+                    fileContent = fileContent + ". "+labNull.replaceNull((String) usrSecDiag[3])+LPTestingOutFormat.fieldEnd();
 
                 }else{
-                    fileContent = fileContent + "<td>"+usrSecDiag[0].toString()+". "+usrSecDiag[1].toString()+". "+usrSecDiag[2].toString()+". "+usrSecDiag[3].toString()+". "+usrSecDiag[4].toString()+". "+usrSecDiag[5].toString()+"</td>";
+                    fileContent = fileContent + LPTestingOutFormat.fieldStart()+usrSecDiag[0].toString()+". "+usrSecDiag[1].toString()+". "+usrSecDiag[2].toString()+". "+usrSecDiag[3].toString()+". "+usrSecDiag[4].toString()+". "+usrSecDiag[5].toString()+LPTestingOutFormat.fieldEnd();
                 }*/    
-                //fileContent = fileContent + "</tr>";
+                //fileContent = fileContent + LPTestingOutFormat.rowEnd();
             default:
-                fileContent = fileContent + "<td>"+functionBeingTested.toString().toUpperCase()+" not recognized by this API"+"</td>";                    
+                fileContent = fileContent + LPTestingOutFormat.fieldStart()+functionBeingTested.toString().toUpperCase()+" not recognized by this API"+LPTestingOutFormat.fieldEnd();                    
             }
         }    
         fileContent = fileContent + "</table>";        

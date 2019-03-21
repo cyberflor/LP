@@ -8,7 +8,7 @@ package testing.functionalData;
 import databases.Rdbms;
 import functionalJava.analysis.UserMethod;
 import _functionalJava.project.DataProject;
-import LabPLANET.utilities.LabPLANETArray;
+import LabPLANET.utilities.LPArray;
 import LabPLANET.utilities.LPNulls;
 import functionalJava.testingScripts.LPTestingOutFormat;
 import java.io.File;
@@ -62,7 +62,7 @@ public class projectStructure extends HttpServlet {
             String userName="1"; 
             String userRole="oil1plant_analyst";
             
-            configSpecTestingArray = LabPLANETArray.convertCSVinArray(csvPathName, csvFileSeparator);
+            configSpecTestingArray = LPArray.convertCSVinArray(csvPathName, csvFileSeparator);
 
             String fileContent="";
             fileContent = LPTestingOutFormat.getHtmlStyleHeader(this.getServletName());
@@ -75,7 +75,7 @@ public class projectStructure extends HttpServlet {
 
             for (Integer i=1;i<configSpecTestingArray.length;i++){
                 //if (configSpecTestingArray[i][2]==null && configSpecTestingArray[i][3]==null){
-                fileContent = fileContent + "<tr>";
+                fileContent = fileContent + LPTestingOutFormat.rowStart();
                 String[] fieldName=null;    
                 Object[] fieldValue=null;
                 String schemaPrefix=null;
@@ -87,7 +87,7 @@ public class projectStructure extends HttpServlet {
                 if (configSpecTestingArray[i][1]!=null){schemaPrefix = (String) configSpecTestingArray[i][1];}
                 if (configSpecTestingArray[i][2]!=null){functionBeingTested = (String) configSpecTestingArray[i][2];}
 
-                fileContent = fileContent + "<td>"+i+"</td><td>"+schemaPrefix+"</td><td>"+functionBeingTested+"</td>";
+                fileContent = fileContent + LPTestingOutFormat.fieldStart()+i+"</td><td>"+schemaPrefix+"</td><td>"+functionBeingTested+LPTestingOutFormat.fieldEnd();
 
                 switch (functionBeingTested.toUpperCase()){
                     case "CREATEPROJECT":
@@ -98,10 +98,10 @@ public class projectStructure extends HttpServlet {
                         projectTemplateVersion = Integer.parseInt(sampleTemplateInfo[1]);
                         if (configSpecTestingArray[i][3]!=null){fieldName = (String[]) configSpecTestingArray[i][4].toString().split("\\|");}              
                         if (configSpecTestingArray[i][4]!=null){fieldValue = (Object[]) configSpecTestingArray[i][5].toString().split("\\|");} 
-                        fieldValue = LabPLANETArray.convertStringWithDataTypeToObjectArray((String[]) fieldValue);
+                        fieldValue = LPArray.convertStringWithDataTypeToObjectArray((String[]) fieldValue);
                         fileContent = fileContent + "<td>templateName, templateVersion, fieldNames, fieldValues</td>";
-                        fileContent = fileContent + "<td>"+projectTemplate+", "+projectTemplateVersion.toString()+", "
-                                +configSpecTestingArray[i][4].toString()+", "+configSpecTestingArray[i][5].toString()+"</td>";                        
+                        fileContent = fileContent + LPTestingOutFormat.fieldStart()+projectTemplate+", "+projectTemplateVersion.toString()+", "
+                                +configSpecTestingArray[i][4].toString()+", "+configSpecTestingArray[i][5].toString()+LPTestingOutFormat.fieldEnd();                        
                         try {
                             dataProject = prj.createProject(schemaPrefix, projectTemplate, projectTemplateVersion, fieldName, fieldValue, userName, userRole);
                         } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
@@ -117,11 +117,11 @@ public class projectStructure extends HttpServlet {
                         projectTemplateVersion = Integer.parseInt(sampleTemplateInfo[1]);
                         if (configSpecTestingArray[i][3]!=null){fieldName = (String[]) configSpecTestingArray[i][4].toString().split("\\|");}              
                         if (configSpecTestingArray[i][4]!=null){fieldValue = (Object[]) configSpecTestingArray[i][5].toString().split("\\|");}   
-                        fieldValue = LabPLANETArray.convertStringWithDataTypeToObjectArray((String[]) fieldValue);
+                        fieldValue = LPArray.convertStringWithDataTypeToObjectArray((String[]) fieldValue);
                         if (configSpecTestingArray[i][5]!=null){projectName = (String) configSpecTestingArray[i][6];}                           
                         fileContent = fileContent + "<td>projectName, templateName, templateVersion, fieldNames, fieldValues</td>";
-                        fileContent = fileContent + "<td>"+projectName+", "+projectTemplate+", "+projectTemplateVersion.toString()+", "
-                                +configSpecTestingArray[i][4].toString()+", "+configSpecTestingArray[i][5].toString()+"</td>";                        
+                        fileContent = fileContent + LPTestingOutFormat.fieldStart()+projectName+", "+projectTemplate+", "+projectTemplateVersion.toString()+", "
+                                +configSpecTestingArray[i][4].toString()+", "+configSpecTestingArray[i][5].toString()+LPTestingOutFormat.fieldEnd();                        
                         try {
                             dataProject = prj.logProjectSample(schemaPrefix, projectTemplate, projectTemplateVersion, fieldName, fieldValue, userName, userRole, projectName, null);
                         } catch (IllegalArgumentException ex) {
@@ -133,12 +133,12 @@ public class projectStructure extends HttpServlet {
                         if (configSpecTestingArray[i][4]!=null){userName = (String) configSpecTestingArray[i][4];}
                         if (configSpecTestingArray[i][5]!=null){fieldName = (String[]) configSpecTestingArray[i][5].toString().split("\\|");}              
                         if (configSpecTestingArray[i][6]!=null){fieldValue = (Object[]) configSpecTestingArray[i][6].toString().split("\\|");}
-                        fieldValue = LabPLANETArray.convertStringWithDataTypeToObjectArray((String[]) fieldValue);
+                        fieldValue = LPArray.convertStringWithDataTypeToObjectArray((String[]) fieldValue);
                         try {                        
-                            fieldValue = LabPLANETArray.convertStringWithDataTypeToObjectArray(configSpecTestingArray[i][6].toString().split("\\|"));
+                            fieldValue = LPArray.convertStringWithDataTypeToObjectArray(configSpecTestingArray[i][6].toString().split("\\|"));
                             fileContent = fileContent + "<td>sampleId, userName, fieldNames, fieldValues</td>";
-                            fileContent = fileContent + "<td>"+sampleId.toString()+", "+userName+", "
-                                +configSpecTestingArray[i][5].toString()+", "+configSpecTestingArray[i][6].toString()+"</td>";                            
+                            fileContent = fileContent + LPTestingOutFormat.fieldStart()+sampleId.toString()+", "+userName+", "
+                                +configSpecTestingArray[i][5].toString()+", "+configSpecTestingArray[i][6].toString()+LPTestingOutFormat.fieldEnd();                            
                             dataProject = prj.sampleAnalysisAddtoSample(schemaPrefix, userName, sampleId, fieldName, fieldValue, userRole);
                         } catch (IllegalArgumentException | NullPointerException ex) {
                             Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
@@ -148,15 +148,15 @@ public class projectStructure extends HttpServlet {
                         break;
                 }
                 if (functionBeingTested.equalsIgnoreCase("GETSAMPLEINFO")){
-                    fileContent = fileContent + "<td>"+dataSample2D[0][0].toString();
+                    fileContent = fileContent + LPTestingOutFormat.fieldStart()+dataSample2D[0][0].toString();
                     fileContent = fileContent + ". "+LPNulls.replaceNull((String) dataSample2D[0][1]);
                     fileContent = fileContent + ". "+LPNulls.replaceNull((String) dataSample2D[0][2]);
-                    fileContent = fileContent + ". "+LPNulls.replaceNull((String) dataSample2D[0][3])+"</td>";
+                    fileContent = fileContent + ". "+LPNulls.replaceNull((String) dataSample2D[0][3])+LPTestingOutFormat.fieldEnd();
 
                 }else{
-                    fileContent = fileContent + "<td>"+dataProject[0].toString()+". "+dataProject[1].toString()+". "+dataProject[2].toString()+". "+dataProject[3].toString()+". "+dataProject[4].toString()+". "+dataProject[5].toString()+"</td>";
+                    fileContent = fileContent + LPTestingOutFormat.fieldStart()+dataProject[0].toString()+". "+dataProject[1].toString()+". "+dataProject[2].toString()+". "+dataProject[3].toString()+". "+dataProject[4].toString()+". "+dataProject[5].toString()+LPTestingOutFormat.fieldEnd();
                 }    
-                fileContent = fileContent + "</tr>";
+                fileContent = fileContent + LPTestingOutFormat.rowEnd();
             }
             fileContent = fileContent + "</table>";        
             out.println(fileContent);

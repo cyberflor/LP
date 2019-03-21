@@ -6,7 +6,7 @@
 package functionalJava.audit;
 
 import databases.Rdbms;
-import LabPLANET.utilities.LabPLANETArray;
+import LabPLANET.utilities.LPArray;
 import LabPLANET.utilities.LPPlatform;
 import LabPLANET.utilities.LabPLANETSession;
 import java.io.FileWriter;
@@ -53,37 +53,37 @@ public class SampleAudit {
         Requirement req = new Requirement();
         Object[][] procedureInfo = req.getProcedureBySchemaPrefix(schemaPrefix);
         if (!(procedureInfo[0][3].toString().equalsIgnoreCase(LPPlatform.LAB_FALSE))){
-            fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "procedure");
-            fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, procedureInfo[0][0]);
-            fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "procedure_version");
-            fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, procedureInfo[0][1]);        
+            fieldNames = LPArray.addValueToArray1D(fieldNames, "procedure");
+            fieldValues = LPArray.addValueToArray1D(fieldValues, procedureInfo[0][0]);
+            fieldNames = LPArray.addValueToArray1D(fieldNames, "procedure_version");
+            fieldValues = LPArray.addValueToArray1D(fieldValues, procedureInfo[0][1]);        
         }        
         
-        fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "action_name");
-        fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, action);
-        fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "table_name");
-        fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, tableName);
-        fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "table_id");
-        fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, tableId);
+        fieldNames = LPArray.addValueToArray1D(fieldNames, "action_name");
+        fieldValues = LPArray.addValueToArray1D(fieldValues, action);
+        fieldNames = LPArray.addValueToArray1D(fieldNames, "table_name");
+        fieldValues = LPArray.addValueToArray1D(fieldValues, tableName);
+        fieldNames = LPArray.addValueToArray1D(fieldNames, "table_id");
+        fieldValues = LPArray.addValueToArray1D(fieldValues, tableId);
         if (sampleId!=null){
-            fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "sample_id");
-            fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, sampleId);
+            fieldNames = LPArray.addValueToArray1D(fieldNames, "sample_id");
+            fieldValues = LPArray.addValueToArray1D(fieldValues, sampleId);
         }    
         if (testId!=null){
-            fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "test_id");
-            fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, testId);
+            fieldNames = LPArray.addValueToArray1D(fieldNames, "test_id");
+            fieldValues = LPArray.addValueToArray1D(fieldValues, testId);
         }    
         if (resultId!=null){
-            fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "result_id");
-            fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, resultId);
+            fieldNames = LPArray.addValueToArray1D(fieldNames, "result_id");
+            fieldValues = LPArray.addValueToArray1D(fieldValues, resultId);
         }    
-        fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "fields_updated");
-        fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, Arrays.toString(auditlog));
-        fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "user_role");
-        fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, userRole);
+        fieldNames = LPArray.addValueToArray1D(fieldNames, "fields_updated");
+        fieldValues = LPArray.addValueToArray1D(fieldValues, Arrays.toString(auditlog));
+        fieldNames = LPArray.addValueToArray1D(fieldNames, "user_role");
+        fieldValues = LPArray.addValueToArray1D(fieldValues, userRole);
 
-        fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "person");
-        fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, userName);
+        fieldNames = LPArray.addValueToArray1D(fieldNames, "person");
+        fieldValues = LPArray.addValueToArray1D(fieldValues, userName);
         if (appSessionId!=null){
             Object[] appSession = LabPLANETSession.addProcessSession(schemaName, appSessionId, new String[]{"date_started"});
         
@@ -92,23 +92,23 @@ public class SampleAudit {
                 return;
             }else{
 
-                fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "app_session_id");
-                fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, appSessionId);            
+                fieldNames = LPArray.addValueToArray1D(fieldNames, "app_session_id");
+                fieldValues = LPArray.addValueToArray1D(fieldValues, appSessionId);            
             }
         }
-        fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "transaction_id");
-        fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, Rdbms.getTransactionId());            
+        fieldNames = LPArray.addValueToArray1D(fieldNames, "transaction_id");
+        fieldValues = LPArray.addValueToArray1D(fieldValues, Rdbms.getTransactionId());            
         
-        String jsonString = null;
-/*        jsonString = sampleJsonString(schemaPrefix+"-data", sampleId);
+/*        String jsonString = null;
+        jsonString = sampleJsonString(schemaPrefix+"-data", sampleId);
         if ((jsonString!=null)){
         //if (!jsonString.isEmpty()){
-            fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "picture_after");
-            fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, jsonString);            
+            fieldNames = LPArray.addValueToArray1D(fieldNames, "picture_after");
+            fieldValues = LPArray.addValueToArray1D(fieldValues, jsonString);            
         }
 */        
-//        fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "user");
-//        fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, userName);        
+//        fieldNames = LPArray.addValueToArray1D(fieldNames, "user");
+//        fieldValues = LPArray.addValueToArray1D(fieldValues, userName);        
 
            Rdbms.insertRecordInTable(schemaName, auditTableName, fieldNames, fieldValues);
     }
@@ -124,59 +124,59 @@ public class SampleAudit {
         Requirement req = new Requirement();
         Object[][] procedureInfo = req.getProcedureBySchemaPrefix(schemaPrefix);
         if (!(procedureInfo[0][3].toString().equalsIgnoreCase(LPPlatform.LAB_FALSE))){
-            fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "procedure");
-            fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, procedureInfo[0][0]);
-            fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "procedure_version");
-            fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, procedureInfo[0][1]);        
+            fieldNames = LPArray.addValueToArray1D(fieldNames, "procedure");
+            fieldValues = LPArray.addValueToArray1D(fieldValues, procedureInfo[0][0]);
+            fieldNames = LPArray.addValueToArray1D(fieldNames, "procedure_version");
+            fieldValues = LPArray.addValueToArray1D(fieldValues, procedureInfo[0][1]);        
         }        
         
-        fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "action_name");
-        fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, action);
-        fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "table_name");
-        fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, tableName);
-        fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "table_id");
-        fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, tableId);
+        fieldNames = LPArray.addValueToArray1D(fieldNames, "action_name");
+        fieldValues = LPArray.addValueToArray1D(fieldValues, action);
+        fieldNames = LPArray.addValueToArray1D(fieldNames, "table_name");
+        fieldValues = LPArray.addValueToArray1D(fieldValues, tableName);
+        fieldNames = LPArray.addValueToArray1D(fieldNames, "table_id");
+        fieldValues = LPArray.addValueToArray1D(fieldValues, tableId);
         if (sessionId!=null){
-            fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "session_id");
-            fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, sessionId);
+            fieldNames = LPArray.addValueToArray1D(fieldNames, "session_id");
+            fieldValues = LPArray.addValueToArray1D(fieldValues, sessionId);
         }    
         if (aliquotId!=null){
-            fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "aliquot_id");
-            fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, aliquotId);
+            fieldNames = LPArray.addValueToArray1D(fieldNames, "aliquot_id");
+            fieldValues = LPArray.addValueToArray1D(fieldValues, aliquotId);
         }    
         if (sampleId!=null){
-            fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "sample_id");
-            fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, sampleId);
+            fieldNames = LPArray.addValueToArray1D(fieldNames, "sample_id");
+            fieldValues = LPArray.addValueToArray1D(fieldValues, sampleId);
         }    
         if (testId!=null){
-            fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "test_id");
-            fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, testId);
+            fieldNames = LPArray.addValueToArray1D(fieldNames, "test_id");
+            fieldValues = LPArray.addValueToArray1D(fieldValues, testId);
         }    
         if (resultId!=null){
-            fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "result_id");
-            fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, resultId);
+            fieldNames = LPArray.addValueToArray1D(fieldNames, "result_id");
+            fieldValues = LPArray.addValueToArray1D(fieldValues, resultId);
         }    
-        fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "fields_updated");
-        fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, Arrays.toString(auditlog));
-        fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "user_role");
-        fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, userRole);
+        fieldNames = LPArray.addValueToArray1D(fieldNames, "fields_updated");
+        fieldValues = LPArray.addValueToArray1D(fieldValues, Arrays.toString(auditlog));
+        fieldNames = LPArray.addValueToArray1D(fieldNames, "user_role");
+        fieldValues = LPArray.addValueToArray1D(fieldValues, userRole);
 
-        fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "person");
-        fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, userName);
+        fieldNames = LPArray.addValueToArray1D(fieldNames, "person");
+        fieldValues = LPArray.addValueToArray1D(fieldValues, userName);
         
-        fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "transaction_id");
-        fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, Rdbms.getTransactionId());            
+        fieldNames = LPArray.addValueToArray1D(fieldNames, "transaction_id");
+        fieldValues = LPArray.addValueToArray1D(fieldValues, Rdbms.getTransactionId());            
                 
-        String jsonString = null;
-/*        jsonString = sampleJsonString(schemaPrefix+"-data", sampleId);
+/*        String jsonString = null;
+        jsonString = sampleJsonString(schemaPrefix+"-data", sampleId);
         if ((jsonString!=null)){
         //if (!jsonString.isEmpty()){
-            fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "picture_after");
-            fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, jsonString);            
+            fieldNames = LPArray.addValueToArray1D(fieldNames, "picture_after");
+            fieldValues = LPArray.addValueToArray1D(fieldValues, jsonString);            
         }
 */        
-//        fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "user");
-//        fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, userName);        
+//        fieldNames = LPArray.addValueToArray1D(fieldNames, "user");
+//        fieldValues = LPArray.addValueToArray1D(fieldValues, userName);        
            Rdbms.insertRecordInTable(schemaName, auditTableName, fieldNames, fieldValues);
     }
 
@@ -191,63 +191,63 @@ public class SampleAudit {
         Requirement req = new Requirement();
         Object[][] procedureInfo = req.getProcedureBySchemaPrefix(schemaPrefix);
         if (!(procedureInfo[0][3].toString().equalsIgnoreCase(LPPlatform.LAB_FALSE))){
-            fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "procedure");
-            fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, procedureInfo[0][0]);
-            fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "procedure_version");
-            fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, procedureInfo[0][1]);        
+            fieldNames = LPArray.addValueToArray1D(fieldNames, "procedure");
+            fieldValues = LPArray.addValueToArray1D(fieldValues, procedureInfo[0][0]);
+            fieldNames = LPArray.addValueToArray1D(fieldNames, "procedure_version");
+            fieldValues = LPArray.addValueToArray1D(fieldValues, procedureInfo[0][1]);        
         }        
         
-        fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "action_name");
-        fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, action);
-        fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "table_name");
-        fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, tableName);
-        fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "table_id");
-        fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, tableId);
+        fieldNames = LPArray.addValueToArray1D(fieldNames, "action_name");
+        fieldValues = LPArray.addValueToArray1D(fieldValues, action);
+        fieldNames = LPArray.addValueToArray1D(fieldNames, "table_name");
+        fieldValues = LPArray.addValueToArray1D(fieldValues, tableName);
+        fieldNames = LPArray.addValueToArray1D(fieldNames, "table_id");
+        fieldValues = LPArray.addValueToArray1D(fieldValues, tableId);
         if (sessionId!=null){
-            fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "session_id");
-            fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, sessionId);
+            fieldNames = LPArray.addValueToArray1D(fieldNames, "session_id");
+            fieldValues = LPArray.addValueToArray1D(fieldValues, sessionId);
         }    
         if (subaliquotId!=null){
-            fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "subaliquot_id");
-            fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, subaliquotId);
+            fieldNames = LPArray.addValueToArray1D(fieldNames, "subaliquot_id");
+            fieldValues = LPArray.addValueToArray1D(fieldValues, subaliquotId);
         }    
         if (aliquotId!=null){
-            fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "aliquot_id");
-            fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, aliquotId);
+            fieldNames = LPArray.addValueToArray1D(fieldNames, "aliquot_id");
+            fieldValues = LPArray.addValueToArray1D(fieldValues, aliquotId);
         }    
         if (sampleId!=null){
-            fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "sample_id");
-            fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, sampleId);
+            fieldNames = LPArray.addValueToArray1D(fieldNames, "sample_id");
+            fieldValues = LPArray.addValueToArray1D(fieldValues, sampleId);
         }    
         if (testId!=null){
-            fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "test_id");
-            fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, testId);
+            fieldNames = LPArray.addValueToArray1D(fieldNames, "test_id");
+            fieldValues = LPArray.addValueToArray1D(fieldValues, testId);
         }    
         if (resultId!=null){
-            fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "result_id");
-            fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, resultId);
+            fieldNames = LPArray.addValueToArray1D(fieldNames, "result_id");
+            fieldValues = LPArray.addValueToArray1D(fieldValues, resultId);
         }    
-        fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "fields_updated");
-        fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, Arrays.toString(auditlog));
-        fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "user_role");
-        fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, userRole);
+        fieldNames = LPArray.addValueToArray1D(fieldNames, "fields_updated");
+        fieldValues = LPArray.addValueToArray1D(fieldValues, Arrays.toString(auditlog));
+        fieldNames = LPArray.addValueToArray1D(fieldNames, "user_role");
+        fieldValues = LPArray.addValueToArray1D(fieldValues, userRole);
 
-        fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "person");
-        fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, userName);
+        fieldNames = LPArray.addValueToArray1D(fieldNames, "person");
+        fieldValues = LPArray.addValueToArray1D(fieldValues, userName);
         
-        fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "transaction_id");
-        fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, Rdbms.getTransactionId());            
+        fieldNames = LPArray.addValueToArray1D(fieldNames, "transaction_id");
+        fieldValues = LPArray.addValueToArray1D(fieldValues, Rdbms.getTransactionId());            
                 
-        String jsonString = null;
-/*        jsonString = sampleJsonString(schemaPrefix+"-data", sampleId);
+/*        String jsonString = null;
+        jsonString = sampleJsonString(schemaPrefix+"-data", sampleId);
         if ((jsonString!=null)){
         //if (!jsonString.isEmpty()){
-            fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "picture_after");
-            fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, jsonString);            
+            fieldNames = LPArray.addValueToArray1D(fieldNames, "picture_after");
+            fieldValues = LPArray.addValueToArray1D(fieldValues, jsonString);            
         }
 */        
-//        fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "user");
-//        fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, userName);        
+//        fieldNames = LPArray.addValueToArray1D(fieldNames, "user");
+//        fieldValues = LPArray.addValueToArray1D(fieldValues, userName);        
            Rdbms.insertRecordInTable(schemaName, auditTableName, fieldNames, fieldValues);
     }
     
@@ -263,51 +263,51 @@ public class SampleAudit {
         Requirement req = new Requirement();
         Object[][] procedureInfo = req.getProcedureBySchemaPrefix(schemaPrefix);
         if (!(procedureInfo[0][3].toString().equalsIgnoreCase(LPPlatform.LAB_FALSE))){
-            fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "procedure");
-            fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, procedureInfo[0][0]);
-            fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "procedure_version");
-            fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, procedureInfo[0][1]);        
+            fieldNames = LPArray.addValueToArray1D(fieldNames, "procedure");
+            fieldValues = LPArray.addValueToArray1D(fieldValues, procedureInfo[0][0]);
+            fieldNames = LPArray.addValueToArray1D(fieldNames, "procedure_version");
+            fieldValues = LPArray.addValueToArray1D(fieldValues, procedureInfo[0][1]);        
         }        
         
-        fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "action_name");
-        fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, action);
-        fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "table_name");
-        fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, tableName);
-        fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "table_id");
-        fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, tableId);
+        fieldNames = LPArray.addValueToArray1D(fieldNames, "action_name");
+        fieldValues = LPArray.addValueToArray1D(fieldValues, action);
+        fieldNames = LPArray.addValueToArray1D(fieldNames, "table_name");
+        fieldValues = LPArray.addValueToArray1D(fieldValues, tableName);
+        fieldNames = LPArray.addValueToArray1D(fieldNames, "table_id");
+        fieldValues = LPArray.addValueToArray1D(fieldValues, tableId);
         if (sampleId!=null){
-            fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "sample_id");
-            fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, sampleId);
+            fieldNames = LPArray.addValueToArray1D(fieldNames, "sample_id");
+            fieldValues = LPArray.addValueToArray1D(fieldValues, sampleId);
         }    
         if (testId!=null){
-            fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "test_id");
-            fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, testId);
+            fieldNames = LPArray.addValueToArray1D(fieldNames, "test_id");
+            fieldValues = LPArray.addValueToArray1D(fieldValues, testId);
         }    
         if (resultId!=null){
-            fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "result_id");
-            fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, resultId);
+            fieldNames = LPArray.addValueToArray1D(fieldNames, "result_id");
+            fieldValues = LPArray.addValueToArray1D(fieldValues, resultId);
         }    
-        fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "fields_updated");
-        fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, Arrays.toString(auditlog));
-        fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "user_role");
-        fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, userRole);
+        fieldNames = LPArray.addValueToArray1D(fieldNames, "fields_updated");
+        fieldValues = LPArray.addValueToArray1D(fieldValues, Arrays.toString(auditlog));
+        fieldNames = LPArray.addValueToArray1D(fieldNames, "user_role");
+        fieldValues = LPArray.addValueToArray1D(fieldValues, userRole);
 
-        fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "person");
-        fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, userName);
+        fieldNames = LPArray.addValueToArray1D(fieldNames, "person");
+        fieldValues = LPArray.addValueToArray1D(fieldValues, userName);
         
-        fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "transaction_id");
-        fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, Rdbms.getTransactionId());            
+        fieldNames = LPArray.addValueToArray1D(fieldNames, "transaction_id");
+        fieldValues = LPArray.addValueToArray1D(fieldValues, Rdbms.getTransactionId());            
                 
-        String jsonString = null;
-/*        jsonString = sampleJsonString(schemaPrefix+"-data", sampleId);
+/*        String jsonString = null;
+        jsonString = sampleJsonString(schemaPrefix+"-data", sampleId);
         if ((jsonString!=null)){
         //if (!jsonString.isEmpty()){
-            fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "picture_after");
-            fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, jsonString);            
+            fieldNames = LPArray.addValueToArray1D(fieldNames, "picture_after");
+            fieldValues = LPArray.addValueToArray1D(fieldValues, jsonString);            
         }
 */        
-//        fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "user");
-//        fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, userName);        
+//        fieldNames = LPArray.addValueToArray1D(fieldNames, "user");
+//        fieldValues = LPArray.addValueToArray1D(fieldValues, userName);        
            Rdbms.insertRecordInTable(schemaName, auditTableName, fieldNames, fieldValues);
     }
 
@@ -328,20 +328,20 @@ public class SampleAudit {
         String[] fieldNames = new String[0];
         Object[] fieldValues = new Object[0];
         
-        fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "action_name");
-        fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, action);
-        fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "table_name");
-        fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, tableName);
-        fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "table_id");
-        fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, tableId);
-        fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "sampleId");
-        fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, tableId);     
+        fieldNames = LPArray.addValueToArray1D(fieldNames, "action_name");
+        fieldValues = LPArray.addValueToArray1D(fieldValues, action);
+        fieldNames = LPArray.addValueToArray1D(fieldNames, "table_name");
+        fieldValues = LPArray.addValueToArray1D(fieldValues, tableName);
+        fieldNames = LPArray.addValueToArray1D(fieldNames, "table_id");
+        fieldValues = LPArray.addValueToArray1D(fieldValues, tableId);
+        fieldNames = LPArray.addValueToArray1D(fieldNames, "sampleId");
+        fieldValues = LPArray.addValueToArray1D(fieldValues, tableId);     
         
-        fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "transaction_id");
-        fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, Rdbms.getTransactionId());            
+        fieldNames = LPArray.addValueToArray1D(fieldNames, "transaction_id");
+        fieldValues = LPArray.addValueToArray1D(fieldValues, Rdbms.getTransactionId());            
         
-//        fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "user");
-//        fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, userName);        
+//        fieldNames = LPArray.addValueToArray1D(fieldNames, "user");
+//        fieldValues = LPArray.addValueToArray1D(fieldValues, userName);        
            Rdbms.insertRecordInTable(schemaName, auditTableName, fieldNames, fieldValues);
     }
 
@@ -353,11 +353,8 @@ public class SampleAudit {
  */    
     public String sampleJsonString( String schemaPrefix, Integer sampleId) {
         String jsonStructure = null;
-        String query = "";
         String schemaName = "data";                
-    
-    LPPlatform labPlat = new LPPlatform();
-                
+               
         schemaName = LPPlatform.buildSchemaName(schemaPrefix, schemaName);  
         
         String[] sampleTblFldsArr = Rdbms.getTableFieldsArrayEj(schemaName.replace("\"", ""), "sample");
@@ -374,7 +371,7 @@ public class SampleAudit {
 
             }
         try (JsonGenerator gen = Json.createGenerator(writer)) {
-            query = " select " + sampleTblFlds + " from " + schemaName + ".sample where sample_id="+sampleId;            
+            String query = " select " + sampleTblFlds + " from " + schemaName + ".sample where sample_id="+sampleId;            
             Object[][] recordFieldsByFilter = Rdbms.getRecordFieldsByFilter(schemaName, "sample", new String[]{"sample_id"}, new Object[]{sampleId}, sampleTblFldsArr);
             //gen.writeStartObject().write("sample", sampleId.toString());
             // gen.writeStartArray("Sample Info");

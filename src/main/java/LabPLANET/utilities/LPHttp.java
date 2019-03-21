@@ -16,14 +16,14 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Administrator
  */
-public class LabPLANETRequest {
+public class LPHttp {
 
     public static HttpServletRequest requestPreparation(HttpServletRequest request){
         try {
             request.setCharacterEncoding(LPPlatform.LAB_ENCODER_UTF8);                    
             return request;
         } catch (UnsupportedEncodingException ex) {
-            Logger.getLogger(LabPLANETRequest.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(LPHttp.class.getName()).log(Level.SEVERE, null, ex);
         }
         return request;
     }
@@ -54,8 +54,8 @@ public class LabPLANETRequest {
             }
         }
         if (paramsNotPresent.length()>0){
-            diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, LPPlatform.LAB_FALSE);
-            diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, paramsNotPresent);
+            diagnoses = LPArray.addValueToArray1D(diagnoses, LPPlatform.LAB_FALSE);
+            diagnoses = LPArray.addValueToArray1D(diagnoses, paramsNotPresent);
             return diagnoses;
         }else{
             return new Object[]{LPPlatform.LAB_TRUE};           

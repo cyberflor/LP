@@ -6,7 +6,7 @@
 package com.labplanet.servicios.testing.config.noDB;
 
 import LabPLANET.utilities.LPPlatform;
-import LabPLANET.utilities.LabPLANETArray;
+import LabPLANET.utilities.LPArray;
 import functionalJava.materialSpec.ConfigSpecRule;
 import functionalJava.testingScripts.LPTestingOutFormat;
 import functionalJava.testingScripts.TestingAssert;
@@ -35,21 +35,21 @@ public class TestingConfig_specQuantitative_ruleFormat extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)            throws ServletException, IOException {
+        response = LPTestingOutFormat.responsePreparation(response);        
         ConfigSpecRule mSpec = new ConfigSpecRule();
         
         TestingAssertSummary tstAssertSummary = new TestingAssertSummary();
 
         String csvFileName = "noDBSchema_config_SpecQuantitativeRuleGeneratorChecker.txt"; 
-        response = LPTestingOutFormat.responsePreparation(response);        
                              
         String csvPathName = LPTestingOutFormat.TESTING_FILES_PATH+csvFileName; 
         String csvFileSeparator=LPTestingOutFormat.TESTING_FILES_FIELD_SEPARATOR;
         
-        Object[][] csvFileContent = LabPLANETArray.convertCSVinArray(csvPathName, csvFileSeparator); 
+        Object[][] csvFileContent = LPArray.convertCSVinArray(csvPathName, csvFileSeparator); 
                 
         try (PrintWriter out = response.getWriter()) {
             String fileContent = LPTestingOutFormat.getHtmlStyleHeader(this.getClass().getSimpleName());
-            HashMap<String, Object> csvHeaderTags = LPTestingOutFormat.getCSVHeader(LabPLANETArray.convertCSVinArray(csvPathName, "="));
+            HashMap<String, Object> csvHeaderTags = LPTestingOutFormat.getCSVHeader(LPArray.convertCSVinArray(csvPathName, "="));
             if (csvHeaderTags.containsKey(LPPlatform.LAB_FALSE)){
                 fileContent=fileContent+"There are missing tags in the file header: "+csvHeaderTags.get(LPPlatform.LAB_FALSE);                        
                 out.println(fileContent); 
@@ -69,7 +69,6 @@ public class TestingConfig_specQuantitative_ruleFormat extends HttpServlet {
             Integer iLines =numHeaderLines; 
             for (iLines=iLines;iLines<csvFileContent.length;iLines++){
                 tstAssertSummary.increaseTotalTests();
-                String schemaName = "";
                     
                 TestingAssert tstAssert = new TestingAssert(csvFileContent[iLines], numEvaluationArguments);
                 

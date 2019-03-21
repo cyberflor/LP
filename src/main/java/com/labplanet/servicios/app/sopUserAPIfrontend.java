@@ -6,9 +6,9 @@
 package com.labplanet.servicios.app;
 
 import LabPLANET.utilities.LPPlatform;
-import LabPLANET.utilities.LabPLANETArray;
+import LabPLANET.utilities.LPArray;
 import LabPLANET.utilities.LabPLANETFrontEnd;
-import LabPLANET.utilities.LabPLANETRequest;
+import LabPLANET.utilities.LPHttp;
 import databases.Rdbms;
 import databases.Token;
 import functionalJava.sop.UserSop;
@@ -38,17 +38,10 @@ public class sopUserAPIfrontend extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-         response.setContentType("application/json");
-         response.setCharacterEncoding("UTF-8");
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response)            throws ServletException, IOException {
+        request=LPHttp.requestPreparation(request);
+        response=LPHttp.responsePreparation(response);
 
-        ResourceBundle prop = ResourceBundle.getBundle("parameter.config.config");
-        String frontendUrl = prop.getString("frontend_url");
-
-        response.setHeader("Access-Control-Allow-Origin", frontendUrl);
-        response.setHeader("Access-Control-Allow-Methods", "GET");        
-         
         UserSop userSop = new UserSop();
          
          String language = "es";
@@ -59,8 +52,8 @@ public class sopUserAPIfrontend extends HttpServlet {
                 String[] errObject = new String[]{"Servlet sampleAPI at " + request.getServletPath()};     
 
                 String[] mandatoryParams = new String[]{"finalToken"};
-                mandatoryParams = LabPLANETArray.addValueToArray1D(mandatoryParams, "finalToken");
-                Object[] areMandatoryParamsInResponse = LabPLANETRequest.areMandatoryParamsInApiRequest(request, mandatoryParams);                        
+                mandatoryParams = LPArray.addValueToArray1D(mandatoryParams, "finalToken");
+                Object[] areMandatoryParamsInResponse = LPHttp.areMandatoryParamsInApiRequest(request, mandatoryParams);                        
                 
                 String finalToken = request.getParameter("finalToken");                   
 
@@ -68,16 +61,16 @@ public class sopUserAPIfrontend extends HttpServlet {
                 String[] tokenParams = token.tokenParamsList();
                 String[] tokenParamsValues = token.validateToken(finalToken, tokenParams);
 
-                String dbUserName = tokenParamsValues[LabPLANETArray.valuePosicInArray(tokenParams, "userDB")];
-                String dbUserPassword = tokenParamsValues[LabPLANETArray.valuePosicInArray(tokenParams, "userDBPassword")];
-                String internalUserID = tokenParamsValues[LabPLANETArray.valuePosicInArray(tokenParams, "internalUserID")];         
-                String userRole = tokenParamsValues[LabPLANETArray.valuePosicInArray(tokenParams, "userRole")];                     
+                String dbUserName = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, Token.TOKEN_PARAM_USERDB)];
+                String dbUserPassword = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, Token.TOKEN_PARAM_USERDB)];
+                String internalUserID = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, Token.TOKEN_PARAM_INTERNAL_USERID)];         
+//                String userRole = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, Token.TOKEN_PARAM_USER_ROLE)];                     
 
                 boolean isConnected = false;
                 isConnected = Rdbms.getRdbms().startRdbms(dbUserName, dbUserPassword);
                 if (!isConnected){
-                    errObject = LabPLANETArray.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
-                    errObject = LabPLANETArray.addValueToArray1D(errObject, "API Error Message: db User Name and Password not correct, connection to the database is not possible");                    
+                    errObject = LPArray.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
+                    errObject = LPArray.addValueToArray1D(errObject, "API Error Message: db User Name and Password not correct, connection to the database is not possible");                    
                     Object[] errMsg = LabPLANETFrontEnd.responseError(errObject, language, null);
                     response.sendError((int) errMsg[0], (String) errMsg[1]);   
                     Rdbms.closeRdbms(); 
@@ -85,7 +78,7 @@ public class sopUserAPIfrontend extends HttpServlet {
                 }
                
                 UserProfile usProf = new UserProfile();
-                String[] allUserProcedurePrefix = LabPLANETArray.ConvertObjectArrayToStringArray(usProf.getAllUserProcedurePrefix(dbUserName));
+                String[] allUserProcedurePrefix = LPArray.ConvertObjectArrayToStringArray(usProf.getAllUserProcedurePrefix(dbUserName));
                 if (LPPlatform.LAB_FALSE.equalsIgnoreCase(allUserProcedurePrefix[0])){
                     Object[] errMsg = LabPLANETFrontEnd.responseError(allUserProcedurePrefix, language, null);
                     response.sendError((int) errMsg[0], (String) errMsg[1]);   

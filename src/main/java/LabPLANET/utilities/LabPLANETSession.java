@@ -14,7 +14,7 @@ import java.util.Date;
  */
 public class LabPLANETSession {
     
-    public static String fieldName_sessionId = "session_id";
+    public static final String fieldName_sessionId = "session_id";
     
     public static Object[] newAppSession( String[] fieldsName2, Object[] fieldsValue2){        
         Date nowLocalDate = LabPLANETDate.getTimeStampLocalDate();
@@ -23,11 +23,11 @@ public class LabPLANETSession {
         
         String[] fieldsName = null;     Object[] fieldsValue = null;
         
-        fieldsName = LabPLANETArray.addValueToArray1D(fieldsName, "date_started");
-        fieldsValue = LabPLANETArray.addValueToArray1D(fieldsValue, nowLocalDate);
+        fieldsName = LPArray.addValueToArray1D(fieldsName, "date_started");
+        fieldsValue = LPArray.addValueToArray1D(fieldsValue, nowLocalDate);
 
-        fieldsName = LabPLANETArray.addValueToArray1D(fieldsName, "person");
-        fieldsValue = LabPLANETArray.addValueToArray1D(fieldsValue, "1111");        
+        fieldsName = LPArray.addValueToArray1D(fieldsName, "person");
+        fieldsValue = LPArray.addValueToArray1D(fieldsValue, "1111");        
         return Rdbms.insertRecordInTable(schemaAppName, tableName, fieldsName, fieldsValue);            
 
 //return new Object[]{1};
@@ -43,13 +43,13 @@ public class LabPLANETSession {
         String schemaAppName = "app";
         String tableName = "app_session";
         if (fieldsToRetrieve==null){
-            fieldsToRetrieve = LabPLANETArray.addValueToArray1D(fieldsToRetrieve, fieldName_sessionId);
-            fieldsToRetrieve = LabPLANETArray.addValueToArray1D(fieldsToRetrieve, "date_started");
+            fieldsToRetrieve = LPArray.addValueToArray1D(fieldsToRetrieve, fieldName_sessionId);
+            fieldsToRetrieve = LPArray.addValueToArray1D(fieldsToRetrieve, "date_started");
         }
         
         Object[][] recordFieldsBySessionId = Rdbms.getRecordFieldsByFilter(schemaAppName, tableName, 
                 new String[]{fieldName_sessionId}, new Object[]{appSessionId}, fieldsToRetrieve);
-        return LabPLANETArray.array2dTo1d(recordFieldsBySessionId);
+        return LPArray.array2dTo1d(recordFieldsBySessionId);
     }
     
     /**
@@ -71,13 +71,13 @@ public class LabPLANETSession {
                 new String[]{fieldName_sessionId}, new Object[]{appSessionId}, fieldsNamesToInsert);
         if ("LABPLANET_FALSE".equalsIgnoreCase(recordFieldsBySessionId[0][0].toString())){
             Object[] appSession = getAppSession(appSessionId, fieldsNamesToInsert);
-            if (!LabPLANETArray.valueInArray(fieldsNamesToInsert, fieldName_sessionId)){
-                fieldsNamesToInsert = LabPLANETArray.addValueToArray1D(fieldsNamesToInsert, fieldName_sessionId);
-                appSession = LabPLANETArray.addValueToArray1D(appSession, appSessionId);
+            if (!LPArray.valueInArray(fieldsNamesToInsert, fieldName_sessionId)){
+                fieldsNamesToInsert = LPArray.addValueToArray1D(fieldsNamesToInsert, fieldName_sessionId);
+                appSession = LPArray.addValueToArray1D(appSession, appSessionId);
             }
             return Rdbms.insertRecordInTable(schemaAuditName, tableName, fieldsNamesToInsert, appSession);
         }
-        return LabPLANETArray.array2dTo1d(recordFieldsBySessionId);
+        return LPArray.array2dTo1d(recordFieldsBySessionId);
     }
     
     

@@ -9,7 +9,7 @@ package functionalJava.audit;
  * UNDER DEVELOPMENT
  * @author Fran Gomez
  */
-import LabPLANET.utilities.LabPLANETArray;
+import LabPLANET.utilities.LPArray;
 
 /**
  * UNDER DEVELOPMENT
@@ -53,7 +53,7 @@ public class LogTransac {
         
         newCalledFunctions[0] = methodName; newCalledFunctions[1] = mainInputArguments; newCalledFunctions[2] = mainOutput;
         
-        this.calledFunctions = LabPLANETArray.addColumnToArray2D(this.calledFunctions, newCalledFunctions);
+        this.calledFunctions = LPArray.addColumnToArray2D(this.calledFunctions, newCalledFunctions);
     }
 
 /**
@@ -71,7 +71,7 @@ public class LogTransac {
         
         newCalledFunctions[0] = methodName; newCalledFunctions[1] = mainInputArguments; newCalledFunctions[2] = mainOutput;
         
-        this.calledFunctions = LabPLANETArray.addColumnToArray2D(calledFunctions, newCalledFunctions);
+        this.calledFunctions = LPArray.addColumnToArray2D(calledFunctions, newCalledFunctions);
     }
 /**
  * UNDER DEVELOPMENT

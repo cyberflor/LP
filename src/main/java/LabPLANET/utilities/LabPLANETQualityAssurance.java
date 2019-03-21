@@ -79,7 +79,6 @@ public class LabPLANETQualityAssurance {
         ArrayList classes = new ArrayList ();
 
         packageName = packageName.replaceAll("\\." , "/");
-        boolean debug = false;
         System.out.println("Jar " + jarName + " looking for " + packageName);
             JarInputStream jarFile =null;
             try{                
@@ -163,7 +162,6 @@ public class LabPLANETQualityAssurance {
     public static Object[][] javaDocChecker() throws ClassNotFoundException {
 
         Integer linesInBetween = 40;
-        Boolean containsFiles = false;
         String schemaName = "requirements";
         String tableName = "java_class_doc"; //module_backend_content";
         String projectName = "LabPLANET";
@@ -172,54 +170,54 @@ public class LabPLANETQualityAssurance {
         String[] totalDiagnostic = new String[0];
 
         String[] fileNames = new String[0];
-        fileNames = LabPLANETArray.addValueToArray1D(fileNames, "database.rdbms.Rdbms_NotUse");
+        fileNames = LPArray.addValueToArray1D(fileNames, "database.rdbms.Rdbms_NotUse");
 /*
-        fileNames = LabPLANETArray.addValueToArray1D(fileNames, "databases.DataDataIntegrity");
-        fileNames = LabPLANETArray.addValueToArray1D(fileNames, "databases.Rdbms");
-        fileNames = LabPLANETArray.addValueToArray1D(fileNames, "functionalJava.analysis.UserMethod");			
-        fileNames = LabPLANETArray.addValueToArray1D(fileNames, "functionalJava.audit.LogTransac");
-        fileNames = LabPLANETArray.addValueToArray1D(fileNames, "functionalJava.audit.SampleAudit");
-        fileNames = LabPLANETArray.addValueToArray1D(fileNames, "functionalJava.batch.Batch");
-        fileNames = LabPLANETArray.addValueToArray1D(fileNames, "functionalJava.batch.BatchArray");
-        fileNames = LabPLANETArray.addValueToArray1D(fileNames, "functionalJava.batch.DataBatch");
-        fileNames = LabPLANETArray.addValueToArray1D(fileNames, "functionalJava.materialSpec.ConfigSamplingPlanForSpec");
-        fileNames = LabPLANETArray.addValueToArray1D(fileNames, "functionalJava.materialSpec.ConfigSpecRule");
-        fileNames = LabPLANETArray.addValueToArray1D(fileNames, "functionalJava.materialSpec.ConfigSpecStructure");
-        fileNames = LabPLANETArray.addValueToArray1D(fileNames, "functionalJava.materialSpec.DataSpec");
-        fileNames = LabPLANETArray.addValueToArray1D(fileNames, "functionalJava.parameter.Parameter");			
-        fileNames = LabPLANETArray.addValueToArray1D(fileNames, "functionalJava.project.DataProject");
-        fileNames = LabPLANETArray.addValueToArray1D(fileNames, "functionalJava.project.DataProjectSample");
-        fileNames = LabPLANETArray.addValueToArray1D(fileNames, "functionalJava.requirement.ConfigRequirement");
-        fileNames = LabPLANETArray.addValueToArray1D(fileNames, "functionalJava.requirement.Requirement");
-        fileNames = LabPLANETArray.addValueToArray1D(fileNames, "functionalJava.requirement.RequirementDeployment");
+        fileNames = LPArray.addValueToArray1D(fileNames, "databases.DataDataIntegrity");
+        fileNames = LPArray.addValueToArray1D(fileNames, "databases.Rdbms");
+        fileNames = LPArray.addValueToArray1D(fileNames, "functionalJava.analysis.UserMethod");			
+        fileNames = LPArray.addValueToArray1D(fileNames, "functionalJava.audit.LogTransac");
+        fileNames = LPArray.addValueToArray1D(fileNames, "functionalJava.audit.SampleAudit");
+        fileNames = LPArray.addValueToArray1D(fileNames, "functionalJava.batch.Batch");
+        fileNames = LPArray.addValueToArray1D(fileNames, "functionalJava.batch.BatchArray");
+        fileNames = LPArray.addValueToArray1D(fileNames, "functionalJava.batch.DataBatch");
+        fileNames = LPArray.addValueToArray1D(fileNames, "functionalJava.materialSpec.ConfigSamplingPlanForSpec");
+        fileNames = LPArray.addValueToArray1D(fileNames, "functionalJava.materialSpec.ConfigSpecRule");
+        fileNames = LPArray.addValueToArray1D(fileNames, "functionalJava.materialSpec.ConfigSpecStructure");
+        fileNames = LPArray.addValueToArray1D(fileNames, "functionalJava.materialSpec.DataSpec");
+        fileNames = LPArray.addValueToArray1D(fileNames, "functionalJava.parameter.Parameter");			
+        fileNames = LPArray.addValueToArray1D(fileNames, "functionalJava.project.DataProject");
+        fileNames = LPArray.addValueToArray1D(fileNames, "functionalJava.project.DataProjectSample");
+        fileNames = LPArray.addValueToArray1D(fileNames, "functionalJava.requirement.ConfigRequirement");
+        fileNames = LPArray.addValueToArray1D(fileNames, "functionalJava.requirement.Requirement");
+        fileNames = LPArray.addValueToArray1D(fileNames, "functionalJava.requirement.RequirementDeployment");
 */        
-        fileNames = LabPLANETArray.addValueToArray1D(fileNames, "functionalJava.sampleStructure.DataSample");
-        fileNames = LabPLANETArray.addValueToArray1D(fileNames, "functionalJava.sop.Sop");
-        fileNames = LabPLANETArray.addValueToArray1D(fileNames, "functionalJava.sop.SopList");
-        fileNames = LabPLANETArray.addValueToArray1D(fileNames, "functionalJava.sop.UserSop");
-        fileNames = LabPLANETArray.addValueToArray1D(fileNames, "functionalJava.unitsOfMeasurement.UnitsOfMeasurement");
-        fileNames = LabPLANETArray.addValueToArray1D(fileNames, "functionalJava.user.Role");
-        fileNames = LabPLANETArray.addValueToArray1D(fileNames, "functionalJava.user.UserProfile");
-        fileNames = LabPLANETArray.addValueToArray1D(fileNames, "LabPLANET.utilities.LabPLANETArray");
-        fileNames = LabPLANETArray.addValueToArray1D(fileNames, "LabPLANET.utilities.LabPLANETJson");
-        fileNames = LabPLANETArray.addValueToArray1D(fileNames, "LabPLANET.utilities.LabPLANETMath");
-        fileNames = LabPLANETArray.addValueToArray1D(fileNames, "LabPLANET.utilities.LabPLANETNullValue");	
-        fileNames = LabPLANETArray.addValueToArray1D(fileNames, "LabPLANET.utilities.LabPLANETPlatform");
-        fileNames = LabPLANETArray.addValueToArray1D(fileNames, "LabPLANET.utilities.LabPLANETQualityAssurance");
+        fileNames = LPArray.addValueToArray1D(fileNames, "functionalJava.sampleStructure.DataSample");
+        fileNames = LPArray.addValueToArray1D(fileNames, "functionalJava.sop.Sop");
+        fileNames = LPArray.addValueToArray1D(fileNames, "functionalJava.sop.SopList");
+        fileNames = LPArray.addValueToArray1D(fileNames, "functionalJava.sop.UserSop");
+        fileNames = LPArray.addValueToArray1D(fileNames, "functionalJava.unitsOfMeasurement.UnitsOfMeasurement");
+        fileNames = LPArray.addValueToArray1D(fileNames, "functionalJava.user.Role");
+        fileNames = LPArray.addValueToArray1D(fileNames, "functionalJava.user.UserProfile");
+        fileNames = LPArray.addValueToArray1D(fileNames, "LabPLANET.utilities.LabPLANETArray");
+        fileNames = LPArray.addValueToArray1D(fileNames, "LabPLANET.utilities.LabPLANETJson");
+        fileNames = LPArray.addValueToArray1D(fileNames, "LabPLANET.utilities.LabPLANETMath");
+        fileNames = LPArray.addValueToArray1D(fileNames, "LabPLANET.utilities.LabPLANETNullValue");	
+        fileNames = LPArray.addValueToArray1D(fileNames, "LabPLANET.utilities.LabPLANETPlatform");
+        fileNames = LPArray.addValueToArray1D(fileNames, "LabPLANET.utilities.LabPLANETQualityAssurance");
 
         Rdbms.getRdbms().startRdbms(LPTestingOutFormat.TESTING_USER, LPTestingOutFormat.TESTING_PW);       
 
-/*        totalDiagnosticHeader = LabPLANETArray.addValueToArray1D(totalDiagnosticHeader, "project_name");
-        totalDiagnosticHeader = LabPLANETArray.addValueToArray1D(totalDiagnosticHeader, "package_name");
-        totalDiagnosticHeader = LabPLANETArray.addValueToArray1D(totalDiagnosticHeader, "class_name");
-        totalDiagnosticHeader = LabPLANETArray.addValueToArray1D(totalDiagnosticHeader, "method_name");  
-        totalDiagnosticHeader = LabPLANETArray.addValueToArray1D(totalDiagnosticHeader, "Evaluation"); 
+/*        totalDiagnosticHeader = LPArray.addValueToArray1D(totalDiagnosticHeader, "project_name");
+        totalDiagnosticHeader = LPArray.addValueToArray1D(totalDiagnosticHeader, "package_name");
+        totalDiagnosticHeader = LPArray.addValueToArray1D(totalDiagnosticHeader, "class_name");
+        totalDiagnosticHeader = LPArray.addValueToArray1D(totalDiagnosticHeader, "method_name");  
+        totalDiagnosticHeader = LPArray.addValueToArray1D(totalDiagnosticHeader, "Evaluation"); 
 */        
-        totalDiagnostic = LabPLANETArray.addValueToArray1D(totalDiagnostic, "project_name");
-        totalDiagnostic = LabPLANETArray.addValueToArray1D(totalDiagnostic, "package_name");
-        totalDiagnostic = LabPLANETArray.addValueToArray1D(totalDiagnostic, "class_name");
-        totalDiagnostic = LabPLANETArray.addValueToArray1D(totalDiagnostic, "method_name"); 
-        totalDiagnostic = LabPLANETArray.addValueToArray1D(totalDiagnostic, "Evaluation");    
+        totalDiagnostic = LPArray.addValueToArray1D(totalDiagnostic, "project_name");
+        totalDiagnostic = LPArray.addValueToArray1D(totalDiagnostic, "package_name");
+        totalDiagnostic = LPArray.addValueToArray1D(totalDiagnostic, "class_name");
+        totalDiagnostic = LPArray.addValueToArray1D(totalDiagnostic, "method_name"); 
+        totalDiagnostic = LPArray.addValueToArray1D(totalDiagnostic, "Evaluation");    
         
         Integer totalDiagnosticNumColumns = totalDiagnostic.length;
         
@@ -250,57 +248,57 @@ public class LabPLANETQualityAssurance {
                         String packsName = fileName;
                         packsName = packsName.replaceAll("."+className, "");
                         
-                        totalDiagnostic = LabPLANETArray.addValueToArray1D(totalDiagnostic, projectName);
-                        totalDiagnostic = LabPLANETArray.addValueToArray1D(totalDiagnostic, packsName);
-                        totalDiagnostic = LabPLANETArray.addValueToArray1D(totalDiagnostic, className);
-                        totalDiagnostic = LabPLANETArray.addValueToArray1D(totalDiagnostic, methodName);
+                        totalDiagnostic = LPArray.addValueToArray1D(totalDiagnostic, projectName);
+                        totalDiagnostic = LPArray.addValueToArray1D(totalDiagnostic, packsName);
+                        totalDiagnostic = LPArray.addValueToArray1D(totalDiagnostic, className);
+                        totalDiagnostic = LPArray.addValueToArray1D(totalDiagnostic, methodName);
                         
                         Object[] isException = isJAvaDocException(projectName, packsName, className, methodName);
                         if ((Boolean) isException[0]){
-                            totalDiagnostic = LabPLANETArray.addValueToArray1D(totalDiagnostic, "Declared as exception in java_doc_exception exceptions table by "+isException[1] );
+                            totalDiagnostic = LPArray.addValueToArray1D(totalDiagnostic, "Declared as exception in java_doc_exception exceptions table by "+isException[1] );
                             break;
                         }
                         
                         
                         String[] keyFieldNames = new String[0];
-                        //keyFieldNames = LabPLANETArray.addValueToArray1D(keyFieldNames, "project_name");
-                        keyFieldNames = LabPLANETArray.addValueToArray1D(keyFieldNames, "package");
-                        keyFieldNames = LabPLANETArray.addValueToArray1D(keyFieldNames, "class");
-                        keyFieldNames = LabPLANETArray.addValueToArray1D(keyFieldNames, "method");                        
+                        //keyFieldNames = LPArray.addValueToArray1D(keyFieldNames, "project_name");
+                        keyFieldNames = LPArray.addValueToArray1D(keyFieldNames, "package");
+                        keyFieldNames = LPArray.addValueToArray1D(keyFieldNames, "class");
+                        keyFieldNames = LPArray.addValueToArray1D(keyFieldNames, "method");                        
                         String[] keyFieldValues = new String[0];
-                        //keyFieldValues = LabPLANETArray.addValueToArray1D(keyFieldValues, projectName);
-                        keyFieldValues = LabPLANETArray.addValueToArray1D(keyFieldValues, packsName);
-                        keyFieldValues = LabPLANETArray.addValueToArray1D(keyFieldValues, className);
-                        keyFieldValues = LabPLANETArray.addValueToArray1D(keyFieldValues, methodName);
+                        //keyFieldValues = LPArray.addValueToArray1D(keyFieldValues, projectName);
+                        keyFieldValues = LPArray.addValueToArray1D(keyFieldValues, packsName);
+                        keyFieldValues = LPArray.addValueToArray1D(keyFieldValues, className);
+                        keyFieldValues = LPArray.addValueToArray1D(keyFieldValues, methodName);
                         Object[] existsRecord = Rdbms.existsRecord(schemaName, tableName, keyFieldNames, keyFieldValues);
                         
                         if (LPPlatform.LAB_FALSE.equalsIgnoreCase(existsRecord[0].toString())){
-                            totalDiagnostic = LabPLANETArray.addValueToArray1D(totalDiagnostic, "ERROR: Not found any entry in "+tableName+" for this method.Database returned: "+existsRecord[5]);
+                            totalDiagnostic = LPArray.addValueToArray1D(totalDiagnostic, "ERROR: Not found any entry in "+tableName+" for this method.Database returned: "+existsRecord[5]);
                             break;
                         }
                         String[] fieldsToGet = new String[0];
-                        fieldsToGet = LabPLANETArray.addValueToArray1D(fieldsToGet, fieldName_lineName);      
-                        fieldsToGet = LabPLANETArray.addValueToArray1D(fieldsToGet, "line");
+                        fieldsToGet = LPArray.addValueToArray1D(fieldsToGet, fieldName_lineName);      
+                        fieldsToGet = LPArray.addValueToArray1D(fieldsToGet, "line");
                         Object[][] javaDocEntries = Rdbms.getRecordFieldsByFilter(schemaName, tableName, keyFieldNames, keyFieldValues, fieldsToGet, new String[] {"line"});
-                        Object[] javaDocEntries1D = LabPLANETArray.array2dTo1d(javaDocEntries, 0);
-                        Object[] javaDocEntriesLineNumber = LabPLANETArray.array2dTo1d(javaDocEntries, 1);
+                        Object[] javaDocEntries1D = LPArray.array2dTo1d(javaDocEntries, 0);
+                        Object[] javaDocEntriesLineNumber = LPArray.array2dTo1d(javaDocEntries, 1);
                         
                         fieldsToGet = new String[0];
-                        fieldsToGet = LabPLANETArray.addValueToArray1D(fieldsToGet, "id");
-                        fieldsToGet = LabPLANETArray.addValueToArray1D(fieldsToGet, "note_brief");
-                        fieldsToGet = LabPLANETArray.addValueToArray1D(fieldsToGet, fieldName_lineName);
-                        fieldsToGet = LabPLANETArray.addValueToArray1D(fieldsToGet, fieldName_lineName);
-                        String[] keyFieldNames2 = LabPLANETArray.addValueToArray1D(keyFieldNames, "covered");
-                        Object[] keyFieldValues2 = LabPLANETArray.addValueToArray1D(keyFieldValues, false);
+                        fieldsToGet = LPArray.addValueToArray1D(fieldsToGet, "id");
+                        fieldsToGet = LPArray.addValueToArray1D(fieldsToGet, "note_brief");
+                        fieldsToGet = LPArray.addValueToArray1D(fieldsToGet, fieldName_lineName);
+                        fieldsToGet = LPArray.addValueToArray1D(fieldsToGet, fieldName_lineName);
+                        String[] keyFieldNames2 = LPArray.addValueToArray1D(keyFieldNames, "covered");
+                        Object[] keyFieldValues2 = LPArray.addValueToArray1D(keyFieldValues, false);
                         Object[][] javaDocEntriesNotCovered = Rdbms.getRecordFieldsByFilter(schemaName, tableName, keyFieldNames2, keyFieldValues2, fieldsToGet, new String[] {"line"});
 
-                        Boolean existMark = LabPLANETArray.valueInArray(javaDocEntries1D, "BEGIN");       
-                        if (!existMark){totalDiagnostic = LabPLANETArray.addValueToArray1D(totalDiagnostic, "ERROR. lineName BEGIN is mandatory in the code and was not found.");break;}
+                        Boolean existMark = LPArray.valueInArray(javaDocEntries1D, "BEGIN");       
+                        if (!existMark){totalDiagnostic = LPArray.addValueToArray1D(totalDiagnostic, "ERROR. lineName BEGIN is mandatory in the code and was not found.");break;}
 
-                        existMark = LabPLANETArray.valueInArray(javaDocEntries1D, "END");
-                        if (!existMark){totalDiagnostic = LabPLANETArray.addValueToArray1D(totalDiagnostic, "ERROR. lineName END is mandatory in the code and was not found.");break;}
+                        existMark = LPArray.valueInArray(javaDocEntries1D, "END");
+                        if (!existMark){totalDiagnostic = LPArray.addValueToArray1D(totalDiagnostic, "ERROR. lineName END is mandatory in the code and was not found.");break;}
 
-                        if (javaDocEntries1D.length<=2){totalDiagnostic = LabPLANETArray.addValueToArray1D(totalDiagnostic, "ERROR. Even having BEGIN-END there are no lineName for requirements.");break;}
+                        if (javaDocEntries1D.length<=2){totalDiagnostic = LPArray.addValueToArray1D(totalDiagnostic, "ERROR. Even having BEGIN-END there are no lineName for requirements.");break;}
                         
                         Integer lineFirst = (Integer) javaDocEntriesLineNumber[0];
                         Integer lineEnd = (Integer) javaDocEntriesLineNumber[javaDocEntriesLineNumber.length-1];
@@ -320,7 +318,7 @@ public class LabPLANETQualityAssurance {
                             }
                             if (warningsNotDocumented.length()>0){
                                 warningsNotDocumented = "WARNINGS ON DOCUMENTATION: Found "+numWarnings+" warning(s):"+"<br>"+warningsNotDocumented;
-                                //totalDiagnostic = LabPLANETArray.addValueToArray1D(totalDiagnostic, warningsNotDocumented);//break;
+                                //totalDiagnostic = LPArray.addValueToArray1D(totalDiagnostic, warningsNotDocumented);//break;
                             }    
                         }
 
@@ -338,9 +336,9 @@ public class LabPLANETQualityAssurance {
                         }                        
                         
                         if (warningsNotCovered.length()==0 && warningsNotDocumented.length()==0){
-                            totalDiagnostic = LabPLANETArray.addValueToArray1D(totalDiagnostic, existsRecord[3]+". Records found.");
+                            totalDiagnostic = LPArray.addValueToArray1D(totalDiagnostic, existsRecord[3]+". Records found.");
                         }else{
-                            totalDiagnostic = LabPLANETArray.addValueToArray1D(totalDiagnostic, warningsNotCovered);//break;
+                            totalDiagnostic = LPArray.addValueToArray1D(totalDiagnostic, warningsNotCovered);//break;
                         }    
 
                         System.out.println(fileName + " >> " + " Package:" + packsName + " >> " + " Class:" + className + " >> " + " Method:" + mm.getName());
@@ -348,7 +346,7 @@ public class LabPLANETQualityAssurance {
                 }
             }
         }
-        String[][] diagn = LabPLANETArray.array1dTo2d(totalDiagnostic, totalDiagnosticNumColumns);
+        String[][] diagn = LPArray.array1dTo2d(totalDiagnostic, totalDiagnosticNumColumns);
         return diagn;                
 
         /*			Stream<Path> f = Files.list(Paths.get("."));

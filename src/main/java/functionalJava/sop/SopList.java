@@ -6,7 +6,7 @@
 package functionalJava.sop;
 
 import databases.Rdbms;
-import LabPLANET.utilities.LabPLANETArray;
+import LabPLANET.utilities.LPArray;
 import LabPLANET.utilities.LPPlatform;
 import java.sql.SQLException;
 import java.util.Arrays;
@@ -123,16 +123,16 @@ public class SopList {
         String[] fieldNames = new String[0];
         Object[] fieldValues = new Object[0];
         
-        fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "name");
-        fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, this.sopListName);
-        fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "version");
-        fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, this.sopListVersion);
-        fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "revision");
-        fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, this.sopListRevision);
-        fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "status");
-        fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, this.sopListStatus);
-        fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "added_by");
-        fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, userInfoId);
+        fieldNames = LPArray.addValueToArray1D(fieldNames, "name");
+        fieldValues = LPArray.addValueToArray1D(fieldValues, this.sopListName);
+        fieldNames = LPArray.addValueToArray1D(fieldNames, "version");
+        fieldValues = LPArray.addValueToArray1D(fieldValues, this.sopListVersion);
+        fieldNames = LPArray.addValueToArray1D(fieldNames, "revision");
+        fieldValues = LPArray.addValueToArray1D(fieldValues, this.sopListRevision);
+        fieldNames = LPArray.addValueToArray1D(fieldNames, "status");
+        fieldValues = LPArray.addValueToArray1D(fieldValues, this.sopListStatus);
+        fieldNames = LPArray.addValueToArray1D(fieldNames, "added_by");
+        fieldValues = LPArray.addValueToArray1D(fieldValues, userInfoId);
         
         //requires added_on        
         Object[] diagnoses = Rdbms.insertRecordInTable(schemaConfigName, tableName, fieldNames, fieldValues);
@@ -187,13 +187,13 @@ public class SopList {
             if (currSopAssignedValue[i] == null ? sopId == null : currSopAssignedValue[i].equals(sopId)){ 
                 Object[] diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, "SOP FOUND IN SOP LIST", 
                         new Object[]{"SOP <*1*> found in SOP List <*2*> in position <*3>", sopId, currSopAssignedValue, i});
-                diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, i);
+                diagnoses = LPArray.addValueToArray1D(diagnoses, i);
                 return diagnoses;
             }
         }
         Object[] diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, "SOP NOT FOUND IN SOP LIST", 
                 new Object[]{"SOP <*1*> NOT found in SOP List <*2*>", sopId, currSopAssignedValue});
-        diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, -1);
+        diagnoses = LPArray.addValueToArray1D(diagnoses, -1);
         return diagnoses;
     }    
     

@@ -5,7 +5,7 @@
  */
 package functionalJava.analysis;
 
-import LabPLANET.utilities.LabPLANETArray;
+import LabPLANET.utilities.LPArray;
 import LabPLANET.utilities.LPPlatform;
 import databases.Rdbms;
 import functionalJava.parameter.Parameter;
@@ -33,7 +33,6 @@ public class UserMethod {
  */    
     public String userMethodCertificationLevel( String schemaPrefix, String analysis, String methodName, Integer methodVersion, String userName){
 
-        String diagnostic = "";
         String tableName = "user_method";
         
         String schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, LPPlatform.SCHEMA_DATA);  
@@ -47,19 +46,19 @@ public class UserMethod {
         Object[] whereFieldValue = new Object[0];
         String[] getFieldName = new String[0];
         
-        whereFieldName = LabPLANETArray.addValueToArray1D(whereFieldName, "user_id");
-        whereFieldValue = LabPLANETArray.addValueToArray1D(whereFieldValue, userName);
-        whereFieldName = LabPLANETArray.addValueToArray1D(whereFieldName, "analysis");
-        whereFieldValue = LabPLANETArray.addValueToArray1D(whereFieldValue, analysis);
-        whereFieldName = LabPLANETArray.addValueToArray1D(whereFieldName, "method_name");
-        whereFieldValue = LabPLANETArray.addValueToArray1D(whereFieldValue, methodName);
-        whereFieldName = LabPLANETArray.addValueToArray1D(whereFieldName, "method_version");
-        whereFieldValue = LabPLANETArray.addValueToArray1D(whereFieldValue, methodVersion);
+        whereFieldName = LPArray.addValueToArray1D(whereFieldName, "user_id");
+        whereFieldValue = LPArray.addValueToArray1D(whereFieldValue, userName);
+        whereFieldName = LPArray.addValueToArray1D(whereFieldName, "analysis");
+        whereFieldValue = LPArray.addValueToArray1D(whereFieldValue, analysis);
+        whereFieldName = LPArray.addValueToArray1D(whereFieldName, "method_name");
+        whereFieldValue = LPArray.addValueToArray1D(whereFieldValue, methodName);
+        whereFieldName = LPArray.addValueToArray1D(whereFieldName, "method_version");
+        whereFieldValue = LPArray.addValueToArray1D(whereFieldValue, methodVersion);
         
-        getFieldName = LabPLANETArray.addValueToArray1D(getFieldName, "active");
-        getFieldName = LabPLANETArray.addValueToArray1D(getFieldName, "train_interval");
-        getFieldName = LabPLANETArray.addValueToArray1D(getFieldName, "last_training_on");
-        getFieldName = LabPLANETArray.addValueToArray1D(getFieldName, "last_analysis_on");
+        getFieldName = LPArray.addValueToArray1D(getFieldName, "active");
+        getFieldName = LPArray.addValueToArray1D(getFieldName, "train_interval");
+        getFieldName = LPArray.addValueToArray1D(getFieldName, "last_training_on");
+        getFieldName = LPArray.addValueToArray1D(getFieldName, "last_analysis_on");
         
         Object[][] userMethodData = Rdbms.getRecordFieldsByFilter(schemaDataName, tableName, whereFieldName, whereFieldValue, getFieldName);
         if ("LABPLANET_FALSE".equals(userMethodData[0][0].toString())){return userMethodNotAssigned;}    

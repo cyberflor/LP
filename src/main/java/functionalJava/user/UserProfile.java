@@ -6,7 +6,7 @@
 package functionalJava.user;
 
 import LabPLANET.utilities.LPPlatform;
-import LabPLANET.utilities.LabPLANETArray;
+import LabPLANET.utilities.LPArray;
 import databases.Rdbms;
 
 /**
@@ -36,7 +36,7 @@ public class UserProfile {
             filterFieldName[2]="proc_name is not null";            
             
             Object[][] userProc =  Rdbms.getRecordFieldsByFilter(schemaAppName, tableName, filterFieldName, filterFieldValue, fieldsToReturn);
-            return LabPLANETArray.array2dTo1d(userProc);                         
+            return LPArray.array2dTo1d(userProc);                         
     }
     
     /**
@@ -58,7 +58,7 @@ public class UserProfile {
             String tableName = "user_profile";                                  
             
             Object[][] userProc =  Rdbms.getRecordFieldsByFilter(schemaAppName, tableName, filterFieldName, filterFieldValue, fieldsToReturn);
-            return LabPLANETArray.array2dTo1d(userProc);                         
+            return LPArray.array2dTo1d(userProc);                         
         }
         
     /**
@@ -83,7 +83,7 @@ public class UserProfile {
             
             Object[][] userProc =  Rdbms.getRecordFieldsByFilter(schemaPrefix, tableName, 
                     filterFieldName, filterFieldValue, new String[] {"role_name"});
-            return LabPLANETArray.array2dTo1d(userProc);                         
+            return LPArray.array2dTo1d(userProc);                         
         }
 
     /**
@@ -99,7 +99,7 @@ public class UserProfile {
                 String currProcPrefix = (String) schemaPrefix[iProcs];
                 Object[] currProcUserProfiles =  getProcedureUserProfileFieldValues(currProcPrefix, userInfoId);
                 for (Object fn: currProcUserProfiles ){
-                    totalProcUserProfiles = LabPLANETArray.addValueToArray1D(totalProcUserProfiles, fn);}
+                    totalProcUserProfiles = LPArray.addValueToArray1D(totalProcUserProfiles, fn);}
                     //totalProcUserProfiles = labArr.addValueToArray1D(totalProcUserProfiles, currProcPrefix+" - "+fn);}
             }            
             return totalProcUserProfiles;                         

@@ -64,8 +64,7 @@ public class LabPLANETJson {
     public static String convertToJSON(ResultSet res) {
         try {
             String jsonarrayf;
-            String obj [] = null;
-            boolean first = res.first();
+            res.first();
             String finalString = "";
             
             while (!res.isAfterLast()){

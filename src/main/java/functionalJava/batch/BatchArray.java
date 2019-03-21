@@ -127,7 +127,6 @@ public final class BatchArray extends Batch{
             //Integer numLet=alphabet.length;
             Integer inumLet=0;
             Integer inumLetAlphabet=0;
-            String currLet = "";
             String currPrefix ="";
             while (inumLet<linesName.length){
                 if (Objects.equals(inumLet, alphabet.length)){currPrefix=currPrefix+"A";inumLetAlphabet=0;}
@@ -148,8 +147,6 @@ public final class BatchArray extends Batch{
     public void setColumnsName(String[] names){
         if (names==null){                                    
             Integer inumLet=1;
-            String currLet = "";
-            String currPrefix ="";
             while (inumLet<=columnsName.length){                
                 columnsName[inumLet-1]=inumLet.toString();
                 inumLet++;
@@ -238,7 +235,6 @@ public final class BatchArray extends Batch{
         }     
     public Object[] dbCreateBatchArray(String schemaName)
     {
-        String ermessage="";
         String tableName = "batch_java";
                  
         //Integer td[][]= {{4, 17, 28, 38, 43, 58, 69, 77, 83}, {4, 12, 24, 35, 48, 55, 62, 73, 87}, {11,15, 22, 36, 46, 60, 67, 80, 84}};

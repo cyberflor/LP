@@ -5,7 +5,7 @@
  */
 package functionalJava.materialSpec;
 
-import LabPLANET.utilities.LabPLANETArray;
+import LabPLANET.utilities.LPArray;
 import LabPLANET.utilities.LPPlatform;
 import java.math.BigDecimal;
 
@@ -53,19 +53,19 @@ public class DataSpec {
 
         String errorCode = "DataSpec_resultCheck_mandatoryFieldIsNull";        
         if (result==null || "".equals(result)){
-            errorVariables = LabPLANETArray.addValueToArray1D(errorVariables, "Result");
+            errorVariables = LPArray.addValueToArray1D(errorVariables, "Result");
             diagnoses =  LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorVariables);
-            diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, "OUT_WRONG_RULE");
+            diagnoses = LPArray.addValueToArray1D(diagnoses, "OUT_WRONG_RULE");
             return diagnoses;}               
         if (specRule==null || "".equals(specRule)){
-            errorVariables = LabPLANETArray.addValueToArray1D(errorVariables, "specRule");            
+            errorVariables = LPArray.addValueToArray1D(errorVariables, "specRule");            
             diagnoses =  LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorVariables);
-            diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, "OUT_WRONG_RULE");
+            diagnoses = LPArray.addValueToArray1D(diagnoses, "OUT_WRONG_RULE");
             return diagnoses;}        
         if (values==null || "".equals(values)){
-            errorVariables = LabPLANETArray.addValueToArray1D(errorVariables, "values");            
+            errorVariables = LPArray.addValueToArray1D(errorVariables, "values");            
             diagnoses =  LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorVariables);
-            diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, "OUT_WRONG_RULE");
+            diagnoses = LPArray.addValueToArray1D(diagnoses, "OUT_WRONG_RULE");
             return diagnoses;}        
         
         isCorrectTheSpec = matQualit.specLimitIsCorrectQualitative(schemaName, specRule, values, separator);
@@ -77,29 +77,29 @@ public class DataSpec {
                 if (result.equalsIgnoreCase(values)){
                     errorCode = "DataSpec_resultCheck_qualitativeIN";
                     diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, errorCode, null);
-                    diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, "IN");
+                    diagnoses = LPArray.addValueToArray1D(diagnoses, "IN");
                     return diagnoses;                    
                 }else{
                     errorCode = "DataSpec_resultCheck_qualitativeEqualToOUT";
-                    errorVariables = LabPLANETArray.addValueToArray1D(errorVariables, result);
-                    errorVariables = LabPLANETArray.addValueToArray1D(errorVariables, values);
+                    errorVariables = LPArray.addValueToArray1D(errorVariables, result);
+                    errorVariables = LPArray.addValueToArray1D(errorVariables, values);
                     diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, errorCode, errorVariables);
-                    diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, "OUT");
+                    diagnoses = LPArray.addValueToArray1D(diagnoses, "OUT");
                     return diagnoses;                                                           
                 }
                 
             case "NOTEQUALTO": 
                 if (result.equalsIgnoreCase(values)){
                     errorCode = "DataSpec_resultCheck_qualitativeNotEqualToOUT";
-                    errorVariables = LabPLANETArray.addValueToArray1D(errorVariables, result);
-                    errorVariables = LabPLANETArray.addValueToArray1D(errorVariables, values);
+                    errorVariables = LPArray.addValueToArray1D(errorVariables, result);
+                    errorVariables = LPArray.addValueToArray1D(errorVariables, values);
                     diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorVariables);
-                    diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, "OUT");
+                    diagnoses = LPArray.addValueToArray1D(diagnoses, "OUT");
                     return diagnoses;                                                                               
                 }else{
                     errorCode = "DataSpec_resultCheck_qualitativeIN";
                     diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, errorCode, null);
-                    diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, "IN");
+                    diagnoses = LPArray.addValueToArray1D(diagnoses, "IN");
                     return diagnoses;                    
                 }
 
@@ -107,38 +107,38 @@ public class DataSpec {
                 if (values.toUpperCase().contains(result.toUpperCase())){
                     errorCode = "DataSpec_resultCheck_qualitativeIN";
                     diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, errorCode, null);
-                    diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, "IN");
+                    diagnoses = LPArray.addValueToArray1D(diagnoses, "IN");
                     return diagnoses;                    
                 }else{
                     errorCode = "DataSpec_resultCheck_qualitativeContainsOUT";
-                    errorVariables = LabPLANETArray.addValueToArray1D(errorVariables, result);
-                    errorVariables = LabPLANETArray.addValueToArray1D(errorVariables, values);
+                    errorVariables = LPArray.addValueToArray1D(errorVariables, result);
+                    errorVariables = LPArray.addValueToArray1D(errorVariables, values);
                     diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, errorCode, errorVariables);
-                    diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, "OUT");
+                    diagnoses = LPArray.addValueToArray1D(diagnoses, "OUT");
                     return diagnoses;                         
                 }
 
             case "NOTCONTAINS":                 
                 if (values.toUpperCase().contains(result.toUpperCase())){
                     errorCode = "DataSpec_resultCheck_qualitativeNotContainsOUT";
-                    errorVariables = LabPLANETArray.addValueToArray1D(errorVariables, result);
-                    errorVariables = LabPLANETArray.addValueToArray1D(errorVariables, values);
+                    errorVariables = LPArray.addValueToArray1D(errorVariables, result);
+                    errorVariables = LPArray.addValueToArray1D(errorVariables, values);
                     diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, errorCode, errorVariables);
-                    diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, "OUT");
+                    diagnoses = LPArray.addValueToArray1D(diagnoses, "OUT");
                     return diagnoses;                                             
                 }else{
                     errorCode = "DataSpec_resultCheck_qualitativeIN";
                     diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, errorCode, null);
-                    diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, "IN");
+                    diagnoses = LPArray.addValueToArray1D(diagnoses, "IN");
                     return diagnoses;                    
                 }
 
             case "ISONEOF": 
                 if ((separator==null) || (separator.length()==0)){
                     errorCode = "DataSpec_resultCheck_mandatoryFieldIsNull";
-                    errorVariables = LabPLANETArray.addValueToArray1D(errorVariables, "Separator");
+                    errorVariables = LPArray.addValueToArray1D(errorVariables, "Separator");
                     diagnoses =  LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorVariables);
-                    diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, "OUT_WRONG_RULE");
+                    diagnoses = LPArray.addValueToArray1D(diagnoses, "OUT_WRONG_RULE");
                     return diagnoses;
                 }else{
                     String[] textSpecArray = values.split(separator);
@@ -146,47 +146,47 @@ public class DataSpec {
                         if (result.equalsIgnoreCase(textSpecArray[itextSpecArrayLen])){
                             errorCode = "DataSpec_resultCheck_qualitativeIN";
                             diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, errorCode, null);
-                            diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, "IN");
+                            diagnoses = LPArray.addValueToArray1D(diagnoses, "IN");
                             return diagnoses;                    
                         }
                     }
                     errorCode = "DataSpec_resultCheck_qualitativeIsOneOfOUT";
-                    errorVariables = LabPLANETArray.addValueToArray1D(errorVariables, result);
-                    errorVariables = LabPLANETArray.addValueToArray1D(errorVariables, String.valueOf((Integer)textSpecArray.length+1));
-                    errorVariables = LabPLANETArray.addValueToArray1D(errorVariables, values);
+                    errorVariables = LPArray.addValueToArray1D(errorVariables, result);
+                    errorVariables = LPArray.addValueToArray1D(errorVariables, String.valueOf((Integer)textSpecArray.length+1));
+                    errorVariables = LPArray.addValueToArray1D(errorVariables, values);
                     diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, errorCode, errorVariables);
-                    diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, "OUT");
+                    diagnoses = LPArray.addValueToArray1D(diagnoses, "OUT");
                     return diagnoses;                                                                 
                 }
             case "ISNOTONEOF": 
                 if ((separator==null) || (separator.length()==0)){
                     errorCode = "DataSpec_resultCheck_mandatoryFieldIsNull";
-                    errorVariables = LabPLANETArray.addValueToArray1D(errorVariables, "Separator");
+                    errorVariables = LPArray.addValueToArray1D(errorVariables, "Separator");
                     diagnoses =  LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorVariables);
-                    diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, "OUT_WRONG_RULE");
+                    diagnoses = LPArray.addValueToArray1D(diagnoses, "OUT_WRONG_RULE");
                     return diagnoses;
                 }else{
                     String[] textSpecArray = values.split(separator);
-                    if (!LabPLANETArray.valueInArray(textSpecArray, result)){
+                    if (!LPArray.valueInArray(textSpecArray, result)){
                         errorCode = "DataSpec_resultCheck_qualitativeIsNotOneOfOUT";
-                        errorVariables = LabPLANETArray.addValueToArray1D(errorVariables, result);
-                        errorVariables = LabPLANETArray.addValueToArray1D(errorVariables, String.valueOf((Integer)textSpecArray.length+1));
-                        errorVariables = LabPLANETArray.addValueToArray1D(errorVariables, values);
+                        errorVariables = LPArray.addValueToArray1D(errorVariables, result);
+                        errorVariables = LPArray.addValueToArray1D(errorVariables, String.valueOf((Integer)textSpecArray.length+1));
+                        errorVariables = LPArray.addValueToArray1D(errorVariables, values);
                         diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, errorCode, errorVariables);
-                        diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, "OUT");
+                        diagnoses = LPArray.addValueToArray1D(diagnoses, "OUT");
                         return diagnoses;
                     }
                     errorCode = "DataSpec_resultCheck_qualitativeIN";
                     diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, null);
-                    diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, "IN");
+                    diagnoses = LPArray.addValueToArray1D(diagnoses, "IN");
                     return diagnoses;                    
                 }
             default:
                 errorCode = "DataSpec_resultCheck_UnhandledException";
                 String params = "Schema Name: "+schemaName+", result: "+result+", Spec Rule: "+specRule+", values: "+values+", separator: "+separator+", listName: "+listName;
-                errorVariables = LabPLANETArray.addValueToArray1D(errorVariables, params);
+                errorVariables = LPArray.addValueToArray1D(errorVariables, params);
                 diagnoses =  LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorVariables);
-                diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, "OUT_WRONG_RULE");
+                diagnoses = LPArray.addValueToArray1D(diagnoses, "OUT_WRONG_RULE");
                 return diagnoses;               
         }
     }
@@ -208,9 +208,9 @@ public class DataSpec {
         
         if (result==null){
             String errorCode = "DataSpec_resultCheck_mandatoryFieldIsNull";
-            errorVariables = LabPLANETArray.addValueToArray1D(errorVariables, "Result");
+            errorVariables = LPArray.addValueToArray1D(errorVariables, "Result");
             Object[] diagnoses =  LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorVariables);
-            diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, "OUT_WRONG_RULE");
+            diagnoses = LPArray.addValueToArray1D(diagnoses, "OUT_WRONG_RULE");
             return diagnoses;
         }
         Object[] isCorrectMinMaxSpec = matQuant.specLimitIsCorrectQuantitative(minSpec, maxSpec);
@@ -224,19 +224,19 @@ public class DataSpec {
             if (minStrict){
                 if (result<=minSpec){                
                     String errorCode = "DataSpec_resultCheck_quantitativeOutMinStrict";
-                    errorVariables = LabPLANETArray.addValueToArray1D(errorVariables, result.toString());
-                    errorVariables = LabPLANETArray.addValueToArray1D(errorVariables, minSpec.toString());
+                    errorVariables = LPArray.addValueToArray1D(errorVariables, result.toString());
+                    errorVariables = LPArray.addValueToArray1D(errorVariables, minSpec.toString());
                     Object[] diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, errorCode, errorVariables);
-                    diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, "OUT_MIN");
+                    diagnoses = LPArray.addValueToArray1D(diagnoses, "OUT_MIN");
                     return diagnoses;
                 }
             }else{
                 if (result<minSpec){
                     String errorCode = "DataSpec_resultCheck_quantitativeOutMin";
-                    errorVariables = LabPLANETArray.addValueToArray1D(errorVariables, result.toString());
-                    errorVariables = LabPLANETArray.addValueToArray1D(errorVariables, minSpec.toString());
+                    errorVariables = LPArray.addValueToArray1D(errorVariables, result.toString());
+                    errorVariables = LPArray.addValueToArray1D(errorVariables, minSpec.toString());
                     Object[] diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, errorCode, errorVariables);
-                    diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, "OUT_MIN");
+                    diagnoses = LPArray.addValueToArray1D(diagnoses, "OUT_MIN");
                     return diagnoses;
                 }
             }
@@ -245,26 +245,26 @@ public class DataSpec {
             if (maxStrict){
                 if (result>=maxSpec){
                     String errorCode = "DataSpec_resultCheck_quantitativeOutMaxStrict";
-                    errorVariables = LabPLANETArray.addValueToArray1D(errorVariables, result.toString());
-                    errorVariables = LabPLANETArray.addValueToArray1D(errorVariables, maxSpec.toString());
+                    errorVariables = LPArray.addValueToArray1D(errorVariables, result.toString());
+                    errorVariables = LPArray.addValueToArray1D(errorVariables, maxSpec.toString());
                     Object[] diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, errorCode, errorVariables);
-                    diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, "OUT_MAX");
+                    diagnoses = LPArray.addValueToArray1D(diagnoses, "OUT_MAX");
                     return diagnoses;
                 }
             }else{
                 if (result>maxSpec){
                     String errorCode = "DataSpec_resultCheck_quantitativeOutMax";
-                    errorVariables = LabPLANETArray.addValueToArray1D(errorVariables, result.toString());
-                    errorVariables = LabPLANETArray.addValueToArray1D(errorVariables, maxSpec.toString());
+                    errorVariables = LPArray.addValueToArray1D(errorVariables, result.toString());
+                    errorVariables = LPArray.addValueToArray1D(errorVariables, maxSpec.toString());
                     Object[] diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, errorCode, errorVariables);
-                    diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, "OUT_MAX");
+                    diagnoses = LPArray.addValueToArray1D(diagnoses, "OUT_MAX");
                     return diagnoses;
                 }
             }
         }        
         String errorCode = "DataSpec_resultCheck_quantitativeIn";
         Object[] diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, errorCode, null);
-        diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, "IN");
+        diagnoses = LPArray.addValueToArray1D(diagnoses, "IN");
         return diagnoses;        
     }
 
@@ -286,9 +286,9 @@ public class DataSpec {
         
         if (result==null){
             String errorCode = "DataSpec_resultCheck_mandatoryFieldIsNull";
-            errorVariables = LabPLANETArray.addValueToArray1D(errorVariables, "Result");
+            errorVariables = LPArray.addValueToArray1D(errorVariables, "Result");
             Object[] diagnoses =  LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorVariables);
-            diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, "OUT_WRONG_RULE");
+            diagnoses = LPArray.addValueToArray1D(diagnoses, "OUT_WRONG_RULE");
             return diagnoses;
         }
         Object[] isCorrectMinMaxSpec = matQuant.specLimitIsCorrectQuantitative(minSpec, maxSpec);
@@ -302,10 +302,10 @@ public class DataSpec {
             int comparingMIN = minSpec.compareTo(result);
             if ( (comparingMIN==1) || (comparingMIN==0 && minStrict) ) {
                     String errorCode = "DataSpec_resultCheck_quantitativeOutMinStrict";
-                    errorVariables = LabPLANETArray.addValueToArray1D(errorVariables, result.toString());
-                    errorVariables = LabPLANETArray.addValueToArray1D(errorVariables, minSpec.toString());
+                    errorVariables = LPArray.addValueToArray1D(errorVariables, result.toString());
+                    errorVariables = LPArray.addValueToArray1D(errorVariables, minSpec.toString());
                     Object[] diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, errorCode, errorVariables);
-                    diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, "OUT_MIN");
+                    diagnoses = LPArray.addValueToArray1D(diagnoses, "OUT_MIN");
                     return diagnoses;                
             }
         }                    
@@ -313,16 +313,16 @@ public class DataSpec {
             int comparingMAX = result.compareTo(maxSpec);
             if ( (comparingMAX==1) || (comparingMAX==0 && maxStrict) ) {
                     String errorCode = "DataSpec_resultCheck_quantitativeOutMaxStrict";
-                    errorVariables = LabPLANETArray.addValueToArray1D(errorVariables, result.toString());
-                    errorVariables = LabPLANETArray.addValueToArray1D(errorVariables, maxSpec.toString());
+                    errorVariables = LPArray.addValueToArray1D(errorVariables, result.toString());
+                    errorVariables = LPArray.addValueToArray1D(errorVariables, maxSpec.toString());
                     Object[] diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, errorCode, errorVariables);
-                    diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, "OUT_MAX");
+                    diagnoses = LPArray.addValueToArray1D(diagnoses, "OUT_MAX");
                     return diagnoses;            
             }            
         }    
         String errorCode = "DataSpec_resultCheck_quantitativeIn";
         Object[] diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, errorCode, null);
-        diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, "IN");
+        diagnoses = LPArray.addValueToArray1D(diagnoses, "IN");
         return diagnoses;        
     }
     
@@ -347,9 +347,9 @@ public class DataSpec {
 
         if (result==null){
                 errorCode = "DataSpec_resultCheck_mandatoryFieldIsNull";
-                errorVariables = LabPLANETArray.addValueToArray1D(errorVariables, "Result");
+                errorVariables = LPArray.addValueToArray1D(errorVariables, "Result");
                 Object[] diagnoses =  LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorVariables);
-                diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, "OUT_WRONG_RULE");
+                diagnoses = LPArray.addValueToArray1D(diagnoses, "OUT_WRONG_RULE");
                 return diagnoses;
         }
         
@@ -367,21 +367,21 @@ public class DataSpec {
             if (minControl.equals(minSpec)) {                
                 if (minStrict==false || minStrict==null){
                     errorCode = "DataSpec_resultCheck_StrictDoesNotAllowPairOfSameValue";
-                    errorVariables = LabPLANETArray.addValueToArray1D(errorVariables, "Min Spec and Min Control");                   
-                    errorVariables = LabPLANETArray.addValueToArray1D(errorVariables, minSpec);
-                    errorVariables = LabPLANETArray.addValueToArray1D(errorVariables, "Min Strict  is set to false.");                   
+                    errorVariables = LPArray.addValueToArray1D(errorVariables, "Min Spec and Min Control");                   
+                    errorVariables = LPArray.addValueToArray1D(errorVariables, minSpec);
+                    errorVariables = LPArray.addValueToArray1D(errorVariables, "Min Strict  is set to false.");                   
                     Object[] diagnoses =  LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorVariables);
-                    diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, "OUT_WRONG_RULE");
+                    diagnoses = LPArray.addValueToArray1D(diagnoses, "OUT_WRONG_RULE");
                     return diagnoses;
                 }
 
                 if (minStrict==true && minControlStrict==true){
                     errorCode = "DataSpec_resultCheck_StrictDoesNotAllowPairOfSameValue";
-                    errorVariables = LabPLANETArray.addValueToArray1D(errorVariables, "Min Spec and Min Control");                   
-                    errorVariables = LabPLANETArray.addValueToArray1D(errorVariables, minSpec);
-                    errorVariables = LabPLANETArray.addValueToArray1D(errorVariables, "both, min Spec & Control Strict, set to true");                   
+                    errorVariables = LPArray.addValueToArray1D(errorVariables, "Min Spec and Min Control");                   
+                    errorVariables = LPArray.addValueToArray1D(errorVariables, minSpec);
+                    errorVariables = LPArray.addValueToArray1D(errorVariables, "both, min Spec & Control Strict, set to true");                   
                     Object[] diagnoses =  LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorVariables);
-                    diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, "OUT_WRONG_RULE");
+                    diagnoses = LPArray.addValueToArray1D(diagnoses, "OUT_WRONG_RULE");
                     return diagnoses;                   
                 }                    
             }    
@@ -390,22 +390,22 @@ public class DataSpec {
             if (minControlStrict){
                 if (result<=minControl){
                     errorCode = "DataSpec_resultCheck_quantitativeOutMinControlInSpec";
-                    errorVariables = LabPLANETArray.addValueToArray1D(errorVariables, minSpec.toString());
-                    errorVariables = LabPLANETArray.addValueToArray1D(errorVariables, " < "+result.toString()+" < ");
-                    errorVariables = LabPLANETArray.addValueToArray1D(errorVariables, minControl.toString());
+                    errorVariables = LPArray.addValueToArray1D(errorVariables, minSpec.toString());
+                    errorVariables = LPArray.addValueToArray1D(errorVariables, " < "+result.toString()+" < ");
+                    errorVariables = LPArray.addValueToArray1D(errorVariables, minControl.toString());
                     Object[] diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, errorCode, errorVariables);
-                    diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, "CONTROL_MIN");
+                    diagnoses = LPArray.addValueToArray1D(diagnoses, "CONTROL_MIN");
                     return diagnoses;                    
                 }
             }
             else{
                 if (result<minControl){
                     errorCode = "DataSpec_resultCheck_quantitativeOutMinControlInSpec";
-                    errorVariables = LabPLANETArray.addValueToArray1D(errorVariables, minSpec.toString());
-                    errorVariables = LabPLANETArray.addValueToArray1D(errorVariables, " <= "+result.toString()+" <= ");
-                    errorVariables = LabPLANETArray.addValueToArray1D(errorVariables, minControl.toString());
+                    errorVariables = LPArray.addValueToArray1D(errorVariables, minSpec.toString());
+                    errorVariables = LPArray.addValueToArray1D(errorVariables, " <= "+result.toString()+" <= ");
+                    errorVariables = LPArray.addValueToArray1D(errorVariables, minControl.toString());
                     Object[] diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, errorCode, errorVariables);
-                    diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, "CONTROL_MIN");
+                    diagnoses = LPArray.addValueToArray1D(diagnoses, "CONTROL_MIN");
                     return diagnoses;                                   
                 }
             }
@@ -416,21 +416,21 @@ public class DataSpec {
             if (maxControl.equals(maxSpec)) {                
                 if (maxStrict==false || maxStrict==null){
                     errorCode = "DataSpec_resultCheck_StrictDoesNotAllowPairOfSameValue";
-                    errorVariables = LabPLANETArray.addValueToArray1D(errorVariables, "Max spec and control");                   
-                    errorVariables = LabPLANETArray.addValueToArray1D(errorVariables, maxSpec);
-                    errorVariables = LabPLANETArray.addValueToArray1D(errorVariables, "max Strict is set to false.");                   
+                    errorVariables = LPArray.addValueToArray1D(errorVariables, "Max spec and control");                   
+                    errorVariables = LPArray.addValueToArray1D(errorVariables, maxSpec);
+                    errorVariables = LPArray.addValueToArray1D(errorVariables, "max Strict is set to false.");                   
                     Object[] diagnoses =  LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorVariables);
-                    diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, "OUT_WRONG_RULE");
+                    diagnoses = LPArray.addValueToArray1D(diagnoses, "OUT_WRONG_RULE");
                     return diagnoses;                    
                 }
 
                 if (maxStrict==true && maxControlStrict==true){
                     errorCode = "DataSpec_resultCheck_StrictDoesNotAllowPairOfSameValue";
-                    errorVariables = LabPLANETArray.addValueToArray1D(errorVariables, "Max spec and control");                   
-                    errorVariables = LabPLANETArray.addValueToArray1D(errorVariables, maxSpec);
-                    errorVariables = LabPLANETArray.addValueToArray1D(errorVariables, "both, max Spec & Control Strict, set to true..");                   
+                    errorVariables = LPArray.addValueToArray1D(errorVariables, "Max spec and control");                   
+                    errorVariables = LPArray.addValueToArray1D(errorVariables, maxSpec);
+                    errorVariables = LPArray.addValueToArray1D(errorVariables, "both, max Spec & Control Strict, set to true..");                   
                     Object[] diagnoses =  LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorVariables);
-                    diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, "OUT_WRONG_RULE");
+                    diagnoses = LPArray.addValueToArray1D(diagnoses, "OUT_WRONG_RULE");
                     return diagnoses;                    
                 }                    
             }            
@@ -438,22 +438,22 @@ public class DataSpec {
             if (maxControlStrict){
                 if (result>=maxControl){
                     errorCode = "DataSpec_resultCheck_quantitativeOutMaxControlInSpec";
-                    errorVariables = LabPLANETArray.addValueToArray1D(errorVariables, maxControl.toString());
-                    errorVariables = LabPLANETArray.addValueToArray1D(errorVariables, " > "+result.toString()+" > ");
-                    errorVariables = LabPLANETArray.addValueToArray1D(errorVariables, maxSpec.toString());
+                    errorVariables = LPArray.addValueToArray1D(errorVariables, maxControl.toString());
+                    errorVariables = LPArray.addValueToArray1D(errorVariables, " > "+result.toString()+" > ");
+                    errorVariables = LPArray.addValueToArray1D(errorVariables, maxSpec.toString());
                     Object[] diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, errorCode, errorVariables);
-                    diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, "CONTROL_MAX");
+                    diagnoses = LPArray.addValueToArray1D(diagnoses, "CONTROL_MAX");
                     return diagnoses;                                         
                 }
             }
             else{
                 if (result>maxControl){
                     errorCode = "DataSpec_resultCheck_quantitativeOutMaxControlInSpec";
-                    errorVariables = LabPLANETArray.addValueToArray1D(errorVariables, maxControl.toString());
-                    errorVariables = LabPLANETArray.addValueToArray1D(errorVariables, " => "+result.toString()+" => ");
-                    errorVariables = LabPLANETArray.addValueToArray1D(errorVariables, maxSpec.toString());
+                    errorVariables = LPArray.addValueToArray1D(errorVariables, maxControl.toString());
+                    errorVariables = LPArray.addValueToArray1D(errorVariables, " => "+result.toString()+" => ");
+                    errorVariables = LPArray.addValueToArray1D(errorVariables, maxSpec.toString());
                     Object[] diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, errorCode, errorVariables);
-                    diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, "CONTROL_MAX");
+                    diagnoses = LPArray.addValueToArray1D(diagnoses, "CONTROL_MAX");
                     return diagnoses;                                         
                 }
             }                        
@@ -461,7 +461,7 @@ public class DataSpec {
         
         errorCode = "DataSpec_resultCheck_quantitativeIn";
         Object[] diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, errorCode, null);
-        diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, "IN");
+        diagnoses = LPArray.addValueToArray1D(diagnoses, "IN");
         return diagnoses;            
     }
     
@@ -486,9 +486,9 @@ public class DataSpec {
 
         if (result==null){
                 errorCode = "DataSpec_resultCheck_mandatoryFieldIsNull";
-                errorVariables = LabPLANETArray.addValueToArray1D(errorVariables, "Result");
+                errorVariables = LPArray.addValueToArray1D(errorVariables, "Result");
                 Object[] diagnoses =  LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorVariables);
-                diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, "OUT_WRONG_RULE");
+                diagnoses = LPArray.addValueToArray1D(diagnoses, "OUT_WRONG_RULE");
                 return diagnoses;
         }
         
@@ -506,21 +506,21 @@ public class DataSpec {
             if (minControl.equals(minSpec)) {                
                 if (minStrict==false || minStrict==null){
                     errorCode = "DataSpec_resultCheck_StrictDoesNotAllowPairOfSameValue";
-                    errorVariables = LabPLANETArray.addValueToArray1D(errorVariables, "Min Spec and Min Control");                   
-                    errorVariables = LabPLANETArray.addValueToArray1D(errorVariables, minSpec);
-                    errorVariables = LabPLANETArray.addValueToArray1D(errorVariables, "Min Strict  is set to false.");                   
+                    errorVariables = LPArray.addValueToArray1D(errorVariables, "Min Spec and Min Control");                   
+                    errorVariables = LPArray.addValueToArray1D(errorVariables, minSpec);
+                    errorVariables = LPArray.addValueToArray1D(errorVariables, "Min Strict  is set to false.");                   
                     Object[] diagnoses =  LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorVariables);
-                    diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, "OUT_WRONG_RULE");
+                    diagnoses = LPArray.addValueToArray1D(diagnoses, "OUT_WRONG_RULE");
                     return diagnoses;
                 }
 
                 if (minStrict==true && minControlStrict==true){
                     errorCode = "DataSpec_resultCheck_StrictDoesNotAllowPairOfSameValue";
-                    errorVariables = LabPLANETArray.addValueToArray1D(errorVariables, "Min Spec and Min Control");                   
-                    errorVariables = LabPLANETArray.addValueToArray1D(errorVariables, minSpec);
-                    errorVariables = LabPLANETArray.addValueToArray1D(errorVariables, "both, min Spec & Control Strict, set to true");                   
+                    errorVariables = LPArray.addValueToArray1D(errorVariables, "Min Spec and Min Control");                   
+                    errorVariables = LPArray.addValueToArray1D(errorVariables, minSpec);
+                    errorVariables = LPArray.addValueToArray1D(errorVariables, "both, min Spec & Control Strict, set to true");                   
                     Object[] diagnoses =  LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorVariables);
-                    diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, "OUT_WRONG_RULE");
+                    diagnoses = LPArray.addValueToArray1D(diagnoses, "OUT_WRONG_RULE");
                     return diagnoses;                   
                 }                    
             }    
@@ -530,11 +530,11 @@ public class DataSpec {
             int comparingMIN = minControl.compareTo(result);
             if ( (comparingMIN==1) || (comparingMIN==0 && minControlStrict) ) {
                     errorCode = "DataSpec_resultCheck_quantitativeOutMinControlInSpec";
-                    errorVariables = LabPLANETArray.addValueToArray1D(errorVariables, minSpec.toString());
-                    errorVariables = LabPLANETArray.addValueToArray1D(errorVariables, " < "+result.toString()+" < ");
-                    errorVariables = LabPLANETArray.addValueToArray1D(errorVariables, minControl.toString());
+                    errorVariables = LPArray.addValueToArray1D(errorVariables, minSpec.toString());
+                    errorVariables = LPArray.addValueToArray1D(errorVariables, " < "+result.toString()+" < ");
+                    errorVariables = LPArray.addValueToArray1D(errorVariables, minControl.toString());
                     Object[] diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, errorCode, errorVariables);
-                    diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, "CONTROL_MIN");
+                    diagnoses = LPArray.addValueToArray1D(diagnoses, "CONTROL_MIN");
                     return diagnoses;                    
             }                      
         }
@@ -544,39 +544,39 @@ public class DataSpec {
             if (maxControl.equals(maxSpec)) {                
                 if (maxStrict==false || maxStrict==null){
                     errorCode = "DataSpec_resultCheck_StrictDoesNotAllowPairOfSameValue";
-                    errorVariables = LabPLANETArray.addValueToArray1D(errorVariables, "Max spec and control");                   
-                    errorVariables = LabPLANETArray.addValueToArray1D(errorVariables, maxSpec);
-                    errorVariables = LabPLANETArray.addValueToArray1D(errorVariables, "max Strict is set to false.");                   
+                    errorVariables = LPArray.addValueToArray1D(errorVariables, "Max spec and control");                   
+                    errorVariables = LPArray.addValueToArray1D(errorVariables, maxSpec);
+                    errorVariables = LPArray.addValueToArray1D(errorVariables, "max Strict is set to false.");                   
                     Object[] diagnoses =  LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorVariables);
-                    diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, "OUT_WRONG_RULE");
+                    diagnoses = LPArray.addValueToArray1D(diagnoses, "OUT_WRONG_RULE");
                     return diagnoses;                    
                 }
 
                 if (maxStrict==true && maxControlStrict==true){
                     errorCode = "DataSpec_resultCheck_StrictDoesNotAllowPairOfSameValue";
-                    errorVariables = LabPLANETArray.addValueToArray1D(errorVariables, "Max spec and control");                   
-                    errorVariables = LabPLANETArray.addValueToArray1D(errorVariables, maxSpec);
-                    errorVariables = LabPLANETArray.addValueToArray1D(errorVariables, "both, max Spec & Control Strict, set to true..");                   
+                    errorVariables = LPArray.addValueToArray1D(errorVariables, "Max spec and control");                   
+                    errorVariables = LPArray.addValueToArray1D(errorVariables, maxSpec);
+                    errorVariables = LPArray.addValueToArray1D(errorVariables, "both, max Spec & Control Strict, set to true..");                   
                     Object[] diagnoses =  LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorVariables);
-                    diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, "OUT_WRONG_RULE");
+                    diagnoses = LPArray.addValueToArray1D(diagnoses, "OUT_WRONG_RULE");
                     return diagnoses;                    
                 }                    
             }            
             int comparingMAX = result.compareTo(maxSpec);
             if ( (comparingMAX==1) || (comparingMAX==0 && maxStrict) ) {
                 errorCode = "DataSpec_resultCheck_quantitativeOutMaxControlInSpec";
-                errorVariables = LabPLANETArray.addValueToArray1D(errorVariables, maxControl.toString());
-                errorVariables = LabPLANETArray.addValueToArray1D(errorVariables, " > "+result.toString()+" > ");
-                errorVariables = LabPLANETArray.addValueToArray1D(errorVariables, maxSpec.toString());
+                errorVariables = LPArray.addValueToArray1D(errorVariables, maxControl.toString());
+                errorVariables = LPArray.addValueToArray1D(errorVariables, " > "+result.toString()+" > ");
+                errorVariables = LPArray.addValueToArray1D(errorVariables, maxSpec.toString());
                 Object[] diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, errorCode, errorVariables);
-                diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, "CONTROL_MAX");
+                diagnoses = LPArray.addValueToArray1D(diagnoses, "CONTROL_MAX");
                 return diagnoses;                                         
             }
         }
         
         errorCode = "DataSpec_resultCheck_quantitativeIn";
         Object[] diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, errorCode, null);
-        diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, "IN");
+        diagnoses = LPArray.addValueToArray1D(diagnoses, "IN");
         return diagnoses;            
     }
     

@@ -8,7 +8,7 @@ package functionalJava.testingScripts;
 import LabPLANET.utilities.LPHashMap;
 import LabPLANET.utilities.LPNulls;
 import LabPLANET.utilities.LPPlatform;
-import LabPLANET.utilities.LabPLANETArray;
+import LabPLANET.utilities.LPArray;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -24,26 +24,28 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class LPTestingOutFormat {
     
-    public static String TESTING_FILES_PATH ="\\\\FRANCLOUD\\fran\\LabPlanet\\testingRepository\\";
-    public static String TESTING_FILES_FIELD_SEPARATOR=";";
-    public static String TESTING_USER="labplanet";
-    public static String TESTING_PW="avecesllegaelmomento";
-    public static String MSG_DB_CON_ERROR="<th>Error connecting to the database</th>";       
+    public static final String TESTING_FILES_PATH ="\\\\FRANCLOUD\\fran\\LabPlanet\\testingRepository\\";
+    public static final String TESTING_FILES_FIELD_SEPARATOR=";";
+    public static final String TESTING_USER="labplanet";
+    public static final String TESTING_PW="avecesllegaelmomento";
+    public static final String MSG_DB_CON_ERROR="<th>Error connecting to the database</th>";       
 
-    public static String FILEHEADER_numHeaderLinesTagName="NUMHEADERLINES";
-    public static String FILEHEADER_numTablesTagName="NUMTABLES"; 
-    public static String FILEHEADER_tableNameTagName="TABLE";
+    public static final String FILEHEADER_numHeaderLinesTagName="NUMHEADERLINES";
+    public static final String FILEHEADER_numTablesTagName="NUMTABLES"; 
+    public static final String FILEHEADER_tableNameTagName="TABLE";
 
-    public static String FILEHEADER_numArguments="NUMARGUMENTS";
-    public static String FILEHEADER_numEvaluationArguments="NUMEVALUATIONARGUMENTS";
-    public static String FILEHEADER_evaluationPosition="EVALUATIONPOSITION";
+    public static final String FILEHEADER_numArguments="NUMARGUMENTS";
+    public static final String FILEHEADER_numEvaluationArguments="NUMEVALUATIONARGUMENTS";
+    public static final String FILEHEADER_evaluationPosition="EVALUATIONPOSITION";
+    
+    public static final String BUNDLE_FILE_NAME="parameter.config.labtimus";
 
-    public static String TST_BOOLEANMATCH =ResourceBundle.getBundle("parameter.config.labtimus").getString("labPLANET_booleanMatch");
-    public static String TST_BOOLEANUNMATCH =ResourceBundle.getBundle("parameter.config.labtimus").getString("labPLANET_booleanUnMatch");
-    public static String TST_BOOLEANUNDEFINED=ResourceBundle.getBundle("parameter.config.labtimus").getString("labPLANET_booleanUndefined");
-    public static String TST_ERRORCODEMATCH =ResourceBundle.getBundle("parameter.config.labtimus").getString("labPLANET_errorCodeMatch");
-    public static String TST_ERRORCODEUNMATCH =ResourceBundle.getBundle("parameter.config.labtimus").getString("labPLANET_errorCodeUnMatch");
-    public static String TST_ERRORCODEUNDEFINED=ResourceBundle.getBundle("parameter.config.labtimus").getString("labPLANET_errorCodeUndefined");
+    public static final String TST_BOOLEANMATCH =ResourceBundle.getBundle(BUNDLE_FILE_NAME).getString("labPLANET_booleanMatch");
+    public static final String TST_BOOLEANUNMATCH =ResourceBundle.getBundle(BUNDLE_FILE_NAME).getString("labPLANET_booleanUnMatch");
+    public static final String TST_BOOLEANUNDEFINED=ResourceBundle.getBundle(BUNDLE_FILE_NAME).getString("labPLANET_booleanUndefined");
+    public static final String TST_ERRORCODEMATCH =ResourceBundle.getBundle(BUNDLE_FILE_NAME).getString("labPLANET_errorCodeMatch");
+    public static final String TST_ERRORCODEUNMATCH =ResourceBundle.getBundle(BUNDLE_FILE_NAME).getString("labPLANET_errorCodeUnMatch");
+    public static final String TST_ERRORCODEUNDEFINED=ResourceBundle.getBundle(BUNDLE_FILE_NAME).getString("labPLANET_errorCodeUndefined");
 
     public static HttpServletResponse responsePreparation(HttpServletResponse response){
         response.setCharacterEncoding(LPPlatform.LAB_ENCODER_UTF8);
@@ -68,6 +70,8 @@ public class LPTestingOutFormat {
     public static String headerEnd(){        return "</th>";    }
     public static String rowStart(){        return "<tr>";    }
     public static String rowEnd(){        return "</tr>";    }
+    public static String fieldStart(){        return "<td>";    }
+    public static String fieldEnd(){        return "</td>";    }
 
     public static String headerAddField(String field){
         String content="";
@@ -85,11 +89,11 @@ public class LPTestingOutFormat {
     
     public static String[] addUATColumns(String[] fields, Integer numEvaluationArguments){
         String[] newFields = new String[]{"Test #"};
-        newFields=LabPLANETArray.addValueToArray1D(newFields, fields);
+        newFields=LPArray.addValueToArray1D(newFields, fields);
         if (numEvaluationArguments>0){
-            newFields=LabPLANETArray.addValueToArray1D(newFields, "Syntaxis");
-            newFields=LabPLANETArray.addValueToArray1D(newFields, "Code");
-            newFields=LabPLANETArray.addValueToArray1D(newFields, "Evaluation");
+            newFields=LPArray.addValueToArray1D(newFields, "Syntaxis");
+            newFields=LPArray.addValueToArray1D(newFields, "Code");
+            newFields=LPArray.addValueToArray1D(newFields, "Evaluation");
         }
         return newFields;
     }
@@ -97,7 +101,7 @@ public class LPTestingOutFormat {
 
     public static String rowAddField(String field){
         String content="";
-        content = content+"<td>"+LPNulls.replaceNull((String) field)+"</td>";           
+        content = content+fieldStart()+LPNulls.replaceNull((String) field)+fieldEnd();           
         return content;
     }
 
@@ -105,9 +109,9 @@ public class LPTestingOutFormat {
         String content="";
         for (Object field: fields){
             if (field==null){
-                content = content+"<td>"+""+"</td>";           
+                content = content+fieldStart()+""+fieldEnd();           
             }else{
-                content = content+"<td>"+LPNulls.replaceNull(field.toString())+"</td>";           
+                content = content+fieldStart()+LPNulls.replaceNull(field.toString())+fieldEnd();           
             }
         }
         return content;
@@ -137,7 +141,7 @@ public class LPTestingOutFormat {
         fileContent = fileContent + "<html>" + "";
         fileContent = fileContent + "<head>" + "";
         fileContent = fileContent + "<style>";
-        ResourceBundle prop = ResourceBundle.getBundle("parameter.config.labtimus");
+        ResourceBundle prop = ResourceBundle.getBundle(BUNDLE_FILE_NAME);
         fileContent = fileContent + prop.getString("testingTableStyle1");
         fileContent = fileContent + prop.getString("testingTableStyle2");
         fileContent = fileContent + prop.getString("testingTableStyle3");

@@ -6,10 +6,10 @@
 package com.labplanet.servicios.app;
 
 import LabPLANET.utilities.LPPlatform;
-import LabPLANET.utilities.LabPLANETArray;
+import LabPLANET.utilities.LPArray;
 import LabPLANET.utilities.LabPLANETDate;
 import LabPLANET.utilities.LabPLANETFrontEnd;
-import LabPLANET.utilities.LabPLANETRequest;
+import LabPLANET.utilities.LPHttp;
 import LabPLANET.utilities.LabPLANETSession;
 import databases.Rdbms;
 import databases.Token;
@@ -35,8 +35,8 @@ import org.json.simple.JSONArray;
  */
 public class authenticationAPI extends HttpServlet {
     
-    public static String ERRORMSG_ERROR_STATUS_CODE="Error Status Code";
-    public static String ERRORMSG_MANDATORY_PARAMS_MISSING="API Error Message: There are mandatory params for this API method not being passed";
+    public static final String ERRORMSG_ERROR_STATUS_CODE="Error Status Code";
+    public static final String ERRORMSG_MANDATORY_PARAMS_MISSING="API Error Message: There are mandatory params for this API method not being passed";
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      *
@@ -47,29 +47,20 @@ public class authenticationAPI extends HttpServlet {
      */
     //public enum actionsList {    AUTHENTICATE,    GETUSERROLE,    LOW    }
     
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response)            throws ServletException, IOException {
+        request=LPHttp.requestPreparation(request);
+        response=LPHttp.responsePreparation(response);
 
-                response.setContentType("application/json");
-                response.setCharacterEncoding("UTF-8");
-                request.setCharacterEncoding("UTF-8");
-
-                ResourceBundle prop = ResourceBundle.getBundle("parameter.config.config");
-                String frontendUrl = prop.getString("frontend_url");
-      
-                response.setHeader("Access-Control-Allow-Origin", frontendUrl);
-                response.setHeader("Access-Control-Allow-Methods", "GET");        
-      
         String language = "en";
     
         try (PrintWriter out = response.getWriter()) {            
             String[] errObject = new String[]{"Servlet sampleAPI at " + request.getServletPath()};            
 
             String[] mandatoryParamsAction = new String[]{"actionName"};            
-            Object[] areMandatoryParamsInResponse = LabPLANETRequest.areMandatoryParamsInApiRequest(request, mandatoryParamsAction);
+            Object[] areMandatoryParamsInResponse = LPHttp.areMandatoryParamsInApiRequest(request, mandatoryParamsAction);
             if (LPPlatform.LAB_FALSE.equalsIgnoreCase(areMandatoryParamsInResponse[0].toString())){
-                errObject = LabPLANETArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
-                errObject = LabPLANETArray.addValueToArray1D(errObject, ERRORMSG_MANDATORY_PARAMS_MISSING+": "+areMandatoryParamsInResponse[1].toString());                    
+                errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
+                errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_MANDATORY_PARAMS_MISSING+": "+areMandatoryParamsInResponse[1].toString());                    
                 Object[] errMsg = LabPLANETFrontEnd.responseError(errObject, language, areMandatoryParamsInResponse[1].toString());
                 response.sendError((int) errMsg[0], (String) errMsg[1]);    
                 Rdbms.closeRdbms(); 
@@ -80,11 +71,11 @@ public class authenticationAPI extends HttpServlet {
             switch (actionName.toUpperCase()){
                 case "AUTHENTICATE":
                     mandatoryParamsAction = new String[]{"dbUserName"};
-                    mandatoryParamsAction = LabPLANETArray.addValueToArray1D(mandatoryParamsAction, "dbUserPassword");
-                    areMandatoryParamsInResponse = LabPLANETRequest.areMandatoryParamsInApiRequest(request, mandatoryParamsAction);
+                    mandatoryParamsAction = LPArray.addValueToArray1D(mandatoryParamsAction, "dbUserPassword");
+                    areMandatoryParamsInResponse = LPHttp.areMandatoryParamsInApiRequest(request, mandatoryParamsAction);
                     if (LPPlatform.LAB_FALSE.equalsIgnoreCase(areMandatoryParamsInResponse[0].toString())){
-                        errObject = LabPLANETArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
-                        errObject = LabPLANETArray.addValueToArray1D(errObject, ERRORMSG_MANDATORY_PARAMS_MISSING+": "+areMandatoryParamsInResponse[1].toString());                    
+                        errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
+                        errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_MANDATORY_PARAMS_MISSING+": "+areMandatoryParamsInResponse[1].toString());                    
                         Object[] errMsg = LabPLANETFrontEnd.responseError(errObject, language, areMandatoryParamsInResponse[1].toString());
                         response.sendError((int) errMsg[0], (String) errMsg[1]);    
                         Rdbms.closeRdbms(); 
@@ -96,8 +87,8 @@ public class authenticationAPI extends HttpServlet {
                     boolean isConnected = false;
                     isConnected = Rdbms.getRdbms().startRdbms(dbUserName, dbUserPassword);           
                     if (!isConnected){                            
-                        errObject = LabPLANETArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
-                        errObject = LabPLANETArray.addValueToArray1D(errObject, "API Error Message: db User Name and Password not correct, connection to the database is not possible");                    
+                        errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
+                        errObject = LPArray.addValueToArray1D(errObject, "API Error Message: db User Name and Password not correct, connection to the database is not possible");                    
                         Object[] errMsg = LabPLANETFrontEnd.responseError(errObject, language, null);
                         response.sendError((int) errMsg[0], (String) errMsg[1]);   
                         Rdbms.closeRdbms(); 
@@ -106,8 +97,8 @@ public class authenticationAPI extends HttpServlet {
                     Role rol = new Role();
                     Object[][] internalUser = rol.getInternalUser(dbUserName);
                     if (LPPlatform.LAB_FALSE.equalsIgnoreCase(internalUser[0][0].toString())){
-                        errObject = LabPLANETArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
-                        errObject = LabPLANETArray.addValueToArray1D(errObject, "API Error Message: Person does not exist or password incorrect.");                    
+                        errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
+                        errObject = LPArray.addValueToArray1D(errObject, "API Error Message: Person does not exist or password incorrect.");                    
                         Object[] errMsg = LabPLANETFrontEnd.responseError(errObject, language, null);
                         response.sendError((int) errMsg[0], (String) errMsg[1]);        
                         Rdbms.closeRdbms(); 
@@ -129,12 +120,12 @@ public class authenticationAPI extends HttpServlet {
                     return;
                 case "GETUSERROLE":         
                     mandatoryParamsAction = new String[]{"dbUserName"};
-                    mandatoryParamsAction = LabPLANETArray.addValueToArray1D(mandatoryParamsAction, "dbUserPassword");
-                    mandatoryParamsAction = LabPLANETArray.addValueToArray1D(mandatoryParamsAction, "userInfoId");
-                    areMandatoryParamsInResponse = LabPLANETRequest.areMandatoryParamsInApiRequest(request, mandatoryParamsAction);
+                    mandatoryParamsAction = LPArray.addValueToArray1D(mandatoryParamsAction, "dbUserPassword");
+                    mandatoryParamsAction = LPArray.addValueToArray1D(mandatoryParamsAction, "userInfoId");
+                    areMandatoryParamsInResponse = LPHttp.areMandatoryParamsInApiRequest(request, mandatoryParamsAction);
                     if (LPPlatform.LAB_FALSE.equalsIgnoreCase(areMandatoryParamsInResponse[0].toString())){
-                        errObject = LabPLANETArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
-                        errObject = LabPLANETArray.addValueToArray1D(errObject, ERRORMSG_MANDATORY_PARAMS_MISSING+": "+areMandatoryParamsInResponse[1].toString());                    
+                        errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
+                        errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_MANDATORY_PARAMS_MISSING+": "+areMandatoryParamsInResponse[1].toString());                    
                         Object[] errMsg = LabPLANETFrontEnd.responseError(errObject, language, areMandatoryParamsInResponse[1].toString());
                         response.sendError((int) errMsg[0], (String) errMsg[1]);    
                         Rdbms.closeRdbms(); 
@@ -146,8 +137,8 @@ public class authenticationAPI extends HttpServlet {
                     
                     isConnected = Rdbms.getRdbms().startRdbms(dbUserName, dbUserPassword);                    
                     if (!isConnected){
-                        errObject = LabPLANETArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
-                        errObject = LabPLANETArray.addValueToArray1D(errObject, "API Error Message: db User Name and Password not correct, connection to the database is not possible");                    
+                        errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
+                        errObject = LPArray.addValueToArray1D(errObject, "API Error Message: db User Name and Password not correct, connection to the database is not possible");                    
                         Object[] errMsg = LabPLANETFrontEnd.responseError(errObject, language, null);
                         response.sendError((int) errMsg[0], (String) errMsg[1]);      
                         Rdbms.closeRdbms(); 
@@ -176,13 +167,13 @@ public class authenticationAPI extends HttpServlet {
                     
                     Object[][] recordFieldsByFilter = Rdbms.getRecordFieldsByFilter("config", "user_profile", 
                                 new String[]{"user_info_id"}, new Object[]{userInfoId}, new String[]{"role_id"});
-                        //Object[] recordFieldsByFilter1D =  LabPLANETArray.array2dTo1d(recordFieldsByFilter);
+                        //Object[] recordFieldsByFilter1D =  LPArray.array2dTo1d(recordFieldsByFilter);
                     if (LPPlatform.LAB_FALSE.equalsIgnoreCase(recordFieldsByFilter[0][0].toString())){
-                        Object[] errMsg = LabPLANETFrontEnd.responseError(LabPLANETArray.array2dTo1d(recordFieldsByFilter), language, null);
+                        Object[] errMsg = LabPLANETFrontEnd.responseError(LPArray.array2dTo1d(recordFieldsByFilter), language, null);
                         response.sendError((int) errMsg[0], (String) errMsg[1]);                            
                         return;
                     }
-                    Object[] recordsFieldsByFilter1D = LabPLANETArray.array2dTo1d(recordFieldsByFilter);                    
+                    Object[] recordsFieldsByFilter1D = LPArray.array2dTo1d(recordFieldsByFilter);                    
                     System.out.println(Arrays.toString(recordsFieldsByFilter1D));
                     
                      jArray= new JSONArray();
@@ -196,11 +187,11 @@ public class authenticationAPI extends HttpServlet {
                     return;                                
                 case "FINALTOKEN":     
                     mandatoryParamsAction = new String[]{"myToken"};
-                    mandatoryParamsAction = LabPLANETArray.addValueToArray1D(mandatoryParamsAction, "userRole");
-                    areMandatoryParamsInResponse = LabPLANETRequest.areMandatoryParamsInApiRequest(request, mandatoryParamsAction);
+                    mandatoryParamsAction = LPArray.addValueToArray1D(mandatoryParamsAction, "userRole");
+                    areMandatoryParamsInResponse = LPHttp.areMandatoryParamsInApiRequest(request, mandatoryParamsAction);
                     if (LPPlatform.LAB_FALSE.equalsIgnoreCase(areMandatoryParamsInResponse[0].toString())){
-                        errObject = LabPLANETArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
-                        errObject = LabPLANETArray.addValueToArray1D(errObject, ERRORMSG_MANDATORY_PARAMS_MISSING+": "+areMandatoryParamsInResponse[1].toString());                    
+                        errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
+                        errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_MANDATORY_PARAMS_MISSING+": "+areMandatoryParamsInResponse[1].toString());                    
                         Object[] errMsg = LabPLANETFrontEnd.responseError(errObject, language, areMandatoryParamsInResponse[1].toString());
                         response.sendError((int) errMsg[0], (String) errMsg[1]);    
                         Rdbms.closeRdbms(); 
@@ -213,11 +204,11 @@ public class authenticationAPI extends HttpServlet {
                     String[] tokenParams = token.tokenParamsList();
                     String[] tokenParamsValues = token.validateToken(firstToken, tokenParams);
                     
-                    String userName = tokenParamsValues[LabPLANETArray.valuePosicInArray(tokenParams, "userDB")];
-                    String password = tokenParamsValues[LabPLANETArray.valuePosicInArray(tokenParams, "userDBPassword")];
-                    internalUserStr = tokenParamsValues[LabPLANETArray.valuePosicInArray(tokenParams, "internalUserID")];
-                    //String sessionIdStr = tokenParamsValues[LabPLANETArray.valuePosicInArray(tokenParams, "appSessionId")];
-                    //String appSessionStartedDate = tokenParamsValues[LabPLANETArray.valuePosicInArray(tokenParams, "appSessionStartedDate")];
+                    String userName = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, "userDB")];
+                    String password = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, "userDBPassword")];
+                    internalUserStr = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, "internalUserID")];
+                    //String sessionIdStr = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, "appSessionId")];
+                    //String appSessionStartedDate = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, "appSessionStartedDate")];
 
 String sessionIdStr = "";
 if (1==1){
@@ -227,8 +218,8 @@ if (1==1){
                     Object[] fieldsValue = new Object[]{internalUserStr, userRole};
                     Object[] newAppSession = LabPLANETSession.newAppSession(fieldsName, fieldsValue);
                     if (LPPlatform.LAB_FALSE.equalsIgnoreCase(newAppSession[0].toString())){
-                        errObject = LabPLANETArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
-                        errObject = LabPLANETArray.addValueToArray1D(errObject, "API Error Message: App Session Id cannot be generated");                    
+                        errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
+                        errObject = LPArray.addValueToArray1D(errObject, "API Error Message: App Session Id cannot be generated");                    
                         Object[] errMsg = LabPLANETFrontEnd.responseError(errObject, language, null);
                         response.sendError((int) errMsg[0], (String) errMsg[1]);        
                         Rdbms.closeRdbms(); 
@@ -236,8 +227,8 @@ if (1==1){
                     }
                     Integer sessionId = Integer.parseInt((String) newAppSession[newAppSession.length-1]);
                     if (sessionId==null){
-                        errObject = LabPLANETArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
-                        errObject = LabPLANETArray.addValueToArray1D(errObject, "API Error Message: App Session Id cannot be null");                    
+                        errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
+                        errObject = LPArray.addValueToArray1D(errObject, "API Error Message: App Session Id cannot be null");                    
                         Object[] errMsg = LabPLANETFrontEnd.responseError(errObject, language, null);
                         response.sendError((int) errMsg[0], (String) errMsg[1]);        
                         Rdbms.closeRdbms(); 
@@ -250,8 +241,8 @@ if (1==1){
                     Object[][] userEsignInfo = new Object[1][1];
                     userEsignInfo[0][0]="mala";
                     if (LPPlatform.LAB_FALSE.equalsIgnoreCase(userEsignInfo[0][0].toString())){
-                        errObject = LabPLANETArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
-                        errObject = LabPLANETArray.addValueToArray1D(errObject, "API Error Message: eSign Info not available");                    
+                        errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
+                        errObject = LPArray.addValueToArray1D(errObject, "API Error Message: eSign Info not available");                    
                         Object[] errMsg = LabPLANETFrontEnd.responseError(errObject, language, null);
                         response.sendError((int) errMsg[0], (String) errMsg[1]);        
                         Rdbms.closeRdbms(); 

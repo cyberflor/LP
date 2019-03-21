@@ -42,11 +42,7 @@ public class RequirementDeployment {
      */
     @SuppressWarnings("ConvertToTryWithResources")
     public String _newRequirement ( String procedure, Integer procVersion) throws SQLException, IOException {    
-       
-        Integer queryInsertNum=0;
-        FileWriter fw = null;  
-        Writer wr = null;
-return "";
+        return "";
     }
 /*    
         String newEntry = d+" Starting requirements deployment..."+d;
@@ -153,14 +149,6 @@ return "";
      * @param procVersion
      */
  
-    public void _deploymentNavigatorNavId ( String procName, Integer procVersion){                       
-        Integer queryInsertNum=0;
-        Integer rootNode = 0;
-        Integer newBranch;
-        String navCode = "";
-        String procCode = "";
-        String privId = "";
-    }
 /*        String codeName = "OIL-PL1";
 
         Object[][] procUserReqBranchesInfo = Rdbms.getRecordFieldsByFilter(schemaRequirements, "procedure_user_requirements", 
@@ -228,22 +216,6 @@ return "";
      * @param procCode
      */
 
-    public void _deploymentNavigatorNavTabId ( String procName, Integer procVersion, Integer navId, String procCode){            
-        Integer queryInsertNum=0;
-        String navCode = "";
-        Integer navTabId = 0;
-        String catw_widget_name = "";
-        Integer catw_module_id = 0;
-        Integer catw_module_version = 0;
-        Integer catw_module_revision = 0;
-        String widgetsAdded = "";
-        String subTabsAdded = "";
-        String prurs_widget_fields = "";
-        String prurs_name = "";
-        String prurs_widget_desc = "";
-        String prurs_schema_name = "";
-        String prurs_table_name = "";
-    }    
  /*       
         try{
             String query = "SELECT catw.module_id catw_module_id, catw.module_version catw_module_version, catw.module_revision catw_module_revision, "
@@ -390,7 +362,6 @@ return "";
                 
         //load record from template and then insert replacing required code
         if (numr>0){
-            Integer pk=0;
 
             if (!haschildren){
                 Rdbms.updateRecordFieldsByFilter(LPPlatform.SCHEMA_CONFIG, "nav", 
@@ -412,7 +383,6 @@ return "";
         StackTraceElement[] elements = Thread.currentThread().getStackTrace();
         String methodName = elements[1].getMethodName();
         
-        Boolean created =false;
         Integer numr = 0;
         String newEntry = "";
         
@@ -441,13 +411,6 @@ return "";
     
     private Boolean _createNavTabComp( Integer navId, Integer navTabId, String procName, Integer procVersion, String procCode, String catw_widget_name, String catw_widget_nameBase, Integer catw_module_id, Integer catw_module_version, Integer catw_module_revision, String prurs_widget_fields, String prurs_schema_name, String prurs_table_name, String sopName, String sopSection ) throws SQLException    {   
         StackTraceElement[] elements = Thread.currentThread().getStackTrace();
-        String methodName = elements[1].getMethodName();
-
-        Boolean created =false;    
-        String dynNavTabCompId = "";
-        Integer pk=0;
-        String ButtonsAdhoc = "";
-        String currCatwTbar = "";
         return false;
     }        
 /*    
@@ -555,9 +518,7 @@ return "";
         ResourceBundle prop = ResourceBundle.getBundle("parameter.config.config");        
         String logDir = prop.getString("logDirPath");
 
-        Integer queryInsertNum=0;
         FileWriter fw = null;  
-        Writer wr = null;
         
         String logFile = logDir + "/" + newLogFileName;
         logFile = logFile.replace("/", "\\");

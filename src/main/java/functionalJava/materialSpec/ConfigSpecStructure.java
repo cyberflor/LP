@@ -7,7 +7,7 @@ package functionalJava.materialSpec;
 
 import LabPLANET.utilities.LPNulls;
 import databases.Rdbms;
-import LabPLANET.utilities.LabPLANETArray;
+import LabPLANET.utilities.LPArray;
 import LabPLANET.utilities.LPPlatform;
 import static LabPLANET.utilities.LPPlatform.trapErrorMessage;
 import java.lang.reflect.InvocationTargetException;
@@ -174,7 +174,6 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
                 
         String analysesMissing = "";
         String myDiagnoses = "";        
-        String query = "";
         String specVariations = "";
         String schemaName = LPPlatform.SCHEMA_CONFIG;
         
@@ -348,7 +347,6 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
         String[] specialFields = getSpecialFields();
         String[] specialFieldsFunction = getSpecialFieldsFunction();
         
-        String specialFieldsCheck = "";
         for (Integer inumLines=0;inumLines<specFieldName.length;inumLines++){
             String currField = "spec." + specFieldName[inumLines];
             String currFieldValue = specFieldValue[inumLines].toString();
@@ -373,20 +371,20 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
                 }
                 if ( (specialFunctionReturn.toString().contains("ERROR")) ){
                     errorCode = "DataSample_SpecialFunctionReturnedERROR";
-                    errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, currField);
-                    errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, aMethod);
-                    errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, LPNulls.replaceNull(specialFunctionReturn));
+                    errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, currField);
+                    errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, aMethod);
+                    errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, LPNulls.replaceNull(specialFunctionReturn));
                     return (String[]) LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);                                                
                 }
             }
         }      
         try{
             String[] whereFieldNames = new String[0];
-            whereFieldNames = LabPLANETArray.addValueToArray1D(whereFieldNames, "code");
-            whereFieldNames = LabPLANETArray.addValueToArray1D(whereFieldNames, "config_version");
+            whereFieldNames = LPArray.addValueToArray1D(whereFieldNames, "code");
+            whereFieldNames = LPArray.addValueToArray1D(whereFieldNames, "config_version");
             Object[] whereFieldValues = new Object[0];
-            whereFieldValues = LabPLANETArray.addValueToArray1D(whereFieldValues, specCode);
-            whereFieldValues = LabPLANETArray.addValueToArray1D(whereFieldValues, specCodeVersion);            
+            whereFieldValues = LPArray.addValueToArray1D(whereFieldValues, specCode);
+            whereFieldValues = LPArray.addValueToArray1D(whereFieldValues, specCodeVersion);            
             diagnoses = Rdbms.updateRecordFieldsByFilter(schemaConfigName, "spec", specFieldName, specFieldValue, whereFieldNames, whereFieldValues);
 
            if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){
@@ -399,7 +397,7 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
         errorCode = "UnhandledExceptionInCode";
         String Params = "SchemaPrefix: "+schemaPrefix+"specCode"+specCode+"specCodeVersion"+specCodeVersion.toString()
                 +"specFieldName"+Arrays.toString(specFieldName)+"specFieldValue"+Arrays.toString(specFieldValue);
-        errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, Params);        
+        errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, Params);        
         return trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);
     }
 
@@ -416,7 +414,6 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
      */
     public Object[] specNew( String schemaPrefix, String[] specFieldName, Object[] specFieldValue ) throws SQLException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{                          
         String newCode = "";
-        String query = "";
         String errorCode = "";
         String[] errorDetailVariables = new String[0];
         
@@ -424,12 +421,12 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
 
         mandatoryFields = getSpecMandatoryFields();
         
-        String[] checkTwoArraysSameLength = LabPLANETArray.checkTwoArraysSameLength(specFieldName, specFieldValue);
+        String[] checkTwoArraysSameLength = LPArray.checkTwoArraysSameLength(specFieldName, specFieldValue);
         if (LPPlatform.LAB_FALSE.equalsIgnoreCase(checkTwoArraysSameLength[0])){return checkTwoArraysSameLength;}
 
-        if (LabPLANETArray.duplicates(specFieldName)){
+        if (LPArray.duplicates(specFieldName)){
            errorCode = "DataSample_FieldsDuplicated";
-           errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, Arrays.toString(specFieldName));
+           errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, Arrays.toString(specFieldName));
            return (String[]) LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);                      
         }
 
@@ -443,13 +440,13 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
             }
             else{
                 Object currFieldValue = specFieldValue[Arrays.asList(specFieldName).indexOf(currField.toLowerCase())];
-                mandatoryFieldValue = (Object[]) LabPLANETArray.addValueToArray1D(mandatoryFieldValue, currFieldValue);
+                mandatoryFieldValue = (Object[]) LPArray.addValueToArray1D(mandatoryFieldValue, currFieldValue);
             }
             
         }            
         if (mandatoryFieldsMissing.length()>0){
            errorCode = "DataSample_MissingMandatoryFields";
-           errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, mandatoryFieldsMissing);
+           errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, mandatoryFieldsMissing);
            return (String[]) LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);                
         }
 
@@ -460,7 +457,6 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
 
         String[] specialFields = getSpecialFields();
         String[] specialFieldsFunction = getSpecialFieldsFunction();
-        String specialFieldsCheck = "";
         for (Integer inumLines=0;inumLines<specFieldName.length;inumLines++){
             String currField = "spec." + specFieldName[inumLines];
             String currFieldValue = specFieldValue[inumLines].toString();
@@ -482,9 +478,9 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
                     Object specialFunctionReturn = method.invoke(this, (Object[]) parameters);      
                     if (specialFunctionReturn.toString().contains("ERROR")){
                         errorCode = "DataSample_SpecialFunctionReturnedERROR";
-                        errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, currField);
-                        errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, aMethod);
-                        errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, specialFunctionReturn.toString());
+                        errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, currField);
+                        errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, aMethod);
+                        errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, specialFunctionReturn.toString());
                         return (String[]) LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);                            
                     }
                     //String specialFunctionReturnStatus = String.valueOf(specialFunctionReturn);
@@ -493,9 +489,9 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
         diagnoses = Rdbms.existsRecord(schemaConfigName, "spec", new String[]{"code", "config_version"}, new Object[] {newCode, newCodeVersion});        
         if (LPPlatform.LAB_FALSE.equalsIgnoreCase(diagnoses[0].toString())){
             errorCode = "specRecord_AlreadyExists";
-            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, newCode);
-            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, newCodeVersion.toString());
-            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaConfigName);
+            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, newCode);
+            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, newCodeVersion.toString());
+            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, schemaConfigName);
             return (String[]) LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);           
         }
         try{
@@ -506,8 +502,8 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
                     new Object[]{newCode, newCodeVersion, false, false});       
             if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){
                 errorCode = "specRecord_createdSuccessfully";
-                errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, newCode);
-                errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaConfigName);
+                errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, newCode);
+                errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, schemaConfigName);
                 return (String[]) LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, errorCode, errorDetailVariables);                   
             }    
         } catch (IllegalArgumentException ex) {
@@ -515,7 +511,7 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
         }                    
         errorCode = "UnhandledExceptionInCode";
         String params = "schemaPrefix: " + schemaPrefix+"specFieldName: "+Arrays.toString(specFieldName)+"specFieldValue: "+Arrays.toString(specFieldValue);
-        errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, params);
+        errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, params);
         return (String[]) LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);                  
     }
     
@@ -527,7 +523,6 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
     public Object[] specVariationGetNamesList( String schemaPrefix, String specCode){
 
         String schemaName = LPPlatform.SCHEMA_CONFIG;
-        Object[] diagnosis = new Object[6];
         String variationList = "";
         String errorCode ="";
         
@@ -535,7 +530,7 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
         
         Object[][] variationListArray = Rdbms.getRecordFieldsByFilter(schemaName, "spec_limits", new String[]{"code"}, new Object[]{specCode}, new String[]{"name"});
         if (LPPlatform.LAB_FALSE.equalsIgnoreCase(variationListArray[0][0].toString())){            
-            return LabPLANETArray.array2dTo1d(variationListArray);
+            return LPArray.array2dTo1d(variationListArray);
         }else{
             for (int i=0;i<=variationListArray.length;i++){
                  if (variationList.length()>0){variationList=variationList+"|";}
@@ -609,19 +604,18 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
                           
         String code = "";
         String schemaName = LPPlatform.SCHEMA_CONFIG;
-        String query = "";
         String errorCode="";
         Object[]  errorDetailVariables= new Object[0];
 
         schemaName = LPPlatform.buildSchemaName(schemaPrefix, schemaName);
         mandatoryFields = getSpecLimitsMandatoryFields();
 
-        String[] checkTwoArraysSameLength = LabPLANETArray.checkTwoArraysSameLength(specFieldName, specFieldValue);
+        String[] checkTwoArraysSameLength = LPArray.checkTwoArraysSameLength(specFieldName, specFieldValue);
         if (LPPlatform.LAB_FALSE.equalsIgnoreCase(checkTwoArraysSameLength[0])){return checkTwoArraysSameLength;}
 
-        if (LabPLANETArray.duplicates(specFieldName)){
+        if (LPArray.duplicates(specFieldName)){
            errorCode = "DataSample_FieldsDuplicated";
-           errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, Arrays.toString(specFieldName));
+           errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, Arrays.toString(specFieldName));
            return (String[]) LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);                      
         }
         
@@ -635,7 +629,7 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
             }
             else{
                 Object currFieldValue = specFieldValue[Arrays.asList(specFieldName).indexOf(currField.toLowerCase())];
-                mandatoryFieldValue = LabPLANETArray.addValueToArray1D(mandatoryFieldValue, currFieldValue);
+                mandatoryFieldValue = LPArray.addValueToArray1D(mandatoryFieldValue, currFieldValue);
             }
         }                    
         Integer fieldIndex = Arrays.asList(specFieldName).indexOf("code");
@@ -650,16 +644,14 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
         
         if (mandatoryFieldsMissing.length()>0){
            errorCode = "DataSample_MissingMandatoryFields";
-           errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, mandatoryFieldsMissing);
+           errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, mandatoryFieldsMissing);
            return (String[]) LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);    
         }
         
         String[] specialFields = getSpecialFields();
         String[] specialFieldsFunction = getSpecialFieldsFunction();
-        String specialFieldsCheck = "";
         for (Integer inumLines=0;inumLines<specFieldName.length;inumLines++){
             String currField = "spec_limits." + specFieldName[inumLines];
-            String currFieldValue = specFieldValue[inumLines].toString();
             boolean contains = Arrays.asList(specialFields).contains(currField);
             if (contains){                    
                 Integer specialFieldIndex = Arrays.asList(specialFields).indexOf(currField);
@@ -675,18 +667,18 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
                     Object specialFunctionReturn = method.invoke(this, schemaName);      
                     if (specialFunctionReturn.toString().contains("ERROR")){
                         errorCode = "DataSample_SpecialFunctionReturnedERROR";
-                        errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, currField);
-                        errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, aMethod);
-                        errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, specialFunctionReturn.toString());
+                        errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, currField);
+                        errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, aMethod);
+                        errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, specialFunctionReturn.toString());
                         return (String[]) LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);                            
                     }
                 }
                 catch(InvocationTargetException ite){
                     errorCode = "LabPLANETPlatform_SpecialFunctionCausedException";
-                    errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, aMethod);
-                    errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, ite.getMessage());                        
-                    errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, "Spec Limits");
-                    errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaName);
+                    errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, aMethod);
+                    errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, ite.getMessage());                        
+                    errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, "Spec Limits");
+                    errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, schemaName);
                     return (String[]) LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);                         
                 }
             }
@@ -703,11 +695,11 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
         Object[] whereFieldsValue = new Object[] {analysis, methodName, methodVersion};
         diagnoses = Rdbms.existsRecord(schemaName, tableName, whereFields, whereFieldsValue);                
         if (!LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){
-            Object[] whereFieldsAndValues = LabPLANETArray.joinTwo1DArraysInOneOf1DString(diagnoses, whereFieldsValue, ":");
+            Object[] whereFieldsAndValues = LPArray.joinTwo1DArraysInOneOf1DString(diagnoses, whereFieldsValue, ":");
             errorCode = "Rdbms_NoRecordsFound";
-            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, tableName);
-            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, Arrays.toString(whereFieldsAndValues));                                   
-            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaName);
+            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, tableName);
+            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, Arrays.toString(whereFieldsAndValues));                                   
+            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, schemaName);
             return (String[]) LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);                                            
         }else{
             fieldIndex = Arrays.asList(specFieldName).indexOf("parameter");
@@ -717,11 +709,11 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
             whereFieldsValue = new Object[] {analysis, methodName, methodVersion, parameter};            
             diagnoses = Rdbms.existsRecord(schemaName, tableName, whereFields, whereFieldsValue);      
             if (!LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){
-                Object[] whereFieldsAndValues = LabPLANETArray.joinTwo1DArraysInOneOf1DString(diagnoses, whereFieldsValue, ":");
+                Object[] whereFieldsAndValues = LPArray.joinTwo1DArraysInOneOf1DString(diagnoses, whereFieldsValue, ":");
                 errorCode = "Rdbms_NoRecordsFound";
-                errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, tableName);
-                errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, Arrays.toString(whereFieldsAndValues));                                   
-                errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaName);
+                errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, tableName);
+                errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, Arrays.toString(whereFieldsAndValues));                                   
+                errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, schemaName);
                 diagnoses =  (String[]) LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);                    
                 diagnoses[5]="The parameter " + parameter + " was not found even though the method "+ methodName+" in its version " + methodVersion.toString()+" in the analysis " + analysis + " exists in the schema "+schemaName + "......... " + diagnoses[5].toString();                                             
                 return diagnoses;}                   
@@ -734,7 +726,7 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
         }                    
         errorCode = "UnhandledExceptionInCode";
         String params = "schemaPrefix: " + schemaPrefix+"specFieldName: "+Arrays.toString(specFieldName)+"specFieldValue: "+Arrays.toString(specFieldValue);
-        errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, params);
+        errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, params);
         diagnoses =  (String[]) LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);                    
         return diagnoses;
     }

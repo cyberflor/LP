@@ -80,11 +80,10 @@ public class LabPLANETDate {
             case "SATURDAYS":dayOfWeekNum=6;break;
             default:
                 return new Object[0];
-                //dt = LabPLANETArray.addValueToArray1D(dt,"FALSE");
-                //dt = LabPLANETArray.addValueToArray1D(dt, "day of week "+dayOfWeek+" not recognized.");return dt;                
+                //dt = LPArray.addValueToArray1D(dt,"FALSE");
+                //dt = LPArray.addValueToArray1D(dt, "day of week "+dayOfWeek+" not recognized.");return dt;                
         }
-        int startDateDayOfWeek = startDate.get(Calendar.DAY_OF_WEEK); int endDateDayOfWeek = endDate.get(Calendar.DAY_OF_WEEK);
-        
+        int startDateDayOfWeek = startDate.get(Calendar.DAY_OF_WEEK); 
         
         int daysToAdd=0;
         if (startDateDayOfWeek < dayOfWeekNum){
@@ -95,7 +94,7 @@ public class LabPLANETDate {
         startDate.add(Calendar.DAY_OF_MONTH, daysToAdd);
         
         while (startDate.compareTo(endDate)<=0){
-            dt = LabPLANETArray.addValueToArray1D(dt, startDate.getTime());
+            dt = LPArray.addValueToArray1D(dt, startDate.getTime());
             startDate.add(Calendar.DAY_OF_MONTH, 7);
         }
         return  dt;                       

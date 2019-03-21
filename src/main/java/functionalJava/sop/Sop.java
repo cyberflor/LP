@@ -6,7 +6,7 @@
 package functionalJava.sop;
 
 import databases.Rdbms;
-import LabPLANET.utilities.LabPLANETArray;
+import LabPLANET.utilities.LPArray;
 import LabPLANET.utilities.LPPlatform;
 import java.sql.SQLException;
 
@@ -16,6 +16,12 @@ import java.sql.SQLException;
  */
 public class Sop {
 
+    public static final String FIELDNAME_SOP_ID="sop_id";
+    public static final String FIELDNAME_SOP_NAME="sop_name";
+    public static final String FIELDNAME_SOP_VERSION="sop_version";
+    public static final String FIELDNAME_SOP_REVISION="sop_revision";
+    
+    
     Integer sopId = null;
     String sopName = "";
     Integer sopVersion = 0;
@@ -71,16 +77,16 @@ public class Sop {
         String[] fieldNames = new String[0];
         Object[] fieldValues = new Object[0];
         
-        fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "sop_name");
-        fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, this.sopName);
-        fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "sop_version");
-        fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, this.sopVersion);
-        fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "sop_revision");
-        fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, this.sopRevision);
-        fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "current_status");
-        fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, this.currentStatus);
-        fieldNames = LabPLANETArray.addValueToArray1D(fieldNames, "added_by");
-        fieldValues = LabPLANETArray.addValueToArray1D(fieldValues, userInfoId);
+        fieldNames = LPArray.addValueToArray1D(fieldNames, FIELDNAME_SOP_NAME);
+        fieldValues = LPArray.addValueToArray1D(fieldValues, this.sopName);
+        fieldNames = LPArray.addValueToArray1D(fieldNames, FIELDNAME_SOP_VERSION);
+        fieldValues = LPArray.addValueToArray1D(fieldValues, this.sopVersion);
+        fieldNames = LPArray.addValueToArray1D(fieldNames, FIELDNAME_SOP_REVISION);
+        fieldValues = LPArray.addValueToArray1D(fieldValues, this.sopRevision);
+        fieldNames = LPArray.addValueToArray1D(fieldNames, "current_status");
+        fieldValues = LPArray.addValueToArray1D(fieldValues, this.currentStatus);
+        fieldNames = LPArray.addValueToArray1D(fieldNames, "added_by");
+        fieldValues = LPArray.addValueToArray1D(fieldValues, userInfoId);
 
         Object[][] dbGetSopObjByName = this.dbGetSopObjByName(schemaPrefix, this.sopName, fieldNames);
         if (LPPlatform.LAB_FALSE.equalsIgnoreCase(dbGetSopObjByName[0][0].toString())){        
@@ -103,7 +109,7 @@ public class Sop {
         String schemaConfigName = LPPlatform.SCHEMA_CONFIG;
         schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, schemaConfigName);
         Object[][] sopInfo = Rdbms.getRecordFieldsByFilter(schemaConfigName, tableName, 
-                                                                new String[]{"sop_id"}, new Object[]{sopId}, new String[]{"sop_id"});
+                                                                new String[]{FIELDNAME_SOP_ID}, new Object[]{sopId}, new String[]{FIELDNAME_SOP_ID});
         Integer getSopId = (Integer) sopInfo[0][0];
         return getSopId;
     }                
@@ -119,7 +125,7 @@ public class Sop {
         String schemaConfigName = LPPlatform.SCHEMA_CONFIG;
         schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, schemaConfigName);
         Object[][] sopInfo = Rdbms.getRecordFieldsByFilter(schemaConfigName, tableName, 
-                                                                new String[]{"sop_name"}, new Object[]{sopName}, new String[]{"sop_id"});
+                                                                new String[]{FIELDNAME_SOP_NAME}, new Object[]{sopName}, new String[]{FIELDNAME_SOP_ID});
         Integer getSopId = (Integer) sopInfo[0][0];
         return getSopId;
         
@@ -137,7 +143,7 @@ public class Sop {
         String schemaConfigName = LPPlatform.SCHEMA_CONFIG;
         schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, schemaConfigName);
         Object[][] sopInfo = Rdbms.getRecordFieldsByFilter(schemaConfigName, tableName, 
-                                                                new String[]{"sop_name"}, new Object[]{sopName}, fields);
+                                                                new String[]{FIELDNAME_SOP_NAME}, new Object[]{sopName}, fields);
         return sopInfo;
     }
 
@@ -153,11 +159,11 @@ public class Sop {
         schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, schemaConfigName); 
         String errorCode = "";        
         Object[] diagnoses = Rdbms.insertRecordInTable(schemaConfigName, "sop_meta_data", 
-                            new String[]{"sop_name", "sop_version", "sop_revision"},
+                            new String[]{FIELDNAME_SOP_NAME, FIELDNAME_SOP_VERSION, FIELDNAME_SOP_REVISION},
                             new Object[]{sopName, 1, 1});
         if (LPPlatform.LAB_FALSE.equals(diagnoses[0].toString() )){
             errorCode = "Sop_SopMetaData_recordNotCreated";
-            String[] fieldForInserting = LabPLANETArray.joinTwo1DArraysInOneOf1DString(new String[]{"sop_name", "sop_version", "sop_revision"}, new Object[]{sopName, 1, 1}, ":");
+            String[] fieldForInserting = LPArray.joinTwo1DArraysInOneOf1DString(new String[]{FIELDNAME_SOP_NAME, FIELDNAME_SOP_VERSION, FIELDNAME_SOP_REVISION}, new Object[]{sopName, 1, 1}, ":");
             LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, new Object[]{fieldForInserting, schemaConfigName} );
             return diagnoses;            
         }else{           
@@ -179,7 +185,7 @@ public class Sop {
         String schemaConfigName = LPPlatform.SCHEMA_CONFIG;
         schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, schemaConfigName);
         Object[] diagnoses = Rdbms.updateRecordFieldsByFilter(schemaConfigName, "sop_meta_data", 
-                                        new String[]{fieldName}, new Object[]{fieldValue}, new String[]{"sop_name"}, new Object[]{sopName});
+                                        new String[]{fieldName}, new Object[]{fieldValue}, new String[]{FIELDNAME_SOP_NAME}, new Object[]{sopName});
         if (LPPlatform.LAB_FALSE.equalsIgnoreCase(diagnoses[0].toString())){
             String errorCode = "Sop_SopMetaData_recordNotUpdated";
             LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, new Object[]{fieldName, fieldValue, sopName, schemaConfigName} );

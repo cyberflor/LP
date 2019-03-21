@@ -6,7 +6,7 @@
 package com.labplanet.servicios.testing.data;
 
 import functionalJava.testingScripts.LPTestingOutFormat;
-import LabPLANET.utilities.LabPLANETArray;
+import LabPLANET.utilities.LPArray;
 import databases.Rdbms;
 import functionalJava.batch.BatchArray;
 import java.io.IOException;
@@ -32,8 +32,8 @@ public class TstDataBatchArrSequence extends HttpServlet {
      */
     @SuppressWarnings("empty-statement")
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)            throws ServletException, IOException {
-        String csvFileName = "tstDataBatchArray.txt"; 
         response = LPTestingOutFormat.responsePreparation(response);        
+        String csvFileName = "tstDataBatchArray.txt"; 
         String fileContent = "";                          
         String csvPathName = LPTestingOutFormat.TESTING_FILES_PATH+csvFileName; 
         String csvFileSeparator=LPTestingOutFormat.TESTING_FILES_FIELD_SEPARATOR;
@@ -85,7 +85,7 @@ public class TstDataBatchArrSequence extends HttpServlet {
             fieldValue[5] = 4;
                                 
             Object[][] batchContent = myBatchArray[0].getBatchContent();
-            Object[] batchContent1d = LabPLANETArray.array2dTo1d(batchContent);
+            Object[] batchContent1d = LPArray.array2dTo1d(batchContent);
             
             fieldName[5] = "array_content";
             fieldValue[5] = batchContent1d;            
@@ -162,8 +162,8 @@ public class TstDataBatchArrSequence extends HttpServlet {
                 }
                 batchContent = myBatchArray[0].getBatchContent();
                 
-                batchContent1d = LabPLANETArray.array2dTo1d(batchContent);
-                Object[][] batchContent2d = LabPLANETArray.array1dTo2d(batchContent1d, mb.numCols);
+                batchContent1d = LPArray.array2dTo1d(batchContent);
+                Object[][] batchContent2d = LPArray.array1dTo2d(batchContent1d, mb.numCols);
                                 
                 fieldName = new String[5];
                 fieldValue = new Object[5];

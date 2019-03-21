@@ -7,7 +7,7 @@ package functionalJava.sop;
 
 import databases.Rdbms;
 import functionalJava.user.UserProfile;
-import LabPLANET.utilities.LabPLANETArray;
+import LabPLANET.utilities.LPArray;
 import LabPLANET.utilities.LPPlatform;
 import functionalJava.parameter.Parameter;
 import java.sql.ResultSet;
@@ -24,6 +24,10 @@ import java.util.logging.Logger;
  */
 public class UserSop {
     String classVersion = "0.1";
+
+    public static final String FIELDNAME_SOP_ID="sop_id";
+    public static final String FIELDNAME_SOP_NAME="sop_name";
+    
     private static final String SOP_ENABLE_CODE="SOP_ENABLE";
     private static final String SOP_ENABLE_CODE_ICON="xf272@FontAwesome";
     private static final String SOP_DISABLE_CODE="SOP_DISABLE";
@@ -44,7 +48,7 @@ public class UserSop {
      * @throws SQLException
      */
     public Object[] userSopCertifiedBySopName( String schemaPrefixName, String userInfoId, String sopName ) throws SQLException{    
-        return userSopCertifiedBySopInternalLogic(schemaPrefixName, userInfoId, "sop_name", sopName);        
+        return userSopCertifiedBySopInternalLogic(schemaPrefixName, userInfoId, FIELDNAME_SOP_NAME, sopName);        
         }
 
     /**
@@ -56,7 +60,7 @@ public class UserSop {
      * @throws SQLException
      */
     public Object[] userSopCertifiedBySopId( String schemaPrefixName, String userInfoId, String sopId ) throws SQLException{
-        return userSopCertifiedBySopInternalLogic(schemaPrefixName, userInfoId, "sop_id", sopId);        
+        return userSopCertifiedBySopInternalLogic(schemaPrefixName, userInfoId, FIELDNAME_SOP_ID, sopId);        
     }
     
     private Object[] userSopCertifiedBySopInternalLogic( String schemaPrefixName, String userInfoId, String SopIdFieldName, String SopIdFieldValue ) throws SQLException{
@@ -68,7 +72,7 @@ public class UserSop {
         UserProfile usProf = new UserProfile();
         Object[] userSchemas = (Object[]) usProf.getAllUserProcedurePrefix(userInfoId);
         if (LPPlatform.LAB_FALSE.equalsIgnoreCase(userSchemas[0].toString())){
-            return LabPLANETArray.array1dTo2d(userSchemas, userSchemas.length);
+            return LPArray.array1dTo2d(userSchemas, userSchemas.length);
         }        
         Boolean schemaIsCorrect = false;
         for (String us: (String[]) userSchemas){
@@ -77,8 +81,8 @@ public class UserSop {
         if (!schemaIsCorrect){
             String errorCode = "UserSop_UserWithNoRolesForThisGivenSchema";
             Object[] diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, new Object[]{userInfoId, schemaPrefixName});
-            diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, "ERROR");
-            diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, Parameter.getParameterBundle(schemaConfigName, "userSopCertificationLevelImage_ERROR"));
+            diagnoses = LPArray.addValueToArray1D(diagnoses, "ERROR");
+            diagnoses = LPArray.addValueToArray1D(diagnoses, Parameter.getParameterBundle(schemaConfigName, "userSopCertificationLevelImage_ERROR"));
             return diagnoses;
         }
         String[] userSchema = new String[1];
@@ -88,8 +92,8 @@ public class UserSop {
         Object[] filterFieldValue = new Object[2];
         String[] fieldsToReturn = new String[4];
 
-        fieldsToReturn[0] = "sop_id";
-        fieldsToReturn[1] = "sop_name";
+        fieldsToReturn[0] = FIELDNAME_SOP_ID;
+        fieldsToReturn[1] = FIELDNAME_SOP_NAME;
         fieldsToReturn[2] = "status";
         fieldsToReturn[3] = "light";
         filterFieldName[0]="user_id";
@@ -98,27 +102,27 @@ public class UserSop {
         filterFieldValue[1]=SopIdFieldValue;                
         Object[][] getUserProfileFieldValues = getUserProfileFieldValues(filterFieldName, filterFieldValue, fieldsToReturn, userSchema);   
         if (LPPlatform.LAB_FALSE.equalsIgnoreCase(getUserProfileFieldValues[0][0].toString())){
-            Object[] diagnoses = LabPLANETArray.array2dTo1d(getUserProfileFieldValues);
-            diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, "ERROR");
+            Object[] diagnoses = LPArray.array2dTo1d(getUserProfileFieldValues);
+            diagnoses = LPArray.addValueToArray1D(diagnoses, "ERROR");
             return diagnoses;
         }
         if (getUserProfileFieldValues.length<=0){
             Object[] diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, "UserSop_SopNotAssignedToThisUser", new Object[]{SopIdFieldValue, userInfoId, schemaPrefixName});
-            diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, "ERROR");
-            diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, Parameter.getParameterBundle(schemaConfigName, "userSopCertificationLevelImage_NotAssigned"));
+            diagnoses = LPArray.addValueToArray1D(diagnoses, "ERROR");
+            diagnoses = LPArray.addValueToArray1D(diagnoses, Parameter.getParameterBundle(schemaConfigName, "userSopCertificationLevelImage_NotAssigned"));
             return diagnoses;
         }
         if (getUserProfileFieldValues[0][3].toString().contains("GREEN")){
             Object[] diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, "UserSop_SopNotAssignedToThisUser", 
                     new Object[]{userInfoId, SopIdFieldValue, schemaPrefixName, "current status is "+getUserProfileFieldValues[0][2].toString()+" and the light is "+getUserProfileFieldValues[0][3].toString()});
-            diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, SOP_PASS_CODE);
-            diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, Parameter.getParameterBundle(schemaConfigName, "userSopCertificationLevelImage_Certified"));
+            diagnoses = LPArray.addValueToArray1D(diagnoses, SOP_PASS_CODE);
+            diagnoses = LPArray.addValueToArray1D(diagnoses, Parameter.getParameterBundle(schemaConfigName, "userSopCertificationLevelImage_Certified"));
             return diagnoses;
         }
         else{
             Object[] diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, "UserSop_UserNotCertifiedForSop", new Object[]{userInfoId, SopIdFieldValue, schemaPrefixName});
-            diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, SOP_NOTPASS_CODE);
-            diagnoses = LabPLANETArray.addValueToArray1D(diagnoses, Parameter.getParameterBundle(schemaConfigName, "userSopCertificationLevelImage_NotCertified"));
+            diagnoses = LPArray.addValueToArray1D(diagnoses, SOP_NOTPASS_CODE);
+            diagnoses = LPArray.addValueToArray1D(diagnoses, Parameter.getParameterBundle(schemaConfigName, "userSopCertificationLevelImage_NotCertified"));
             return diagnoses;
         }               
     }
@@ -142,7 +146,7 @@ public class UserSop {
         }
 
         if (LPPlatform.LAB_FALSE.equalsIgnoreCase(userSchemas[0].toString())){
-            return LabPLANETArray.array1dTo2d(userSchemas, userSchemas.length);
+            return LPArray.array1dTo2d(userSchemas, userSchemas.length);
         }
         String[] filterFieldName = new String[2];
         Object[] filterFieldValue = new Object[2];
@@ -154,11 +158,11 @@ public class UserSop {
         filterFieldValue[1]="RED";
         if (fieldsToRetrieve!=null){            
             for (String fv: fieldsToRetrieve){
-                fieldsToReturn = LabPLANETArray.addValueToArray1D(fieldsToReturn, fv);
+                fieldsToReturn = LPArray.addValueToArray1D(fieldsToReturn, fv);
             }
         }else{
-            fieldsToReturn = LabPLANETArray.addValueToArray1D(fieldsToReturn, "sop_id");
-            fieldsToReturn = LabPLANETArray.addValueToArray1D(fieldsToReturn, "sop_name");
+            fieldsToReturn = LPArray.addValueToArray1D(fieldsToReturn, FIELDNAME_SOP_ID);
+            fieldsToReturn = LPArray.addValueToArray1D(fieldsToReturn, FIELDNAME_SOP_NAME);
         }
                 
         Object[][] getUserProfileFieldValues = getUserProfileFieldValues(filterFieldName, filterFieldValue, fieldsToReturn, (String[]) userSchemas);   
@@ -185,7 +189,7 @@ public class UserSop {
      * @throws SQLException
      */
     public Object[] _NotRequireduserSopCertifiedBySopName( String schemaPrefixName, String userInfoId, String sopName, String procedure, Integer procVersion ) throws SQLException{
-        return _NotRequireduserSopCertifiedBySopInternalLogic(schemaPrefixName, userInfoId, "sop_name", sopName, procedure, procVersion);        
+        return _NotRequireduserSopCertifiedBySopInternalLogic(schemaPrefixName, userInfoId, FIELDNAME_SOP_NAME, sopName, procedure, procVersion);        
     }
 
     /**
@@ -199,7 +203,7 @@ public class UserSop {
      * @throws SQLException
      */
     public Object[] _NotRequireduserSopCertifiedBySopId( String schemaPrefixName, String userInfoId, String sopId, String procedure, Integer procVersion ) throws SQLException{
-        return _NotRequireduserSopCertifiedBySopInternalLogic(schemaPrefixName, userInfoId, "sop_id", sopId, procedure, procVersion);
+        return _NotRequireduserSopCertifiedBySopInternalLogic(schemaPrefixName, userInfoId, FIELDNAME_SOP_ID, sopId, procedure, procVersion);
     }    
     private Object[] _NotRequireduserSopCertifiedBySopInternalLogic( String schemaPrefixName, String userInfoId, String sopIdFieldName, String sopIdFieldValue, String procedure, Integer procVersion ) throws SQLException{
         
@@ -339,9 +343,9 @@ public class UserSop {
         }catch(SQLException ex){
             String errorCode = "LabPLANETPlatform_SpecialFunctionReturnedEXCEPTION";
             String[] errorDetailVariables = new String[0];
-            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, ex.getMessage());
+            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, ex.getMessage());
             Object[] trpErr=LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);
-            return LabPLANETArray.array1dTo2d(trpErr, trpErr.length);            
+            return LPArray.array1dTo2d(trpErr, trpErr.length);            
         }
     }
     
@@ -377,7 +381,7 @@ public class UserSop {
      * @return
      */
     public Object[] addSopToUserById( String schemaName, String userInfoId, Integer sopId){
-        return addSopToUserInternalLogic(schemaName, userInfoId, "sop_id", sopId);
+        return addSopToUserInternalLogic(schemaName, userInfoId, FIELDNAME_SOP_ID, sopId);
     }   
 
     /**
@@ -388,7 +392,7 @@ public class UserSop {
      * @return
      */
     public Object[] addSopToUserById( String schemaName, String userInfoId, String sopId){
-        return addSopToUserInternalLogic(schemaName, userInfoId, "sop_id", sopId);
+        return addSopToUserInternalLogic(schemaName, userInfoId, FIELDNAME_SOP_ID, sopId);
     }   
 
     /**
@@ -399,7 +403,7 @@ public class UserSop {
      * @return
      */
     public Object[] addSopToUserByName( String schemaName, String userInfoId, String sopName){
-        return addSopToUserInternalLogic(schemaName, userInfoId, "sop_id", sopName);
+        return addSopToUserInternalLogic(schemaName, userInfoId, FIELDNAME_SOP_ID, sopName);
     }    
 
     /**
@@ -422,9 +426,9 @@ public class UserSop {
         if (LPPlatform.LAB_TRUE.equalsIgnoreCase(exists[0].toString())){
             String messageCode = "UserSop_sopAlreadyAssignToUser";
             Object[] errorDetailVariables = new Object[0] ;
-            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, sopIdFieldValue);          
-            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, userInfoId);          
-            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaName);          
+            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, sopIdFieldValue);          
+            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, userInfoId);          
+            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, schemaName);          
             return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, messageCode, errorDetailVariables);
         }
         
@@ -434,9 +438,9 @@ public class UserSop {
         }else{
             String messageCode = "UserSop_sopAddedToUser";
             Object[] errorDetailVariables = new Object[0] ;
-            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, sopIdFieldValue);          
-            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, userInfoId);          
-            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaName);          
+            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, sopIdFieldValue);          
+            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, userInfoId);          
+            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, schemaName);          
             return LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, messageCode, errorDetailVariables);
         }
     }

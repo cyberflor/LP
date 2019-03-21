@@ -53,28 +53,28 @@ public class LabPLANETMath {
         }
         if ( portion.compareTo(BigDecimal.ZERO)==-1) {
             errorCode = "DataSample_sampleAliquoting_volumeCannotBeNegativeorZero";
-            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, portion.toString());
-            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, portionObjectId.toString());
-            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaPrefix);
+            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, portion.toString());
+            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, portionObjectId.toString());
+            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, schemaPrefix);
             return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);                 
         }        
        volume = volume.add(portion.negate());        
        if ( volume.compareTo(BigDecimal.ZERO)==-1) {
             errorCode = "DataSample_sampleAliquoting_notEnoughVolumeToAliquoting";
-            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, "aliquot  "+volumeObjectId.toString());
-            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, volume.toString());
-            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, "subaliquoting");
-            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, portion.toString());
-            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaPrefix);
+            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, "aliquot  "+volumeObjectId.toString());
+            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, volume.toString());
+            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, "subaliquoting");
+            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, portion.toString());
+            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, schemaPrefix);
             return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);                          
         }        
        if (!(volume.compareTo(portion)==1) ) {
             errorCode = "DataSample_sampleAliquoting_notEnoughVolumeForExtraction";
-            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, "aliquot  "+volumeObjectId.toString());
-            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, volume.toString());
-            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, "subaliquoting");
-            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, portion.toString());
-            errorDetailVariables = LabPLANETArray.addValueToArray1D(errorDetailVariables, schemaPrefix);
+            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, "aliquot  "+volumeObjectId.toString());
+            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, volume.toString());
+            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, "subaliquoting");
+            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, portion.toString());
+            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, schemaPrefix);
             return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);                          
         }        
        

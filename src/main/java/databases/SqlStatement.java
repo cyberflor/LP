@@ -5,7 +5,7 @@
  */
 package databases;
 
-import LabPLANET.utilities.LabPLANETArray;
+import LabPLANET.utilities.LPArray;
 import java.util.HashMap;
 
 /**
@@ -37,7 +37,6 @@ public class SqlStatement {
         schemaName = "\"" + schemaName + "\"";
         tableName = tableName.replace("\"", "");
         tableName = "\"" + tableName + "\"";
-        Boolean containsInClause = false;
         Object[] whereFieldValuesNew = new Object[0];
         if (whereFieldNames != null) {
             //for (String fn : whereFieldNames) {
@@ -50,10 +49,10 @@ public class SqlStatement {
                     queryWhere = queryWhere + fn;
                 } else if (fn.toUpperCase().contains(" LIKE")) {
                     queryWhere = queryWhere + fn + " ? ";
-                    whereFieldValuesNew = LabPLANETArray.addValueToArray1D(whereFieldValuesNew, whereFieldValues[iwhereFieldNames]);
+                    whereFieldValuesNew = LPArray.addValueToArray1D(whereFieldValuesNew, whereFieldValues[iwhereFieldNames]);
                 } else if (fn.toUpperCase().contains(" IN")) {
                     String separator = inSeparator(fn);
-                    containsInClause = true;
+                    Boolean containsInClause = true;
                     String textSpecs = (String) whereFieldValues[iwhereFieldNames];
                     String[] textSpecArray = textSpecs.split("\\" + separator);
                     //                         queryWhere = queryWhere + fn.replace(separator, "") + "(" ;
@@ -64,10 +63,10 @@ public class SqlStatement {
                     }*/
                     for (String f : textSpecArray) {
                         queryWhere = queryWhere + "?,";
-                        whereFieldValuesNew = LabPLANETArray.addValueToArray1D(whereFieldValuesNew, f);
+                        whereFieldValuesNew = LPArray.addValueToArray1D(whereFieldValuesNew, f);
                     }
 /*                    for (Integer j = i; j <= whereFieldValues.length; j++) {
-                        whereFieldValuesNew = LabPLANETArray.addValueToArray1D(whereFieldValuesNew, whereFieldValues[j]);
+                        whereFieldValuesNew = LPArray.addValueToArray1D(whereFieldValuesNew, whereFieldValues[j]);
                     }
 */
                     queryWhere = queryWhere.substring(0, queryWhere.length() - 1);
@@ -75,12 +74,11 @@ public class SqlStatement {
                     whereFieldValues = whereFieldValuesNew;
                 } else {
                     queryWhere = queryWhere + fn + "=? ";
-                    whereFieldValuesNew = LabPLANETArray.addValueToArray1D(whereFieldValuesNew, whereFieldValues[iwhereFieldNames]);
+                    whereFieldValuesNew = LPArray.addValueToArray1D(whereFieldValuesNew, whereFieldValues[iwhereFieldNames]);
                 }
             }
         }
         String fieldsToRetrieveStr = "";
-        String fieldsToRetrieveArgStr = "";
         String setFieldNamesStr = "";
         String setFieldNamesArgStr = "";
         if (fieldsToRetrieve != null) {
@@ -132,15 +130,15 @@ public class SqlStatement {
                 break;
             case "UPDATE":
                 String updateSetSectionStr = "";
-                //String[] updateSetSection = LabPLANETArray.joinTwo1DArraysInOneOf1DString(setFieldNames, setFieldValues, "=");
+                //String[] updateSetSection = LPArray.joinTwo1DArraysInOneOf1DString(setFieldNames, setFieldValues, "=");
                 Object[] updateFieldValuesNew = null;
                 for (int iFields = 0; iFields < setFieldNames.length; iFields++) {
                     updateSetSectionStr = updateSetSectionStr + setFieldNames[iFields] + "=?, ";                    
-                    updateFieldValuesNew= LabPLANETArray.addValueToArray1D(updateFieldValuesNew, setFieldValues[iFields]);
+                    updateFieldValuesNew= LPArray.addValueToArray1D(updateFieldValuesNew, setFieldValues[iFields]);
                 }
                 updateSetSectionStr = updateSetSectionStr.substring(0, updateSetSectionStr.length() - 2);
                 query = "update " + schemaName + "." + tableName + " set " + updateSetSectionStr + " where " + queryWhere;
-                updateFieldValuesNew= LabPLANETArray.addValueToArray1D(updateFieldValuesNew, whereFieldValuesNew);
+                updateFieldValuesNew= LPArray.addValueToArray1D(updateFieldValuesNew, whereFieldValuesNew);
                 hm.put(query, updateFieldValuesNew);
                 return hm;                
             default:
