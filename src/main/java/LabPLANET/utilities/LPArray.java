@@ -134,7 +134,7 @@ public class  LPArray {
                     String errorCode = ERRORTRAPPING_EXCEPTION;
                     Object[] errorDetailVariables = new Object[0];
                     errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, e.getMessage());
-                    return (String[]) trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);
+                    return trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);
                 }
             }
         }
@@ -223,7 +223,7 @@ public class  LPArray {
                     String errorCode = ERRORTRAPPING_EXCEPTION;
                     Object[] errorDetailVariables = new Object[0];
                     errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, e.getMessage());
-                    return (String[]) trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);
+                    return trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);
                 }
             }
         }
@@ -249,7 +249,7 @@ public class  LPArray {
             }else{
                 switch (rowParse[1].toUpperCase()){                                    
                     case "STRING":
-                        myObjectsArray[i]=(String) rowParse[0];
+                        myObjectsArray[i]=rowParse[0];
                         break;
                     case "INTEGER":
                         myObjectsArray[i]=Integer.parseInt((String) rowParse[0]);
@@ -271,7 +271,7 @@ public class  LPArray {
                         }
                         break;                                                            
                     default:
-                        myObjectsArray[i]=(String) rowParse[0];
+                        myObjectsArray[i]=rowParse[0];
                         break;
                 }        
             }                
@@ -696,7 +696,7 @@ public class  LPArray {
            errorCode = "LabPLANETArray_getColumnFromArray2D_ColNotFound";
            errorDetailVariables = (String[]) addValueToArray1D(errorDetailVariables, array[0].length);
            errorDetailVariables = addValueToArray1D(errorDetailVariables, colNum.toString());
-           return (String[]) LPPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);           
+           return LPPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);           
         }       
         for (Integer i=0;i<array.length;i++){
             diagnoses=addValueToArray1D(diagnoses, array[colNum][i]);

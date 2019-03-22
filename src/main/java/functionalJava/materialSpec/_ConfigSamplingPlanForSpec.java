@@ -105,7 +105,7 @@ public class _ConfigSamplingPlanForSpec {
     }  
     if (devMode==false){
         schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, schemaDataName);         
-        Object[][] mandatoryFieldsCheck = (Object[][]) LPPlatform.mandatoryFieldsCheck(schemaDataName, fieldsName, fieldsValue, tableName, actionName);                
+        Object[][] mandatoryFieldsCheck = LPPlatform.mandatoryFieldsCheck(schemaDataName, fieldsName, fieldsValue, tableName, actionName);                
         if (LPPlatform.LAB_FALSE.equalsIgnoreCase(mandatoryFieldsCheck[0][0].toString())){ return mandatoryFieldsCheck;}
         for (Integer i=0;i<mandatoryFieldsCheck[1].length;i++){
             if (mandatoryFieldsCheck[1][i]!=null){

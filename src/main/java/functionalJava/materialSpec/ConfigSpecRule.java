@@ -200,7 +200,6 @@ public class ConfigSpecRule {
             }
         }                      
         if ((maxControl1!=null)){
-            int comparison = 0;
             if (maxControl1.compareTo(maxSpec)>=0){
                 errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, maxControl1.toString());        
                 errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, maxSpec.toString()); 

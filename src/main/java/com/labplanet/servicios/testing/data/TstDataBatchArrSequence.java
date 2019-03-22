@@ -36,7 +36,7 @@ public class TstDataBatchArrSequence extends HttpServlet {
         String csvFileName = "tstDataBatchArray.txt"; 
         String fileContent = "";                          
         String csvPathName = LPTestingOutFormat.TESTING_FILES_PATH+csvFileName; 
-        String csvFileSeparator=LPTestingOutFormat.TESTING_FILES_FIELD_SEPARATOR;
+//        String csvFileSeparator=LPTestingOutFormat.TESTING_FILES_FIELD_SEPARATOR;
 
         if (Rdbms.getRdbms().startRdbms(LPTestingOutFormat.TESTING_USER, LPTestingOutFormat.TESTING_PW)==null){
             fileContent = fileContent + LPTestingOutFormat.MSG_DB_CON_ERROR;
@@ -47,10 +47,10 @@ public class TstDataBatchArrSequence extends HttpServlet {
         try (PrintWriter out = response.getWriter()) {
             
             String currentUser = "Fran";
-            String currentUSerRole = "Analyst";
+//            String currentUSerRole = "Analyst";
             
-            String schemaName = "oil-pl1-data"; 
-            String tableName = "batch_java";
+//            String schemaName = "oil-pl1-data"; 
+//            String tableName = "batch_java";
             
             BatchArray myBatchArray[] = new BatchArray[1];
             
@@ -163,7 +163,7 @@ public class TstDataBatchArrSequence extends HttpServlet {
                 batchContent = myBatchArray[0].getBatchContent();
                 
                 batchContent1d = LPArray.array2dTo1d(batchContent);
-                Object[][] batchContent2d = LPArray.array1dTo2d(batchContent1d, mb.numCols);
+//                Object[][] batchContent2d = LPArray.array1dTo2d(batchContent1d, mb.numCols);
                                 
                 fieldName = new String[5];
                 fieldValue = new Object[5];

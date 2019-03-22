@@ -101,7 +101,6 @@ public class _TestingConfigSamplingPlanStructure extends HttpServlet {
                         String sampleTemplate=null;
                         Integer sampleTemplateVersion=null;
                         if (configSamplingPlanTestingArray[i][1]!=null){schemaPrefix = (String) configSamplingPlanTestingArray[i][0];}
-                        if (configSamplingPlanTestingArray[i][2]!=null){String samplingPlan = (String) configSamplingPlanTestingArray[i][1];}
                         if (configSamplingPlanTestingArray[i][1]!=null){userName = (String) configSamplingPlanTestingArray[i][2];}
                         if (configSamplingPlanTestingArray[i][3]!=null){fieldName = (String[]) configSamplingPlanTestingArray[i][3];}              
                         if (configSamplingPlanTestingArray[i][4]!=null){fieldValue = (Object[]) configSamplingPlanTestingArray[i][4];}                         

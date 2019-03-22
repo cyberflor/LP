@@ -209,8 +209,8 @@ public class sampleAPI extends HttpServlet {
                     String fieldValue=request.getParameter("fieldValue");                    
                     String[] fieldNames=null;
                     Object[] fieldValues=null;
-                    if (fieldName!=null) fieldNames = (String[]) fieldName.split("\\|");                                            
-                    if (fieldValue!=null) fieldValues = (Object[]) LPArray.convertStringWithDataTypeToObjectArray(fieldValue.split("\\|"));                                                            
+                    if (fieldName!=null) fieldNames = fieldName.split("\\|");                                            
+                    if (fieldValue!=null) fieldValues = LPArray.convertStringWithDataTypeToObjectArray(fieldValue.split("\\|"));                                                            
 
                     String numSamplesToLogStr=request.getParameter("numSamplesToLog");       
                     Integer numSamplesToLog = Integer.parseInt(numSamplesToLogStr);  
@@ -339,9 +339,9 @@ public class sampleAPI extends HttpServlet {
                     String[] fieldNameArr = null;
                     Object[] fieldValueArr = null;
                     fieldName = request.getParameter("fieldName");
-                    fieldNameArr = (String[]) fieldName.split("\\|");                                    
+                    fieldNameArr =fieldName.split("\\|");                                    
                     fieldValue = request.getParameter("fieldValue");
-                    fieldValueArr = (String[]) fieldValue.split("\\|");                        
+                    fieldValueArr = fieldValue.split("\\|");                        
                     fieldValueArr = LPArray.convertStringWithDataTypeToObjectArray((String[]) fieldValueArr);
                     dataSample = smp.sampleAnalysisAddtoSample(schemaPrefix, internalUserID, sampleId, fieldNameArr, fieldValueArr, userRole);                    
                     break;              
@@ -470,13 +470,13 @@ public class sampleAPI extends HttpServlet {
                     sampleId = Integer.parseInt(sampleIdStr);                                               
                     String sampleFieldToRetrieve = request.getParameter("sampleFieldToRetrieve");                                                                                     
 
-                    String[] sampleFieldToRetrieveArr = (String[]) sampleFieldToRetrieve.split("\\|");                           
+                    String[] sampleFieldToRetrieveArr =sampleFieldToRetrieve.split("\\|");                           
                     schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, LPPlatform.SCHEMA_DATA);              
 
                     String[] sortFieldsNameArr = null;
                     String sortFieldsName = request.getParameter("sortFieldsName"); 
                     if (! ((sortFieldsName==null) || (sortFieldsName.contains("undefined"))) ) {
-                        sortFieldsNameArr = (String[]) sortFieldsName.split("\\|");                                    
+                        sortFieldsNameArr = sortFieldsName.split("\\|");                                    
                     }else{   sortFieldsNameArr=null;}  
                     
                     String dataSampleStr = Rdbms.getRecordFieldsByFilterJSON(schemaDataName, "sample", 
@@ -572,8 +572,8 @@ public class sampleAPI extends HttpServlet {
                     fieldValue=request.getParameter("fieldValue");                    
                     fieldNames=null;
                     fieldValues=null;
-                    if (fieldName!=null) fieldNames = (String[]) fieldName.split("\\|");                                            
-                    if (fieldValue!=null) fieldValues = (Object[]) LPArray.convertStringWithDataTypeToObjectArray(fieldValue.split("\\|"));                                                                                
+                    if (fieldName!=null) fieldNames = fieldName.split("\\|");                                            
+                    if (fieldValue!=null) fieldValues = LPArray.convertStringWithDataTypeToObjectArray(fieldValue.split("\\|"));                                                                                
                     try {
                         dataSample = smp.logSampleAliquot(schemaPrefix, sampleId, 
                                 // sampleTemplate, sampleTemplateVersion, 
@@ -605,8 +605,8 @@ public class sampleAPI extends HttpServlet {
                     fieldValue=request.getParameter("fieldValue");                    
                     fieldNames=null;
                     fieldValues=null;
-                    if (fieldName!=null) fieldNames = (String[]) fieldName.split("\\|");                                            
-                    if (fieldValue!=null) fieldValues = (Object[]) LPArray.convertStringWithDataTypeToObjectArray(fieldValue.split("\\|"));                                                                                
+                    if (fieldName!=null) fieldNames =  fieldName.split("\\|");                                            
+                    if (fieldValue!=null) fieldValues = LPArray.convertStringWithDataTypeToObjectArray(fieldValue.split("\\|"));                                                                                
                     try {
                         dataSample = smp.logSampleSubAliquot(schemaPrefix, aliquotId, 
                                 // sampleTemplate, sampleTemplateVersion, 

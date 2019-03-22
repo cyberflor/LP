@@ -360,8 +360,8 @@ public class SampleAudit {
         String[] sampleTblFldsArr = Rdbms.getTableFieldsArrayEj(schemaName.replace("\"", ""), "sample");
         
         String sampleTblFlds = Rdbms.getTableFieldsArrayEj(schemaName.replace("\"", ""), "sample", ",", true);
-        String sampleAnalysisTblFlds = Rdbms.getTableFieldsArrayEj(schemaName.replace("\"", ""), "sample_analysis", ",", true);
-        String sampleAnalysisResultTblFlds = Rdbms.getTableFieldsArrayEj(schemaName.replace("\"", ""), "sample_analysis_result", ",", true);
+//        String sampleAnalysisTblFlds = Rdbms.getTableFieldsArrayEj(schemaName.replace("\"", ""), "sample_analysis", ",", true);
+//        String sampleAnalysisResultTblFlds = Rdbms.getTableFieldsArrayEj(schemaName.replace("\"", ""), "sample_analysis_result", ",", true);
         
         FileWriter writer = null;
         try {
@@ -371,8 +371,8 @@ public class SampleAudit {
 
             }
         try (JsonGenerator gen = Json.createGenerator(writer)) {
-            String query = " select " + sampleTblFlds + " from " + schemaName + ".sample where sample_id="+sampleId;            
-            Object[][] recordFieldsByFilter = Rdbms.getRecordFieldsByFilter(schemaName, "sample", new String[]{"sample_id"}, new Object[]{sampleId}, sampleTblFldsArr);
+//            String query = " select " + sampleTblFlds + " from " + schemaName + ".sample where sample_id="+sampleId;            
+//            Object[][] recordFieldsByFilter = Rdbms.getRecordFieldsByFilter(schemaName, "sample", new String[]{"sample_id"}, new Object[]{sampleId}, sampleTblFldsArr);
             //gen.writeStartObject().write("sample", sampleId.toString());
             // gen.writeStartArray("Sample Info");
             gen.writeStartObject();
@@ -384,7 +384,7 @@ public class SampleAudit {
                 try{
                     gen.writeStartArray().write(sampleTblFldsArr[iFields], currValue);
                 }catch (JsonException ex){
-                    String m = ex.getMessage();
+//                    String m = ex.getMessage();
                 }
                 //gen.write(sampleTblFldsArr[iFields], (String) recordFieldsByFilter[0][iFields]);
             }

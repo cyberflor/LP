@@ -620,7 +620,7 @@ public class LPPlatform {
            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, Arrays.toString(configTableFilter));
            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, schemaName);
            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, diagnosis[5]);
-           return (String[]) trapErrorMessage(LAB_FALSE, errorCode, errorDetailVariables);
+           return trapErrorMessage(LAB_FALSE, errorCode, errorDetailVariables);
         }    
 
         
@@ -650,7 +650,6 @@ public class LPPlatform {
         String specialFieldMethodName = Parameter.getParameterBundle(schemaName.replace("\"", ""), specialFieldMethodNamePropertyName);
         String[] specialFields = specialFieldName.split("\\|");
         String[] specialFieldsMethods = specialFieldMethodName.split("\\|");
-        String specialFieldsCheck = "";
         Integer specialFieldIndex = -1;
         
         for (Integer inumLines=0;inumLines<fieldNames.length;inumLines++){

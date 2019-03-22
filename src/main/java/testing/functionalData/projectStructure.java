@@ -96,8 +96,8 @@ public class projectStructure extends HttpServlet {
                         String[] sampleTemplateInfo = configSpecTestingArray[i][3].toString().split("\\|");
                         projectTemplate = sampleTemplateInfo[0];
                         projectTemplateVersion = Integer.parseInt(sampleTemplateInfo[1]);
-                        if (configSpecTestingArray[i][3]!=null){fieldName = (String[]) configSpecTestingArray[i][4].toString().split("\\|");}              
-                        if (configSpecTestingArray[i][4]!=null){fieldValue = (Object[]) configSpecTestingArray[i][5].toString().split("\\|");} 
+                        if (configSpecTestingArray[i][3]!=null){fieldName = configSpecTestingArray[i][4].toString().split("\\|");}              
+                        if (configSpecTestingArray[i][4]!=null){fieldValue = configSpecTestingArray[i][5].toString().split("\\|");} 
                         fieldValue = LPArray.convertStringWithDataTypeToObjectArray((String[]) fieldValue);
                         fileContent = fileContent + "<td>templateName, templateVersion, fieldNames, fieldValues</td>";
                         fileContent = fileContent + LPTestingOutFormat.fieldStart()+projectTemplate+", "+projectTemplateVersion.toString()+", "
@@ -115,8 +115,8 @@ public class projectStructure extends HttpServlet {
                         sampleTemplateInfo = configSpecTestingArray[i][3].toString().split("\\|");
                         projectTemplate = sampleTemplateInfo[0];
                         projectTemplateVersion = Integer.parseInt(sampleTemplateInfo[1]);
-                        if (configSpecTestingArray[i][3]!=null){fieldName = (String[]) configSpecTestingArray[i][4].toString().split("\\|");}              
-                        if (configSpecTestingArray[i][4]!=null){fieldValue = (Object[]) configSpecTestingArray[i][5].toString().split("\\|");}   
+                        if (configSpecTestingArray[i][3]!=null){fieldName = configSpecTestingArray[i][4].toString().split("\\|");}              
+                        if (configSpecTestingArray[i][4]!=null){fieldValue = configSpecTestingArray[i][5].toString().split("\\|");}   
                         fieldValue = LPArray.convertStringWithDataTypeToObjectArray((String[]) fieldValue);
                         if (configSpecTestingArray[i][5]!=null){projectName = (String) configSpecTestingArray[i][6];}                           
                         fileContent = fileContent + "<td>projectName, templateName, templateVersion, fieldNames, fieldValues</td>";
@@ -131,8 +131,8 @@ public class projectStructure extends HttpServlet {
                     case "SAMPLEANALYSISADD":
                         if (configSpecTestingArray[i][3]!=null){sampleId = Integer.parseInt( (String) configSpecTestingArray[i][3]);}
                         if (configSpecTestingArray[i][4]!=null){userName = (String) configSpecTestingArray[i][4];}
-                        if (configSpecTestingArray[i][5]!=null){fieldName = (String[]) configSpecTestingArray[i][5].toString().split("\\|");}              
-                        if (configSpecTestingArray[i][6]!=null){fieldValue = (Object[]) configSpecTestingArray[i][6].toString().split("\\|");}
+                        if (configSpecTestingArray[i][5]!=null){fieldName = configSpecTestingArray[i][5].toString().split("\\|");}              
+                        if (configSpecTestingArray[i][6]!=null){fieldValue = configSpecTestingArray[i][6].toString().split("\\|");}
                         fieldValue = LPArray.convertStringWithDataTypeToObjectArray((String[]) fieldValue);
                         try {                        
                             fieldValue = LPArray.convertStringWithDataTypeToObjectArray(configSpecTestingArray[i][6].toString().split("\\|"));

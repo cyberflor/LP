@@ -54,7 +54,14 @@ public class sopUserAPIfrontend extends HttpServlet {
                 String[] mandatoryParams = new String[]{"finalToken"};
                 mandatoryParams = LPArray.addValueToArray1D(mandatoryParams, "finalToken");
                 Object[] areMandatoryParamsInResponse = LPHttp.areMandatoryParamsInApiRequest(request, mandatoryParams);                        
-                
+                if (LPPlatform.LAB_FALSE.equalsIgnoreCase(areMandatoryParamsInResponse[0].toString())){
+                    errObject = LPArray.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
+                    errObject = LPArray.addValueToArray1D(errObject, "API Error Message: Mandatory fields missing");                    
+                    Object[] errMsg = LabPLANETFrontEnd.responseError(errObject, language, null);
+                    response.sendError((int) errMsg[0], (String) errMsg[1]);   
+                    Rdbms.closeRdbms(); 
+                    return ;  
+                }
                 String finalToken = request.getParameter("finalToken");                   
 
                 Token token = new Token();

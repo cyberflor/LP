@@ -106,7 +106,7 @@ public class TstDataSample extends HttpServlet {
                 if (LPPlatform.LAB_FALSE.equalsIgnoreCase(actionEnabledForRole[0].toString())){
                     //StackTraceElement[] elementsDev = Thread.currentThread().getStackTrace();
                     if ("GETSAMPLEINFO".equalsIgnoreCase(functionBeingTested)){                
-                            dataSample2D[0][0] = (String) actionEnabledForRole[0];
+                            dataSample2D[0][0] = actionEnabledForRole[0];
                             dataSample2D[0][1] = actionEnabledForRole[1]; dataSample2D[0][2] = actionEnabledForRole[2]; 
                             dataSample2D[0][3] = actionEnabledForRole[3]; dataSample2D[0][4] = actionEnabledForRole[4]; 
                             dataSample2D[0][5] = actionEnabledForRole[5]; 
@@ -446,7 +446,7 @@ public class TstDataSample extends HttpServlet {
                                     fieldName, fieldValueObjArr, userName, userRole, appSessionId);                                                                
                             break;                     
                         default:                       
-                            dataSample[0] = (String) "function "+functionBeingTested+" not recognized";
+                            dataSample[0] = "function "+functionBeingTested+" not recognized";
                             dataSample[1] = ""; dataSample[2] = ""; dataSample[3] = ""; dataSample[4] = ""; dataSample[5] = ""; 
 
                             break;

@@ -80,7 +80,7 @@ public final class BatchArray extends Batch{
 //        this.linesName=linesName;
 //        this.columnsName=columnsName;
         
-        Object[] dbCreateBatchArray = dbCreateBatchArray(schemaName);
+        dbCreateBatchArray(schemaName);
     }        
 /*
     public BatchArray() {

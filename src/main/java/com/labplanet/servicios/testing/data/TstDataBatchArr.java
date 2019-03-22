@@ -69,7 +69,7 @@ public class TstDataBatchArr extends HttpServlet {
                 out.println("Line "+i.toString());
 
                 fileContent = fileContent + "<tr>";                
-                String userName=null;                
+//                String userName=null;                
                 String schemaPrefix=null;
                 String tableName=null;
                 String[] fieldName=null;                    String[] fieldValue=null;
@@ -82,13 +82,13 @@ public class TstDataBatchArr extends HttpServlet {
                 if (configSpecTestingArray[i][1]!=null){functionBeingTested = (String) configSpecTestingArray[i][1];}
                 if (configSpecTestingArray[i][2]!=null){schemaPrefix = (String) configSpecTestingArray[i][2];}
                 if (configSpecTestingArray[i][3]!=null){tableName = (String) configSpecTestingArray[i][3];}
-                if (configSpecTestingArray[i][4]!=null){fieldName = (String[]) configSpecTestingArray[i][4].toString().split("\\|");}else{fieldName = new String[0];}              
-                if (configSpecTestingArray[i][5]!=null){fieldValue = (String[]) configSpecTestingArray[i][5].toString().split("\\|");}else{fieldValue = new String[0];}
-                if (configSpecTestingArray[i][6]!=null){fieldsToRetrieve = (String[]) configSpecTestingArray[i][6].toString().split("\\|");}else{fieldsToRetrieve = new String[0];}                  
-                if (configSpecTestingArray[i][7]!=null){setFieldName = (String[]) configSpecTestingArray[i][7].toString().split("\\|");}else{setFieldName = new String[0];}              
-                if (configSpecTestingArray[i][8]!=null){setFieldValue = (String[]) configSpecTestingArray[i][8].toString().split("\\|");}else{setFieldValue = new String[0];}
-                if (configSpecTestingArray[i][9]!=null){orderBy = (String[]) configSpecTestingArray[i][9].toString().split("\\|");}else{orderBy = new String[0];}
-                if (configSpecTestingArray[i][10]!=null){groupBy = (String[]) configSpecTestingArray[i][10].toString().split("\\|");}else{groupBy = new String[0];}
+                if (configSpecTestingArray[i][4]!=null){fieldName = configSpecTestingArray[i][4].toString().split("\\|");}else{fieldName = new String[0];}              
+                if (configSpecTestingArray[i][5]!=null){fieldValue = configSpecTestingArray[i][5].toString().split("\\|");}else{fieldValue = new String[0];}
+                if (configSpecTestingArray[i][6]!=null){fieldsToRetrieve = configSpecTestingArray[i][6].toString().split("\\|");}else{fieldsToRetrieve = new String[0];}                  
+                if (configSpecTestingArray[i][7]!=null){setFieldName = configSpecTestingArray[i][7].toString().split("\\|");}else{setFieldName = new String[0];}              
+                if (configSpecTestingArray[i][8]!=null){setFieldValue = configSpecTestingArray[i][8].toString().split("\\|");}else{setFieldValue = new String[0];}
+                if (configSpecTestingArray[i][9]!=null){orderBy = configSpecTestingArray[i][9].toString().split("\\|");}else{orderBy = new String[0];}
+                if (configSpecTestingArray[i][10]!=null){groupBy = configSpecTestingArray[i][10].toString().split("\\|");}else{groupBy = new String[0];}
                 
 /*                String[] whereFieldsNameArr = new String[]{"status in|"};
                 Object[] whereFieldsValueArr = null;

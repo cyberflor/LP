@@ -251,7 +251,7 @@ public class LPTestingOutFormat {
     public static String[] csvExtractFieldValueStringArr(Object value){
         if (value==null) return null;
         try{
-            String[] fieldsToRetrieve = (String[]) value.toString().split("\\|");
+            String[] fieldsToRetrieve = value.toString().split("\\|");
             return fieldsToRetrieve;        
         }catch(Exception e){return null;}        
     }

@@ -129,7 +129,7 @@ public class sampleAPIfrontend extends HttpServlet {
                 String sampleFieldToRetrieve = request.getParameter("sampleFieldToRetrieve"); 
                 
                 if (! ((sortFieldsName==null) || (sortFieldsName.contains("undefined"))) ) {
-                    sortFieldsNameArr = (String[]) sortFieldsName.split("\\|");                                    
+                    sortFieldsNameArr = sortFieldsName.split("\\|");                                    
                 }else{   sortFieldsNameArr=null;}             
                 String[] sampleFieldToRetrieveArr = new String[]{"sample_id"};
                 if (sampleFieldToRetrieve!=null){
@@ -184,7 +184,6 @@ public class sampleAPIfrontend extends HttpServlet {
                         if (LPPlatform.isEncryptedField(schemaPrefix+"-data", "sample", whereFieldsNameArr[iFields])){                
                             HashMap<String, String> hm = LPPlatform.encryptEncryptableFieldsAddBoth(whereFieldsNameArr[iFields], whereFieldsNameArr[iFields]);
                             whereFieldsNameArr[iFields]= hm.keySet().iterator().next();    
-                            SqlStatement sql = new SqlStatement();
                             if ( hm.get(whereFieldsNameArr[iFields]).length()!=whereFieldsNameArr[iFields].length()){
                                 String newWhereFieldValues = hm.get(whereFieldsNameArr[iFields]);
                                 whereFieldsValueArr[iFields]=newWhereFieldValues;
@@ -218,7 +217,7 @@ public class sampleAPIfrontend extends HttpServlet {
                 sortFieldsNameArr = null;
                 sortFieldsName = request.getParameter("sortFieldsName"); 
                 if (! ((sortFieldsName==null) || (sortFieldsName.contains("undefined"))) ) {
-                    sortFieldsNameArr = (String[]) sortFieldsName.split("\\|");                                    
+                    sortFieldsNameArr = sortFieldsName.split("\\|");                                    
                 }else{   sortFieldsNameArr=null;}  
                 
                 if ("SAMPLE".equals(sampleLastLevel)){
@@ -308,7 +307,7 @@ public class sampleAPIfrontend extends HttpServlet {
                     sortFieldsNameArr = null;
                     sortFieldsName = request.getParameter("sortFieldsName"); 
                     if (! ((sortFieldsName==null) || (sortFieldsName.contains("undefined"))) ) {
-                        sortFieldsNameArr = (String[]) sortFieldsName.split("\\|");                                    
+                        sortFieldsNameArr = sortFieldsName.split("\\|");                                    
                     }else{   sortFieldsNameArr=null;}  
 
                     myData = Rdbms.getRecordFieldsByFilterJSON(schemaPrefix+"-config", "analysis_methods_view",
@@ -342,7 +341,7 @@ public class sampleAPIfrontend extends HttpServlet {
                     sortFieldsNameArr = null;
                     sortFieldsName = request.getParameter("sortFieldsName"); 
                     if (! ((sortFieldsName==null) || (sortFieldsName.contains("undefined"))) ) {
-                        sortFieldsNameArr = (String[]) sortFieldsName.split("\\|");                                    
+                        sortFieldsNameArr =  sortFieldsName.split("\\|");                                    
                     }else{   
                         sortFieldsNameArr = LPArray.addValueToArray1D(sortFieldsNameArr, "sample_id");
                         sortFieldsNameArr = LPArray.addValueToArray1D(sortFieldsNameArr, "test_id");                        
@@ -384,7 +383,7 @@ public class sampleAPIfrontend extends HttpServlet {
                     sortFieldsNameArr = null;
                     sortFieldsName = request.getParameter("sortFieldsName"); 
                     if (! ((sortFieldsName==null) || (sortFieldsName.contains("undefined"))) ) {
-                        sortFieldsNameArr = (String[]) sortFieldsName.split("\\|");                                    
+                        sortFieldsNameArr = sortFieldsName.split("\\|");                                    
                     }else{   
                         sortFieldsNameArr = LPArray.addValueToArray1D(sortFieldsNameArr, "sample_id");
                         sortFieldsNameArr = LPArray.addValueToArray1D(sortFieldsNameArr, "test_id");

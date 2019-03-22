@@ -62,7 +62,7 @@ public class TestingConfigSop extends HttpServlet {
             String schemaDataName = "oil-pl1";
 //            String schemaConfigName = "\"oil-pl1-config\"";
 //            String schemaDataName = "\"oil-pl1-data\"";
-            HttpSession miSession = request.getSession(false);         
+//            HttpSession miSession = request.getSession(false);         
             
             //DBTransac dbObj = null;          
             if (Rdbms.getRdbms().startRdbms("labplanet", "avecesllegaelmomento")==null){
