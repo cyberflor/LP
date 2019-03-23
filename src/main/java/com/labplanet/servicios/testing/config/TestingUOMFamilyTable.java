@@ -57,10 +57,10 @@ public class TestingUOMFamilyTable extends HttpServlet {
                 return;
             }            
             
-            Integer numEvaluationArguments = Integer.valueOf(csvHeaderTags.get(LPTestingOutFormat.FILEHEADER_numEvaluationArguments).toString());   
-            Integer numHeaderLines = Integer.valueOf(csvHeaderTags.get(LPTestingOutFormat.FILEHEADER_numHeaderLinesTagName).toString());   
+            Integer numEvaluationArguments = Integer.valueOf(csvHeaderTags.get(LPTestingOutFormat.FILEHEADER_NUM_EVALUATION_ARGUMENTS).toString());   
+            Integer numHeaderLines = Integer.valueOf(csvHeaderTags.get(LPTestingOutFormat.FILEHEADER_NUM_HEADER_LINES_TAG_NAME).toString());   
             //numEvaluationArguments=numEvaluationArguments+1;
-            String table1Header = csvHeaderTags.get(LPTestingOutFormat.FILEHEADER_tableNameTagName+"1").toString();               
+            String table1Header = csvHeaderTags.get(LPTestingOutFormat.FILEHEADER_TABLE_NAME_TAG_NAME+"1").toString();               
             String fileContentTable1 = LPTestingOutFormat.createTableWithHeader(table1Header, numEvaluationArguments);
 
             Integer iLines =numHeaderLines; 
@@ -86,12 +86,13 @@ public class TestingUOMFamilyTable extends HttpServlet {
                 for (int iRows=0;iRows<tableGet.length;iRows++){
                    fileContentTable1 = fileContentTable1 +LPTestingOutFormat.rowStart(); 
                    fileContentTable1 = fileContentTable1 + LPTestingOutFormat.rowAddField(String.valueOf(iRows));     
-                   for (int iColumns=0;iColumns<fieldsToRetrieve.length;iColumns++){
+                   Boolean continueLoop=true;
+                   for (int iColumns=0;iColumns<fieldsToRetrieve.length && continueLoop;iColumns++){
                         if ("LABPLANET_FALSE".equalsIgnoreCase(tableGet[0][0].toString())) {
                              fileContentTable1 = fileContentTable1+ 
                                      LPTestingOutFormat.rowAddField(String.valueOf(tableGet[0][3]))+
                                      LPTestingOutFormat.rowAddField(String.valueOf(tableGet[0][5]));
-                             iColumns=fieldsToRetrieve.length;
+                             continueLoop=false;
                         }else{                       
                            fileContentTable1 = fileContentTable1 + LPTestingOutFormat.rowAddField(String.valueOf(tableGet[iRows][iColumns]));     
                         }

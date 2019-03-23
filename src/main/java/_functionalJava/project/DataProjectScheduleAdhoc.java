@@ -264,7 +264,8 @@ public class DataProjectScheduleAdhoc {
         Object[] existsRecord = Rdbms.existsRecord(schemaName, tableName,  new String[]{"project", "id"}, new Object[]{pName, projSchedId});
         if (LPPlatform.LAB_FALSE.equals(existsRecord[0].toString())){ return existsRecord;}
         
-        Calendar startDate = null; Calendar endDate = null;
+        Calendar startDate = null; 
+        Calendar endDate = null;
         
         if (LPArray.valueInArray(fieldName, "start_date")){
             startDate = (Calendar) fieldValue[LPArray.valuePosicInArray(fieldName, "start_date")];

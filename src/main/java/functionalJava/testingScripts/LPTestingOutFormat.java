@@ -30,13 +30,13 @@ public class LPTestingOutFormat {
     public static final String TESTING_PW="avecesllegaelmomento";
     public static final String MSG_DB_CON_ERROR="<th>Error connecting to the database</th>";       
 
-    public static final String FILEHEADER_numHeaderLinesTagName="NUMHEADERLINES";
-    public static final String FILEHEADER_numTablesTagName="NUMTABLES"; 
-    public static final String FILEHEADER_tableNameTagName="TABLE";
+    public static final String FILEHEADER_NUM_HEADER_LINES_TAG_NAME="NUMHEADERLINES";
+    public static final String FILEHEADER_NUM_TABLES_TAG_NAME="NUMTABLES"; 
+    public static final String FILEHEADER_TABLE_NAME_TAG_NAME="TABLE";
 
-    public static final String FILEHEADER_numArguments="NUMARGUMENTS";
-    public static final String FILEHEADER_numEvaluationArguments="NUMEVALUATIONARGUMENTS";
-    public static final String FILEHEADER_evaluationPosition="EVALUATIONPOSITION";
+    public static final String FILEHEADER_NUM_ARGUMENTS="NUMARGUMENTS";
+    public static final String FILEHEADER_NUM_EVALUATION_ARGUMENTS="NUMEVALUATIONARGUMENTS";
+    public static final String FILEHEADER_EVALUATION_POSITION="EVALUATIONPOSITION";
     
     public static final String BUNDLE_FILE_NAME="parameter.config.labtimus";
 
@@ -161,9 +161,9 @@ public class LPTestingOutFormat {
     
     public static HashMap<String, Object>  getCSVHeader(String[][] csvContent){
         HashMap<String, Object> fieldsRequired = new HashMap();   
-        fieldsRequired.put(FILEHEADER_numHeaderLinesTagName, "");   fieldsRequired.put(FILEHEADER_numTablesTagName, "");   
-        fieldsRequired.put(FILEHEADER_numEvaluationArguments, "");   
-        //fieldsRequired.put(FILEHEADER_numArguments, "");  //fieldsRequired.put(FILEHEADER_evaluationPosition, "");           
+        fieldsRequired.put(FILEHEADER_NUM_HEADER_LINES_TAG_NAME, "");   fieldsRequired.put(FILEHEADER_NUM_TABLES_TAG_NAME, "");   
+        fieldsRequired.put(FILEHEADER_NUM_EVALUATION_ARGUMENTS, "");   
+        //fieldsRequired.put(FILEHEADER_NUM_ARGUMENTS, "");  //fieldsRequired.put(FILEHEADER_EVALUATION_POSITION, "");           
 
         HashMap<String, Object> hm = new HashMap();   
         
@@ -175,13 +175,13 @@ public class LPTestingOutFormat {
             String getLineKey = LPNulls.replaceNull(csvContent[iLineParsed][0]).toUpperCase();
             String getLineValue = LPNulls.replaceNull(csvContent[iLineParsed][1]);
             if (fieldsRequired.containsKey(getLineKey)){
-                if (FILEHEADER_numHeaderLinesTagName.equalsIgnoreCase(getLineKey)){
+                if (FILEHEADER_NUM_HEADER_LINES_TAG_NAME.equalsIgnoreCase(getLineKey)){
                     maxHeaderLines=Integer.parseInt(getLineValue);
                 }
-                if (FILEHEADER_numTablesTagName.equalsIgnoreCase(getLineKey)){
+                if (FILEHEADER_NUM_TABLES_TAG_NAME.equalsIgnoreCase(getLineKey)){
                     Integer numTbls=Integer.parseInt(getLineValue);
                     for (int iNumTbls=1; iNumTbls<=numTbls; iNumTbls++){
-                        fieldsRequired.put(FILEHEADER_tableNameTagName+String.valueOf(iNumTbls), "");
+                        fieldsRequired.put(FILEHEADER_TABLE_NAME_TAG_NAME+String.valueOf(iNumTbls), "");
                     }
                 }
                 hm.put(getLineKey, getLineValue);

@@ -39,23 +39,6 @@ public class Token {
     public static final String TOKEN_PARAM_APP_SESSION_STARTED_DATE="appSessionStartedDate";
     public static final String TOKEN_PARAM_USER_ESIGN="eSign";
     
-    private Boolean _isValidToken(String jwtToken){       
-        try {
-            Claims claims = Jwts.parser()         
-               .setSigningKey(DatatypeConverter.parseBase64Binary(KEY))
-               .parseClaimsJws(jwtToken).getBody();
-
-            System.out.println("ID: " + claims.getId());
-            System.out.println("Subject: " + claims.getSubject());
-            System.out.println("Issuer: " + claims.getIssuer());
-            System.out.println("Expiration: " + claims.getExpiration());
-            
-            return true;
-        }catch (ExpiredJwtException | MalformedJwtException | SignatureException | UnsupportedJwtException | IllegalArgumentException e){
-            return false;
-        }
-    }
-    
     /**
      *
      * @return

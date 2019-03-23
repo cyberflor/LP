@@ -37,9 +37,9 @@ public class sampleAPI extends HttpServlet {
     public static final String ERRORMSG_ERROR_STATUS_CODE="Error Status Code";
     public static final String ERRORMSG_MANDATORY_PARAMS_MISSING="API Error Message: There are mandatory params for this API method not being passed";
 
-    public static final String parameter_sampleId="sampleId";
-    public static final String parameter_testId="testId";
-    public static final String parameter_resultId="resultId";
+    public static final String PARAMETER_SAMPLE_ID="sampleId";
+    public static final String PARAMETER_TEST_ID="testId";
+    public static final String PARAMETER_RESULT_ID="resultId";
     //Status  responseOnERROR = Response.Status.BAD_REQUEST;
 
     /**
@@ -222,7 +222,7 @@ public class sampleAPI extends HttpServlet {
                     }
                     break;
                 case "RECEIVESAMPLE":                                          
-                    mandatoryParamsAction = new String[]{parameter_sampleId};
+                    mandatoryParamsAction = new String[]{PARAMETER_SAMPLE_ID};
                     areMandatoryParamsInResponse = LPHttp.areMandatoryParamsInApiRequest(request, mandatoryParamsAction);
                     if (LPPlatform.LAB_FALSE.equalsIgnoreCase(areMandatoryParamsInResponse[0].toString())){
                         errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
@@ -232,7 +232,7 @@ public class sampleAPI extends HttpServlet {
                         Rdbms.closeRdbms(); 
                         return ;                
                     }                         
-                    String sampleIdStr = request.getParameter(parameter_sampleId);                             
+                    String sampleIdStr = request.getParameter(PARAMETER_SAMPLE_ID);                             
 
                     Integer sampleId = Integer.parseInt(sampleIdStr);      
 //sampleId = 12312131;
@@ -240,7 +240,7 @@ public class sampleAPI extends HttpServlet {
                     dataSample = smp.sampleReception(schemaPrefix, internalUserID, sampleId, userRole, Integer.parseInt(appSessionIdStr));
                     break;
                 case "CHANGESAMPLINGDATE":
-                    mandatoryParamsAction = new String[]{parameter_sampleId};
+                    mandatoryParamsAction = new String[]{PARAMETER_SAMPLE_ID};
                     mandatoryParamsAction = LPArray.addValueToArray1D(mandatoryParams, "newDate");                    
                     areMandatoryParamsInResponse = LPHttp.areMandatoryParamsInApiRequest(request, mandatoryParamsAction);
                     if (LPPlatform.LAB_FALSE.equalsIgnoreCase(areMandatoryParamsInResponse[0].toString())){
@@ -252,14 +252,14 @@ public class sampleAPI extends HttpServlet {
                         return ;                
                     }     
                     
-                    sampleIdStr = request.getParameter(parameter_sampleId);                                     
+                    sampleIdStr = request.getParameter(PARAMETER_SAMPLE_ID);                                     
                     sampleId = Integer.parseInt(sampleIdStr);      
                     Date newDate=Date.valueOf(request.getParameter("newDate"));
 
                     dataSample = smp.changeSamplingDate(schemaPrefix, internalUserID, sampleId, newDate, userRole);
                     break;       
                 case "SAMPLINGCOMMENTADD":
-                    mandatoryParamsAction = new String[]{parameter_sampleId};
+                    mandatoryParamsAction = new String[]{PARAMETER_SAMPLE_ID};
                     areMandatoryParamsInResponse = LPHttp.areMandatoryParamsInApiRequest(request, mandatoryParamsAction);
                     if (LPPlatform.LAB_FALSE.equalsIgnoreCase(areMandatoryParamsInResponse[0].toString())){
                         errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
@@ -269,14 +269,14 @@ public class sampleAPI extends HttpServlet {
                         Rdbms.closeRdbms(); 
                         return ;                
                     }                        
-                    sampleIdStr = request.getParameter(parameter_sampleId);                             
+                    sampleIdStr = request.getParameter(PARAMETER_SAMPLE_ID);                             
                     sampleId = Integer.parseInt(sampleIdStr);      
                     String comment=null;                    
                     comment = request.getParameter("sampleComment"); 
                     dataSample = smp.sampleReceptionCommentAdd(schemaPrefix, internalUserID, sampleId, comment, userRole);
                     break;       
                 case "SAMPLINGCOMMENTREMOVE":
-                    mandatoryParamsAction = new String[]{parameter_sampleId};
+                    mandatoryParamsAction = new String[]{PARAMETER_SAMPLE_ID};
                     areMandatoryParamsInResponse = LPHttp.areMandatoryParamsInApiRequest(request, mandatoryParamsAction);
                     if (LPPlatform.LAB_FALSE.equalsIgnoreCase(areMandatoryParamsInResponse[0].toString())){
                         errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
@@ -286,13 +286,13 @@ public class sampleAPI extends HttpServlet {
                         Rdbms.closeRdbms(); 
                         return ;                
                     }                        
-                    sampleIdStr = request.getParameter(parameter_sampleId);                             
+                    sampleIdStr = request.getParameter(PARAMETER_SAMPLE_ID);                             
                     sampleId = Integer.parseInt(sampleIdStr);      
                     comment = request.getParameter("sampleComment"); 
                     dataSample = smp.sampleReceptionCommentRemove(schemaPrefix, internalUserID, sampleId, comment, userRole);
                     break;       
                 case "INCUBATIONSTART":
-                    mandatoryParamsAction = new String[]{parameter_sampleId};
+                    mandatoryParamsAction = new String[]{PARAMETER_SAMPLE_ID};
                     areMandatoryParamsInResponse = LPHttp.areMandatoryParamsInApiRequest(request, mandatoryParamsAction);
                     if (LPPlatform.LAB_FALSE.equalsIgnoreCase(areMandatoryParamsInResponse[0].toString())){
                         errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
@@ -302,12 +302,12 @@ public class sampleAPI extends HttpServlet {
                         Rdbms.closeRdbms(); 
                         return ;                
                     }                        
-                    sampleIdStr = request.getParameter(parameter_sampleId);                             
+                    sampleIdStr = request.getParameter(PARAMETER_SAMPLE_ID);                             
                     sampleId = Integer.parseInt(sampleIdStr);      
                     dataSample = smp.setSampleStartIncubationDateTime(schemaPrefix, internalUserID, sampleId, userRole);
                     break;       
                 case "INCUBATIONEND":
-                    mandatoryParamsAction = new String[]{parameter_sampleId};
+                    mandatoryParamsAction = new String[]{PARAMETER_SAMPLE_ID};
                     areMandatoryParamsInResponse = LPHttp.areMandatoryParamsInApiRequest(request, mandatoryParamsAction);
                     if (LPPlatform.LAB_FALSE.equalsIgnoreCase(areMandatoryParamsInResponse[0].toString())){
                         errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
@@ -317,12 +317,12 @@ public class sampleAPI extends HttpServlet {
                         Rdbms.closeRdbms(); 
                         return ;                
                     }                                            
-                    sampleIdStr = request.getParameter(parameter_sampleId);                             
+                    sampleIdStr = request.getParameter(PARAMETER_SAMPLE_ID);                             
                     sampleId = Integer.parseInt(sampleIdStr);      
                     dataSample = smp.setSampleEndIncubationDateTime(schemaPrefix, internalUserID, sampleId, userRole);
                     break;       
                 case "SAMPLEANALYSISADD":
-                    mandatoryParamsAction = new String[]{parameter_sampleId};
+                    mandatoryParamsAction = new String[]{PARAMETER_SAMPLE_ID};
                     mandatoryParamsAction = LPArray.addValueToArray1D(mandatoryParamsAction, "fieldName");
                     mandatoryParamsAction = LPArray.addValueToArray1D(mandatoryParamsAction, "fieldValue");                    
                     areMandatoryParamsInResponse = LPHttp.areMandatoryParamsInApiRequest(request, mandatoryParamsAction);
@@ -334,7 +334,7 @@ public class sampleAPI extends HttpServlet {
                         Rdbms.closeRdbms(); 
                         return ;                
                     }                                            
-                    sampleIdStr = request.getParameter(parameter_sampleId);                             
+                    sampleIdStr = request.getParameter(PARAMETER_SAMPLE_ID);                             
                     sampleId = Integer.parseInt(sampleIdStr);       
                     String[] fieldNameArr = null;
                     Object[] fieldValueArr = null;
@@ -346,7 +346,7 @@ public class sampleAPI extends HttpServlet {
                     dataSample = smp.sampleAnalysisAddtoSample(schemaPrefix, internalUserID, sampleId, fieldNameArr, fieldValueArr, userRole);                    
                     break;              
                 case "ENTERRESULT":
-                    mandatoryParamsAction = new String[]{parameter_resultId};
+                    mandatoryParamsAction = new String[]{PARAMETER_RESULT_ID};
                     mandatoryParamsAction = LPArray.addValueToArray1D(mandatoryParamsAction, "rawValueResult");
                     areMandatoryParamsInResponse = LPHttp.areMandatoryParamsInApiRequest(request, mandatoryParamsAction);
                     if (LPPlatform.LAB_FALSE.equalsIgnoreCase(areMandatoryParamsInResponse[0].toString())){
@@ -359,7 +359,7 @@ public class sampleAPI extends HttpServlet {
                     }                                            
                     Integer resultId = 0;
                     String rawValueResult = "";
-                    String resultIdStr = request.getParameter(parameter_resultId);
+                    String resultIdStr = request.getParameter(PARAMETER_RESULT_ID);
                     resultId = Integer.parseInt(resultIdStr);       
                     rawValueResult = request.getParameter("rawValueResult");
                     dataSample = smp.sampleAnalysisResultEntry(schemaPrefix, internalUserID, resultId, rawValueResult, userRole);
@@ -432,7 +432,7 @@ public class sampleAPI extends HttpServlet {
                         dataSample = smp.sampleAnalysisResultUnCancel(schemaPrefix, internalUserID, sampleId, testId, resultId, userRole);
                     break;       
                 case "TESTASSIGNMENT": 
-                    mandatoryParamsAction = new String[]{parameter_testId};
+                    mandatoryParamsAction = new String[]{PARAMETER_TEST_ID};
                     mandatoryParamsAction = LPArray.addValueToArray1D(mandatoryParamsAction, "newAnalyst");
                     areMandatoryParamsInResponse = LPHttp.areMandatoryParamsInApiRequest(request, mandatoryParamsAction);
                     if (LPPlatform.LAB_FALSE.equalsIgnoreCase(areMandatoryParamsInResponse[0].toString())){
@@ -443,7 +443,7 @@ public class sampleAPI extends HttpServlet {
                         Rdbms.closeRdbms(); 
                         return ;                
                     }                                            
-                    objectIdStr = request.getParameter(parameter_testId);
+                    objectIdStr = request.getParameter(PARAMETER_TEST_ID);
                     testId = Integer.parseInt(objectIdStr);     
                     String newAnalyst = request.getParameter("newAnalyst");
                     try {
@@ -454,7 +454,7 @@ public class sampleAPI extends HttpServlet {
                     break;   
                     
                 case "GETSAMPLEINFO":
-                    mandatoryParamsAction = new String[]{parameter_sampleId};
+                    mandatoryParamsAction = new String[]{PARAMETER_SAMPLE_ID};
                     mandatoryParamsAction = LPArray.addValueToArray1D(mandatoryParamsAction, "sampleFieldToRetrieve");
                     areMandatoryParamsInResponse = LPHttp.areMandatoryParamsInApiRequest(request, mandatoryParamsAction);
                     if (LPPlatform.LAB_FALSE.equalsIgnoreCase(areMandatoryParamsInResponse[0].toString())){
@@ -466,7 +466,7 @@ public class sampleAPI extends HttpServlet {
                         return ;                
                     }                                            
                     
-                    sampleIdStr = request.getParameter(parameter_sampleId);                             
+                    sampleIdStr = request.getParameter(PARAMETER_SAMPLE_ID);                             
                     sampleId = Integer.parseInt(sampleIdStr);                                               
                     String sampleFieldToRetrieve = request.getParameter("sampleFieldToRetrieve");                                                                                     
 
@@ -491,7 +491,7 @@ public class sampleAPI extends HttpServlet {
                     Rdbms.closeRdbms();                    
                     return;        
                 case "COC_STARTCHANGE":
-                    mandatoryParamsAction = new String[]{parameter_sampleId};
+                    mandatoryParamsAction = new String[]{PARAMETER_SAMPLE_ID};
                     mandatoryParamsAction = LPArray.addValueToArray1D(mandatoryParamsAction, "custodianCandidate");
                     areMandatoryParamsInResponse = LPHttp.areMandatoryParamsInApiRequest(request, mandatoryParamsAction);
                     if (LPPlatform.LAB_FALSE.equalsIgnoreCase(areMandatoryParamsInResponse[0].toString())){
@@ -503,7 +503,7 @@ public class sampleAPI extends HttpServlet {
                         return ;                
                     }                                            
                     
-                    sampleIdStr = request.getParameter(parameter_sampleId);                             
+                    sampleIdStr = request.getParameter(PARAMETER_SAMPLE_ID);                             
                     objectId = Integer.valueOf(sampleIdStr);
                     String custodianCandidate = request.getParameter("custodianCandidate");                             
                     ChangeOfCustody coc = new ChangeOfCustody();
@@ -512,7 +512,7 @@ public class sampleAPI extends HttpServlet {
                     dataSample = coc.cocStartChange(schemaPrefix, "sample", "sample_id", objectId, internalUserID, custodianCandidate, userRole, appSessionId);
                     break;
                 case "COC_CONFIRMCHANGE":
-                    mandatoryParamsAction = new String[]{parameter_sampleId};
+                    mandatoryParamsAction = new String[]{PARAMETER_SAMPLE_ID};
                     mandatoryParamsAction = LPArray.addValueToArray1D(mandatoryParamsAction, "confirmChangeComment");
                     areMandatoryParamsInResponse = LPHttp.areMandatoryParamsInApiRequest(request, mandatoryParamsAction);
                     if (LPPlatform.LAB_FALSE.equalsIgnoreCase(areMandatoryParamsInResponse[0].toString())){
@@ -523,7 +523,7 @@ public class sampleAPI extends HttpServlet {
                         Rdbms.closeRdbms(); 
                         return ;                
                     }                                                                
-                    sampleIdStr = request.getParameter(parameter_sampleId);                             
+                    sampleIdStr = request.getParameter(PARAMETER_SAMPLE_ID);                             
                     sampleId = Integer.valueOf(sampleIdStr);
                     String confirmChangeComment = request.getParameter("confirmChangeComment");                             
                     coc =  new ChangeOfCustody();
@@ -531,7 +531,7 @@ public class sampleAPI extends HttpServlet {
                             confirmChangeComment, userRole, null);
                     break;
                 case "COC_ABORTCHANGE":
-                    mandatoryParamsAction = new String[]{parameter_sampleId};
+                    mandatoryParamsAction = new String[]{PARAMETER_SAMPLE_ID};
                     mandatoryParamsAction = LPArray.addValueToArray1D(mandatoryParamsAction, "cancelChangeComment");
                     areMandatoryParamsInResponse = LPHttp.areMandatoryParamsInApiRequest(request, mandatoryParamsAction);
                     if (LPPlatform.LAB_FALSE.equalsIgnoreCase(areMandatoryParamsInResponse[0].toString())){
@@ -542,7 +542,7 @@ public class sampleAPI extends HttpServlet {
                         Rdbms.closeRdbms(); 
                         return ;                
                     }                                                                
-                    sampleIdStr = request.getParameter(parameter_sampleId);                             
+                    sampleIdStr = request.getParameter(PARAMETER_SAMPLE_ID);                             
                     sampleId = Integer.valueOf(sampleIdStr);
                     String cancelChangeComment = request.getParameter("cancelChangeComment");                             
                     coc =  new ChangeOfCustody();
@@ -550,7 +550,7 @@ public class sampleAPI extends HttpServlet {
                             cancelChangeComment, userRole, null);
                     break;                    
                 case "LOGALIQUOT":
-                    mandatoryParamsAction = new String[]{parameter_sampleId};
+                    mandatoryParamsAction = new String[]{PARAMETER_SAMPLE_ID};
 //                    mandatoryParamsAction = LPArray.addValueToArray1D(mandatoryParamsAction, "confirmChangeComment");
                     areMandatoryParamsInResponse = LPHttp.areMandatoryParamsInApiRequest(request, mandatoryParamsAction);
                     if (LPPlatform.LAB_FALSE.equalsIgnoreCase(areMandatoryParamsInResponse[0].toString())){
@@ -561,7 +561,7 @@ public class sampleAPI extends HttpServlet {
                         Rdbms.closeRdbms(); 
                         return ;                
                     }                                                                
-                    sampleIdStr = request.getParameter(parameter_sampleId);              
+                    sampleIdStr = request.getParameter(PARAMETER_SAMPLE_ID);              
                     sampleId = Integer.valueOf(sampleIdStr);                    
                     //sampleTemplate=null;
                     //sampleTemplateVersion=null;

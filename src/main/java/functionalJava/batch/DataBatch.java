@@ -5,6 +5,7 @@
  */
 package functionalJava.batch;
 
+import LabPLANET.utilities.LPPlatform;
 import databases.Rdbms;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -26,7 +27,6 @@ public class DataBatch {
      * @return
      */
     public String dbCreateBatchArray( String schemaName, String transac, BatchArray batchArray){
-        String ermessage="";
         String functionResult = "Fail";
         String tableName = "batch_java";
 
@@ -40,7 +40,7 @@ public class DataBatch {
                                                     + "array_num_cols, array_total_positions, array_total_objects"},
                                                 new Object [] {batchArray.getBatchName(), batchArray.getBatchTemplate(), batchArray.getBatchTemplateVersion(), batchArray.numRows,
                                                     + batchArray.numCols, batchArray.numTotalPositions, batchArray.numTotalObjects});
-                    
+        if (LPPlatform.LAB_FALSE.equalsIgnoreCase(insertRecordInTable[0].toString())){return insertRecordInTable[0].toString();}
         functionResult = "Added to the database";
         return functionResult;
         

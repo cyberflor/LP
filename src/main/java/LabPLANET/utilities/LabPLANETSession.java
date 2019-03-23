@@ -14,14 +14,15 @@ import java.util.Date;
  */
 public class LabPLANETSession {
     
-    public static final String fieldName_sessionId = "session_id";
+    public static final String FIELDNAME_sessionId = "session_id";
     
     public static Object[] newAppSession( String[] fieldsName2, Object[] fieldsValue2){        
         Date nowLocalDate = LabPLANETDate.getTimeStampLocalDate();
         String schemaAppName = "app";
         String tableName = "app_session";
         
-        String[] fieldsName = null;     Object[] fieldsValue = null;
+        String[] fieldsName = null;     
+        Object[] fieldsValue = null;
         
         fieldsName = LPArray.addValueToArray1D(fieldsName, "date_started");
         fieldsValue = LPArray.addValueToArray1D(fieldsValue, nowLocalDate);
@@ -43,12 +44,12 @@ public class LabPLANETSession {
         String schemaAppName = "app";
         String tableName = "app_session";
         if (fieldsToRetrieve==null){
-            fieldsToRetrieve = LPArray.addValueToArray1D(fieldsToRetrieve, fieldName_sessionId);
+            fieldsToRetrieve = LPArray.addValueToArray1D(fieldsToRetrieve, FIELDNAME_sessionId);
             fieldsToRetrieve = LPArray.addValueToArray1D(fieldsToRetrieve, "date_started");
         }
         
         Object[][] recordFieldsBySessionId = Rdbms.getRecordFieldsByFilter(schemaAppName, tableName, 
-                new String[]{fieldName_sessionId}, new Object[]{appSessionId}, fieldsToRetrieve);
+                new String[]{FIELDNAME_sessionId}, new Object[]{appSessionId}, fieldsToRetrieve);
         return LPArray.array2dTo1d(recordFieldsBySessionId);
     }
     
@@ -68,11 +69,11 @@ public class LabPLANETSession {
         String schemaAuditName = LPPlatform.buildSchemaName(processName, "data-audit");       
         
         Object[][] recordFieldsBySessionId = Rdbms.getRecordFieldsByFilter(schemaAuditName, tableName, 
-                new String[]{fieldName_sessionId}, new Object[]{appSessionId}, fieldsNamesToInsert);
+                new String[]{FIELDNAME_sessionId}, new Object[]{appSessionId}, fieldsNamesToInsert);
         if ("LABPLANET_FALSE".equalsIgnoreCase(recordFieldsBySessionId[0][0].toString())){
             Object[] appSession = getAppSession(appSessionId, fieldsNamesToInsert);
-            if (!LPArray.valueInArray(fieldsNamesToInsert, fieldName_sessionId)){
-                fieldsNamesToInsert = LPArray.addValueToArray1D(fieldsNamesToInsert, fieldName_sessionId);
+            if (!LPArray.valueInArray(fieldsNamesToInsert, FIELDNAME_sessionId)){
+                fieldsNamesToInsert = LPArray.addValueToArray1D(fieldsNamesToInsert, FIELDNAME_sessionId);
                 appSession = LPArray.addValueToArray1D(appSession, appSessionId);
             }
             return Rdbms.insertRecordInTable(schemaAuditName, tableName, fieldsNamesToInsert, appSession);

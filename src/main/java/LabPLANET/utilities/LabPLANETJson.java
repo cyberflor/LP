@@ -169,7 +169,7 @@ public class LabPLANETJson {
  */   
     public static String [] _getJsonArrayFields(String table, String[] fields,String fieldPrefix) throws SQLException {
         String [] itt = table.split("\\.");
-       String tableColumns = ""; //" and column_name = 'description' ";      
+//       String tableColumns = ""; //" and column_name = 'description' ";      
         //Convert this method by using the official Rdbms for queries
         return itt;       
     }
