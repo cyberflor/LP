@@ -103,18 +103,18 @@ public class sampleAPIfrontend extends HttpServlet {
             
             switch (actionName.toUpperCase()){
             case "GET_SAMPLETEMPLATES":       
-                Object[][] Datas = Rdbms.getRecordFieldsByFilter(schemaPrefix+"-config", "sample", 
+                Object[][] datas = Rdbms.getRecordFieldsByFilter(schemaPrefix+"-config", "sample", 
                         new String[] {"code"}, new Object[]{"specSamples"}, new String[] { "json_definition"});
                 Rdbms.closeRdbms();
                 JSONObject proceduresList = new JSONObject();
                 JSONArray jArray = new JSONArray();
-                if (LPPlatform.LAB_FALSE.equalsIgnoreCase(Datas[0][0].toString())){  
-                    Object[] errMsg = LabPLANETFrontEnd.responseError(LPArray.array2dTo1d(Datas), language, null);
+                if (LPPlatform.LAB_FALSE.equalsIgnoreCase(datas[0][0].toString())){  
+                    Object[] errMsg = LabPLANETFrontEnd.responseError(LPArray.array2dTo1d(datas), language, null);
                     response.sendError((int) errMsg[0], (String) errMsg[1]);    
                     return;
                 }else{
                    Response.ok().build();                   
-                   jArray.addAll(Arrays.asList(LPArray.array2dTo1d(Datas)));                                 
+                   jArray.addAll(Arrays.asList(LPArray.array2dTo1d(datas)));                                 
                 }           
                 response.getWriter().write(jArray.toString());                  
                 return;
@@ -274,10 +274,10 @@ public class sampleAPIfrontend extends HttpServlet {
                     }
                     Rdbms.closeRdbms();
                     samplesArray.add(sampleArray);
-                    JSONObject JsonObj = new JSONObject();
-                    JsonObj.put("samples", samplesArray);                    
+                    JSONObject jsonObj = new JSONObject();
+                    jsonObj.put("samples", samplesArray);                    
                     Response.ok().build();
-                    response.getWriter().write(JsonObj.toString());               
+                    response.getWriter().write(jsonObj.toString());               
                 }
                     //Response.serverError().entity(myData).build();
                     //return Response.ok(myData).build();     

@@ -262,7 +262,7 @@ public class sampleAnalysisResultAPI extends HttpServlet {
                     resultIdStr = request.getParameter("resultId");
                     resultId = Integer.parseInt(resultIdStr);     
                     String newUOM = request.getParameter("newUOM");
-                    dataSample = smp.sarChangeUOM(schemaPrefix, resultId, newUOM, internalUserID, userRole);
+                    dataSample = smp.sarChangeUom(schemaPrefix, resultId, newUOM, internalUserID, userRole);
                     break;       
                 default:      
                     //errObject = frontEnd.APIHandler.actionNotRecognized(errObject, functionBeingTested, response);

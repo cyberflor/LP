@@ -21,16 +21,16 @@ public class Parameter {
      *
      * @param parameterFolder
      * @param schemaName
-     * @param AreaName
+     * @param areaName
      * @param parameterName
      * @param language
      * @return
      **/
-    public static String getParameterBundle(String parameterFolder, String schemaName, String AreaName, String parameterName, String language) {
+    public static String getParameterBundle(String parameterFolder, String schemaName, String areaName, String parameterName, String language) {
         ResourceBundle prop = null;
         if (parameterFolder==null){parameterFolder="config";}
         String filePath = "parameter."+parameterFolder+"."+schemaName;
-        if (AreaName!=null){filePath=filePath+"-"+AreaName;}
+        if (areaName!=null){filePath=filePath+"-"+areaName;}
         if (language != null) {filePath=filePath+"_" + language;}
         
         try {
@@ -127,7 +127,7 @@ public class Parameter {
         String translationsDir = propConfig.getString("translationDirPath");
         translationsDir = translationsDir.replace("/", "\\");
 
-        File[] transFiles = PropertiesFiles(fileName);
+        File[] transFiles = propertiesFiles(fileName);
         for (File f: transFiles)
         {
             String translationPath = "view.text.translation." + f.getName().replace(".properties", "");
@@ -166,7 +166,7 @@ public class Parameter {
      * @param fileName
      * @return
      */
-    public File[] PropertiesFiles(String fileName){
+    public File[] propertiesFiles(String fileName){
 
         ResourceBundle propConfig = ResourceBundle.getBundle("parameter.config.conf");        
         String translationsDir = propConfig.getString("translationDirPath");

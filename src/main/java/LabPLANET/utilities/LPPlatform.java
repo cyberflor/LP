@@ -456,7 +456,7 @@ public class LPPlatform {
         
         String[] mandatoryFields = mandatoryFieldsByDependency(schemaName, fieldNames, tableName, actionName);
 
-        String mandatoryFieldsMissing = "";
+        StringBuilder mandatoryFieldsMissing = new StringBuilder();
         for (Integer inumLines=0;inumLines<mandatoryFields.length;inumLines++){
             String currField = mandatoryFields[inumLines];
             boolean contains = Arrays.asList(fieldNames).contains(currField.toLowerCase());
@@ -497,8 +497,8 @@ public class LPPlatform {
                     }
                 }
                 if (!addIt){
-                    if (mandatoryFieldsMissing.length()>0){mandatoryFieldsMissing = mandatoryFieldsMissing + ",";}
-                    mandatoryFieldsMissing = mandatoryFieldsMissing + currField;
+                    if (mandatoryFieldsMissing.length()>0){mandatoryFieldsMissing = mandatoryFieldsMissing.append(",");}
+                    mandatoryFieldsMissing = mandatoryFieldsMissing.append(currField);
                 }
             }        
         }            
@@ -584,7 +584,7 @@ public class LPPlatform {
         String[] configTableKeyFieldName = configTableKeyFields.split("\\|");
         Object[] configTableKeyFielValue = new Object[0];
         
-        String missingFieldInArray = "";
+        StringBuilder missingFieldInArray = new StringBuilder();
         for (Integer i=0;i<configTableKeyFieldName.length;i++){
             
             String currField = configTableKeyFieldName[i];
@@ -593,8 +593,8 @@ public class LPPlatform {
             String currFieldType =currFields[1];              
             Integer fieldPosic = Arrays.asList(fieldNames).indexOf(currField);            
             if (fieldPosic==-1){
-                if (missingFieldInArray.length()>0){missingFieldInArray=missingFieldInArray+", ";}
-                missingFieldInArray = missingFieldInArray + currField;                
+                if (missingFieldInArray.length()>0){missingFieldInArray=missingFieldInArray.append(", ");}
+                missingFieldInArray = missingFieldInArray.append(currField);                
             }else{
                 Object currFieldInFormat = null;
                 switch (currFieldType.toUpperCase()){
@@ -632,7 +632,6 @@ public class LPPlatform {
  * Each procedure has a specific parameter field called in the way of "procedureName-config" containing a peer entries in the way of: 
  *      tableName+"_specialFieldsCheck - Specify the field having this need.
  *      tableName+"_specialFieldsCheck_methodName - The method to be invoked that contains the logic.
- * @param rdbm - Rdbms - database communication channel
  * @param schemaName - String - Procedure
  * @param fieldNames - String[] - fields involved in the actionName being performed
  * @param fieldValues - Object[] - field values 

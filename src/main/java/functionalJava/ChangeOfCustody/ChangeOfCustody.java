@@ -22,7 +22,7 @@ public class ChangeOfCustody {
     String cocAbortedChangeStatus = "ABORTED";
     public static final String FIELDNAME_STATUS = "status";
     
-    public Object[] cocStartChange(String schemaPrefix, String objectTable, String ObjectFieldName, Object objectId, String currCustodian, String custodianCandidate, String userRole, Integer appSessionId) {
+    public Object[] cocStartChange(String schemaPrefix, String objectTable, String objectFieldName, Object objectId, String currCustodian, String custodianCandidate, String userRole, Integer appSessionId) {
         
         String cocTableName = objectTable.toLowerCase()+"_coc";
         String auditActionName = "START_CHAIN_OF_CUSTODY";
@@ -52,7 +52,7 @@ public class ChangeOfCustody {
             return changeOfCustodyEnable;}
         
         Object[] existsRecord = Rdbms.existsRecord( schemaName, cocTableName, 
-                new String[]{ObjectFieldName, FIELDNAME_STATUS}, 
+                new String[]{objectFieldName, FIELDNAME_STATUS}, 
                 new Object[]{objectId, cocStartChangeStatus});
         if (LPPlatform.LAB_TRUE.equalsIgnoreCase(existsRecord[0].toString())){
                 String errorCode = "ChainOfCustody_requestAlreadyInCourse";
@@ -64,11 +64,11 @@ public class ChangeOfCustody {
         Object[] updateRecordFieldsByFilter = Rdbms.updateRecordFieldsByFilter( schemaName, objectTable.toLowerCase(), 
                 new String[]{"coc_requested_on", "custodian_candidate"},                 
                 new Object[]{LabPLANETDate.getTimeStampLocalDate(), custodianCandidate}, 
-                new String[]{ObjectFieldName}, new Object[]{objectId});
+                new String[]{objectFieldName}, new Object[]{objectId});
         if (LPPlatform.LAB_FALSE.equalsIgnoreCase(updateRecordFieldsByFilter[0].toString())){
             return updateRecordFieldsByFilter;}
         
-        String[] sampleFieldName = new String[]{ObjectFieldName, "custodian", "custodian_candidate", "coc_started_on", FIELDNAME_STATUS};
+        String[] sampleFieldName = new String[]{objectFieldName, "custodian", "custodian_candidate", "coc_started_on", FIELDNAME_STATUS};
         Object[] sampleFieldValue = new Object[]{objectId, currCustodian, custodianCandidate, LabPLANETDate.getTimeStampLocalDate(), cocStartChangeStatus};
         
         Object[] insertRecordInTable = Rdbms.insertRecordInTable( schemaName, cocTableName, 
@@ -94,15 +94,15 @@ public class ChangeOfCustody {
         return LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, errorCode, errorDetailVariables);                  
     }
 
-    public Object[] cocConfirmedChange( String schemaName, String objectTable, String ObjectFieldName, Object objectId, String userName, String comment, String userRole, Integer appSessionId) {
-        return cocCompleteChange( schemaName, objectTable, ObjectFieldName, objectId, userName, comment, cocConfirmedChangeStatus, userRole, appSessionId);
+    public Object[] cocConfirmedChange( String schemaName, String objectTable, String objectFieldName, Object objectId, String userName, String comment, String userRole, Integer appSessionId) {
+        return cocCompleteChange( schemaName, objectTable, objectFieldName, objectId, userName, comment, cocConfirmedChangeStatus, userRole, appSessionId);
     }
     
-    public Object[] cocAbortedChange( String schemaName, String objectTable, String ObjectFieldName, Object objectId, String userName, String comment, String userRole, Integer appSessionId) {
-        return cocCompleteChange( schemaName, objectTable, ObjectFieldName, objectId, userName, comment, cocAbortedChangeStatus, userRole, appSessionId);
+    public Object[] cocAbortedChange( String schemaName, String objectTable, String objectFieldName, Object objectId, String userName, String comment, String userRole, Integer appSessionId) {
+        return cocCompleteChange( schemaName, objectTable, objectFieldName, objectId, userName, comment, cocAbortedChangeStatus, userRole, appSessionId);
     }
     
-    private Object[] cocCompleteChange( String schemaPrefix, String objectTable, String ObjectFieldName, Object objectId, String userName, String comment, String actionName, String userRole, Integer appSessionId) {
+    private Object[] cocCompleteChange( String schemaPrefix, String objectTable, String objectFieldName, Object objectId, String userName, String comment, String actionName, String userRole, Integer appSessionId) {
 
         String auditActionName = actionName.toUpperCase()+"_CHAIN_OF_CUSTODY";       
         
@@ -116,7 +116,7 @@ public class ChangeOfCustody {
             return changeOfCustodyEnable;}
 
         Object[][] startedProcessData = Rdbms.getRecordFieldsByFilter( schemaName, cocTableName, 
-                new String[]{ObjectFieldName, FIELDNAME_STATUS},
+                new String[]{objectFieldName, FIELDNAME_STATUS},
                 new Object[]{objectId, "STARTED"},
                 new String[]{"id", FIELDNAME_STATUS, "custodian_candidate"});
         if (LPPlatform.LAB_FALSE.equalsIgnoreCase(startedProcessData[0][0].toString())){            
@@ -160,7 +160,7 @@ public class ChangeOfCustody {
          }
          Object[] updateRecordFieldsByFilter = Rdbms.updateRecordFieldsByFilter( schemaName, objectTable.toLowerCase(), 
                 updSampleTblFlds, updSampleTblVls,                
-                new String[]{ObjectFieldName}, new Object[]{objectId});
+                new String[]{objectFieldName}, new Object[]{objectId});
         if (LPPlatform.LAB_FALSE.equalsIgnoreCase(updateRecordFieldsByFilter[0].toString())){
             return updateRecordFieldsByFilter;}
                 

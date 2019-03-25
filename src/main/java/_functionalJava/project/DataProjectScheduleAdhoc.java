@@ -101,29 +101,28 @@ public class DataProjectScheduleAdhoc {
     
     /**
      *
-     * @param schedule_size
+     * @param scheduleSize
      * @param itemsMeasurement
      * @param startDay
      */
-    public void dataProjectSchedule (int schedule_size, String itemsMeasurement, Date startDay){
+    public void dataProjectSchedule (int scheduleSize, String itemsMeasurement, Date startDay){
         //EnumUtils.isValidEnum(itemsMeasurementType.class, itemsMeasurement);
         Date endDayLocal = new Date();
         this.itemsMeasurement =itemsMeasurement;
-        this.schedule_size=schedule_size;
+        this.schedule_size=scheduleSize;
         this.FirstDay=startDay;
         
         switch (itemsMeasurement.toUpperCase()){
             case "DAYS":
-                endDayLocal = LabPLANETDate.addDays(startDay, schedule_size);
+                endDayLocal = LabPLANETDate.addDays(startDay, scheduleSize);
                 break;
             case "MONTHS":
-                endDayLocal = LabPLANETDate.addMonths(startDay, schedule_size);
+                endDayLocal = LabPLANETDate.addMonths(startDay, scheduleSize);
                 break;
             case "YEARS":
-                endDayLocal = LabPLANETDate.addYears(startDay, schedule_size);
+                endDayLocal = LabPLANETDate.addYears(startDay, scheduleSize);
                 break;                
-            default:
-                
+            default:                
                 break;
         }
         this.endDay=endDayLocal;                        

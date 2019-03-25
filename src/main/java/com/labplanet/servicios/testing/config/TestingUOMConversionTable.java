@@ -23,7 +23,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Administrator
  */
-public class TestingUOMConversionTable extends HttpServlet {
+public class TestinguomConversionTable extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -82,14 +82,14 @@ public class TestingUOMConversionTable extends HttpServlet {
                 if (lineNumCols>=numEvaluationArguments+3)                
                     baseValue = LPTestingOutFormat.csvExtractFieldValueBigDecimal(csvFileContent[iLines][numEvaluationArguments+3]);
                 
-                UnitsOfMeasurement UOM = new UnitsOfMeasurement();
+                UnitsOfMeasurement uom = new UnitsOfMeasurement();
                              fileContentTable1 = fileContentTable1+ 
                                      LPTestingOutFormat.rowAddFields(new Object[]{iLines, schemaPrefix, familyName, Arrays.toString(fieldsToRetrieve), baseValue});
-                String baseUnitName = UOM.getFamilyBaseUnitName(schemaPrefix, familyName);
+                String baseUnitName = uom.getFamilyBaseUnitName(schemaPrefix, familyName);
                 if (baseUnitName.length()==0){
                      fileContentTable1=fileContentTable1+LPTestingOutFormat.rowAddField(String.valueOf("Nothing to convert with no base unit defined"));
                 }else{                    
-                Object[][] tableGet = UOM.getAllUnitsPerFamily(schemaPrefix, familyName, fieldsToRetrieve);
+                Object[][] tableGet = uom.getAllUnitsPerFamily(schemaPrefix, familyName, fieldsToRetrieve);
                 if (LPPlatform.LAB_FALSE.equalsIgnoreCase(tableGet[0][0].toString())) {
                              fileContentTable1 = fileContentTable1+ 
                                      LPTestingOutFormat.rowAddField(String.valueOf(tableGet[0][3]))+
@@ -98,7 +98,7 @@ public class TestingUOMConversionTable extends HttpServlet {
                     String tableConversions=LPTestingOutFormat.tableStart(); 
                     for (Object[] tableGet1 : tableGet) {
                         tableConversions = tableConversions +LPTestingOutFormat.rowStart();
-                        Object[] newValue = UOM.convertValue(schemaPrefix, baseValue, baseUnitName, (String) tableGet1[0]);
+                        Object[] newValue = uom.convertValue(schemaPrefix, baseValue, baseUnitName, (String) tableGet1[0]);
                         if (LPPlatform.LAB_FALSE.equalsIgnoreCase(newValue[0].toString())) {
                             tableConversions = tableConversions+
                                                                  LPTestingOutFormat.rowAddField("Not Converted");                            
@@ -126,7 +126,7 @@ public class TestingUOMConversionTable extends HttpServlet {
             Rdbms.closeRdbms();
             fileContentTable1 = fileContentTable1 +LPTestingOutFormat.tableEnd();
             fileContent=fileContent+fileContentTable1;
-            //String fileContentSummary = LPTestingOutFormat.CreateSummaryTable(testingSummary);
+            //String fileContentSummary = LPTestingOutFormat.createSummaryTable(testingSummary);
             fileContent=fileContent+LPTestingOutFormat.bodyEnd()+LPTestingOutFormat.htmlEnd();
             out.println(fileContent);            
             LPTestingOutFormat.createLogFile(csvPathName, fileContent);

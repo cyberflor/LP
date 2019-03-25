@@ -111,45 +111,33 @@ public class LabPLANETQualityAssurance {
      * @param metodo
      * @return
      */
-    public static Object[] isJAvaDocException( String project, String pack, String clase, String metodo){        
-        
+    public static Object[] isJAvaDocException( String project, String pack, String clase, String metodo){                
         String schemaName = "requirements";
         String tableName = "java_class_doc_exception";
-        String fieldName_exceptionLevel = "exception_level";
-        String fieldName_objectName = "object_name";
-        Object[] diagn = new Object[2];
-        diagn[0] = false;  
-        diagn[1] = "";
-        
-        
+        String fieldNameExceptionLevel = "exception_level";
+        String fieldNameObjectName = "object_name";
+        Object[] diagn = new Object[]{false, ""};
                 
-        Object[] existsRecord = Rdbms.existsRecord(schemaName, tableName, new String[]{fieldName_exceptionLevel,fieldName_objectName}, new Object[]{"project", project});
+        Object[] existsRecord = Rdbms.existsRecord(schemaName, tableName, new String[]{fieldNameExceptionLevel, fieldNameObjectName}, new Object[]{"project", project});
         if (LPPlatform.LAB_TRUE.equalsIgnoreCase(existsRecord[0].toString())){
             diagn[0] = true;  
             diagn[1] = "Exception at project level for "+project;            
-            return diagn;
-        }
-        
-        existsRecord = Rdbms.existsRecord(schemaName, tableName, new String[]{fieldName_exceptionLevel,fieldName_objectName}, new Object[]{"package", pack});
+            return diagn;}
+        existsRecord = Rdbms.existsRecord(schemaName, tableName, new String[]{fieldNameExceptionLevel, fieldNameObjectName}, new Object[]{"package", pack});
         if (LPPlatform.LAB_TRUE.equalsIgnoreCase(existsRecord[0].toString())){
             diagn[0] = true;  
             diagn[1] = "Exception at package level for "+pack;            
-            return diagn;
-        }
-
-        existsRecord = Rdbms.existsRecord(schemaName, tableName, new String[]{fieldName_exceptionLevel,fieldName_objectName}, new Object[]{"class", clase});
+            return diagn;}
+        existsRecord = Rdbms.existsRecord(schemaName, tableName, new String[]{fieldNameExceptionLevel, fieldNameObjectName}, new Object[]{"class", clase});
         if (LPPlatform.LAB_TRUE.equalsIgnoreCase(existsRecord[0].toString())){
             diagn[0] = true;  
             diagn[1] = "Exception at class level for "+clase;            
-            return diagn;
-        }
-
-        existsRecord = Rdbms.existsRecord(schemaName, tableName, new String[]{fieldName_exceptionLevel,fieldName_objectName}, new Object[]{"method", metodo});
+            return diagn;}
+        existsRecord = Rdbms.existsRecord(schemaName, tableName, new String[]{fieldNameExceptionLevel, fieldNameObjectName}, new Object[]{"method", metodo});
         if (LPPlatform.LAB_TRUE.equalsIgnoreCase(existsRecord[0].toString())){
             diagn[0] = true;  
             diagn[1] = "Exception at method level for "+metodo;            
-            return diagn;
-        }
+            return diagn;}
         
         return diagn;
     }

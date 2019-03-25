@@ -85,7 +85,7 @@ public class sopUserAPIfrontend extends HttpServlet {
                 }
                
                 UserProfile usProf = new UserProfile();
-                String[] allUserProcedurePrefix = LPArray.ConvertObjectArrayToStringArray(usProf.getAllUserProcedurePrefix(dbUserName));
+                String[] allUserProcedurePrefix = LPArray.convertObjectArrayToStringArray(usProf.getAllUserProcedurePrefix(dbUserName));
                 if (LPPlatform.LAB_FALSE.equalsIgnoreCase(allUserProcedurePrefix[0])){
                     Object[] errMsg = LabPLANETFrontEnd.responseError(allUserProcedurePrefix, language, null);
                     response.sendError((int) errMsg[0], (String) errMsg[1]);   
@@ -98,49 +98,49 @@ public class sopUserAPIfrontend extends HttpServlet {
                     Object[][] userProcSops = userSop.getNotCompletedUserSOP(internalUserID, curProc, fieldsToRetrieve);       
                     if (!LPPlatform.LAB_FALSE.equalsIgnoreCase(userProcSops[0][0].toString())){numPendingSOPs=numPendingSOPs+userProcSops.length;}
                 }
-                   JSONArray SopOptions = new JSONArray(); 
+                   JSONArray sopOptions = new JSONArray(); 
                     
                     //JSONObject sopElement = new JSONObject();
                     
-                    JSONObject SopOption = new JSONObject();
-                    SopOption.put("name", "AllMySOPs");
-                    SopOption.put("label_en", "All my SOPs");
-                    SopOption.put("label_es", "Todos Mis PNTs");
-                    SopOption.put("window_url", "Modulo1/home.js");
-                    SopOption.put("mode", "edit");
-                    SopOption.put("branch_level", "level1");
-                    SopOption.put("type", "tree-list");
-                    SopOptions.add(SopOption);
+                    JSONObject sopOption = new JSONObject();
+                    sopOption.put("name", "AllMySOPs");
+                    sopOption.put("label_en", "All my SOPs");
+                    sopOption.put("label_es", "Todos Mis PNTs");
+                    sopOption.put("window_url", "Modulo1/home.js");
+                    sopOption.put("mode", "edit");
+                    sopOption.put("branch_level", "level1");
+                    sopOption.put("type", "tree-list");
+                    sopOptions.add(sopOption);
                     
-                    SopOption = new JSONObject();
-                    SopOption.put("name", "MyPendingSOPs");
-                    SopOption.put("label_en", "My Pending SOPs");
-                    SopOption.put("label_es", "Mis PNT Pendientes");
-                    SopOption.put("window_url", "Modulo1/home.js");
-                    SopOption.put("mode", "edit");
-                    SopOption.put("branch_level", "level1");
-                    SopOption.put("badge", numPendingSOPs);
-                    SopOption.put("type", "tree-list");
-                    SopOptions.add(SopOption);
+                    sopOption = new JSONObject();
+                    sopOption.put("name", "MyPendingSOPs");
+                    sopOption.put("label_en", "My Pending SOPs");
+                    sopOption.put("label_es", "Mis PNT Pendientes");
+                    sopOption.put("window_url", "Modulo1/home.js");
+                    sopOption.put("mode", "edit");
+                    sopOption.put("branch_level", "level1");
+                    sopOption.put("badge", numPendingSOPs);
+                    sopOption.put("type", "tree-list");
+                    sopOptions.add(sopOption);
                     
-                    SopOption = new JSONObject();
-                    SopOption.put("name", "ProcSOPs");
-                    SopOption.put("label_en", "Procedure SOPs");
-                    SopOption.put("label_es", "PNTs del proceso");
-                    SopOption.put("window_url", "Modulo1/home.js");
-                    SopOption.put("mode", "edit");
-                    SopOption.put("branch_level", "level1");
-                    SopOption.put("type", "tree-list");
-                    SopOptions.add(SopOption);
+                    sopOption = new JSONObject();
+                    sopOption.put("name", "ProcSOPs");
+                    sopOption.put("label_en", "Procedure SOPs");
+                    sopOption.put("label_es", "PNTs del proceso");
+                    sopOption.put("window_url", "Modulo1/home.js");
+                    sopOption.put("mode", "edit");
+                    sopOption.put("branch_level", "level1");
+                    sopOption.put("type", "tree-list");
+                    sopOptions.add(sopOption);
                     
                     JSONObject sopElement = new JSONObject();
-                    sopElement.put("definition", SopOptions);
+                    sopElement.put("definition", sopOptions);
                     sopElement.put("name", "SOP");
                     sopElement.put("version", "1");
                     sopElement.put("label_en", "SOPs");
                     sopElement.put("label_es", "P.N.T.");
                     sopElement.put("schemaPrefix", "module1");
-                    //SopElement.add(SopOption);
+                    //SopElement.add(sopOption);
                     
                     JSONArray arrFinal = new JSONArray();
                     arrFinal.add(sopElement);

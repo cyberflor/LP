@@ -86,6 +86,7 @@ public class SqlStatement {
                 String updateSetSectionStr=buildUpdateSetFields(setFieldNames);
                 query = "update " + schemaName + "." + tableName + " set " + updateSetSectionStr + " where " + queryWhere;
                 whereFieldValuesNew= LPArray.addValueToArray1D(setFieldValues, whereFieldValuesNew);
+                break;
             default:
                 break;
         }

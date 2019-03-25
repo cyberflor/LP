@@ -1021,7 +1021,7 @@ public class Rdbms {
         return conn;        
     }
     
-    public void Commit(){
+    public void commit(){
         try {
             conn.commit();
         } catch (SQLException ex) {

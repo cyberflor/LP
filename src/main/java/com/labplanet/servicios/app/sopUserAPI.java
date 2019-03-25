@@ -106,7 +106,7 @@ public class sopUserAPI extends HttpServlet {
             switch (actionName.toUpperCase()){
             case "MY_SOPS":    
                 UserProfile usProf = new UserProfile();
-                String[] allUserProcedurePrefix = LPArray.ConvertObjectArrayToStringArray(usProf.getAllUserProcedurePrefix(dbUserName));
+                String[] allUserProcedurePrefix = LPArray.convertObjectArrayToStringArray(usProf.getAllUserProcedurePrefix(dbUserName));
                 if (LPPlatform.LAB_FALSE.equalsIgnoreCase(allUserProcedurePrefix[0])){
                     Object[] errMsg = LabPLANETFrontEnd.responseError(allUserProcedurePrefix, language, null);
                     response.sendError((int) errMsg[0], (String) errMsg[1]);    
@@ -159,7 +159,7 @@ public class sopUserAPI extends HttpServlet {
                 return;
             case "MY_PENDING_SOPS":    
                 usProf = new UserProfile();
-                allUserProcedurePrefix = LPArray.ConvertObjectArrayToStringArray(usProf.getAllUserProcedurePrefix(dbUserName));
+                allUserProcedurePrefix = LPArray.convertObjectArrayToStringArray(usProf.getAllUserProcedurePrefix(dbUserName));
                 if (LPPlatform.LAB_FALSE.equalsIgnoreCase(allUserProcedurePrefix[0])){
                     Object[] errMsg = LabPLANETFrontEnd.responseError(allUserProcedurePrefix, language, null);
                     response.sendError((int) errMsg[0], (String) errMsg[1]);   
@@ -208,7 +208,7 @@ public class sopUserAPI extends HttpServlet {
                 return;
             case "PROCEDURE_SOPS":    
                 usProf = new UserProfile();
-                allUserProcedurePrefix = LPArray.ConvertObjectArrayToStringArray(usProf.getAllUserProcedurePrefix(dbUserName));
+                allUserProcedurePrefix = LPArray.convertObjectArrayToStringArray(usProf.getAllUserProcedurePrefix(dbUserName));
                 if (LPPlatform.LAB_FALSE.equalsIgnoreCase(allUserProcedurePrefix[0])){
                     Object[] errMsg = LabPLANETFrontEnd.responseError(allUserProcedurePrefix, language, null);
                     response.sendError((int) errMsg[0], (String) errMsg[1]);    

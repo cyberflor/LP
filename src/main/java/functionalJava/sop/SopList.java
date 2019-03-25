@@ -148,7 +148,7 @@ public class SopList {
      * @return
      * @throws SQLException
      */
-    public Object[] dbUpdateSopListSopAssigned( String schemaPrefix, String[] sopAssigned) throws SQLException{    
+    public Object[] dbUpdateSopListSopAssigned( String schemaPrefix, String[] sopAssigned){    
         String schemaConfigName = "config";     
         schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, schemaConfigName);
         Object[] diagnoses = Rdbms.updateRecordFieldsByFilter(schemaConfigName, tableName, 

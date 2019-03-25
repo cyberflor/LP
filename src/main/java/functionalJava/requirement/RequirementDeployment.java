@@ -218,9 +218,9 @@ public class RequirementDeployment {
 
  /*       
         try{
-            String query = "SELECT catw.module_id catw_module_id, catw.module_version catw_module_version, catw.module_revision catw_module_revision, "
-                        + "        catw.widget_name catw_widget_name, prurs.parent_code prurs_parent_code, prurs.widget_fields prurs_widget_fields, "
-                        + "        prurs.name prurs_name, prurs.widget_desc prurs_widget_desc, prurs.schema_name prurs_schema_name, prurs.table_name prurs_table_name, " 
+            String query = "SELECT catw.module_id catwModuleId, catw.module_version catwModuleVersion, catw.module_revision catwModuleRevision, "
+                        + "        catw.widget_name catwWidgetName, prurs.parent_code prurs_parent_code, prurs.widget_fields prursWidgetFields, "
+                        + "        prurs.name prurs_name, prurs.widget_desc prurs_widget_desc, prurs.schema_name prursSchemaName, prurs.table_name prursTableName, " 
                         + "        prurs.sop_name sop_name, prurs.sop_section sop_section"
                         + "   FROM requirements.procedure proc, requirements.procedure_user_requirements prurs, requirements.module_catalog cat, requirements.module_catalog_widget catw "
                         + "  where proc.name=? and proc.version=? "
@@ -243,31 +243,31 @@ public class RequirementDeployment {
                 res.absolute(j+1);
 
                 prurs_name = res.getString("prurs_name");                 
-                catw_widget_name = res.getString("catw_widget_name");
+                catwWidgetName = res.getString("catwWidgetName");
                 
                 prurs_widget_desc = res.getString("prurs_widget_desc"); 
                 
                 if (prurs_widget_desc==null){prurs_widget_desc=prurs_name;}
                 
-                if (prurs_widget_desc==null){prurs_widget_desc=catw_widget_name;}
+                if (prurs_widget_desc==null){prurs_widget_desc=catwWidgetName;}
                 
-                String catw_widget_nameBase = catw_widget_name;
-                Integer hasBase = catw_widget_nameBase.indexOf("-BASE");                 
+                String catwWidgetNameBase = catwWidgetName;
+                Integer hasBase = catwWidgetNameBase.indexOf("-BASE");                 
                 if(hasBase==-1){
-                    catw_widget_name = catw_widget_name + "-BASE";}
-                catw_module_id = res.getInt("catw_module_id");    
-                catw_module_version = res.getInt("catw_module_version");    
-                catw_module_revision = res.getInt("catw_module_revision");    
-                prurs_widget_fields = res.getString("prurs_widget_fields");    
-                prurs_schema_name = res.getString("prurs_schema_name");
-                prurs_table_name = res.getString("prurs_table_name");
+                    catwWidgetName = catwWidgetName + "-BASE";}
+                catwModuleId = res.getInt("catwModuleId");    
+                catwModuleVersion = res.getInt("catwModuleVersion");    
+                catwModuleRevision = res.getInt("catwModuleRevision");    
+                prursWidgetFields = res.getString("prursWidgetFields");    
+                prursSchemaName = res.getString("prursSchemaName");
+                prursTableName = res.getString("prursTableName");
                 
                 String sopName = res.getString("sop_name");
                 String sopSection = res.getString("sop_section");
                 
                 String navSubTabCode = procCode; //res.getString("prurs_code");
 
-                navCode = procName + "_" + navSubTabCode + "_" + catw_widget_name;
+                navCode = procName + "_" + navSubTabCode + "_" + catwWidgetName;
                 navCode = navCode.replace("-","");
                 navCode = navCode.toLowerCase();
 
@@ -283,14 +283,14 @@ public class RequirementDeployment {
                     // Build the Widget-BASE part. Begin
                     Object[][] resComp = Rdbms.getRecordFieldsByFilter(schemaRequirements, "module_catalog_widget", 
                                     new String[]{"module_id", "module_version", "module_revision", "widget_name"}, 
-                                    new Object [] {catw_module_id, catw_module_version, catw_module_revision, catw_widget_nameBase}, 
+                                    new Object [] {catwModuleId, catwModuleVersion, catwModuleRevision, catwWidgetNameBase}, 
                                     new String[]{"region", "xtype", "header", "footer", "preload", "tbar", "bbar", "item", "sql", "item_json", "norder", "description", "close_header"});
-                    Boolean formCreated = createNavTabComp(navId, navTabId, procName, procVersion, procCode, catw_widget_name, catw_widget_nameBase, catw_module_id, catw_module_version, catw_module_revision, prurs_widget_fields, prurs_schema_name, prurs_table_name, sopName, sopSection );
-                    if (prurs_widget_fields!=null){
-                        String[] prurs_widget_fieldsArr = prurs_widget_fields.split(",");
-                        for (String fd: prurs_widget_fieldsArr)
+                    Boolean formCreated = createNavTabComp(navId, navTabId, procName, procVersion, procCode, catwWidgetName, catwWidgetNameBase, catwModuleId, catwModuleVersion, catwModuleRevision, prursWidgetFields, prursSchemaName, prursTableName, sopName, sopSection );
+                    if (prursWidgetFields!=null){
+                        String[] prursWidgetFieldsArr = prursWidgetFields.split(",");
+                        for (String fd: prursWidgetFieldsArr)
                         {
-                            String fieldCode = procName + "_" + navSubTabCode + "_" + catw_widget_name + "_" + fd;
+                            String fieldCode = procName + "_" + navSubTabCode + "_" + catwWidgetName + "_" + fd;
                             fieldCode = fieldCode.replace("-","");
                             fieldCode = fieldCode.toLowerCase();
 
@@ -310,10 +310,10 @@ public class RequirementDeployment {
 
     /**
      *
-     * @param nodename
-     * @param privilege_id
-     * @param fathernode
-     * @param haschildren
+     * @param nodeName
+     * @param privilegeId
+     * @param fatherNode
+     * @param hasChildren
      * @param procedure
      * @param version
      * @param code
@@ -322,7 +322,7 @@ public class RequirementDeployment {
      * @return
      * @throws SQLException
      */
-    public Integer createNav(String nodename,  String privilege_id, Integer fathernode, Boolean haschildren, String procedure, Integer version, String code, String sopName, String sopSection) throws SQLException   {            
+    public Integer createNav(String nodeName,  String privilegeId, Integer fatherNode, Boolean hasChildren, String procedure, Integer version, String code, String sopName, String sopSection) throws SQLException   {            
         StackTraceElement[] elements = Thread.currentThread().getStackTrace();
         String methodName = elements[1].getMethodName();
         String schemaConfigName = LPPlatform.SCHEMA_CONFIG; 
@@ -332,9 +332,9 @@ public class RequirementDeployment {
         String newEntry = "";        
         Role rol = new Role();
 
-        if (privilege_id.equalsIgnoreCase(procedure+"_null")){
+        if (privilegeId.equalsIgnoreCase(procedure+"_null")){
             Object[] diagnoses = Rdbms.existsRecord(schemaConfigName, "privilege", 
-                    new String[]{"privilege_id"}, new Object[]{procedure});
+                    new String[]{"privilegeId"}, new Object[]{procedure});
             if ( !LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){
                 diagnoses = rol.createPrivilege(procedure);
                 try {
@@ -346,16 +346,16 @@ public class RequirementDeployment {
                 requirementsLogEntry(methodName, (String) diagnoses[6], 3);
             } catch (IOException ex) {Logger.getLogger(Requirement.class.getName()).log(Level.SEVERE, null, ex);}                    
             
-            privilege_id = procedure;
+            privilegeId = procedure;
         }
-        privilege_id = privilege_id.trim();
-        privilege_id = privilege_id.replace(" ", "");
+        privilegeId = privilegeId.trim();
+        privilegeId = privilegeId.replace(" ", "");
 
         Object[] diagnoses = Rdbms.insertRecordInTable(LPPlatform.SCHEMA_CONFIG, "nav", 
-                                    new String[]{"privilege_id", "has_children", "show_in_menu", "father_nav_id", "procedure", "proc_version", "proc_code", "sop_name", "sop_section"}, 
-                                    new Object[]{privilege_id, haschildren, true, fathernode, procedure, version, code, sopName, sopSection});
+                                    new String[]{"privilegeId", "has_children", "show_in_menu", "father_nav_id", "procedure", "proc_version", "proc_code", "sop_name", "sop_section"}, 
+                                    new Object[]{privilegeId, hasChildren, true, fatherNode, procedure, version, code, sopName, sopSection});
         if ("LABPLANET_FALSE".equalsIgnoreCase(diagnoses[0].toString())){
-            newEntry = " ***Error creating navId for the node name " + nodename + ". Error: "+ diagnoses[4] + " / " + diagnoses[5];
+            newEntry = " ***Error creating navId for the node name " + nodeName + ". Error: "+ diagnoses[4] + " / " + diagnoses[5];
             numr = 0;
         }
         numr = Integer.valueOf(diagnoses[diagnoses.length-1].toString());
@@ -363,16 +363,16 @@ public class RequirementDeployment {
         //load record from template and then insert replacing required code
         if (numr>0){
 
-            if (!haschildren){
+            if (!hasChildren){
                 Rdbms.updateRecordFieldsByFilter(LPPlatform.SCHEMA_CONFIG, "nav", 
                         new String[]{"header", "close_header", "footer"}, 
-                        new Object []{"{id:'nav-"+numr+"', xtype:'tabpanel', title:gTr('paramView','"+nodename+"'), closable:true, activeTab:0, items:[","]", "}"}, 
+                        new Object []{"{id:'nav-"+numr+"', xtype:'tabpanel', title:gTr('paramView','"+nodeName+"'), closable:true, activeTab:0, items:[","]", "}"}, 
                         new String[]{"nav_id"}, new Object []{numr});
             }
             created = numr;                
         }
 
-        if (numr>0){newEntry = " created navId " + numr + " for the node name " + nodename;}
+        if (numr>0){newEntry = " created navId " + numr + " for the node name " + nodeName;}
 
         try {requirementsLogEntry(methodName, newEntry,2);
         } catch (IOException ex) {Logger.getLogger(Requirement.class.getName()).log(Level.SEVERE, null, ex);}        
@@ -409,14 +409,16 @@ public class RequirementDeployment {
         return numr;
     }
     
-    private Boolean _createNavTabComp( Integer navId, Integer navTabId, String procName, Integer procVersion, String procCode, String catw_widget_name, String catw_widget_nameBase, Integer catw_module_id, Integer catw_module_version, Integer catw_module_revision, String prurs_widget_fields, String prurs_schema_name, String prurs_table_name, String sopName, String sopSection ) throws SQLException    {   
+    private Boolean _createNavTabComp( Integer navId, Integer navTabId, String procName, Integer procVersion, String procCode, 
+            String catwWidgetName, String catwWidgetNameBase, Integer catwModuleId, Integer catwModuleVersion, Integer catwModuleRevision, 
+            String prursWidgetFields, String prursSchemaName, String prursTableName, String sopName, String sopSection ) {   
         StackTraceElement[] elements = Thread.currentThread().getStackTrace();
         return false;
     }        
 /*    
         Object[][] resComp = Rdbms.getRecordFieldsByFilter(schemaRequirements, "module_catalog_widget", 
                 new String[]{"module_id", "module_version", "module_revision", "widget_name"}, 
-                new Object [] {catw_module_id, catw_module_version, catw_module_revision, catw_widget_nameBase}, 
+                new Object [] {catwModuleId, catwModuleVersion, catwModuleRevision, catwWidgetNameBase}, 
                 new String[]{"region", "xtype", "header", "footer", "preload", "tbar", "bbar", "item", "sql", "item_json", "norder", "description", "close_header"});
         if (resComp[0][3].toString().equalsIgnoreCase("FALSE")){return false;}        
             String region = (String) resComp[0][0];        String xtype = (String) resComp[0][1];
@@ -433,7 +435,7 @@ public class RequirementDeployment {
 
             Object[] diagnoses = Rdbms.insertRecordInTable(LPPlatform.SCHEMA_CONFIG, "nav_tab_comp", 
                         new String[]{"nav_id", "nav_tab_id", "region", "xtype", "sql", "header", "footer", "close_header", "procedure", "proc_version", "proc_code", "widget_name", "sop_name", "sop_section"}, 
-                        new Object[]{navId, navTabId, region, xtype, sql, header, footer, closeHeader, procName, procVersion, procCode, catw_widget_nameBase, sopName, sopSection });
+                        new Object[]{navId, navTabId, region, xtype, sql, header, footer, closeHeader, procName, procVersion, procCode, catwWidgetNameBase, sopName, sopSection });
             if (diagnoses[3].toString().equalsIgnoreCase("FALSE")){navTabCompId=0;}
             else{navTabCompId = (Integer) diagnoses[6];}
 
@@ -442,14 +444,14 @@ public class RequirementDeployment {
                 try {requirementsLogEntry(methodName, newEntry,4);
                 } catch (IOException ex) {Logger.getLogger(Requirement.class.getName()).log(Level.SEVERE, null, ex);}                
 
-                tableName = sql; //prurs_schema_name + "." + prurs_table_name;
+                tableName = sql; //prursSchemaName + "." + prursTableName;
 
                 if (tableName==null){fieldsArr = null;}
                 else{               
-                    if (prurs_widget_fields==null){fieldsArr = null;}   
-                    else{fieldsArr = prurs_widget_fields.split(",");}
+                    if (prursWidgetFields==null){fieldsArr = null;}   
+                    else{fieldsArr = prursWidgetFields.split(",");}
                 }
-                String fieldPrefix = procName.toLowerCase()+ "_" + procCode.toLowerCase().replace("-", "")+ "_" + catw_widget_nameBase.toLowerCase().replace("-", "");
+                String fieldPrefix = procName.toLowerCase()+ "_" + procCode.toLowerCase().replace("-", "")+ "_" + catwWidgetNameBase.toLowerCase().replace("-", "");
                 LabPLANETJson labJson = new LabPLANETJson();
                 
                 if (fieldsArr==null){items = labJson.getJsonArrayFields(tableName, null, fieldPrefix);}
@@ -474,9 +476,9 @@ public class RequirementDeployment {
                     + "     and prurs.widget = catw.widget_name "
                     + "     and prurs.widget_action = catw.widget_action "
                     + "     and catw.tbar is not null ";
-                catw_widget_name = catw_widget_name.replace("-BASE", "");
+                catwWidgetName = catwWidgetName.replace("-BASE", "");
 
-                ResultSet resButAdhoc = Rdbms.prepRdQuery(query, new Object [] {procName, procVersion, true, true, true, catw_widget_name, procCode, catw_module_id, catw_module_version, catw_module_revision, catw_widget_nameBase});  
+                ResultSet resButAdhoc = Rdbms.prepRdQuery(query, new Object [] {procName, procVersion, true, true, true, catwWidgetName, procCode, catwModuleId, catwModuleVersion, catwModuleRevision, catwWidgetNameBase});  
 
                 resButAdhoc.last();            
 
@@ -512,7 +514,7 @@ public class RequirementDeployment {
         return created;
     }
 */
-    void requirementsLogEntry(String FunctionName, String entryValue, Integer numTabs) throws IOException{
+    void requirementsLogEntry(String functionName, String entryValue, Integer numTabs) throws IOException{
 
         String newLogFileName = "Requirements.txt";        
         ResourceBundle prop = ResourceBundle.getBundle("parameter.config.config");        
@@ -530,7 +532,7 @@ public class RequirementDeployment {
                     newEntry = newEntry + "     ";
                 }
             }
-            newEntry = newEntry + FunctionName + ": " + entryValue + "\n";            
+            newEntry = newEntry + functionName + ": " + entryValue + "\n";            
             fw.append(newEntry);
 
             fw.close();        
@@ -596,7 +598,7 @@ public class RequirementDeployment {
                     pr = procName + "_" + pr;
                     pr = pr.replace(" ", "").replace("\n", "");
                     Object[] diagnoses = Rdbms.existsRecord(LPPlatform.SCHEMA_CONFIG, "privilege", 
-                            new String[]{"privilege_id"}, new Object[]{pr});
+                            new String[]{"privilegeId"}, new Object[]{pr});
                     if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){
                         diagnoses = rol.createPrivilege(pr);
                         try {
@@ -615,7 +617,7 @@ public class RequirementDeployment {
                                 //r = r;
                             }
                             diagnoses = Rdbms.existsRecord(LPPlatform.SCHEMA_CONFIG, "role_privilege", 
-                                    new String[]{"privilege_id"}, new Object[]{pr + "," + r} );
+                                    new String[]{"privilegeId"}, new Object[]{pr + "," + r} );
                             if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){                      
 
                                 diagnoses = rol.addPrivilegeToRole(pr, r, procName);
@@ -686,7 +688,7 @@ public class RequirementDeployment {
         }
     }         
 
-    private void addUserSop( String procName, Integer procVersion, String schemaName) throws SQLException{
+    private void addUserSop( String procName, Integer procVersion, String schemaName){
 
         String methodName = "addUserSop";
         String newEntry = "";

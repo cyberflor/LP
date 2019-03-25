@@ -51,21 +51,16 @@ public class TstDataBatchArr extends HttpServlet {
         try (PrintWriter out = response.getWriter()) {
             
             Object[][] dataSample2D = new Object[1][6];
-        
             Integer numTesting = 1;
-            Object[][] configSpecTestingArray = new Object[numTesting][9];
             
-            configSpecTestingArray = LPArray.convertCSVinArray(csvPathName, csvFileSeparator);                        
+            String[][] configSpecTestingArray = LPArray.convertCSVinArray(csvPathName, csvFileSeparator);                        
      
             fileContent = LPTestingOutFormat.getHtmlStyleHeader(this.getServletName());
-
             for (Integer j=0;j<configSpecTestingArray[0].length;j++){
-                fileContent = fileContent + "<th>"+configSpecTestingArray[0][j]+"</th>";
+                fileContent = fileContent + LPTestingOutFormat.headerAddFields(configSpecTestingArray[0]);
             }            
 
             for (Integer i=1;i<configSpecTestingArray.length;i++){
-                //if (configSpecTestingArray[i][2]==null && configSpecTestingArray[i][3]==null){
-                
                 out.println("Line "+i.toString());
 
                 fileContent = fileContent + "<tr>";                
@@ -160,10 +155,10 @@ public class TstDataBatchArr extends HttpServlet {
                     fileContent = fileContent + LPTestingOutFormat.fieldEnd()+LPTestingOutFormat.fieldStart()+Arrays.toString(dataSample2Din1D);
                 }
 
-                fileContent = fileContent + "</td>";
-                fileContent = fileContent + "</tr>";
+                fileContent = fileContent + LPTestingOutFormat.fieldEnd();
+                fileContent = fileContent +LPTestingOutFormat.rowEnd();
             }
-            fileContent = fileContent + "</table>";        
+            fileContent = fileContent + LPTestingOutFormat.tableEnd();        
             out.println(fileContent);
 
             csvPathName = csvPathName.replace(".txt", ".html");

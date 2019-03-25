@@ -72,7 +72,7 @@ public class UserSecurity {
             diagnoses[0] = true;
             diagnoses[1] = "new eSign set for the user "+user;
             return diagnoses;                                                   
-        } catch (SQLException|ClassNotFoundException|IllegalAccessException|InstantiationException|NamingException ex) {
+        } catch (SQLException|IllegalAccessException|InstantiationException|NamingException ex) {
             Logger.getLogger(UserSecurity.class.getName()).log(Level.SEVERE, null, ex);
             Object[] diagnoses = new Object[2];
             diagnoses[0] = false;
@@ -134,7 +134,7 @@ public class UserSecurity {
             }            
             return isValidESign(user, eSign);
             
-        } catch (ClassNotFoundException|IllegalAccessException|InstantiationException|SQLException|NamingException ex) {
+        } catch (IllegalAccessException|InstantiationException|SQLException|NamingException ex) {
             Logger.getLogger(UserSecurity.class.getName()).log(Level.SEVERE, null, ex);
             Object[] diagnoses = new Object[2];
             diagnoses[0]=false;
@@ -149,13 +149,12 @@ public class UserSecurity {
      * @param user
      * @param pass
      * @return
-     * @throws ClassNotFoundException
      * @throws IllegalAccessException
      * @throws InstantiationException
      * @throws SQLException
      * @throws NamingException
      */
-    public Object[] _isValidUserPassword(String user, String pass) throws ClassNotFoundException, IllegalAccessException, InstantiationException, SQLException, NamingException {            
+    public Object[] _isValidUserPassword(String user, String pass) throws IllegalAccessException, InstantiationException, SQLException, NamingException {            
         Object[] diagnoses = new Object[2];
         diagnoses[0]=false;        
         

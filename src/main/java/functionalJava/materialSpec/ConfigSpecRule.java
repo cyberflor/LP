@@ -18,15 +18,12 @@ public class ConfigSpecRule {
     String classVersion = "0.1";
     /**
      *
-     * @param schemaPrefix
      * @param rule
      * @param textSpec
      * @param separator
      * @return
      */
     public Object[] specLimitIsCorrectQualitative(String rule, String textSpec, String separator){
-                
-        String schemaConfigName = "config";
         String errorCode = "";
         Object[]  errorDetailVariables= new Object[0];
         
@@ -38,7 +35,6 @@ public class ConfigSpecRule {
         expectedRules[4] = "ISONEOF";
         expectedRules[5] = "ISNOTONEOF";
                 
-        
         if ((rule==null) || (rule.length()==0)){
            errorCode = "specLimits_ruleMandatoryArgumentNull";
            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, "");          

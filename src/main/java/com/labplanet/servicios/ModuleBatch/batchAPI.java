@@ -12,7 +12,6 @@ import LabPLANET.utilities.LPHttp;
 import databases.Rdbms;
 import databases.Token;
 import functionalJava.batch.BatchArray;
-import functionalJava.sampleStructure.DataSample;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
@@ -40,7 +39,11 @@ public class batchAPI extends HttpServlet {
 
     public static final String PARAMS_BATCH_NAME="batchName"; 
     public static final String PARAMS_BATCH_TEMPLATE="batchTemplate"; 
+    public static final String PARAMS_BATCH_TEMPLATE_VERSION="batchTemplateVersion";
+    public static final String PARAMS_BATCH_NUM_ROWS="numRows";
+    public static final String PARAMS_BATCH_NUM_COLS="numCols";
 
+    
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      *
@@ -77,10 +80,10 @@ public class batchAPI extends HttpServlet {
             String[] tokenParams = token.tokenParamsList();
             String[] tokenParamsValues = token.validateToken(finalToken, tokenParams);
 
-            String dbUserName = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, "userDB")];
-            String dbUserPassword = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, "userDBPassword")];
-            String internalUserID = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, "internalUserID")];         
-            String userRole = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, "userRole")];                     
+            String dbUserName = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, Token.TOKEN_PARAM_USERDB)];
+            String dbUserPassword = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, Token.TOKEN_PARAM_USERPW)];
+            String internalUserID = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, Token.TOKEN_PARAM_INTERNAL_USERID)];         
+            String userRole = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, Token.TOKEN_PARAM_USER_ROLE)];                     
 //            String appSessionIdStr = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, "appSessionId")];
 //            String appSessionStartedDate = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, "appSessionStartedDate")];                              
 
@@ -120,9 +123,9 @@ public class batchAPI extends HttpServlet {
                     case "CREATEBATCHARRAY":   
                         mandatoryParams = new String[]{PARAMS_BATCH_NAME};
                         mandatoryParams = LPArray.addValueToArray1D(mandatoryParams, PARAMS_BATCH_TEMPLATE);
-                        mandatoryParams = LPArray.addValueToArray1D(mandatoryParams, "batchTemplateVersion");
-                        mandatoryParams = LPArray.addValueToArray1D(mandatoryParams, "numRows");
-                        mandatoryParams = LPArray.addValueToArray1D(mandatoryParams, "numCols");
+                        mandatoryParams = LPArray.addValueToArray1D(mandatoryParams, PARAMS_BATCH_TEMPLATE_VERSION);
+                        mandatoryParams = LPArray.addValueToArray1D(mandatoryParams, PARAMS_BATCH_NUM_ROWS);
+                        mandatoryParams = LPArray.addValueToArray1D(mandatoryParams, PARAMS_BATCH_NUM_COLS);
                         areMandatoryParamsInResponse = LPHttp.areMandatoryParamsInApiRequest(request, mandatoryParams);
                         if (LPPlatform.LAB_FALSE.equalsIgnoreCase(areMandatoryParamsInResponse[0].toString())){
                             errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
@@ -134,9 +137,9 @@ public class batchAPI extends HttpServlet {
 
                         String batchName = request.getParameter(PARAMS_BATCH_NAME);                        
                         String batchTemplate = request.getParameter(PARAMS_BATCH_TEMPLATE);                        
-                        String batchTemplateVersionStr = request.getParameter("batchTemplateVersion");                        
-                        String numRowsStr = request.getParameter("numRows");                        
-                        String numColsStr = request.getParameter("numCols");       
+                        String batchTemplateVersionStr = request.getParameter(PARAMS_BATCH_TEMPLATE_VERSION);                        
+                        String numRowsStr = request.getParameter(PARAMS_BATCH_NUM_ROWS);                        
+                        String numColsStr = request.getParameter(PARAMS_BATCH_NUM_COLS);       
     //                    public BatchArray(Rdbms rdbm, String schemaName, String batchTemplate, Integer batchTemplateVersion, 
     //                    String batchName, String creator, Integer numRows, Integer numCols){
 

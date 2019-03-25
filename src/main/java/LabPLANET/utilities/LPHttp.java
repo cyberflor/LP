@@ -42,7 +42,7 @@ public class LPHttp {
     
     public static Object[] areMandatoryParamsInApiRequest(HttpServletRequest request, String[] paramNames){        
         Object [] diagnoses = null;        
-        String paramsNotPresent = "";
+        StringBuilder paramsNotPresent = new StringBuilder(); 
         for (String curParam: paramNames){
             Boolean notPresent = false;
             String curParamValue = request.getParameter(curParam);
@@ -50,7 +50,7 @@ public class LPHttp {
             if ("undefined".equals(curParamValue)){notPresent=true;}
             if ("".equals(curParamValue)){notPresent=true;}
             if (notPresent){
-                paramsNotPresent=paramsNotPresent+curParam+", ";
+                paramsNotPresent.append(curParam).append(", ");
             }
         }
         if (paramsNotPresent.length()>0){

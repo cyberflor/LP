@@ -22,7 +22,7 @@ public class Role {
      * @return
      * @throws SQLException
      */
-    public Object[] createRole( String roleId) throws SQLException {        
+    public Object[] createRole( String roleId){        
         Object[] diagnoses = new Object[7];
         if (roleId.toUpperCase().contains("ALL")){            
             StackTraceElement[] elements = Thread.currentThread().getStackTrace();
@@ -64,7 +64,7 @@ public class Role {
      * @return
      * @throws SQLException
      */
-    public Object[] addPrivilegeToRole( String privilegeId, String roleId, String procName) throws SQLException {
+    public Object[] addPrivilegeToRole( String privilegeId, String roleId, String procName){
         Integer id;      
         Integer numRecords = 0;
         String schemaConfigName = LPPlatform.SCHEMA_CONFIG;
@@ -131,7 +131,7 @@ public class Role {
      * @return
      * @throws SQLException
      */
-    public Object[] createPrivilege( String privilegeId) throws SQLException {
+    public Object[] createPrivilege( String privilegeId){
 /*        String methodName = "createPrivilege";
         Integer id;                
 */        

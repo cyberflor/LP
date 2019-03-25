@@ -19,14 +19,14 @@ public class LPHashMap {
      * @param separator
      * @return
      */
-    public static String HashMapToStringKeys(HashMap<String, Object> map, String separator){ 
+    public static String hashMapToStringKeys(HashMap<String, Object> map, String separator){ 
         String keys="";
         if (map.isEmpty()){return "";}
-         
+        StringBuilder myKeys = new StringBuilder(); 
         String[] strs = map.keySet().toArray(new String[map.size()]);
         for(String str : strs) {
-          keys=keys+str+separator;
+          myKeys.append(keys).append(str).append(separator);
         }         
-         return keys;
+        return myKeys.toString();
     }
 }

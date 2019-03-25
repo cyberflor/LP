@@ -103,7 +103,7 @@ public class Sop {
      * @return
      * @throws SQLException
      */
-    public Integer dbGetSopIdById( String schemaPrefix, Integer sopId) throws SQLException{     
+    public Integer dbGetSopIdById( String schemaPrefix, Integer sopId) {     
         String schemaConfigName = LPPlatform.SCHEMA_CONFIG;
         schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, schemaConfigName);
         Object[][] sopInfo = Rdbms.getRecordFieldsByFilter(schemaConfigName, TABLE_NAME_SOP_META_DATA, 
@@ -119,7 +119,7 @@ public class Sop {
      * @return
      * @throws SQLException
      */
-    public Integer dbGetSopIdByName( String schemaPrefix, String sopName) throws SQLException{
+    public Integer dbGetSopIdByName( String schemaPrefix, String sopName) {
         String schemaConfigName = LPPlatform.SCHEMA_CONFIG;
         schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, schemaConfigName);
         Object[][] sopInfo = Rdbms.getRecordFieldsByFilter(schemaConfigName, TABLE_NAME_SOP_META_DATA, 
@@ -137,7 +137,7 @@ public class Sop {
      * @return
      * @throws SQLException
      */
-    public Object[][] dbGetSopObjByName( String schemaPrefix, String sopName, String[] fields) throws SQLException{
+    public Object[][] dbGetSopObjByName( String schemaPrefix, String sopName, String[] fields) {
         String schemaConfigName = LPPlatform.SCHEMA_CONFIG;
         schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, schemaConfigName);
         Object[][] sopInfo = Rdbms.getRecordFieldsByFilter(schemaConfigName, TABLE_NAME_SOP_META_DATA, 
@@ -152,7 +152,7 @@ public class Sop {
      * @return
      * @throws SQLException
      */
-    public Object[] createSop( String schemaPrefix, String sopName) throws SQLException {
+    public Object[] createSop( String schemaPrefix, String sopName)  {
         String schemaConfigName = LPPlatform.SCHEMA_CONFIG;
         schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, schemaConfigName); 
         String errorCode = "";        
@@ -179,7 +179,7 @@ public class Sop {
      * @return
      * @throws SQLException
      */
-    public Object[] updateSop( String schemaName, String schemaPrefix, String fieldName, String fieldValue, String fieldType) throws SQLException {
+    public Object[] updateSop( String schemaName, String schemaPrefix, String fieldName, String fieldValue, String fieldType){
         String schemaConfigName = LPPlatform.SCHEMA_CONFIG;
         schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, schemaConfigName);
         Object[] diagnoses = Rdbms.updateRecordFieldsByFilter(schemaConfigName, TABLE_NAME_SOP_META_DATA, 

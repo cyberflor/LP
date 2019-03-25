@@ -78,10 +78,10 @@ public class LogTransac {
  * @author Fran Gomez
      * @return 
  */        
-    public Integer getNumberOfChilds(){
-        Integer ChildCount = 0;
-        ChildCount = this.calledFunctions.length;
-        return ChildCount;
+    public Integer getNumberOfChildren(){
+        Integer childCount = 0;
+        childCount = this.calledFunctions.length;
+        return childCount;
     }
     
 }

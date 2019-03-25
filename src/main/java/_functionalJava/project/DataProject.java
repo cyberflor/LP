@@ -163,24 +163,19 @@ Object[] createProject( String schemaPrefix, String projectTemplate, Integer pro
             mandatoryFieldsProj = LPArray.addValueToArray1D(mandatoryFieldsProj, "spec_code_version");
             mandatoryFieldsProj = LPArray.addValueToArray1D(mandatoryFieldsProj, "spec_variation_name");
         }
-
         mandatoryFieldsValueProj = new Object[mandatoryFieldsProj.length];
-        String configCode = "";
         String mandatoryFieldsMissing = "";
         for (Integer inumLines=0;inumLines<mandatoryFieldsProj.length;inumLines++){
             String currField = mandatoryFieldsProj[inumLines];
             boolean contains = Arrays.asList(sampleFieldName).contains(currField.toLowerCase());
             if (!contains){
-                
                 Object[] sampleDefaultFieldValues = labIntChecker.getTableFieldsDefaulValues(schemaDataName, this.getSampleGrouper()+"_"+tableName, actionName); 
-                
-                
                 if (mandatoryFieldsMissing.length()>0){mandatoryFieldsMissing = mandatoryFieldsMissing + ",";}
                 mandatoryFieldsMissing = mandatoryFieldsMissing + currField;
             }else{
                 Integer valuePosic = Arrays.asList(sampleFieldName).indexOf(currField);
                 mandatoryFieldsValueProj[inumLines] = sampleFieldValue[valuePosic]; 
-                if ("config_code".equals(currField)){configCode = sampleFieldValue[Arrays.asList(sampleFieldName).indexOf(currField)].toString();}
+                if ("config_code".equals(currField)){String configCode = sampleFieldValue[Arrays.asList(sampleFieldName).indexOf(currField)].toString();}
             }        
         }            
         if (mandatoryFieldsMissing.length()>0){

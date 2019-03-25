@@ -16,7 +16,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import databases.Rdbms;
 import functionalJava.user.UserProfile;
 import java.io.File;
@@ -24,7 +23,6 @@ import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.util.Arrays;
-import testing.functionalData.testingFileContentSections;
 /**
  *
  * @author Administrator

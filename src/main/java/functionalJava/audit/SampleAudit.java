@@ -356,9 +356,7 @@ public class SampleAudit {
         String schemaName = "data";                
                
         schemaName = LPPlatform.buildSchemaName(schemaPrefix, schemaName);  
-        
         String[] sampleTblFldsArr = Rdbms.getTableFieldsArrayEj(schemaName.replace("\"", ""), "sample");
-        
         String sampleTblFlds = Rdbms.getTableFieldsArrayEj(schemaName.replace("\"", ""), "sample", ",", true);
 //        String sampleAnalysisTblFlds = Rdbms.getTableFieldsArrayEj(schemaName.replace("\"", ""), "sample_analysis", ",", true);
 //        String sampleAnalysisResultTblFlds = Rdbms.getTableFieldsArrayEj(schemaName.replace("\"", ""), "sample_analysis_result", ",", true);

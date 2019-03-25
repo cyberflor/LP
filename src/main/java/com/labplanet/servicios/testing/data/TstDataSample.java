@@ -390,8 +390,8 @@ public class TstDataSample extends HttpServlet {
                                 newUOM=LPTestingOutFormat.csvExtractFieldValueString(csvFileContent[iLines][numEvaluationArguments+5]);
                             fileContentTable1=fileContentTable1+LPTestingOutFormat.rowAddFields(
                                 new Object[]{"resultId, newUOM", 
-                                    resultId.toString()+", "+newUOM});                                                          
-                            dataSample = smp.sarChangeUOM(schemaPrefix, resultId, newUOM, userName, userRole);
+                                    resultId.toString()+", "+newUOM});                                  
+                            dataSample = smp.sarChangeUom(schemaPrefix, resultId, newUOM, userName, userRole);
                             break;
                         case "LOGALIQUOT":
                             sampleId = 0;
@@ -489,7 +489,7 @@ public class TstDataSample extends HttpServlet {
             }                          
             tstAssertSummary.notifyResults();
             fileContentTable1 = fileContentTable1 +LPTestingOutFormat.tableEnd();
-            String fileContentSummary = LPTestingOutFormat.CreateSummaryTable(tstAssertSummary);
+            String fileContentSummary = LPTestingOutFormat.createSummaryTable(tstAssertSummary);
             fileContent=fileContent+fileContentSummary+fileContentTable1;
             fileContent=fileContent+LPTestingOutFormat.bodyEnd()+LPTestingOutFormat.htmlEnd();
             out.println(fileContent);            

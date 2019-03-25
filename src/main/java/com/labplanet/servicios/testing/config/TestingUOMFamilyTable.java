@@ -25,7 +25,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Fran
  */
-public class TestingUOMFamilyTable extends HttpServlet {
+public class TestinguomFamilyTable extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -79,9 +79,9 @@ public class TestingUOMFamilyTable extends HttpServlet {
                 if (lineNumCols>=numEvaluationArguments+2)                
                     fieldsToRetrieve = LPTestingOutFormat.csvExtractFieldValueStringArr(csvFileContent[iLines][numEvaluationArguments+2]);
                 
-                UnitsOfMeasurement UOM = new UnitsOfMeasurement();
+                UnitsOfMeasurement uom = new UnitsOfMeasurement();
 
-                Object[][] tableGet = UOM.getAllUnitsPerFamily(schemaPrefix, familyName, fieldsToRetrieve);    
+                Object[][] tableGet = uom.getAllUnitsPerFamily(schemaPrefix, familyName, fieldsToRetrieve);    
                 fileContentTable1 = fileContentTable1 +LPTestingOutFormat.tableStart();
                 for (int iRows=0;iRows<tableGet.length;iRows++){
                    fileContentTable1 = fileContentTable1 +LPTestingOutFormat.rowStart(); 
@@ -113,7 +113,7 @@ public class TestingUOMFamilyTable extends HttpServlet {
             fileContentTable1 = fileContentTable1 +LPTestingOutFormat.tableEnd();
             fileContent=fileContent+fileContentTable1;
             if (numEvaluationArguments>0){
-                String fileContentSummary = LPTestingOutFormat.CreateSummaryTable(tstAssertSummary);
+                String fileContentSummary = LPTestingOutFormat.createSummaryTable(tstAssertSummary);
                 fileContent=fileContent+fileContentSummary;
             }
             fileContent=fileContent+LPTestingOutFormat.bodyEnd()+LPTestingOutFormat.htmlEnd();

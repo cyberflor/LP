@@ -56,7 +56,7 @@ public class DataSample {
     public static final String FIELDNAME_TEST_ID="test_id";
     public static final String FIELDNAME_RESULT_ID="result_id";
     public static final String FIELDNAME_VOLUME_FOR_ALIQ="volume_for_aliq";
-    public static final String FIELDNAME_VOLUME_FOR_ALIQ_UOM="volume_for_aliq_uom";
+    public static final String FIELDNAME_VOLUME_FOR_ALIQ_uom="volume_for_aliq_uom";
     
     
     private static final String DIAGNOSES_SUCCESS = "SUCCESS";
@@ -496,7 +496,7 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
      * @return
      * @throws SQLException
      */
-    public Object[] changeSamplingDate( String schemaPrefix, String userName, Integer sampleId, Date newDate, String userRole) throws SQLException{
+    public Object[] changeSamplingDate( String schemaPrefix, String userName, Integer sampleId, Date newDate, String userRole){
 
     String schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, LPPlatform.SCHEMA_DATA); 
     
@@ -534,7 +534,6 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
      * @param comment
      * @param userRole
      * @return
-     * @throws SQLException
      */
     public Object[] sampleReceptionCommentAdd( String schemaPrefix, String userName, Integer sampleId, String comment, String userRole){
 
@@ -573,9 +572,8 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
      * @param comment
      * @param userRole
      * @return
-     * @throws SQLException
      */
-    public Object[] sampleReceptionCommentRemove( String schemaPrefix, String userName, Integer sampleId, String comment, String userRole) throws SQLException{
+    public Object[] sampleReceptionCommentRemove( String schemaPrefix, String userName, Integer sampleId, String comment, String userRole) {
     String schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, LPPlatform.SCHEMA_DATA); 
 
     String auditActionName = "SAMPLE_RECEPTION_COMMENT_REMOVE";
@@ -610,9 +608,8 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
      * @param sampleId
      * @param userRole
      * @return
-     * @throws SQLException
      */
-    public Object[] setSampleStartIncubationDateTime( String schemaPrefix, String userName, Integer sampleId, String userRole) throws SQLException{
+    public Object[] setSampleStartIncubationDateTime( String schemaPrefix, String userName, Integer sampleId, String userRole) {
     
     String schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, LPPlatform.SCHEMA_DATA); 
     
@@ -652,9 +649,8 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
      * @param sampleId
      * @param userRole
      * @return
-     * @throws SQLException
      */
-    public Object[] setSampleEndIncubationDateTime( String schemaPrefix, String userName, Integer sampleId, String userRole) throws SQLException{
+    public Object[] setSampleEndIncubationDateTime( String schemaPrefix, String userName, Integer sampleId, String userRole) {
     String schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, LPPlatform.SCHEMA_DATA); 
     
     String auditActionName = "SAMPLE_SET_INCUBATION_START";
@@ -715,9 +711,8 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
      * @param newAnalyst
      * @param userRole
      * @return
-     * @throws SQLException
      */
-    public Object[] sampleAnalysisAssignAnalyst( String schemaPrefix, String userName, Integer testId, String newAnalyst, String userRole) throws SQLException{
+    public Object[] sampleAnalysisAssignAnalyst( String schemaPrefix, String userName, Integer testId, String newAnalyst, String userRole) {
 
         String schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, LPPlatform.SCHEMA_DATA); 
         String schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, LPPlatform.SCHEMA_CONFIG); 
@@ -1265,11 +1260,10 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
      * @param resultValue
      * @param userRole
      * @return
-     * @throws IllegalAccessException
      * @throws IllegalArgumentException
      * @throws InvocationTargetException
      */
-    public Object[] sampleAnalysisResultEntry( String schemaPrefix, String userName, Integer resultId, Object resultValue, String userRole) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException{
+    public Object[] sampleAnalysisResultEntry( String schemaPrefix, String userName, Integer resultId, Object resultValue, String userRole) throws IllegalArgumentException, InvocationTargetException{
 
     tableName = "sample_analysis_result";  
     String actionName = "Insert";
@@ -1502,8 +1496,8 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
             }    
            
         requiresUnitsConversion=true;
-        UnitsOfMeasurement UOM = new UnitsOfMeasurement();            
-        Object[] convDiagnoses = UOM.convertValue(schemaPrefix, new BigDecimal(resultValue.toString()), resultUomName, specUomName);
+        UnitsOfMeasurement uom = new UnitsOfMeasurement();            
+        Object[] convDiagnoses = uom.convertValue(schemaPrefix, new BigDecimal(resultValue.toString()), resultUomName, specUomName);
         if (LPPlatform.LAB_FALSE.equalsIgnoreCase(convDiagnoses[0].toString())) {
             errorCode = "DataSample_SampleAnalysisResult_ConverterFALSE";
             errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, resultId.toString());
@@ -1518,11 +1512,11 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
     Object[] resSpecEvaluation = null;
     switch (ruleType.toLowerCase()){
         case "qualitative":            
-            String[] QualitSpecTestingArray = ruleVariables.split(specArgumentsSeparator);
-            String specRuleType = QualitSpecTestingArray[0]; 
-            String specValues = QualitSpecTestingArray[1]; 
+            String[] qualitSpecTestingArray = ruleVariables.split(specArgumentsSeparator);
+            String specRuleType = qualitSpecTestingArray[0]; 
+            String specValues = qualitSpecTestingArray[1]; 
             String specSeparator = null;            
-            if (QualitSpecTestingArray.length==3){specSeparator = QualitSpecTestingArray[2];}
+            if (qualitSpecTestingArray.length==3){specSeparator = qualitSpecTestingArray[2];}
             String specListName = null;
             
             resSpecEvaluation = resChkSpec.resultCheck((String) resultValue, specRuleType, specValues, specSeparator, specListName);
@@ -1557,11 +1551,11 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
             
         case "quantitative":
             resultValue = Float.parseFloat(resultValue.toString());
-            String[] QuantiSpecTestingArray = ruleVariables.split(specArgumentsSeparator);
+            String[] quantiSpecTestingArray = ruleVariables.split(specArgumentsSeparator);
             Float minSpec = null;Boolean minStrict = specMinSpecStrictDefault;Float maxSpec = null;Boolean maxStrict = specMaxSpecStrictDefault;   
             Float minControl = null;Boolean minControlStrict = specMinControlStrictDefault;Float maxControl = null;Boolean maxControlStrict = specMaxControlStrictDefault;                  
-            for (Integer iField=0; iField<QuantiSpecTestingArray.length;iField++){
-                String curParam = QuantiSpecTestingArray[iField];
+            for (Integer iField=0; iField<quantiSpecTestingArray.length;iField++){
+                String curParam = quantiSpecTestingArray[iField];
                 
                 if (curParam.toUpperCase().contains("MINSPEC")){
                         curParam = curParam.replace("MINSPEC", "");             minSpec = Float.parseFloat(curParam);
@@ -1676,9 +1670,8 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
      * @param resultId
      * @param userRole
      * @return
-     * @throws SQLException
      */
-    public Object[] sampleResultReview( String schemaPrefix, String userName, Integer sampleId, Integer testId, Integer resultId, String userRole) throws SQLException{
+    public Object[] sampleResultReview( String schemaPrefix, String userName, Integer sampleId, Integer testId, Integer resultId, String userRole){
         
         Object[] diagnoses = new Object[7];
         tableName = "sample_analysis_result";  
@@ -1696,9 +1689,9 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
         Object[] testsSampleToReview = new Object[0];
         
         String cancelScope = ""; Integer cancelScopeId = 0;
-        if (sampleId!=null ){cancelScope = FIELDNAME_SAMPLE_ID; cancelScopeId=sampleId;}
-        if (testId!=null ){cancelScope = FIELDNAME_TEST_ID; cancelScopeId=testId;}
-        if (resultId!=null){cancelScope = FIELDNAME_RESULT_ID; cancelScopeId=resultId;}
+        if (sampleId!=null ){cancelScope = FIELDNAME_SAMPLE_ID; cancelScopeId=sampleId; tableName="sample";}
+        if (testId!=null ){cancelScope = FIELDNAME_TEST_ID; cancelScopeId=testId; tableName="test";}
+        if (resultId!=null){cancelScope = FIELDNAME_RESULT_ID; cancelScopeId=resultId; tableName="result";}
         Object[][] objectInfo = null;
         objectInfo = Rdbms.getRecordFieldsByFilter(schemaDataName, tableName, 
                                                             new String[]{cancelScope},
@@ -2073,9 +2066,8 @@ private Map getDefaultValuesTemplate(String schema, String tsample, String templ
      * @param resultId
      * @param userRole
      * @return
-     * @throws SQLException
      */
-    public Object[] sampleAnalysisResultCancel( String schemaPrefix, String userName, Integer sampleId, Integer testId, Integer resultId, String userRole) throws SQLException{
+    public Object[] sampleAnalysisResultCancel( String schemaPrefix, String userName, Integer sampleId, Integer testId, Integer resultId, String userRole){
         Object[] diagnoses = new Object[7];
         
         String actionName = "CANCEL_RESULT";
@@ -2209,7 +2201,7 @@ private Map getDefaultValuesTemplate(String schema, String tsample, String templ
      * @return
      * @throws SQLException
      */
-    public Object[] sampleAnalysisResultUnCancel( String schemaPrefix, String userName, Integer sampleId, Integer testId, Integer resultId, String userRole) throws SQLException{
+    public Object[] sampleAnalysisResultUnCancel( String schemaPrefix, String userName, Integer sampleId, Integer testId, Integer resultId, String userRole) {
         Object[] diagnoses = new Object[7];
         
         tableName = "sample_analysis_result";  
@@ -2333,9 +2325,8 @@ private Map getDefaultValuesTemplate(String schema, String tsample, String templ
      * @param resultId
      * @param userRole
      * @return
-     * @throws SQLException
      */
-    public Object[] sampleAnalysisResultCancelBack( String schemaPrefix, String userName, Integer sampleId, Integer testId, Integer resultId, String userRole) throws SQLException{
+    public Object[] sampleAnalysisResultCancelBack( String schemaPrefix, String userName, Integer sampleId, Integer testId, Integer resultId, String userRole) {
         
         String actionName = "CANCEL_BACK";
         tableName = "sample_analysis_result";  
@@ -2493,8 +2484,8 @@ private Map getDefaultValuesTemplate(String schema, String tsample, String templ
 //        if (!LPPlatform.LAB_TRUE.equalsIgnoreCase(fieldNameValueArrayChecker[0].toString())){}                
     }
     
-    public Object[] sarChangeUOM( String schemaPrefix, Integer resultId, String newUOM, String userName, String userRole){
-        String auditActionName = "CHANGE_UOM";
+    public Object[] sarChangeUom( String schemaPrefix, Integer resultId, String newuom, String userName, String userRole){
+        String auditActionName = "CHANGE_uom";
         String schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, LPPlatform.SCHEMA_DATA); 
         tableName="sample_analysis_result";
         
@@ -2506,23 +2497,23 @@ private Map getDefaultValuesTemplate(String schema, String tsample, String templ
             return LPArray.array2dTo1d(resultInfo);
         }
         String paramName = resultInfo[0][2].toString();
-        String currUOM = resultInfo[0][3].toString();
+        String curruom = resultInfo[0][3].toString();
         String currValue = resultInfo[0][4].toString();
         Integer testId = Integer.valueOf(resultInfo[0][5].toString()); Integer sampleId = Integer.valueOf(resultInfo[0][6].toString());
         String specUomConversionMode = resultInfo[0][7].toString();
 
-        if (specUomConversionMode==null || specUomConversionMode.equalsIgnoreCase("DISABLED") || ((!specUomConversionMode.contains(newUOM)) && !specUomConversionMode.equalsIgnoreCase("ALL")) ){
+        if (specUomConversionMode==null || specUomConversionMode.equalsIgnoreCase("DISABLED") || ((!specUomConversionMode.contains(newuom)) && !specUomConversionMode.equalsIgnoreCase("ALL")) ){
             errorCode = "DataSample_SampleAnalysisResult_ConversionNotAllowed";
             errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, specUomConversionMode);
-            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, newUOM);
-            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, currUOM);
+            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, newuom);
+            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, curruom);
             errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, resultId.toString());
             errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, schemaDataName);
             return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);                      
         }    
         
         UnitsOfMeasurement uom = new UnitsOfMeasurement();
-        Object[] convDiagnoses = uom.convertValue(schemaPrefix, new BigDecimal(currValue), currUOM, newUOM);
+        Object[] convDiagnoses = uom.convertValue(schemaPrefix, new BigDecimal(currValue), curruom, newuom);
         if (LPPlatform.LAB_FALSE.equalsIgnoreCase(convDiagnoses[0].toString())) {
             errorCode = "DataSample_SampleAnalysisResult_ConverterFALSE";
             errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, resultId.toString());
@@ -2533,7 +2524,7 @@ private Map getDefaultValuesTemplate(String schema, String tsample, String templ
         BigDecimal resultConverted = (BigDecimal) convDiagnoses[convDiagnoses.length-2];
         
         String[] updFieldNames = new String[]{"raw_value", "uom"};
-        Object[] updFieldValues = new Object[]{resultConverted.toString(), newUOM};
+        Object[] updFieldValues = new Object[]{resultConverted.toString(), newuom};
         
         Object[] updateRecordFieldsByFilter = Rdbms.updateRecordFieldsByFilter(schemaDataName, tableName, 
                 updFieldNames, updFieldValues,
@@ -2565,11 +2556,11 @@ public Object[] logSampleAliquot( String schemaPrefix, Integer sampleId, String[
     schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, schemaConfigName); 
 
     BigDecimal aliqVolume = BigDecimal.ZERO;
-    String aliqVolumeUOM = "";
+    String aliqVolumeuom = "";
     
-    String actionEnabledSampleAliquot_volumeRequired = Parameter.getParameterBundle(schemaPrefix.replace("\"", "")+"-data", "sampleAliquot_volumeRequired");   
-    if (actionEnabledSampleAliquot_volumeRequired.toUpperCase().contains("ENABLE")){
-        String[] mandatorySampleFields = new String[]{FIELDNAME_VOLUME_FOR_ALIQ, FIELDNAME_VOLUME_FOR_ALIQ_UOM};
+    String actionEnabledSampleAliquotVolumeRequired = Parameter.getParameterBundle(schemaPrefix.replace("\"", "")+"-data", "sampleAliquot_volumeRequired");   
+    if (actionEnabledSampleAliquotVolumeRequired.toUpperCase().contains("ENABLE")){
+        String[] mandatorySampleFields = new String[]{FIELDNAME_VOLUME_FOR_ALIQ, FIELDNAME_VOLUME_FOR_ALIQ_uom};
         String[] mandatorySampleAliqFields = new String[]{"volume", "volume_uom"};
         Object[][] sampleInfo = Rdbms.getRecordFieldsByFilter(schemaDataName, parentTableName, new String[] {FIELDNAME_SAMPLE_ID}, new Object[]{sampleId}, mandatorySampleFields);
         if ( (sampleInfo[0][0]!=null) && (LPPlatform.LAB_FALSE.equalsIgnoreCase(sampleInfo[0][0].toString())) ){
@@ -2584,12 +2575,12 @@ public Object[] logSampleAliquot( String schemaPrefix, Integer sampleId, String[
         }          
         
         BigDecimal smpVolume = new BigDecimal(sampleInfo[0][0].toString());           
-        String smpVolumeUOM = (String) sampleInfo[0][1];  
+        String smpVolumeuom = (String) sampleInfo[0][1];  
         
         aliqVolume = new BigDecimal(smpAliqFieldValue[LPArray.valuePosicInArray(smpAliqFieldName, smpAliqFieldName[0])].toString());         
-        aliqVolumeUOM = (String) smpAliqFieldValue[LPArray.valuePosicInArray(mandatorySampleAliqFields, smpAliqFieldName[1])];
+        aliqVolumeuom = (String) smpAliqFieldValue[LPArray.valuePosicInArray(mandatorySampleAliqFields, smpAliqFieldName[1])];
         
-        Object[] diagnoses = LabPLANETMath.extractPortion(schemaPrefix, smpVolume, smpVolumeUOM, sampleId, aliqVolume, aliqVolumeUOM, -999);
+        Object[] diagnoses = LabPLANETMath.extractPortion(schemaPrefix, smpVolume, smpVolumeuom, sampleId, aliqVolume, aliqVolumeuom, -999);
         if (LPPlatform.LAB_FALSE.equalsIgnoreCase(diagnoses[0].toString())){return diagnoses;}    
         
         aliqVolume = new BigDecimal(diagnoses[diagnoses.length-1].toString());
@@ -2612,8 +2603,8 @@ public Object[] logSampleAliquot( String schemaPrefix, Integer sampleId, String[
     smpAliqFieldValue = LPArray.addValueToArray1D(smpAliqFieldValue, sampleId);
     smpAliqFieldName = LPArray.addValueToArray1D(smpAliqFieldName, FIELDNAME_VOLUME_FOR_ALIQ);
     smpAliqFieldValue = LPArray.addValueToArray1D(smpAliqFieldValue, aliqVolume);
-    smpAliqFieldName = LPArray.addValueToArray1D(smpAliqFieldName, FIELDNAME_VOLUME_FOR_ALIQ_UOM);
-    smpAliqFieldValue = LPArray.addValueToArray1D(smpAliqFieldValue, aliqVolumeUOM);
+    smpAliqFieldName = LPArray.addValueToArray1D(smpAliqFieldName, FIELDNAME_VOLUME_FOR_ALIQ_uom);
+    smpAliqFieldValue = LPArray.addValueToArray1D(smpAliqFieldValue, aliqVolumeuom);
     smpAliqFieldName = LPArray.addValueToArray1D(smpAliqFieldName, "created_by");
     smpAliqFieldValue = LPArray.addValueToArray1D(smpAliqFieldValue, userName);
     smpAliqFieldName = LPArray.addValueToArray1D(smpAliqFieldName, "created_on");  
@@ -2657,11 +2648,11 @@ public Object[] logSampleSubAliquot( String schemaPrefix, Integer aliquotId, Str
 
     Integer sampleId = 0;
     String[] mandatoryAliquotFields = new String[]{FIELDNAME_SAMPLE_ID};
-    String actionEnabledSampleSubAliquot_volumeRequired = Parameter.getParameterBundle(schemaPrefix.replace("\"", "")+"-data", "sampleSubAliquot_volumeRequired");             
+    String actionEnabledSampleSubAliquotVolumeRequired = Parameter.getParameterBundle(schemaPrefix.replace("\"", "")+"-data", "sampleSubAliquot_volumeRequired");             
 
-    if (actionEnabledSampleSubAliquot_volumeRequired.toUpperCase().contains("ENABLE")){
+    if (actionEnabledSampleSubAliquotVolumeRequired.toUpperCase().contains("ENABLE")){
         mandatoryAliquotFields = LPArray.addValueToArray1D(mandatoryAliquotFields, FIELDNAME_VOLUME_FOR_ALIQ);
-        mandatoryAliquotFields = LPArray.addValueToArray1D(mandatoryAliquotFields, FIELDNAME_VOLUME_FOR_ALIQ_UOM);
+        mandatoryAliquotFields = LPArray.addValueToArray1D(mandatoryAliquotFields, FIELDNAME_VOLUME_FOR_ALIQ_uom);
         
         String[] mandatorySampleSubAliqFields = new String[]{"volume", "volume_uom"};
         Object[][] aliquotInfo = Rdbms.getRecordFieldsByFilter(schemaDataName, parentTableName, new String[] {FIELDNAME_ALIQUOTID}, new Object[]{aliquotId}, mandatoryAliquotFields);
@@ -2686,12 +2677,12 @@ public Object[] logSampleSubAliquot( String schemaPrefix, Integer aliquotId, Str
         }          
         sampleId = (Integer) aliquotInfo[0][0];
         BigDecimal aliqVolume = new BigDecimal(aliquotInfo[0][1].toString());           
-        String aliqVolumeUOM = (String) aliquotInfo[0][2];  
+        String aliqVolumeuom = (String) aliquotInfo[0][2];  
         
         BigDecimal subAliqVolume = new BigDecimal(smpSubAliqFieldValue[LPArray.valuePosicInArray(smpSubAliqFieldName, smpSubAliqFieldName[0])].toString());         
-        String subAliqVolumeUOM = (String) smpSubAliqFieldValue[LPArray.valuePosicInArray(mandatorySampleSubAliqFields, smpSubAliqFieldName[1])];
+        String subAliqVolumeuom = (String) smpSubAliqFieldValue[LPArray.valuePosicInArray(mandatorySampleSubAliqFields, smpSubAliqFieldName[1])];
         
-        Object[] diagnoses = LabPLANETMath.extractPortion(schemaPrefix, aliqVolume, aliqVolumeUOM, sampleId, subAliqVolume, subAliqVolumeUOM, aliquotId);
+        Object[] diagnoses = LabPLANETMath.extractPortion(schemaPrefix, aliqVolume, aliqVolumeuom, sampleId, subAliqVolume, subAliqVolumeuom, aliquotId);
         if (LPPlatform.LAB_FALSE.equalsIgnoreCase(diagnoses[0].toString())){return diagnoses;}    
         subAliqVolume = new BigDecimal(diagnoses[diagnoses.length-1].toString());
         
@@ -2707,7 +2698,7 @@ public Object[] logSampleSubAliquot( String schemaPrefix, Integer aliquotId, Str
                 sampleId, null, null, 
                 LPArray.joinTwo1DArraysInOneOf1DString(smpVolFldName, smpVolFldValue, ":"), userName, userRole, appSessionId);        
     }
-    if (!actionEnabledSampleSubAliquot_volumeRequired.toUpperCase().contains("ENABLE")){
+    if (!actionEnabledSampleSubAliquotVolumeRequired.toUpperCase().contains("ENABLE")){
         Object[][] aliquotInfo = Rdbms.getRecordFieldsByFilter(schemaDataName, parentTableName, new String[] {FIELDNAME_ALIQUOTID}, new Object[]{aliquotId}, mandatoryAliquotFields);
         sampleId = (Integer) aliquotInfo[0][0];
     }

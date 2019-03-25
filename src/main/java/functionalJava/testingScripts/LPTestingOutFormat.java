@@ -192,12 +192,12 @@ public class LPTestingOutFormat {
         }
         if (!fieldsRequired.isEmpty()){
             hm.clear();                 
-            hm.put(LPPlatform.LAB_FALSE, LPHashMap.HashMapToStringKeys(fieldsRequired, ", "));
+            hm.put(LPPlatform.LAB_FALSE, LPHashMap.hashMapToStringKeys(fieldsRequired, ", "));
         }        
         return hm;
     }
     
-    public static String CreateSummaryTable(TestingAssertSummary tstAssert){
+    public static String createSummaryTable(TestingAssertSummary tstAssert){
         String fileContentHeaderSummary = LPTestingOutFormat.tableStart()+rowStart();
         String fileContentSummary =rowStart();
 
@@ -249,11 +249,11 @@ public class LPTestingOutFormat {
     }
     
     public static String[] csvExtractFieldValueStringArr(Object value){
-        if (value==null) return null;
+        if (value==null) return new String[0];
         try{
             String[] fieldsToRetrieve = value.toString().split("\\|");
             return fieldsToRetrieve;        
-        }catch(Exception e){return null;}        
+        }catch(Exception e){return new String[0];}        
     }
     public static Float csvExtractFieldValueFloat(Object value){
         if (value==null) return null;

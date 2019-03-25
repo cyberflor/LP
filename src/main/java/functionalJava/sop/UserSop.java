@@ -63,7 +63,7 @@ public class UserSop {
         return userSopCertifiedBySopInternalLogic(schemaPrefixName, userInfoId, FIELDNAME_SOP_ID, sopId);        
     }
     
-    private Object[] userSopCertifiedBySopInternalLogic( String schemaPrefixName, String userInfoId, String SopIdFieldName, String SopIdFieldValue ) throws SQLException{
+    private Object[] userSopCertifiedBySopInternalLogic( String schemaPrefixName, String userInfoId, String sopIdFieldName, String sopIdFieldValue ) {
                 
         String schemaConfigName = "config";
         schemaConfigName = LPPlatform.buildSchemaName(schemaPrefixName, schemaConfigName);
@@ -98,8 +98,8 @@ public class UserSop {
         fieldsToReturn[3] = "light";
         filterFieldName[0]="user_id";
         filterFieldValue[0]=userInfoId;        
-        filterFieldName[1]=SopIdFieldName;
-        filterFieldValue[1]=SopIdFieldValue;                
+        filterFieldName[1]=sopIdFieldName;
+        filterFieldValue[1]=sopIdFieldValue;                
         Object[][] getUserProfileFieldValues = getUserProfileFieldValues(filterFieldName, filterFieldValue, fieldsToReturn, userSchema);   
         if (LPPlatform.LAB_FALSE.equalsIgnoreCase(getUserProfileFieldValues[0][0].toString())){
             Object[] diagnoses = LPArray.array2dTo1d(getUserProfileFieldValues);
@@ -107,20 +107,20 @@ public class UserSop {
             return diagnoses;
         }
         if (getUserProfileFieldValues.length<=0){
-            Object[] diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, "UserSop_SopNotAssignedToThisUser", new Object[]{SopIdFieldValue, userInfoId, schemaPrefixName});
+            Object[] diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, "UserSop_SopNotAssignedToThisUser", new Object[]{sopIdFieldValue, userInfoId, schemaPrefixName});
             diagnoses = LPArray.addValueToArray1D(diagnoses, "ERROR");
             diagnoses = LPArray.addValueToArray1D(diagnoses, Parameter.getParameterBundle(schemaConfigName, "userSopCertificationLevelImage_NotAssigned"));
             return diagnoses;
         }
         if (getUserProfileFieldValues[0][3].toString().contains("GREEN")){
             Object[] diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, "UserSop_SopNotAssignedToThisUser", 
-                    new Object[]{userInfoId, SopIdFieldValue, schemaPrefixName, "current status is "+getUserProfileFieldValues[0][2].toString()+" and the light is "+getUserProfileFieldValues[0][3].toString()});
+                    new Object[]{userInfoId, sopIdFieldValue, schemaPrefixName, "current status is "+getUserProfileFieldValues[0][2].toString()+" and the light is "+getUserProfileFieldValues[0][3].toString()});
             diagnoses = LPArray.addValueToArray1D(diagnoses, SOP_PASS_CODE);
             diagnoses = LPArray.addValueToArray1D(diagnoses, Parameter.getParameterBundle(schemaConfigName, "userSopCertificationLevelImage_Certified"));
             return diagnoses;
         }
         else{
-            Object[] diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, "UserSop_UserNotCertifiedForSop", new Object[]{userInfoId, SopIdFieldValue, schemaPrefixName});
+            Object[] diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, "UserSop_UserNotCertifiedForSop", new Object[]{userInfoId, sopIdFieldValue, schemaPrefixName});
             diagnoses = LPArray.addValueToArray1D(diagnoses, SOP_NOTPASS_CODE);
             diagnoses = LPArray.addValueToArray1D(diagnoses, Parameter.getParameterBundle(schemaConfigName, "userSopCertificationLevelImage_NotCertified"));
             return diagnoses;
@@ -205,7 +205,7 @@ public class UserSop {
     public Object[] _NotRequireduserSopCertifiedBySopId( String schemaPrefixName, String userInfoId, String sopId, String procedure, Integer procVersion ) throws SQLException{
         return _NotRequireduserSopCertifiedBySopInternalLogic(schemaPrefixName, userInfoId, FIELDNAME_SOP_ID, sopId, procedure, procVersion);
     }    
-    private Object[] _NotRequireduserSopCertifiedBySopInternalLogic( String schemaPrefixName, String userInfoId, String sopIdFieldName, String sopIdFieldValue, String procedure, Integer procVersion ) throws SQLException{
+    private Object[] _NotRequireduserSopCertifiedBySopInternalLogic( String schemaPrefixName, String userInfoId, String sopIdFieldName, String sopIdFieldValue, String procedure, Integer procVersion ) {
         
         Object[] diagnoses = new Object[0];
         String sopMode = "";
@@ -349,9 +349,7 @@ public class UserSop {
         }
     }
     
-    Integer  _notRequireddbGetUserSopBySopId( String schemaName, String UserId, Integer sopId) {
-
-        
+    Integer  _notRequireddbGetUserSopBySopId( String schemaName, String userId, Integer sopId) {
         String schemaDataName = "data";
         schemaName = LPPlatform.buildSchemaName(schemaDataName, schemaName);
         
@@ -360,7 +358,7 @@ public class UserSop {
         query = "select user_sop_id from " + schemaName + ".user_sop "        
             + "   where user_id =? and sop_id = ? ";
         try{     
-            ResultSet res = Rdbms.prepRdQuery(query, new Object [] {UserId, sopId.toString()});          
+            ResultSet res = Rdbms.prepRdQuery(query, new Object [] {userId, sopId.toString()});          
             res.last();            
 
             if (res.getRow()>0) return res.getInt("user_sop_id");

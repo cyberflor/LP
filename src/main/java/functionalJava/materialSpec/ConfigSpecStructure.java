@@ -263,9 +263,6 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
      * @return
      */
     public String specialFieldCheckSpecLimitsRuleType(String schemaPrefix){ //, String schemaPrefix, String analysisList){                        
-        
-        String schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, LPPlatform.SCHEMA_CONFIG);
-
         Integer specialFieldIndex = Arrays.asList(mandatoryFields).indexOf("rule_type");
         String ruleType = (String) mandatoryFieldValue[specialFieldIndex];        
         
@@ -395,9 +392,9 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
            Logger.getLogger(ConfigSpecStructure.class.getName()).log(Level.SEVERE, null, ex);
        }  
         errorCode = "UnhandledExceptionInCode";
-        String Params = "SchemaPrefix: "+schemaPrefix+"specCode"+specCode+"specCodeVersion"+specCodeVersion.toString()
+        String params = "SchemaPrefix: "+schemaPrefix+"specCode"+specCode+"specCodeVersion"+specCodeVersion.toString()
                 +"specFieldName"+Arrays.toString(specFieldName)+"specFieldValue"+Arrays.toString(specFieldValue);
-        errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, Params);        
+        errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, params);        
         return trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);
     }
 

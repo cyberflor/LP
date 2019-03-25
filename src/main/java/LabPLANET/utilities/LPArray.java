@@ -725,7 +725,7 @@ public class  LPArray {
      * @param objArray
  * @return String[]
  */    
-    public static String[] ConvertObjectArrayToStringArray(Object[] objArray) {
+    public static String[] convertObjectArrayToStringArray(Object[] objArray) {
         String[] strArray = new String[objArray.length];
         for (int i = 0; i < objArray.length; i++)
             strArray[i] = String.valueOf(objArray[i]);

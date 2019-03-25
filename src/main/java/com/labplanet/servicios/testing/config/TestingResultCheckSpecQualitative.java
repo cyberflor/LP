@@ -100,7 +100,7 @@ public class TestingResultCheckSpecQualitative extends HttpServlet {
             }                          
             tstAssertSummary.notifyResults();
             fileContentTable1 = fileContentTable1 +LPTestingOutFormat.tableEnd();
-            String fileContentSummary = LPTestingOutFormat.CreateSummaryTable(tstAssertSummary);
+            String fileContentSummary = LPTestingOutFormat.createSummaryTable(tstAssertSummary);
             fileContent=fileContent+fileContentSummary+fileContentTable1;
             fileContent=fileContent+LPTestingOutFormat.bodyEnd()+LPTestingOutFormat.htmlEnd();
             out.println(fileContent);            

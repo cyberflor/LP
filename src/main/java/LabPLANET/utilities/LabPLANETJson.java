@@ -34,26 +34,26 @@ public class LabPLANETJson {
      * @return
      */
     public static String convertToJSON(Object[] diagn) {
-        String jsonStr ="{";
+        StringBuilder jsonStr = new StringBuilder().append("{");
         
         for(int diagnItem = 0; diagnItem<diagn.length;diagnItem++){            
-            jsonStr=jsonStr+"diagn"+(diagnItem)+":"+diagn[diagnItem].toString();
+            jsonStr=jsonStr.append("diagn").append(diagnItem).append(":").append(diagn[diagnItem].toString());
         }
-        jsonStr=jsonStr+"}";
-        return jsonStr;
+        jsonStr=jsonStr.append("}");
+        return jsonStr.toString();
     }
 
     /**
      *
-     * @param normal_array
+     * @param normalArray
      * @return
      */
-    public static JSONArray convertToJSON(String[] normal_array) {
-        JSONArray json_array= new JSONArray();
-        for (int i = 0; i < normal_array.length; i++) {
-           json_array.put(normal_array[i]);
+    public static JSONArray convertToJSON(String[] normalArray) {
+        JSONArray jsonArray= new JSONArray();
+        for (String normalArray1 : normalArray) {
+            jsonArray.put(normalArray1);
         }
-        return json_array;
+        return jsonArray;
     }
 
     /**
@@ -127,8 +127,8 @@ public class LabPLANETJson {
             resultSet.first();
             
             while(icurrLine<=totalLines-1) {
-                int total_rows = resultSet.getMetaData().getColumnCount();
-                for (int i = 0; i < total_rows; i++) {
+                int totalRows = resultSet.getMetaData().getColumnCount();
+                for (int i = 0; i < totalRows; i++) {
                     JSONObject obj = new JSONObject();
                     try {
                         if (resultSet.getObject(i+1)==null){
@@ -160,7 +160,6 @@ public class LabPLANETJson {
     }    
 /**
  * 
- * @param rdbm Rdbms - Pass the current db connection for running queries
  * @param table String - tableName
  * @param fields String[] - fieldsToBeAdded to the json structure
  * @param fieldPrefix String - ???
