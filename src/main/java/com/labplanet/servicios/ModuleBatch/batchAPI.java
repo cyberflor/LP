@@ -69,7 +69,6 @@ public class batchAPI extends HttpServlet {
                 response.sendError((int) errMsg[0], (String) errMsg[1]);                
                 return ;                
             }            
-
             String schemaPrefix = request.getParameter(PARAMS_SCHEMA_PREFIX);            
             String actionName = request.getParameter(PARAMS_ACTION_NAME);
             String finalToken = request.getParameter(PARAMS_FINAL_TOKEN);                   

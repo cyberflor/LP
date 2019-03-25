@@ -13,10 +13,6 @@
         <servlet-class>com.labplanet.servicios.testing.config.specQualitative</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>configSpecQuantitativeRuleFormat</servlet-name>
-        <servlet-class>com.labplanet.servicios.testing.config.ConfigSpecQuantitativeRuleFormat</servlet-class>
-    </servlet>
-    <servlet>
         <servlet-name>TestingConfigSamplingPlanStructure</servlet-name>
         <servlet-class>com.labplanet.servicios.testing.config._TestingConfigSamplingPlanStructure</servlet-class>
     </servlet>
@@ -113,14 +109,6 @@
         <url-pattern>/testing/platform/DBActions</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>specQualitative</servlet-name>
-        <url-pattern>/testing/config/specQualitativeRuleFormat</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>configSpecQuantitativeRuleFormat</servlet-name>
-        <url-pattern>/testing/config/ConfigSpecQuantitativeRuleFormat</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
         <servlet-name>TestingResultCheckSpecQualitative</servlet-name>
         <url-pattern>/testing/config/resultCheckSpecQualitative</url-pattern>
     </servlet-mapping>
@@ -150,10 +138,6 @@
     <servlet-mapping>
         <servlet-name>TestingUOMFamilyTable</servlet-name>
         <url-pattern>/testing/config/UOMFamilyTable</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>logSample</servlet-name>
-        <url-pattern>/frontEnd/logSample</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>sampleAPI</servlet-name>
@@ -213,7 +197,7 @@
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>TestingConfig_specQualitative_ruleFormat</servlet-name>
-        <url-pattern>/Testing/Config/noDB/TestingConfig_specQualitative_ruleFormat</url-pattern>
+        <url-pattern>/testing/config/noDB/TestingConfig_specQualitative_ruleFormat</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

@@ -283,8 +283,8 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
                 }
                 ConfigSpecRule qualSpec = new ConfigSpecRule();
                 Object[] isCorrect = null;
-                if (ruleVariablesArr.length==2){isCorrect = qualSpec.specLimitIsCorrectQualitative(schemaConfigName, ruleVariablesArr[0], ruleVariablesArr[1], null);}                
-                else{isCorrect = qualSpec.specLimitIsCorrectQualitative(schemaConfigName, ruleVariablesArr[0], ruleVariablesArr[1], ruleVariablesArr[2]);}
+                if (ruleVariablesArr.length==2){isCorrect = qualSpec.specLimitIsCorrectQualitative(ruleVariablesArr[0], ruleVariablesArr[1], null);}                
+                else{isCorrect = qualSpec.specLimitIsCorrectQualitative(ruleVariablesArr[0], ruleVariablesArr[1], ruleVariablesArr[2]);}
                 if ((Boolean) isCorrect[0]==true){myDiagnoses=DIAGNOSES_SUCCESS;}
                 else{myDiagnoses="ERROR: "+isCorrect[1];}
                 break;

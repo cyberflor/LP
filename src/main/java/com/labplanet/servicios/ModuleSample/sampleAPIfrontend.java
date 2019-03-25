@@ -11,14 +11,12 @@ import LabPLANET.utilities.LabPLANETFrontEnd;
 import LabPLANET.utilities.LPPlatform;
 import com.sun.rowset.CachedRowSetImpl;
 import databases.Rdbms;
-import databases.SqlStatement;
 import databases.Token;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.ResourceBundle;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -35,6 +33,10 @@ public class sampleAPIfrontend extends HttpServlet {
     public static final String ERRORMSG_ERROR_STATUS_CODE="Error Status Code";
     public static final String ERRORMSG_MANDATORY_PARAMS_MISSING="API Error Message: There are mandatory params for this API method not being passed";
 
+    public static final String PARAMETER_SAMPLE_ID="sampleId";
+    public static final String PARAMETER_TEST_ID="testId";
+    public static final String PARAMETER_RESULT_ID="resultId";
+    
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      *
@@ -47,13 +49,6 @@ public class sampleAPIfrontend extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)            throws ServletException, IOException {
         request=LPHttp.requestPreparation(request);
         response=LPHttp.responsePreparation(response);
-
-        ResourceBundle prop = ResourceBundle.getBundle("parameter.config.config");
-        String frontendUrl = prop.getString("frontend_url");
-
-        response.setHeader("Access-Control-Allow-Origin", frontendUrl);
-        response.setHeader("Access-Control-Allow-Methods", "GET");        
-
         String language = "en";
 
         try (PrintWriter out = response.getWriter()) {
@@ -72,7 +67,7 @@ public class sampleAPIfrontend extends HttpServlet {
             String[] tokenParamsValues = token.validateToken(finalToken, tokenParams);
             
             String dbUserName = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, Token.TOKEN_PARAM_USERDB)];
-            String dbUserPassword = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, Token.TOKEN_PARAM_USERDB)];
+            String dbUserPassword = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, Token.TOKEN_PARAM_USERPW)];
 //            String internalUserID = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, Token.TOKEN_PARAM_INTERNAL_USERID)];         
 //            String userRole = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, Token.TOKEN_PARAM_USER_ROLE)];                     
 
@@ -323,10 +318,10 @@ public class sampleAPIfrontend extends HttpServlet {
                     Rdbms.closeRdbms();
                     return;         
                 case "GET_SAMPLE_ANALYSIS_LIST":
-                    String sampleIdStr = request.getParameter("sampleId");                             
+                    String sampleIdStr = request.getParameter(PARAMETER_SAMPLE_ID);                             
                     if ( (sampleIdStr==null) || (sampleIdStr.contains("undefined")) ) {
                         errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
-                        errObject = LPArray.addValueToArray1D(errObject, "sampleId="+request.getParameter("sampleId"));
+                        errObject = LPArray.addValueToArray1D(errObject, "sampleId="+request.getParameter(PARAMETER_SAMPLE_ID));
                         errObject = LPArray.addValueToArray1D(errObject, "API Error Message: sampleId is one mandatory param and should be one integer value for this API");                    
                         Object[] errMsg = LabPLANETFrontEnd.responseError(errObject, language, schemaPrefix);
                         response.sendError((int) errMsg[0], (String) errMsg[1]);   
@@ -360,10 +355,10 @@ public class sampleAPIfrontend extends HttpServlet {
                     Rdbms.closeRdbms();
                     return;                      
                 case "GET_SAMPLE_ANALYSIS_RESULT_LIST":
-                    sampleIdStr = request.getParameter("sampleId");                             
+                    sampleIdStr = request.getParameter(PARAMETER_SAMPLE_ID);                             
                     if ( (sampleIdStr==null) || (sampleIdStr.contains("undefined")) ) {
                         errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
-                        errObject = LPArray.addValueToArray1D(errObject, "sampleId="+request.getParameter("sampleId"));
+                        errObject = LPArray.addValueToArray1D(errObject, "sampleId="+request.getParameter(PARAMETER_SAMPLE_ID));
                         errObject = LPArray.addValueToArray1D(errObject, "API Error Message: sampleId is one mandatory param and should be one integer value for this API");                    
                         Object[] errMsg = LabPLANETFrontEnd.responseError(errObject, language, schemaPrefix);
                         response.sendError((int) errMsg[0], (String) errMsg[1]);   
@@ -405,7 +400,7 @@ public class sampleAPIfrontend extends HttpServlet {
                     String resultIdStr = request.getParameter("result_id");
                     if ( (resultIdStr==null) || (resultIdStr.contains("undefined")) ) {
                         errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
-                        errObject = LPArray.addValueToArray1D(errObject, "sampleId="+request.getParameter("sampleId"));
+                        errObject = LPArray.addValueToArray1D(errObject, "sampleId="+request.getParameter(PARAMETER_SAMPLE_ID));
                         errObject = LPArray.addValueToArray1D(errObject, "API Error Message: sampleId is one mandatory param and should be one integer value for this API");                    
                         Object[] errMsg = LabPLANETFrontEnd.responseError(errObject, language, schemaPrefix);
                         response.sendError((int) errMsg[0], (String) errMsg[1]);   
@@ -426,7 +421,7 @@ public class sampleAPIfrontend extends HttpServlet {
                     Rdbms.closeRdbms();
                     return;  
                 case "SAMPLE_ENTIRE_STRUCTURE":
-                   sampleIdStr = request.getParameter("sampleId");        
+                   sampleIdStr = request.getParameter(PARAMETER_SAMPLE_ID);        
                    sampleId = Integer.parseInt(sampleIdStr);     
                     String qry = "";                    
                     qry = qry  + "select row_to_json(sQry)from "

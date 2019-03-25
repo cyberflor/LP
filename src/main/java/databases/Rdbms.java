@@ -678,7 +678,7 @@ public class Rdbms {
                 null, null, null, fieldNames, fieldValues,
                 null, null);              
         String query= hmQuery.keySet().iterator().next();   
-        Object[] keyFieldValueNew = hmQuery.get(query);        
+        //Object[] keyFieldValueNew = hmQuery.get(query);        
         try {                        
             fieldValues = LPArray.encryptTableFieldArray(schemaName, tableName, fieldNames, fieldValues); 
             String keyValueNewRecord = Rdbms.prepUpQueryK(query, fieldValues, 1);
@@ -779,12 +779,9 @@ public class Rdbms {
             }                
             buildPreparedStatement(filteredValoresConInterrogaciones, prepareStatement, null); 
             ResultSet res = prepareStatement.executeQuery();
-//            crs = new CachedRowSetImpl();
             crs.populate(res);
             return crs;             
         }catch(SQLException er){
-//            conn.close();     
-//            crs.close();
             return crs;
         }//finally{crs.close();conn.close();}
     }
@@ -831,13 +828,13 @@ public class Rdbms {
             if (rs.next()) {
               int newId = rs.getInt(indexposition);
               if (newId==0){
-                  return pkValue = TBL_KEY_NOT_FIRST_TABLEFLD; //"PRIMARY KEY NOT FIRST FIELD IN TABLE";
+                  return TBL_KEY_NOT_FIRST_TABLEFLD; //"PRIMARY KEY NOT FIRST FIELD IN TABLE";
               }else{
-                  return pkValue = String.valueOf(newId);              
+                  return String.valueOf(newId);              
               }
             }
         }catch (SQLException er){
-            return pkValue = TBL_NO_KEY; //"TABLE WITH NO KEY";
+            return TBL_NO_KEY; //"TABLE WITH NO KEY";
         }//finally{rs.close();}
         return pkValue;
     }
@@ -893,14 +890,10 @@ public class Rdbms {
     }
         
     private static void buildPreparedStatement(Object [] valoStrings, PreparedStatement prepsta, Integer [] fieldtypes) throws SQLException{
-        Integer numfields = valoStrings.length;
         Integer indexval = 1;
-
-        for(Integer numi=0;numi<numfields;numi++){
+        for(Integer numi=0;numi<valoStrings.length;numi++){
             Object obj = valoStrings[numi];
-
             String clase;
-
             if (obj != null){
                clase = obj.getClass().toString();
             }else{
@@ -936,7 +929,6 @@ public class Rdbms {
                         prepsta.setNull(indexval, Types.FLOAT);
                         break;                        
                     default:
-                        obj=null;
                         break;
                 }
             }else{
@@ -1051,6 +1043,7 @@ public class Rdbms {
             rdbms.savepoint = conn.setSavepoint();
         } catch (SQLException ex) {
             Logger.getLogger(Rdbms.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
         }
         return conn;        
     }

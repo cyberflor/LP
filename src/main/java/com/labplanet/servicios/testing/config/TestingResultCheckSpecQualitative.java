@@ -7,13 +7,14 @@ package com.labplanet.servicios.testing.config;;
 
 import LabPLANET.utilities.LPPlatform;
 import LabPLANET.utilities.LPArray;
+import functionalJava.materialSpec.ConfigSpecRule;
+import functionalJava.materialSpec.DataSpec;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import functionalJava.materialSpec.DataSpec;
 import functionalJava.testingScripts.LPTestingOutFormat;
 import functionalJava.testingScripts.TestingAssert;
 import functionalJava.testingScripts.TestingAssertSummary;
@@ -38,7 +39,6 @@ public class TestingResultCheckSpecQualitative extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)            throws ServletException, IOException {
         response = LPTestingOutFormat.responsePreparation(response);        
         DataSpec resChkSpec = new DataSpec();   
-        
         TestingAssertSummary tstAssertSummary = new TestingAssertSummary();
 
         String csvFileName = "noDBSchema_config_specQualitative_resultCheck.txt"; 
@@ -66,8 +66,7 @@ public class TestingResultCheckSpecQualitative extends HttpServlet {
             Integer iLines =numHeaderLines; 
             for (iLines=iLines;iLines<csvFileContent.length;iLines++){
                 tstAssertSummary.increaseTotalTests();
-                TestingAssert tstAssert = new TestingAssert(csvFileContent[iLines], numEvaluationArguments);
-                String schemaName = "";
+                TestingAssert tstAssert = new TestingAssert(csvFileContent[iLines], numEvaluationArguments);                
                 
                 Integer lineNumCols = csvFileContent[0].length-1;
                 String result = null;
@@ -89,7 +88,7 @@ public class TestingResultCheckSpecQualitative extends HttpServlet {
                 fileContentTable1=fileContentTable1+LPTestingOutFormat.rowAddFields(
                         new Object[]{iLines, result, ruleType, values, separator, listName});
                     
-                Object[] resSpecEvaluation = resChkSpec.resultCheck(schemaName, result, ruleType, values, separator, listName);
+                Object[] resSpecEvaluation = resChkSpec.resultCheck(result, ruleType, values, separator, listName);
                 if (numEvaluationArguments==0){                    
                     fileContentTable1=fileContentTable1+LPTestingOutFormat.rowAddField(Arrays.toString(resSpecEvaluation));                     
                 }
@@ -113,394 +112,6 @@ public class TestingResultCheckSpecQualitative extends HttpServlet {
         }        
     }
 
-        /*        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {            
-            DataSpec resChkSpec = new DataSpec();
-                       
-            Integer numTesting = 44;
-            Integer inumTesting = 0;
-            String[][] QualitSpecTestingArray = new String[numTesting][5];
-            
-            if (inumTesting<numTesting){
-                QualitSpecTestingArray[inumTesting][0]=null;
-                QualitSpecTestingArray[inumTesting][1]=null;
-                QualitSpecTestingArray[inumTesting][2]=null;
-                QualitSpecTestingArray[inumTesting][3]=null;
-                QualitSpecTestingArray[inumTesting][4]=null;
-                inumTesting++;}
-            
-            if (inumTesting<numTesting){
-                QualitSpecTestingArray[inumTesting][0]="Hello";
-                QualitSpecTestingArray[inumTesting][1]=null;
-                QualitSpecTestingArray[inumTesting][2]=null;
-                QualitSpecTestingArray[inumTesting][3]=null;
-                QualitSpecTestingArray[inumTesting][4]=null;
-                inumTesting++;}
-
-            if (inumTesting<numTesting){
-                QualitSpecTestingArray[inumTesting][0]="Hello";
-                QualitSpecTestingArray[inumTesting][1]="Equal";
-                QualitSpecTestingArray[inumTesting][2]=null;
-                QualitSpecTestingArray[inumTesting][3]=null;
-                QualitSpecTestingArray[inumTesting][4]=null;
-                inumTesting++;}
-
-            if (inumTesting<numTesting){
-                QualitSpecTestingArray[inumTesting][0]="Hello";
-                QualitSpecTestingArray[inumTesting][1]=null;
-                QualitSpecTestingArray[inumTesting][2]="Hello";
-                QualitSpecTestingArray[inumTesting][3]=null;
-                QualitSpecTestingArray[inumTesting][4]=null;
-                inumTesting++;}
-
-            if (inumTesting<numTesting){
-                QualitSpecTestingArray[inumTesting][0]=null;
-                QualitSpecTestingArray[inumTesting][1]="Hello";
-                QualitSpecTestingArray[inumTesting][2]="Hello";
-                QualitSpecTestingArray[inumTesting][3]=null;
-                QualitSpecTestingArray[inumTesting][4]=null;
-                inumTesting++;}
-
-            if (inumTesting<numTesting){
-                QualitSpecTestingArray[inumTesting][0]="Hello";
-                QualitSpecTestingArray[inumTesting][1]="Hello";
-                QualitSpecTestingArray[inumTesting][2]="Hello";
-                QualitSpecTestingArray[inumTesting][3]=null;
-                QualitSpecTestingArray[inumTesting][4]=null;
-                inumTesting++;}
-
-            if (inumTesting<numTesting){
-                QualitSpecTestingArray[inumTesting][0]="Hello";
-                QualitSpecTestingArray[inumTesting][1]="Equal To";
-                QualitSpecTestingArray[inumTesting][2]="Hello";
-                QualitSpecTestingArray[inumTesting][3]=null;
-                QualitSpecTestingArray[inumTesting][4]=null;
-                inumTesting++;}
-
-            if (inumTesting<numTesting){
-                QualitSpecTestingArray[inumTesting][0]="Hello";
-                QualitSpecTestingArray[inumTesting][1]="EqualTo";
-                QualitSpecTestingArray[inumTesting][2]="Hello";
-                QualitSpecTestingArray[inumTesting][3]=null;
-                QualitSpecTestingArray[inumTesting][4]=null;
-                inumTesting++;}
-
-            if (inumTesting<numTesting){
-                QualitSpecTestingArray[inumTesting][0]="Hello";
-                QualitSpecTestingArray[inumTesting][1]="EqualTo";
-                QualitSpecTestingArray[inumTesting][2]="Hello hello";
-                QualitSpecTestingArray[inumTesting][3]=null;
-                QualitSpecTestingArray[inumTesting][4]=null;
-                inumTesting++;}
-
-            if (inumTesting<numTesting){
-                QualitSpecTestingArray[inumTesting][0]="Hello";
-                QualitSpecTestingArray[inumTesting][1]="Not Equal To";
-                QualitSpecTestingArray[inumTesting][2]="Hello";
-                QualitSpecTestingArray[inumTesting][3]=null;
-                QualitSpecTestingArray[inumTesting][4]=null;
-                inumTesting++;}
-
-            if (inumTesting<numTesting){
-                QualitSpecTestingArray[inumTesting][0]="Hello";
-                QualitSpecTestingArray[inumTesting][1]="NotEqualTo";
-                QualitSpecTestingArray[inumTesting][2]="Hello";
-                QualitSpecTestingArray[inumTesting][3]=null;
-                QualitSpecTestingArray[inumTesting][4]=null;
-                inumTesting++;}
-
-            if (inumTesting<numTesting){
-                QualitSpecTestingArray[inumTesting][0]="Hello";
-                QualitSpecTestingArray[inumTesting][1]="NotEqualTo";
-                QualitSpecTestingArray[inumTesting][2]="Hello hello";
-                QualitSpecTestingArray[inumTesting][3]=null;
-                QualitSpecTestingArray[inumTesting][4]=null;
-                inumTesting++;}
-
-            if (inumTesting<numTesting){
-                QualitSpecTestingArray[inumTesting][0]="Hello";
-                QualitSpecTestingArray[inumTesting][1]="contains";
-                QualitSpecTestingArray[inumTesting][2]="Hello";
-                QualitSpecTestingArray[inumTesting][3]=null;
-                QualitSpecTestingArray[inumTesting][4]=null;
-                inumTesting++;}
-
-            if (inumTesting<numTesting){
-                QualitSpecTestingArray[inumTesting][0]="Hello";
-                QualitSpecTestingArray[inumTesting][1]="Contains";
-                QualitSpecTestingArray[inumTesting][2]="hello";
-                QualitSpecTestingArray[inumTesting][3]=null;
-                QualitSpecTestingArray[inumTesting][4]=null;
-                inumTesting++;}
-
-            if (inumTesting<numTesting){
-                QualitSpecTestingArray[inumTesting][0]="Hello";
-                QualitSpecTestingArray[inumTesting][1]="contains";
-                QualitSpecTestingArray[inumTesting][2]="Goodbye Hello hello";
-                QualitSpecTestingArray[inumTesting][3]=null;
-                QualitSpecTestingArray[inumTesting][4]=null;
-                inumTesting++;}
-
-            if (inumTesting<numTesting){
-                QualitSpecTestingArray[inumTesting][0]="Hello";
-                QualitSpecTestingArray[inumTesting][1]="CONTAINS";
-                QualitSpecTestingArray[inumTesting][2]="Goodbye Hello Goodbye";
-                QualitSpecTestingArray[inumTesting][3]=null;
-                QualitSpecTestingArray[inumTesting][4]=null;
-                inumTesting++;}
-
-            if (inumTesting<numTesting){
-                QualitSpecTestingArray[inumTesting][0]="Hello";
-                QualitSpecTestingArray[inumTesting][1]="CONTAINS";
-                QualitSpecTestingArray[inumTesting][2]="GoodbyehelloGoodbye";
-                QualitSpecTestingArray[inumTesting][3]=null;
-                QualitSpecTestingArray[inumTesting][4]=null;
-                inumTesting++;}
-            
-            if (inumTesting<numTesting){
-                QualitSpecTestingArray[inumTesting][0]="e Hello g";
-                QualitSpecTestingArray[inumTesting][1]="CONTAINS";
-                QualitSpecTestingArray[inumTesting][2]="Goodbye Hello Goodbye";
-                QualitSpecTestingArray[inumTesting][3]=null;
-                QualitSpecTestingArray[inumTesting][4]=null;
-                inumTesting++;}
-
-            if (inumTesting<numTesting){
-                QualitSpecTestingArray[inumTesting][0]="e Hellog";
-                QualitSpecTestingArray[inumTesting][1]="CONTAINS";
-                QualitSpecTestingArray[inumTesting][2]="Goodbye Hello Goodbye";
-                QualitSpecTestingArray[inumTesting][3]=null;
-                QualitSpecTestingArray[inumTesting][4]=null;
-                inumTesting++;}
-
-            if (inumTesting<numTesting){
-                QualitSpecTestingArray[inumTesting][0]="Hello goob";
-                QualitSpecTestingArray[inumTesting][1]="CONTAINS";
-                QualitSpecTestingArray[inumTesting][2]="Goodbye Hello Goodbye";
-                QualitSpecTestingArray[inumTesting][3]=null;
-                QualitSpecTestingArray[inumTesting][4]=null;
-                inumTesting++;}
-
-            if (inumTesting<numTesting){
-                QualitSpecTestingArray[inumTesting][0]="Hello.";
-                QualitSpecTestingArray[inumTesting][1]="CONTAINS";
-                QualitSpecTestingArray[inumTesting][2]="Goodbye Hello. Goodbye";
-                QualitSpecTestingArray[inumTesting][3]=null;
-                QualitSpecTestingArray[inumTesting][4]=null;
-                inumTesting++;}
-
-            if (inumTesting<numTesting){
-                QualitSpecTestingArray[inumTesting][0]="Hello.";
-                QualitSpecTestingArray[inumTesting][1]="CONTAINS";
-                QualitSpecTestingArray[inumTesting][2]="Goodbye Hello. Goodbye";
-                QualitSpecTestingArray[inumTesting][3]=".";
-                QualitSpecTestingArray[inumTesting][4]=null;
-                inumTesting++;}
-
-            if (inumTesting<numTesting){
-                QualitSpecTestingArray[inumTesting][0]="Hello.";
-                QualitSpecTestingArray[inumTesting][1]="CONTAINS";
-                QualitSpecTestingArray[inumTesting][2]="Goodbye Hello. Goodbye";
-                QualitSpecTestingArray[inumTesting][3]=",";
-                QualitSpecTestingArray[inumTesting][4]=null;
-                inumTesting++;}
-
-            if (inumTesting<numTesting){
-                QualitSpecTestingArray[inumTesting][0]="Hello";
-                QualitSpecTestingArray[inumTesting][1]="Not contains";
-                QualitSpecTestingArray[inumTesting][2]="Hello";
-                QualitSpecTestingArray[inumTesting][3]=null;
-                QualitSpecTestingArray[inumTesting][4]=null;
-                inumTesting++;}
-
-            if (inumTesting<numTesting){
-                QualitSpecTestingArray[inumTesting][0]="Hello";
-                QualitSpecTestingArray[inumTesting][1]="NotContains";
-                QualitSpecTestingArray[inumTesting][2]="hello";
-                QualitSpecTestingArray[inumTesting][3]=null;
-                QualitSpecTestingArray[inumTesting][4]=null;
-                inumTesting++;}
-
-            if (inumTesting<numTesting){
-                QualitSpecTestingArray[inumTesting][0]="Hello";
-                QualitSpecTestingArray[inumTesting][1]="Notcontains";
-                QualitSpecTestingArray[inumTesting][2]="Goodbye Hello hello";
-                QualitSpecTestingArray[inumTesting][3]=null;
-                QualitSpecTestingArray[inumTesting][4]=null;
-                inumTesting++;}
-
-            if (inumTesting<numTesting){
-                QualitSpecTestingArray[inumTesting][0]="Hello";
-                QualitSpecTestingArray[inumTesting][1]="NotCONTAINS";
-                QualitSpecTestingArray[inumTesting][2]="Goodbye Hello Goodbye";
-                QualitSpecTestingArray[inumTesting][3]=null;
-                QualitSpecTestingArray[inumTesting][4]=null;
-                inumTesting++;}
-
-            if (inumTesting<numTesting){
-                QualitSpecTestingArray[inumTesting][0]="Hello";
-                QualitSpecTestingArray[inumTesting][1]="Not CONTAINS";
-                QualitSpecTestingArray[inumTesting][2]="GoodbyehelloGoodbye";
-                QualitSpecTestingArray[inumTesting][3]=null;
-                QualitSpecTestingArray[inumTesting][4]=null;
-                inumTesting++;}
-            
-            if (inumTesting<numTesting){
-                QualitSpecTestingArray[inumTesting][0]="e Hello g";
-                QualitSpecTestingArray[inumTesting][1]="NotCONTAINS";
-                QualitSpecTestingArray[inumTesting][2]="Goodbye Hello Goodbye";
-                QualitSpecTestingArray[inumTesting][3]=null;
-                QualitSpecTestingArray[inumTesting][4]=null;
-                inumTesting++;}
-
-            if (inumTesting<numTesting){
-                QualitSpecTestingArray[inumTesting][0]="e Hellog";
-                QualitSpecTestingArray[inumTesting][1]="NotCONTAINS";
-                QualitSpecTestingArray[inumTesting][2]="Goodbye Hello Goodbye";
-                QualitSpecTestingArray[inumTesting][3]=null;
-                QualitSpecTestingArray[inumTesting][4]=null;
-                inumTesting++;}
-
-            if (inumTesting<numTesting){
-                QualitSpecTestingArray[inumTesting][0]="Hello goob";
-                QualitSpecTestingArray[inumTesting][1]="NotCONTAINS";
-                QualitSpecTestingArray[inumTesting][2]="Goodbye Hello Goodbye";
-                QualitSpecTestingArray[inumTesting][3]=null;
-                QualitSpecTestingArray[inumTesting][4]=null;
-                inumTesting++;}
-
-            if (inumTesting<numTesting){
-                QualitSpecTestingArray[inumTesting][0]="Hello";
-                QualitSpecTestingArray[inumTesting][1]="ISONEOF";
-                QualitSpecTestingArray[inumTesting][2]="Goodbye,Hello,Goodbye";
-                QualitSpecTestingArray[inumTesting][3]=",";
-                QualitSpecTestingArray[inumTesting][4]=null;
-                inumTesting++;}
-            
-            if (inumTesting<numTesting){
-                QualitSpecTestingArray[inumTesting][0]="Hello";
-                QualitSpecTestingArray[inumTesting][1]="ISONEOF";
-                QualitSpecTestingArray[inumTesting][2]="Goodbye,Hello,Goodbye";
-                QualitSpecTestingArray[inumTesting][3]=".";
-                QualitSpecTestingArray[inumTesting][4]=null;
-                inumTesting++;}
-
-            if (inumTesting<numTesting){
-                QualitSpecTestingArray[inumTesting][0]="Hello";
-                QualitSpecTestingArray[inumTesting][1]="ISONEOF";
-                QualitSpecTestingArray[inumTesting][2]="Goodbye,Hello Goodbye";
-                QualitSpecTestingArray[inumTesting][3]=",";
-                QualitSpecTestingArray[inumTesting][4]=null;
-                inumTesting++;}
-
-            if (inumTesting<numTesting){
-                QualitSpecTestingArray[inumTesting][0]="Hell";
-                QualitSpecTestingArray[inumTesting][1]="ISONEOF";
-                QualitSpecTestingArray[inumTesting][2]="Goodbye,Hello Goodbye";
-                QualitSpecTestingArray[inumTesting][3]=",";
-                QualitSpecTestingArray[inumTesting][4]=null;
-                inumTesting++;}
-
-            if (inumTesting<numTesting){
-                QualitSpecTestingArray[inumTesting][0]="Hello";
-                QualitSpecTestingArray[inumTesting][1]="ISONEOF";
-                QualitSpecTestingArray[inumTesting][2]="Goodbye,Hell, o, Goodbye";
-                QualitSpecTestingArray[inumTesting][3]=",";
-                QualitSpecTestingArray[inumTesting][4]=null;
-                inumTesting++;}
-
-            if (inumTesting<numTesting){
-                QualitSpecTestingArray[inumTesting][0]="Hel,lo";
-                QualitSpecTestingArray[inumTesting][1]="ISONEOF";
-                QualitSpecTestingArray[inumTesting][2]="Hel,lo";
-                QualitSpecTestingArray[inumTesting][3]=",";
-                QualitSpecTestingArray[inumTesting][4]=null;
-                inumTesting++;}
-
-            if (inumTesting<numTesting){
-                QualitSpecTestingArray[inumTesting][0]="Hello";
-                QualitSpecTestingArray[inumTesting][1]="ISNOTONEOF";
-                QualitSpecTestingArray[inumTesting][2]="Goodbye,Hello,Goodbye";
-                QualitSpecTestingArray[inumTesting][3]=",";
-                QualitSpecTestingArray[inumTesting][4]=null;
-                inumTesting++;}
-            
-            if (inumTesting<numTesting){
-                QualitSpecTestingArray[inumTesting][0]="Hello";
-                QualitSpecTestingArray[inumTesting][1]="ISNOTONEOF";
-                QualitSpecTestingArray[inumTesting][2]="Goodbye,Hello,Goodbye";
-                QualitSpecTestingArray[inumTesting][3]=".";
-                QualitSpecTestingArray[inumTesting][4]=null;
-                inumTesting++;}
-
-            if (inumTesting<numTesting){
-                QualitSpecTestingArray[inumTesting][0]="Hello";
-                QualitSpecTestingArray[inumTesting][1]="ISNOTONEOF";
-                QualitSpecTestingArray[inumTesting][2]="Goodbye,Hello Goodbye";
-                QualitSpecTestingArray[inumTesting][3]=",";
-                QualitSpecTestingArray[inumTesting][4]=null;
-                inumTesting++;}
-
-            if (inumTesting<numTesting){
-                QualitSpecTestingArray[inumTesting][0]="Hell";
-                QualitSpecTestingArray[inumTesting][1]="ISNOTONEOF";
-                QualitSpecTestingArray[inumTesting][2]="Goodbye,Hello Goodbye";
-                QualitSpecTestingArray[inumTesting][3]=",";
-                QualitSpecTestingArray[inumTesting][4]=null;
-                inumTesting++;}
-
-            if (inumTesting<numTesting){
-                QualitSpecTestingArray[inumTesting][0]="Hello";
-                QualitSpecTestingArray[inumTesting][1]="ISNOTONEOF";
-                QualitSpecTestingArray[inumTesting][2]="Goodbye,Hell, o, Goodbye";
-                QualitSpecTestingArray[inumTesting][3]=",";
-                QualitSpecTestingArray[inumTesting][4]=null;
-                inumTesting++;}
-
-            if (inumTesting<numTesting){
-                QualitSpecTestingArray[inumTesting][0]="Hel,lo";
-                QualitSpecTestingArray[inumTesting][1]="ISNOTONEOF";
-                QualitSpecTestingArray[inumTesting][2]="Hel,lo";
-                QualitSpecTestingArray[inumTesting][3]=",";
-                QualitSpecTestingArray[inumTesting][4]=null;
-                inumTesting++;}
-            
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet TestingQualitativeSpecifications</title>");            
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Unit Testing for Qualitative Specifications at " + request.getContextPath() + "</h1>");            
-            out.println("<table>");
-            out.println("<th>Test#</th><th>Result</th><th>Rule Type</th><th>Values</th><th>Separator</th><th>List Name</th><th>Evaluation</th>");
-            for (Integer i=0;i<QualitSpecTestingArray.length;i++){
-                    out.println("<tr>");
-                    String schemaName = "oil-pl1-data";
-                    String result = "";
-                    String ruleType = "";
-                    String values = "";
-                    String separator = "";
-                    String listName = "";
-                    if (QualitSpecTestingArray[i][0]!=null){result = QualitSpecTestingArray[i][0];}
-                    if (QualitSpecTestingArray[i][1]!=null){ruleType = QualitSpecTestingArray[i][1];}               
-                    if (QualitSpecTestingArray[i][2]!=null){values = QualitSpecTestingArray[i][2];}               
-                    if (QualitSpecTestingArray[i][3]!=null){separator = QualitSpecTestingArray[i][3];}               
-                    if (QualitSpecTestingArray[i][4]!=null){listName = QualitSpecTestingArray[i][4];}               
-                    
-                    out.println("<td>"+i+"</td><td>"+result+"</td><td>"+ruleType+"</td><td>"+values+"</td><td>"+separator+"</td><td>"+listName+"</td>");
-
-                    Object[] resSpecEvaluation = resChkSpec.resultCheck(schemaName, result, ruleType, values, separator, listName);
-                    out.println("<td>"+Arrays.toString(resSpecEvaluation)+"</td>");                    
-                    out.println("</tr>");
-            }                
-            out.println("</table>");
-
-            out.println("</body>");
-            out.println("</html>");        
-        }        
-    }
-*/
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.

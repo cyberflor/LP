@@ -62,12 +62,8 @@ public class TestingConfig_specQualitative_ruleFormat extends HttpServlet {
             
             String table1Header = csvHeaderTags.get(LPTestingOutFormat.FILEHEADER_TABLE_NAME_TAG_NAME+"1").toString();               
             String fileContentTable1 = LPTestingOutFormat.createTableWithHeader(table1Header, numEvaluationArguments);
-
-            String table2Header = csvHeaderTags.get(LPTestingOutFormat.FILEHEADER_TABLE_NAME_TAG_NAME+"2").toString();            
-            String fileContentTable2 = LPTestingOutFormat.createTableWithHeader(table2Header, numEvaluationArguments);
-
-            Integer iLines =numHeaderLines; 
-            for (iLines=iLines;iLines<csvFileContent.length;iLines++){
+            
+            for ( Integer iLines =numHeaderLines;iLines<csvFileContent.length;iLines++){
                 tstAssertSummary.increaseTotalTests();
                     
                 TestingAssert tstAssert = new TestingAssert(csvFileContent[iLines], numEvaluationArguments);
@@ -76,53 +72,35 @@ public class TestingConfig_specQualitative_ruleFormat extends HttpServlet {
                 if (csvFileContent[iLines][1]==null){tstAssertSummary.increasetotalLabPlanetErrorCodeUndefined();}
 
                 Integer lineNumCols = csvFileContent[0].length-1;
-                Float minSpec = null;
-                if (lineNumCols>=numEvaluationArguments)
-                    {minSpec = LPTestingOutFormat.csvExtractFieldValueFloat(csvFileContent[iLines][numEvaluationArguments]);}
-                Float minControl = null;
-                if (lineNumCols>=numEvaluationArguments+1)
-                    {minControl = LPTestingOutFormat.csvExtractFieldValueFloat(csvFileContent[iLines][numEvaluationArguments+1]);}
-                Float maxControl = null;
-                if (lineNumCols>=numEvaluationArguments+2)
-                    {maxControl = LPTestingOutFormat.csvExtractFieldValueFloat(csvFileContent[iLines][numEvaluationArguments+2]);}
-                Float maxSpec = null;
-                if (lineNumCols>=numEvaluationArguments+3)
-                    {maxSpec = LPTestingOutFormat.csvExtractFieldValueFloat(csvFileContent[iLines][numEvaluationArguments+3]);}
+                String ruleType = null;
+                if (lineNumCols>=numEvaluationArguments)                               
+                     ruleType = LPTestingOutFormat.csvExtractFieldValueString(csvFileContent[iLines][numEvaluationArguments]);
+                String specText = null;
+                if (lineNumCols>=numEvaluationArguments+1)                               
+                     specText = LPTestingOutFormat.csvExtractFieldValueString(csvFileContent[iLines][numEvaluationArguments+1]);
+                String separator = null;
+                if (lineNumCols>=numEvaluationArguments+2)                               
+                     separator = LPTestingOutFormat.csvExtractFieldValueString(csvFileContent[iLines][numEvaluationArguments+2]);
+
+                fileContentTable1=fileContentTable1+LPTestingOutFormat.rowAddFields(
+                        new Object[]{iLines, ruleType, specText, separator});
                     
-                Object[] resSpecEvaluation = new Object[0];                
-                if (minControl==null){
-                    fileContentTable1=fileContentTable1+LPTestingOutFormat.rowAddFields(
-                            new Object[]{iLines, minSpec, maxSpec});
-                    resSpecEvaluation = mSpec.specLimitIsCorrectQuantitative(minSpec,maxSpec, minControl, maxControl);
-                }else{
-                    fileContentTable2=fileContentTable2+LPTestingOutFormat.rowAddFields(
-                            new Object[]{iLines, minSpec, minControl, maxControl, maxSpec});
-                    resSpecEvaluation = mSpec.specLimitIsCorrectQuantitative(minSpec,maxSpec, minControl, maxControl);
-                }        
+                Object[] resSpecEvaluation = mSpec.specLimitIsCorrectQualitative(ruleType, specText, separator);
+                    
                 if (numEvaluationArguments==0){                    
-                    if (minControl==null){
-                        fileContentTable1=fileContentTable1+LPTestingOutFormat.rowAddField(Arrays.toString(resSpecEvaluation));                     
-                    }else{
-                        fileContentTable2=fileContentTable2+LPTestingOutFormat.rowAddField(Arrays.toString(resSpecEvaluation));                     
-                    }
+                    fileContentTable1=fileContentTable1+LPTestingOutFormat.rowAddField(Arrays.toString(resSpecEvaluation));                     
                 }                                
                 if (numEvaluationArguments>0){                    
                     Object[] evaluate = tstAssert.evaluate(numEvaluationArguments, tstAssertSummary, resSpecEvaluation);
-                    if (minControl==null){
-                        fileContentTable1=fileContentTable1+LPTestingOutFormat.rowAddFields(evaluate);                        
-                        fileContentTable1=fileContentTable1+LPTestingOutFormat.rowEnd();                                                
-                    }else{
-                        fileContentTable2=fileContentTable2+LPTestingOutFormat.rowAddFields(evaluate);                        
-                        fileContentTable2=fileContentTable2+LPTestingOutFormat.rowEnd();                                                                        
-                    }
+                    fileContentTable1=fileContentTable1+LPTestingOutFormat.rowAddFields(evaluate);                        
+                    fileContentTable1=fileContentTable1+LPTestingOutFormat.rowEnd();                                                
                 }
             }    
             tstAssertSummary.notifyResults();
             fileContentTable1 = fileContentTable1 +LPTestingOutFormat.tableEnd();
-            fileContentTable2 = fileContentTable2 +LPTestingOutFormat.tableEnd();         
             if (numEvaluationArguments>0){
                 String fileContentSummary = LPTestingOutFormat.CreateSummaryTable(tstAssertSummary);
-                fileContent=fileContent+fileContentSummary+fileContentTable1+fileContentTable2;
+                fileContent=fileContent+fileContentSummary+fileContentTable1;
             }
             fileContent=fileContent+LPTestingOutFormat.bodyEnd()+LPTestingOutFormat.htmlEnd();
             out.println(fileContent);            

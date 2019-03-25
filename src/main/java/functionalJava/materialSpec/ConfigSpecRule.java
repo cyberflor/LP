@@ -24,7 +24,7 @@ public class ConfigSpecRule {
      * @param separator
      * @return
      */
-    public Object[] specLimitIsCorrectQualitative(String schemaPrefix, String rule, String textSpec, String separator){
+    public Object[] specLimitIsCorrectQualitative(String rule, String textSpec, String separator){
                 
         String schemaConfigName = "config";
         String errorCode = "";
@@ -37,16 +37,15 @@ public class ConfigSpecRule {
         expectedRules[3] = "NOTCONTAINS";
         expectedRules[4] = "ISONEOF";
         expectedRules[5] = "ISNOTONEOF";
-        
-        String schemaName = LPPlatform.buildSchemaName(schemaPrefix, schemaConfigName);
+                
         
         if ((rule==null) || (rule.length()==0)){
            errorCode = "specLimits_ruleMandatoryArgumentNull";
-           errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, schemaName);          
+           errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, "");          
            return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);}                                                
         if ((textSpec==null) || (textSpec.length()==0)){
             errorCode = "specLimits_textSpecMandatoryArgumentNull";
-            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, schemaName);          
+            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, "");          
             return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);}                                                
         switch (rule.toUpperCase()){
             case "EQUALTO":  errorCode = "specLimits_equalTo_Successfully"; return LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, errorCode, errorDetailVariables);                          
@@ -57,7 +56,7 @@ public class ConfigSpecRule {
                 if ((separator==null) || (separator.length()==0)){
                     errorCode = "specLimits_separatorMandatoryArgumentNull";
                     errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, rule.toUpperCase());          
-                    errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, schemaName);          
+                    errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, "");          
                     return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);}                       
                 else{
                     String[] textSpecArray = textSpec.split(separator);
@@ -68,7 +67,7 @@ public class ConfigSpecRule {
                 if ((separator==null) || (separator.length()==0)){
                     errorCode = "specLimits_separatorMandatoryArgumentNull";
                     errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, rule.toUpperCase());          
-                    errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, schemaName);          
+                    errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, "");          
                     return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);}    
                 else{
                     String[] textSpecArray = textSpec.split(separator);

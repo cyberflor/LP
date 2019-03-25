@@ -18,7 +18,6 @@ import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.Date;
 import java.util.Arrays;
-import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -40,6 +39,22 @@ public class sampleAPI extends HttpServlet {
     public static final String PARAMETER_SAMPLE_ID="sampleId";
     public static final String PARAMETER_TEST_ID="testId";
     public static final String PARAMETER_RESULT_ID="resultId";
+    public static final String PARAMETER_SAMPLE_TEMPLATE="sampleTemplate";
+    public static final String PARAMETER_SAMPLE_TEMPLATE_VERSION="sampleTemplateVersion";
+    public static final String PARAMETER_NUM_SAMPLES_TO_LOG="numSamplesToLog";
+    public static final String PARAMETER_SAMPLE_FIELD_NAME="fieldName";
+    public static final String PARAMETER_SAMPLE_FIELD_VALUE="fieldValue";
+    public static final String PARAMETER_SAMPLE_COMMENT="sampleComment";
+    public static final String PARAMETER_OBJECT_ID="objectId";
+    public static final String PARAMETER_OBJECT_LEVEL="objectLevel";
+    public static final String PARAMETER_OBJECT_LEVEL_SAMPLE="SAMPLE";
+    public static final String PARAMETER_OBJECT_LEVEL_TEST="TEST";
+    public static final String PARAMETER_OBJECT_LEVEL_RESULT="RESULT";
+
+    public static final String TABLE_NAME_SAMPLE="sample";
+    public static final String FIELD_NAME_SAMPLE_ID="sample_id";    
+    
+    
     //Status  responseOnERROR = Response.Status.BAD_REQUEST;
 
     /**
@@ -73,14 +88,13 @@ public class sampleAPI extends HttpServlet {
         String schemaPrefix = request.getParameter("schemaPrefix");            
         String functionBeingTested = request.getParameter("functionBeingTested");
         String finalToken = request.getParameter("finalToken");                   
-
         
         Token token = new Token();
         String[] tokenParams = token.tokenParamsList();
         String[] tokenParamsValues = token.validateToken(finalToken, tokenParams);
 
         String dbUserName = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, Token.TOKEN_PARAM_USERDB)];
-        String dbUserPassword = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, Token.TOKEN_PARAM_USERDB)];
+        String dbUserPassword = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, Token.TOKEN_PARAM_USERPW)];
         String internalUserID = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, Token.TOKEN_PARAM_INTERNAL_USERID)];         
         String userRole = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, Token.TOKEN_PARAM_USER_ROLE)];                     
         String appSessionIdStr = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, Token.TOKEN_PARAM_APP_SESSION_ID)];
@@ -190,8 +204,8 @@ public class sampleAPI extends HttpServlet {
             
             switch (functionBeingTested.toUpperCase()){
                 case "LOGSAMPLE":
-                    String[] mandatoryParamsAction = new String[]{"sampleTemplate"};
-                    mandatoryParamsAction = LPArray.addValueToArray1D(mandatoryParams, "sampleTemplateVersion");                    
+                    String[] mandatoryParamsAction = new String[]{PARAMETER_SAMPLE_TEMPLATE};
+                    mandatoryParamsAction = LPArray.addValueToArray1D(mandatoryParams, PARAMETER_SAMPLE_TEMPLATE_VERSION);                    
                     areMandatoryParamsInResponse = LPHttp.areMandatoryParamsInApiRequest(request, mandatoryParamsAction);
                     if (LPPlatform.LAB_FALSE.equalsIgnoreCase(areMandatoryParamsInResponse[0].toString())){
                         errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
@@ -201,18 +215,18 @@ public class sampleAPI extends HttpServlet {
                         Rdbms.closeRdbms(); 
                         return ;                
                     }                                
-                    String sampleTemplate=request.getParameter("sampleTemplate");
-                    String sampleTemplateVersionStr = request.getParameter("sampleTemplateVersion");                                  
+                    String sampleTemplate=request.getParameter(PARAMETER_SAMPLE_TEMPLATE);
+                    String sampleTemplateVersionStr = request.getParameter(PARAMETER_SAMPLE_TEMPLATE_VERSION);                                  
 
                     Integer sampleTemplateVersion = Integer.parseInt(sampleTemplateVersionStr);                  
-                    String fieldName=request.getParameter("fieldName");                                        
-                    String fieldValue=request.getParameter("fieldValue");                    
+                    String fieldName=request.getParameter(PARAMETER_SAMPLE_FIELD_NAME);                                        
+                    String fieldValue=request.getParameter(PARAMETER_SAMPLE_FIELD_VALUE);                    
                     String[] fieldNames=null;
                     Object[] fieldValues=null;
                     if (fieldName!=null) fieldNames = fieldName.split("\\|");                                            
                     if (fieldValue!=null) fieldValues = LPArray.convertStringWithDataTypeToObjectArray(fieldValue.split("\\|"));                                                            
 
-                    String numSamplesToLogStr=request.getParameter("numSamplesToLog");       
+                    String numSamplesToLogStr=request.getParameter(PARAMETER_NUM_SAMPLES_TO_LOG);       
                     Integer numSamplesToLog = Integer.parseInt(numSamplesToLogStr);  
 
                     if (numSamplesToLogStr==null){
@@ -259,7 +273,7 @@ public class sampleAPI extends HttpServlet {
                     dataSample = smp.changeSamplingDate(schemaPrefix, internalUserID, sampleId, newDate, userRole);
                     break;       
                 case "SAMPLINGCOMMENTADD":
-                    mandatoryParamsAction = new String[]{PARAMETER_SAMPLE_ID};
+                    mandatoryParamsAction = new String[]{PARAMETER_SAMPLE_ID, PARAMETER_SAMPLE_COMMENT};
                     areMandatoryParamsInResponse = LPHttp.areMandatoryParamsInApiRequest(request, mandatoryParamsAction);
                     if (LPPlatform.LAB_FALSE.equalsIgnoreCase(areMandatoryParamsInResponse[0].toString())){
                         errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
@@ -272,7 +286,7 @@ public class sampleAPI extends HttpServlet {
                     sampleIdStr = request.getParameter(PARAMETER_SAMPLE_ID);                             
                     sampleId = Integer.parseInt(sampleIdStr);      
                     String comment=null;                    
-                    comment = request.getParameter("sampleComment"); 
+                    comment = request.getParameter(PARAMETER_SAMPLE_COMMENT); 
                     dataSample = smp.sampleReceptionCommentAdd(schemaPrefix, internalUserID, sampleId, comment, userRole);
                     break;       
                 case "SAMPLINGCOMMENTREMOVE":
@@ -288,7 +302,7 @@ public class sampleAPI extends HttpServlet {
                     }                        
                     sampleIdStr = request.getParameter(PARAMETER_SAMPLE_ID);                             
                     sampleId = Integer.parseInt(sampleIdStr);      
-                    comment = request.getParameter("sampleComment"); 
+                    comment = request.getParameter(PARAMETER_SAMPLE_COMMENT); 
                     dataSample = smp.sampleReceptionCommentRemove(schemaPrefix, internalUserID, sampleId, comment, userRole);
                     break;       
                 case "INCUBATIONSTART":
@@ -323,8 +337,8 @@ public class sampleAPI extends HttpServlet {
                     break;       
                 case "SAMPLEANALYSISADD":
                     mandatoryParamsAction = new String[]{PARAMETER_SAMPLE_ID};
-                    mandatoryParamsAction = LPArray.addValueToArray1D(mandatoryParamsAction, "fieldName");
-                    mandatoryParamsAction = LPArray.addValueToArray1D(mandatoryParamsAction, "fieldValue");                    
+                    mandatoryParamsAction = LPArray.addValueToArray1D(mandatoryParamsAction, PARAMETER_SAMPLE_FIELD_NAME);
+                    mandatoryParamsAction = LPArray.addValueToArray1D(mandatoryParamsAction, PARAMETER_SAMPLE_FIELD_VALUE);                    
                     areMandatoryParamsInResponse = LPHttp.areMandatoryParamsInApiRequest(request, mandatoryParamsAction);
                     if (LPPlatform.LAB_FALSE.equalsIgnoreCase(areMandatoryParamsInResponse[0].toString())){
                         errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
@@ -338,9 +352,9 @@ public class sampleAPI extends HttpServlet {
                     sampleId = Integer.parseInt(sampleIdStr);       
                     String[] fieldNameArr = null;
                     Object[] fieldValueArr = null;
-                    fieldName = request.getParameter("fieldName");
+                    fieldName = request.getParameter(PARAMETER_SAMPLE_FIELD_NAME);
                     fieldNameArr =fieldName.split("\\|");                                    
-                    fieldValue = request.getParameter("fieldValue");
+                    fieldValue = request.getParameter(PARAMETER_SAMPLE_FIELD_VALUE);
                     fieldValueArr = fieldValue.split("\\|");                        
                     fieldValueArr = LPArray.convertStringWithDataTypeToObjectArray((String[]) fieldValueArr);
                     dataSample = smp.sampleAnalysisAddtoSample(schemaPrefix, internalUserID, sampleId, fieldNameArr, fieldValueArr, userRole);                    
@@ -365,8 +379,8 @@ public class sampleAPI extends HttpServlet {
                     dataSample = smp.sampleAnalysisResultEntry(schemaPrefix, internalUserID, resultId, rawValueResult, userRole);
                     break;              
                 case "REVIEWRESULT":
-                    mandatoryParamsAction = new String[]{"objectId"};
-                    mandatoryParamsAction = LPArray.addValueToArray1D(mandatoryParamsAction, "objectLevel");
+                    mandatoryParamsAction = new String[]{PARAMETER_OBJECT_ID};
+                    mandatoryParamsAction = LPArray.addValueToArray1D(mandatoryParamsAction, PARAMETER_OBJECT_LEVEL);
                     areMandatoryParamsInResponse = LPHttp.areMandatoryParamsInApiRequest(request, mandatoryParamsAction);
                     if (LPPlatform.LAB_FALSE.equalsIgnoreCase(areMandatoryParamsInResponse[0].toString())){
                         errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
@@ -377,18 +391,18 @@ public class sampleAPI extends HttpServlet {
                         return ;                
                     }                                            
                     Integer objectId = 0;
-                    String objectIdStr = request.getParameter("objectId");
+                    String objectIdStr = request.getParameter(PARAMETER_OBJECT_ID);
                     objectId = Integer.parseInt(objectIdStr);     
-                    String objectLevel = request.getParameter("objectLevel");
+                    String objectLevel = request.getParameter(PARAMETER_OBJECT_LEVEL);
                     sampleId = null; Integer testId = null; resultId = null;
-                    if (objectLevel.equalsIgnoreCase("SAMPLE")){sampleId = objectId;}
-                    if (objectLevel.equalsIgnoreCase("TEST")){testId = objectId;}
-                    if (objectLevel.equalsIgnoreCase("RESULT")){resultId = objectId;}
+                    if (objectLevel.equalsIgnoreCase(PARAMETER_OBJECT_LEVEL_SAMPLE)){sampleId = objectId;}
+                    if (objectLevel.equalsIgnoreCase(PARAMETER_OBJECT_LEVEL_TEST)){testId = objectId;}
+                    if (objectLevel.equalsIgnoreCase(PARAMETER_OBJECT_LEVEL_RESULT)){resultId = objectId;}
                     dataSample = smp.sampleResultReview(schemaPrefix, internalUserID, sampleId, testId, resultId, userRole);
                     break;                       
                 case "CANCELRESULT":
-                    mandatoryParamsAction = new String[]{"objectId"};
-                    mandatoryParamsAction = LPArray.addValueToArray1D(mandatoryParamsAction, "objectLevel");
+                    mandatoryParamsAction = new String[]{PARAMETER_OBJECT_ID};
+                    mandatoryParamsAction = LPArray.addValueToArray1D(mandatoryParamsAction, PARAMETER_OBJECT_LEVEL);
                     areMandatoryParamsInResponse = LPHttp.areMandatoryParamsInApiRequest(request, mandatoryParamsAction);
                     if (LPPlatform.LAB_FALSE.equalsIgnoreCase(areMandatoryParamsInResponse[0].toString())){
                         errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
@@ -399,19 +413,19 @@ public class sampleAPI extends HttpServlet {
                         return ;                
                     }                                            
                     objectId = 0;
-                    objectIdStr = request.getParameter("objectId");
+                    objectIdStr = request.getParameter(PARAMETER_OBJECT_ID);
                     objectId = Integer.parseInt(objectIdStr);     
-                    objectLevel = request.getParameter("objectLevel");
+                    objectLevel = request.getParameter(PARAMETER_OBJECT_LEVEL);
                         sampleId = null; testId = null; resultId = null;
-                        if (objectLevel.equalsIgnoreCase("SAMPLE")){sampleId = objectId;}
-                        if (objectLevel.equalsIgnoreCase("TEST")){testId = objectId;}
-                        if (objectLevel.equalsIgnoreCase("RESULT")){resultId = objectId;}
+                        if (objectLevel.equalsIgnoreCase(PARAMETER_OBJECT_LEVEL_SAMPLE)){sampleId = objectId;}
+                        if (objectLevel.equalsIgnoreCase(PARAMETER_OBJECT_LEVEL_TEST)){testId = objectId;}
+                        if (objectLevel.equalsIgnoreCase(PARAMETER_OBJECT_LEVEL_RESULT)){resultId = objectId;}
                         dataSample = smp.sampleAnalysisResultCancel(schemaPrefix, internalUserID, sampleId, testId, resultId, userRole);
                     break;   
                 case "UNREVIEWRESULT":   // No break then will take the same logic than the next one  
                 case "UNCANCELRESULT":
-                    mandatoryParamsAction = new String[]{"objectId"};
-                    mandatoryParamsAction = LPArray.addValueToArray1D(mandatoryParamsAction, "objectLevel");
+                    mandatoryParamsAction = new String[]{PARAMETER_OBJECT_ID};
+                    mandatoryParamsAction = LPArray.addValueToArray1D(mandatoryParamsAction, PARAMETER_OBJECT_LEVEL);
                     areMandatoryParamsInResponse = LPHttp.areMandatoryParamsInApiRequest(request, mandatoryParamsAction);
                     if (LPPlatform.LAB_FALSE.equalsIgnoreCase(areMandatoryParamsInResponse[0].toString())){
                         errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
@@ -422,13 +436,13 @@ public class sampleAPI extends HttpServlet {
                         return ;                
                     }                                            
                     objectId = 0;
-                    objectIdStr = request.getParameter("objectId");
+                    objectIdStr = request.getParameter(PARAMETER_OBJECT_ID);
                     objectId = Integer.parseInt(objectIdStr);     
-                    objectLevel = request.getParameter("objectLevel");
+                    objectLevel = request.getParameter(PARAMETER_OBJECT_LEVEL);
                         sampleId = null; testId = null; resultId = null;
-                        if (objectLevel.equalsIgnoreCase("SAMPLE")){sampleId = objectId;}
-                        if (objectLevel.equalsIgnoreCase("TEST")){testId = objectId;}
-                        if (objectLevel.equalsIgnoreCase("RESULT")){resultId = objectId;}
+                        if (objectLevel.equalsIgnoreCase(PARAMETER_OBJECT_LEVEL_SAMPLE)){sampleId = objectId;}
+                        if (objectLevel.equalsIgnoreCase(PARAMETER_OBJECT_LEVEL_TEST)){testId = objectId;}
+                        if (objectLevel.equalsIgnoreCase(PARAMETER_OBJECT_LEVEL_RESULT)){resultId = objectId;}
                         dataSample = smp.sampleAnalysisResultUnCancel(schemaPrefix, internalUserID, sampleId, testId, resultId, userRole);
                     break;       
                 case "TESTASSIGNMENT": 
@@ -479,8 +493,8 @@ public class sampleAPI extends HttpServlet {
                         sortFieldsNameArr = sortFieldsName.split("\\|");                                    
                     }else{   sortFieldsNameArr=null;}  
                     
-                    String dataSampleStr = Rdbms.getRecordFieldsByFilterJSON(schemaDataName, "sample", 
-                            new String[]{"sample_id"}, new Object[]{sampleId}, sampleFieldToRetrieveArr, sortFieldsNameArr);
+                    String dataSampleStr = Rdbms.getRecordFieldsByFilterJSON(schemaDataName, TABLE_NAME_SAMPLE, 
+                            new String[]{FIELD_NAME_SAMPLE_ID}, new Object[]{sampleId}, sampleFieldToRetrieveArr, sortFieldsNameArr);
                    if (dataSampleStr.contains(LPPlatform.LAB_FALSE)){                                 
                         Object[] errMsg = LabPLANETFrontEnd.responseError(dataSampleStr.split("\\|"), language, schemaPrefix);
                         response.sendError((int) errMsg[0], (String) errMsg[1]);                     
@@ -509,7 +523,7 @@ public class sampleAPI extends HttpServlet {
                     ChangeOfCustody coc = new ChangeOfCustody();
                     Integer appSessionId=null;
                     if (appSessionIdStr!=null){appSessionId=Integer.valueOf(appSessionIdStr);}
-                    dataSample = coc.cocStartChange(schemaPrefix, "sample", "sample_id", objectId, internalUserID, custodianCandidate, userRole, appSessionId);
+                    dataSample = coc.cocStartChange(schemaPrefix, TABLE_NAME_SAMPLE, FIELD_NAME_SAMPLE_ID, objectId, internalUserID, custodianCandidate, userRole, appSessionId);
                     break;
                 case "COC_CONFIRMCHANGE":
                     mandatoryParamsAction = new String[]{PARAMETER_SAMPLE_ID};
@@ -527,7 +541,7 @@ public class sampleAPI extends HttpServlet {
                     sampleId = Integer.valueOf(sampleIdStr);
                     String confirmChangeComment = request.getParameter("confirmChangeComment");                             
                     coc =  new ChangeOfCustody();
-                    dataSample = coc.cocConfirmedChange(schemaPrefix, "sample", "sample_id", sampleId, internalUserID, 
+                    dataSample = coc.cocConfirmedChange(schemaPrefix, TABLE_NAME_SAMPLE, FIELD_NAME_SAMPLE_ID, sampleId, internalUserID, 
                             confirmChangeComment, userRole, null);
                     break;
                 case "COC_ABORTCHANGE":
@@ -546,7 +560,7 @@ public class sampleAPI extends HttpServlet {
                     sampleId = Integer.valueOf(sampleIdStr);
                     String cancelChangeComment = request.getParameter("cancelChangeComment");                             
                     coc =  new ChangeOfCustody();
-                    dataSample = coc.cocAbortedChange(schemaPrefix, "sample", "sample_id", sampleId, internalUserID, 
+                    dataSample = coc.cocAbortedChange(schemaPrefix, TABLE_NAME_SAMPLE, FIELD_NAME_SAMPLE_ID, sampleId, internalUserID, 
                             cancelChangeComment, userRole, null);
                     break;                    
                 case "LOGALIQUOT":
@@ -568,8 +582,8 @@ public class sampleAPI extends HttpServlet {
                     //sampleTemplateInfo = configSpecTestingArray[i][6].toString().split("\\|");
                     //sampleTemplate = sampleTemplateInfo[0];
                     //sampleTemplateVersion = Integer.parseInt(sampleTemplateInfo[1]);
-                    fieldName=request.getParameter("fieldName");                                        
-                    fieldValue=request.getParameter("fieldValue");                    
+                    fieldName=request.getParameter(PARAMETER_SAMPLE_FIELD_NAME);                                        
+                    fieldValue=request.getParameter(PARAMETER_SAMPLE_FIELD_VALUE);                    
                     fieldNames=null;
                     fieldValues=null;
                     if (fieldName!=null) fieldNames = fieldName.split("\\|");                                            
@@ -601,8 +615,8 @@ public class sampleAPI extends HttpServlet {
                     //sampleTemplateInfo = configSpecTestingArray[i][6].toString().split("\\|");
                     //sampleTemplate = sampleTemplateInfo[0];
                     //sampleTemplateVersion = Integer.parseInt(sampleTemplateInfo[1]);
-                    fieldName=request.getParameter("fieldName");                                        
-                    fieldValue=request.getParameter("fieldValue");                    
+                    fieldName=request.getParameter(PARAMETER_SAMPLE_FIELD_NAME);                                        
+                    fieldValue=request.getParameter(PARAMETER_SAMPLE_FIELD_VALUE);                    
                     fieldNames=null;
                     fieldValues=null;
                     if (fieldName!=null) fieldNames =  fieldName.split("\\|");                                            

@@ -37,7 +37,7 @@ public class LPPlatform {
     public static final String SCHEMA_CONFIG = "config";
     public static final String SCHEMA_DATA = "data";
     public static final String SCHEMA_DATA_AUDIT = "data-audit";
-    public static final String SCHEMA_REQUIREMENTS = "requirements";
+    public static final String SCHEMA_REQUIREMENTS = LPPlatform.SCHEMA_REQUIREMENTS;
     
     private static final String CONFIG_FILES_FOLDER = "LabPLANET";
     private static final String CONFIG_FILES_ERRORTRAPING = "errorTraping";
@@ -361,7 +361,7 @@ public class LPPlatform {
  */
     public static void addJavaClassDoc(String[] fields, Object[] values, StackTraceElement[] elementsDev) {
                 
-        String schemaName = "requirements";
+        String schemaName = LPPlatform.SCHEMA_REQUIREMENTS;
         String tableName = "java_class_doc";
         String[] fldName = new String[0];
         Object[] fldValue = new Object[0];

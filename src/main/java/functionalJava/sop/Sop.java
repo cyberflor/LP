@@ -15,7 +15,7 @@ import java.sql.SQLException;
  * @author Administrator
  */
 public class Sop {
-
+    public static final String TABLE_NAME_SOP_META_DATA = "sop_meta_data"; 
     public static final String FIELDNAME_SOP_ID="sop_id";
     public static final String FIELDNAME_SOP_NAME="sop_name";
     public static final String FIELDNAME_SOP_VERSION="sop_version";
@@ -30,8 +30,6 @@ public class Sop {
     String mandatoryLevel = "READ";
     
     String classVersion = "0.1";
-
-    String tableName = "sop_meta_data"; 
 
     /**
      *
@@ -90,7 +88,7 @@ public class Sop {
 
         Object[][] dbGetSopObjByName = this.dbGetSopObjByName(schemaPrefix, this.sopName, fieldNames);
         if (LPPlatform.LAB_FALSE.equalsIgnoreCase(dbGetSopObjByName[0][0].toString())){        
-            Object[] diagnoses = Rdbms.insertRecordInTable(schemaConfigName, tableName, fieldNames, fieldValues);
+            Object[] diagnoses = Rdbms.insertRecordInTable(schemaConfigName, TABLE_NAME_SOP_META_DATA, fieldNames, fieldValues);
             return diagnoses;
         }else{
             Object[] diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, "Sop_SopAlreadyExists", new Object[]{this.sopName, schemaPrefix});
@@ -108,7 +106,7 @@ public class Sop {
     public Integer dbGetSopIdById( String schemaPrefix, Integer sopId) throws SQLException{     
         String schemaConfigName = LPPlatform.SCHEMA_CONFIG;
         schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, schemaConfigName);
-        Object[][] sopInfo = Rdbms.getRecordFieldsByFilter(schemaConfigName, tableName, 
+        Object[][] sopInfo = Rdbms.getRecordFieldsByFilter(schemaConfigName, TABLE_NAME_SOP_META_DATA, 
                                                                 new String[]{FIELDNAME_SOP_ID}, new Object[]{sopId}, new String[]{FIELDNAME_SOP_ID});
         Integer getSopId = (Integer) sopInfo[0][0];
         return getSopId;
@@ -124,7 +122,7 @@ public class Sop {
     public Integer dbGetSopIdByName( String schemaPrefix, String sopName) throws SQLException{
         String schemaConfigName = LPPlatform.SCHEMA_CONFIG;
         schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, schemaConfigName);
-        Object[][] sopInfo = Rdbms.getRecordFieldsByFilter(schemaConfigName, tableName, 
+        Object[][] sopInfo = Rdbms.getRecordFieldsByFilter(schemaConfigName, TABLE_NAME_SOP_META_DATA, 
                                                                 new String[]{FIELDNAME_SOP_NAME}, new Object[]{sopName}, new String[]{FIELDNAME_SOP_ID});
         Integer getSopId = (Integer) sopInfo[0][0];
         return getSopId;
@@ -142,7 +140,7 @@ public class Sop {
     public Object[][] dbGetSopObjByName( String schemaPrefix, String sopName, String[] fields) throws SQLException{
         String schemaConfigName = LPPlatform.SCHEMA_CONFIG;
         schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, schemaConfigName);
-        Object[][] sopInfo = Rdbms.getRecordFieldsByFilter(schemaConfigName, tableName, 
+        Object[][] sopInfo = Rdbms.getRecordFieldsByFilter(schemaConfigName, TABLE_NAME_SOP_META_DATA, 
                                                                 new String[]{FIELDNAME_SOP_NAME}, new Object[]{sopName}, fields);
         return sopInfo;
     }
@@ -158,7 +156,7 @@ public class Sop {
         String schemaConfigName = LPPlatform.SCHEMA_CONFIG;
         schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, schemaConfigName); 
         String errorCode = "";        
-        Object[] diagnoses = Rdbms.insertRecordInTable(schemaConfigName, "sop_meta_data", 
+        Object[] diagnoses = Rdbms.insertRecordInTable(schemaConfigName, TABLE_NAME_SOP_META_DATA, 
                             new String[]{FIELDNAME_SOP_NAME, FIELDNAME_SOP_VERSION, FIELDNAME_SOP_REVISION},
                             new Object[]{sopName, 1, 1});
         if (LPPlatform.LAB_FALSE.equals(diagnoses[0].toString() )){
@@ -184,7 +182,7 @@ public class Sop {
     public Object[] updateSop( String schemaName, String schemaPrefix, String fieldName, String fieldValue, String fieldType) throws SQLException {
         String schemaConfigName = LPPlatform.SCHEMA_CONFIG;
         schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, schemaConfigName);
-        Object[] diagnoses = Rdbms.updateRecordFieldsByFilter(schemaConfigName, "sop_meta_data", 
+        Object[] diagnoses = Rdbms.updateRecordFieldsByFilter(schemaConfigName, TABLE_NAME_SOP_META_DATA, 
                                         new String[]{fieldName}, new Object[]{fieldValue}, new String[]{FIELDNAME_SOP_NAME}, new Object[]{sopName});
         if (LPPlatform.LAB_FALSE.equalsIgnoreCase(diagnoses[0].toString())){
             String errorCode = "Sop_SopMetaData_recordNotUpdated";

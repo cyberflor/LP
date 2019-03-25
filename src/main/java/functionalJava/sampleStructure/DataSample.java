@@ -55,6 +55,9 @@ public class DataSample {
     public static final String FIELDNAME_SAMPLE_ID="sample_id";
     public static final String FIELDNAME_TEST_ID="test_id";
     public static final String FIELDNAME_RESULT_ID="result_id";
+    public static final String FIELDNAME_VOLUME_FOR_ALIQ="volume_for_aliq";
+    public static final String FIELDNAME_VOLUME_FOR_ALIQ_UOM="volume_for_aliq_uom";
+    
     
     private static final String DIAGNOSES_SUCCESS = "SUCCESS";
     
@@ -533,7 +536,7 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
      * @return
      * @throws SQLException
      */
-    public Object[] sampleReceptionCommentAdd( String schemaPrefix, String userName, Integer sampleId, String comment, String userRole) throws SQLException{
+    public Object[] sampleReceptionCommentAdd( String schemaPrefix, String userName, Integer sampleId, String comment, String userRole){
 
     String schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, LPPlatform.SCHEMA_DATA); 
     
@@ -1522,7 +1525,7 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
             if (QualitSpecTestingArray.length==3){specSeparator = QualitSpecTestingArray[2];}
             String specListName = null;
             
-            resSpecEvaluation = resChkSpec.resultCheck(schemaDataName, (String) resultValue, specRuleType, specValues, specSeparator, specListName);
+            resSpecEvaluation = resChkSpec.resultCheck((String) resultValue, specRuleType, specValues, specSeparator, specListName);
             if (LPPlatform.LAB_FALSE.equalsIgnoreCase(resSpecEvaluation[0].toString())){
                 return resSpecEvaluation;
                //errorCode = "DataSample_SampleAnalysisResult_QualitativeSpecNotRecognized";
@@ -1587,15 +1590,15 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
             }       
             if (ruleVariables.contains("CONTROL")){
                 if (requiresUnitsConversion){
-                    resSpecEvaluation = resChkSpec.resultCheck(schemaDataName, resultConverted.floatValue(), minSpec, maxSpec, minStrict, maxStrict, minControl, maxControl, minControlStrict, maxControlStrict);
+                    resSpecEvaluation = resChkSpec.resultCheck(resultConverted.floatValue(), minSpec, maxSpec, minStrict, maxStrict, minControl, maxControl, minControlStrict, maxControlStrict);
                 }else {
-                    resSpecEvaluation = resChkSpec.resultCheck(schemaDataName, (Float) resultValue, minSpec, maxSpec, minStrict, maxStrict, minControl, maxControl, minControlStrict, maxControlStrict);                            
+                    resSpecEvaluation = resChkSpec.resultCheck((Float) resultValue, minSpec, maxSpec, minStrict, maxStrict, minControl, maxControl, minControlStrict, maxControlStrict);                            
                 }    
             }else{
                 if (requiresUnitsConversion){
-                    resSpecEvaluation = resChkSpec.resultCheck(schemaDataName, resultConverted.floatValue(), minSpec, maxSpec, minStrict, maxStrict);
+                    resSpecEvaluation = resChkSpec.resultCheck(resultConverted.floatValue(), minSpec, maxSpec, minStrict, maxStrict);
                 }else {
-                    resSpecEvaluation = resChkSpec.resultCheck(schemaDataName, (Float) resultValue, minSpec, maxSpec, minStrict, maxStrict);
+                    resSpecEvaluation = resChkSpec.resultCheck((Float) resultValue, minSpec, maxSpec, minStrict, maxStrict);
                 }    
 //                resSpecEvaluation = resChkSpec.resultCheck((Float) resultValue, (Float) minSpec, (Float) maxSpec, (Boolean) minStrict, (Boolean) maxStrict);
             } 
@@ -2100,7 +2103,7 @@ private Map getDefaultValuesTemplate(String schema, String tsample, String templ
                                                             new Object[]{cancelScopeId},
                                                             new String[]{FIELDNAME_STATUS,FIELDNAME_RESULT_ID,FIELDNAME_TEST_ID, FIELDNAME_SAMPLE_ID});
         if (objectInfo.length==0){
-            String[] filter = new String[]{"sample_id:"+sampleId.toString()+" test_id:"+testId.toString()+" result_id:"+resultId.toString()};
+            String[] filter = new String[]{FIELDNAME_SAMPLE_ID+":"+sampleId.toString()+" test_id:"+testId.toString()+" result_id:"+resultId.toString()};
             errorCode = "DataSample_SampleNotFound";
             errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, Arrays.toString(filter));
             errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, schemaDataName);
@@ -2228,7 +2231,7 @@ private Map getDefaultValuesTemplate(String schema, String tsample, String templ
                                                             new Object[]{cancelScopeId},
                                                             new String[]{FIELDNAME_STATUS,FIELDNAME_STATUS_PREVIOUS, FIELDNAME_RESULT_ID,FIELDNAME_TEST_ID, FIELDNAME_SAMPLE_ID});
         if (resultInfo.length==0){
-            String[] filter = new String[]{"sample_id:"+sampleId.toString()+" test_id:"+testId.toString()+" result_id:"+resultId.toString()};
+            String[] filter = new String[]{FIELDNAME_SAMPLE_ID+":"+sampleId.toString()+" test_id:"+testId.toString()+" result_id:"+resultId.toString()};
             errorCode = "DataSample_SampleNotFound";
             errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, Arrays.toString(filter));
             errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, schemaDataName);
@@ -2360,7 +2363,7 @@ private Map getDefaultValuesTemplate(String schema, String tsample, String templ
                                                             new Object[]{cancelScopeId},
                                                             new String[]{FIELDNAME_STATUS,FIELDNAME_RESULT_ID,FIELDNAME_TEST_ID, FIELDNAME_SAMPLE_ID});
         if (objectInfo.length==0){
-            String[] filter = new String[]{"sample_id:"+sampleId.toString()+" test_id:"+testId.toString()+" result_id:"+resultId.toString()};
+            String[] filter = new String[]{FIELDNAME_SAMPLE_ID+":"+sampleId.toString()+" test_id:"+testId.toString()+" result_id:"+resultId.toString()};
             errorCode = "DataSample_SampleAnalysisResultNotFound";
             errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, Arrays.toString(filter));
             errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, schemaDataName);
@@ -2566,7 +2569,7 @@ public Object[] logSampleAliquot( String schemaPrefix, Integer sampleId, String[
     
     String actionEnabledSampleAliquot_volumeRequired = Parameter.getParameterBundle(schemaPrefix.replace("\"", "")+"-data", "sampleAliquot_volumeRequired");   
     if (actionEnabledSampleAliquot_volumeRequired.toUpperCase().contains("ENABLE")){
-        String[] mandatorySampleFields = new String[]{"volume_for_aliq", "volume_for_aliq_uom"};
+        String[] mandatorySampleFields = new String[]{FIELDNAME_VOLUME_FOR_ALIQ, FIELDNAME_VOLUME_FOR_ALIQ_UOM};
         String[] mandatorySampleAliqFields = new String[]{"volume", "volume_uom"};
         Object[][] sampleInfo = Rdbms.getRecordFieldsByFilter(schemaDataName, parentTableName, new String[] {FIELDNAME_SAMPLE_ID}, new Object[]{sampleId}, mandatorySampleFields);
         if ( (sampleInfo[0][0]!=null) && (LPPlatform.LAB_FALSE.equalsIgnoreCase(sampleInfo[0][0].toString())) ){
@@ -2592,7 +2595,7 @@ public Object[] logSampleAliquot( String schemaPrefix, Integer sampleId, String[
         aliqVolume = new BigDecimal(diagnoses[diagnoses.length-1].toString());
         
         smpVolume = smpVolume.add(aliqVolume.negate());
-        String[] smpVolFldName = new String[]{"volume_for_aliq"};
+        String[] smpVolFldName = new String[]{FIELDNAME_VOLUME_FOR_ALIQ};
         Object[] smpVolFldValue = new Object[]{smpVolume};
         Object[] updateSampleVolume = Rdbms.updateRecordFieldsByFilter(schemaDataName, parentTableName, 
                 smpVolFldName, smpVolFldValue, new String[]{FIELDNAME_SAMPLE_ID}, new Object[]{sampleId});
@@ -2607,9 +2610,9 @@ public Object[] logSampleAliquot( String schemaPrefix, Integer sampleId, String[
     
     smpAliqFieldName = LPArray.addValueToArray1D(smpAliqFieldName, FIELDNAME_SAMPLE_ID);
     smpAliqFieldValue = LPArray.addValueToArray1D(smpAliqFieldValue, sampleId);
-    smpAliqFieldName = LPArray.addValueToArray1D(smpAliqFieldName, "volume_for_aliq");
+    smpAliqFieldName = LPArray.addValueToArray1D(smpAliqFieldName, FIELDNAME_VOLUME_FOR_ALIQ);
     smpAliqFieldValue = LPArray.addValueToArray1D(smpAliqFieldValue, aliqVolume);
-    smpAliqFieldName = LPArray.addValueToArray1D(smpAliqFieldName, "volume_for_aliq_uom");
+    smpAliqFieldName = LPArray.addValueToArray1D(smpAliqFieldName, FIELDNAME_VOLUME_FOR_ALIQ_UOM);
     smpAliqFieldValue = LPArray.addValueToArray1D(smpAliqFieldValue, aliqVolumeUOM);
     smpAliqFieldName = LPArray.addValueToArray1D(smpAliqFieldName, "created_by");
     smpAliqFieldValue = LPArray.addValueToArray1D(smpAliqFieldValue, userName);
@@ -2657,8 +2660,8 @@ public Object[] logSampleSubAliquot( String schemaPrefix, Integer aliquotId, Str
     String actionEnabledSampleSubAliquot_volumeRequired = Parameter.getParameterBundle(schemaPrefix.replace("\"", "")+"-data", "sampleSubAliquot_volumeRequired");             
 
     if (actionEnabledSampleSubAliquot_volumeRequired.toUpperCase().contains("ENABLE")){
-        mandatoryAliquotFields = LPArray.addValueToArray1D(mandatoryAliquotFields, "volume_for_aliq");
-        mandatoryAliquotFields = LPArray.addValueToArray1D(mandatoryAliquotFields, "volume_for_aliq_uom");
+        mandatoryAliquotFields = LPArray.addValueToArray1D(mandatoryAliquotFields, FIELDNAME_VOLUME_FOR_ALIQ);
+        mandatoryAliquotFields = LPArray.addValueToArray1D(mandatoryAliquotFields, FIELDNAME_VOLUME_FOR_ALIQ_UOM);
         
         String[] mandatorySampleSubAliqFields = new String[]{"volume", "volume_uom"};
         Object[][] aliquotInfo = Rdbms.getRecordFieldsByFilter(schemaDataName, parentTableName, new String[] {FIELDNAME_ALIQUOTID}, new Object[]{aliquotId}, mandatoryAliquotFields);
@@ -2693,7 +2696,7 @@ public Object[] logSampleSubAliquot( String schemaPrefix, Integer aliquotId, Str
         subAliqVolume = new BigDecimal(diagnoses[diagnoses.length-1].toString());
         
         aliqVolume = aliqVolume.add(subAliqVolume.negate());
-        String[] smpVolFldName = new String[]{"volume_for_aliq"};
+        String[] smpVolFldName = new String[]{FIELDNAME_VOLUME_FOR_ALIQ};
         Object[] smpVolFldValue = new Object[]{aliqVolume};
         Object[] updateSampleVolume = Rdbms.updateRecordFieldsByFilter(schemaDataName, parentTableName, 
                 smpVolFldName, smpVolFldValue, new String[]{FIELDNAME_ALIQUOTID}, new Object[]{aliquotId});
