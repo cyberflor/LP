@@ -7,7 +7,7 @@ package com.labplanet.servicios.app;
 
 import LabPLANET.utilities.LPPlatform;
 import LabPLANET.utilities.LPArray;
-import LabPLANET.utilities.LabPLANETFrontEnd;
+import LabPLANET.utilities.LPFrontEnd;
 import LabPLANET.utilities.LPHttp;
 import databases.Rdbms;
 import databases.Token;
@@ -57,7 +57,7 @@ public class sopUserAPIfrontend extends HttpServlet {
                 if (LPPlatform.LAB_FALSE.equalsIgnoreCase(areMandatoryParamsInResponse[0].toString())){
                     errObject = LPArray.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
                     errObject = LPArray.addValueToArray1D(errObject, "API Error Message: Mandatory fields missing");                    
-                    Object[] errMsg = LabPLANETFrontEnd.responseError(errObject, language, null);
+                    Object[] errMsg = LPFrontEnd.responseError(errObject, language, null);
                     response.sendError((int) errMsg[0], (String) errMsg[1]);   
                     Rdbms.closeRdbms(); 
                     return ;  
@@ -78,7 +78,7 @@ public class sopUserAPIfrontend extends HttpServlet {
                 if (!isConnected){
                     errObject = LPArray.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
                     errObject = LPArray.addValueToArray1D(errObject, "API Error Message: db User Name and Password not correct, connection to the database is not possible");                    
-                    Object[] errMsg = LabPLANETFrontEnd.responseError(errObject, language, null);
+                    Object[] errMsg = LPFrontEnd.responseError(errObject, language, null);
                     response.sendError((int) errMsg[0], (String) errMsg[1]);   
                     Rdbms.closeRdbms(); 
                     return ;               
@@ -87,7 +87,7 @@ public class sopUserAPIfrontend extends HttpServlet {
                 UserProfile usProf = new UserProfile();
                 String[] allUserProcedurePrefix = LPArray.convertObjectArrayToStringArray(usProf.getAllUserProcedurePrefix(dbUserName));
                 if (LPPlatform.LAB_FALSE.equalsIgnoreCase(allUserProcedurePrefix[0])){
-                    Object[] errMsg = LabPLANETFrontEnd.responseError(allUserProcedurePrefix, language, null);
+                    Object[] errMsg = LPFrontEnd.responseError(allUserProcedurePrefix, language, null);
                     response.sendError((int) errMsg[0], (String) errMsg[1]);   
                     Rdbms.closeRdbms();
                     return;

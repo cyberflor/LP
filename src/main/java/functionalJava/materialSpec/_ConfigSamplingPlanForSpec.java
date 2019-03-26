@@ -7,7 +7,7 @@ package functionalJava.materialSpec;
 
 import databases.Rdbms;
 import LabPLANET.utilities.LPArray;
-import static LabPLANET.utilities.LabPLANETMath.nthroot;
+import static LabPLANET.utilities.LPMath.nthroot;
 import LabPLANET.utilities.LPPlatform;
 import java.sql.SQLException;
 import java.util.Arrays;

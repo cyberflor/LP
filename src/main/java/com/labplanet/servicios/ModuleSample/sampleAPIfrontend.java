@@ -7,7 +7,7 @@ package com.labplanet.servicios.ModuleSample;
 
 import LabPLANET.utilities.LPArray;
 import LabPLANET.utilities.LPHttp;
-import LabPLANET.utilities.LabPLANETFrontEnd;
+import LabPLANET.utilities.LPFrontEnd;
 import LabPLANET.utilities.LPPlatform;
 import com.sun.rowset.CachedRowSetImpl;
 import databases.Rdbms;
@@ -58,7 +58,7 @@ public class sampleAPIfrontend extends HttpServlet {
 
             if (finalToken==null) {
                 errObject = LPArray.addValueToArray1D(errObject, "API Error Message: finalToken is one mandatory param for this API");                    
-                Object[] errMsg = LabPLANETFrontEnd.responseError(errObject, language, null);
+                Object[] errMsg = LPFrontEnd.responseError(errObject, language, null);
                 response.sendError((int) errMsg[0], (String) errMsg[1]);    
                 return ;
             }                    
@@ -77,7 +77,7 @@ public class sampleAPIfrontend extends HttpServlet {
                 Rdbms.closeRdbms();                
                 errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
                 errObject = LPArray.addValueToArray1D(errObject, "API Error Message: db User Name and Password not correct, connection to the database is not possible");                    
-                Object[] errMsg = LabPLANETFrontEnd.responseError(errObject, language, null);
+                Object[] errMsg = LPFrontEnd.responseError(errObject, language, null);
                 response.sendError((int) errMsg[0], (String) errMsg[1]);    
                 return ;               
             }            
@@ -87,7 +87,7 @@ public class sampleAPIfrontend extends HttpServlet {
                 Rdbms.closeRdbms();                
                 errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
                 errObject = LPArray.addValueToArray1D(errObject, "API Error Message: actionName is one mandatory param for this API");                    
-                Object[] errMsg = LabPLANETFrontEnd.responseError(errObject, language, null);
+                Object[] errMsg = LPFrontEnd.responseError(errObject, language, null);
                 response.sendError((int) errMsg[0], (String) errMsg[1]);    
                 return ;
             }           
@@ -96,7 +96,7 @@ public class sampleAPIfrontend extends HttpServlet {
                 Rdbms.closeRdbms();                
                 errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
                 errObject = LPArray.addValueToArray1D(errObject, "API Error Message: schemaPrefix is one mandatory param for this API");                    
-                Object[] errMsg = LabPLANETFrontEnd.responseError(errObject, language, null);
+                Object[] errMsg = LPFrontEnd.responseError(errObject, language, null);
                 response.sendError((int) errMsg[0], (String) errMsg[1]);    
                 return ;
             }           
@@ -109,7 +109,7 @@ public class sampleAPIfrontend extends HttpServlet {
                 JSONObject proceduresList = new JSONObject();
                 JSONArray jArray = new JSONArray();
                 if (LPPlatform.LAB_FALSE.equalsIgnoreCase(datas[0][0].toString())){  
-                    Object[] errMsg = LabPLANETFrontEnd.responseError(LPArray.array2dTo1d(datas), language, null);
+                    Object[] errMsg = LPFrontEnd.responseError(LPArray.array2dTo1d(datas), language, null);
                     response.sendError((int) errMsg[0], (String) errMsg[1]);    
                     return;
                 }else{
@@ -135,7 +135,7 @@ public class sampleAPIfrontend extends HttpServlet {
                         sampleFieldToRetrieveArr, sortFieldsNameArr);
                 Rdbms.closeRdbms();
                 if (myData.contains(LPPlatform.LAB_FALSE)){  
-                    Object[] errMsg = LabPLANETFrontEnd.responseError(new String[]{myData}, language, null);
+                    Object[] errMsg = LPFrontEnd.responseError(new String[]{myData}, language, null);
                     response.sendError((int) errMsg[0], (String) errMsg[1]);    
                 }else{
                     Response.ok().build();
@@ -224,7 +224,7 @@ public class sampleAPIfrontend extends HttpServlet {
                         return;
                     }
                     if ( myData.contains(LPPlatform.LAB_FALSE)) {  
-                        Object[] errMsg = LabPLANETFrontEnd.responseError(new String[]{myData}, language, null);
+                        Object[] errMsg = LPFrontEnd.responseError(new String[]{myData}, language, null);
                         response.sendError((int) errMsg[0], (String) errMsg[1]);                            
                     }else{
                         Response.ok().build();
@@ -239,7 +239,7 @@ public class sampleAPIfrontend extends HttpServlet {
                             whereFieldsNameArr, whereFieldsValueArr, sampleFieldToRetrieveArr);
                     if ( LPPlatform.LAB_FALSE.equalsIgnoreCase(mySamples[0][0].toString()) ){
                         Rdbms.closeRdbms(); 
-                        Object[] errMsg = LabPLANETFrontEnd.responseError(LPArray.array2dTo1d(mySamples), language, null);
+                        Object[] errMsg = LPFrontEnd.responseError(LPArray.array2dTo1d(mySamples), language, null);
                         response.sendError((int) errMsg[0], (String) errMsg[1]);                            
                         return;
                     }
@@ -309,7 +309,7 @@ public class sampleAPIfrontend extends HttpServlet {
                             new String[]{"code is not null"},new Object[]{true}, fieldToRetrieveArr, sortFieldsNameArr);
                     Rdbms.closeRdbms();
                     if (myData.contains(LPPlatform.LAB_FALSE)){  
-                        Object[] errMsg = LabPLANETFrontEnd.responseError(new String[] {myData}, language, null);
+                        Object[] errMsg = LPFrontEnd.responseError(new String[] {myData}, language, null);
                         response.sendError((int) errMsg[0], (String) errMsg[1]);                            
                     }else{
                         Response.ok().build();
@@ -323,7 +323,7 @@ public class sampleAPIfrontend extends HttpServlet {
                         errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
                         errObject = LPArray.addValueToArray1D(errObject, "sampleId="+request.getParameter(PARAMETER_SAMPLE_ID));
                         errObject = LPArray.addValueToArray1D(errObject, "API Error Message: sampleId is one mandatory param and should be one integer value for this API");                    
-                        Object[] errMsg = LabPLANETFrontEnd.responseError(errObject, language, schemaPrefix);
+                        Object[] errMsg = LPFrontEnd.responseError(errObject, language, schemaPrefix);
                         response.sendError((int) errMsg[0], (String) errMsg[1]);   
                         Rdbms.closeRdbms(); 
                         return ;
@@ -345,7 +345,7 @@ public class sampleAPIfrontend extends HttpServlet {
                             new String[]{"sample_id"},new Object[]{sampleId}, sampleAnalysisFieldToRetrieveArr, sortFieldsNameArr);
                     Rdbms.closeRdbms();
                     if (myData.contains(LPPlatform.LAB_FALSE)){  
-                        Object[] errMsg = LabPLANETFrontEnd.responseError(new String[] {myData}, language, null);
+                        Object[] errMsg = LPFrontEnd.responseError(new String[] {myData}, language, null);
                         response.sendError((int) errMsg[0], (String) errMsg[1]);                            
                     }else{
                         Response.ok().build();
@@ -360,7 +360,7 @@ public class sampleAPIfrontend extends HttpServlet {
                         errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
                         errObject = LPArray.addValueToArray1D(errObject, "sampleId="+request.getParameter(PARAMETER_SAMPLE_ID));
                         errObject = LPArray.addValueToArray1D(errObject, "API Error Message: sampleId is one mandatory param and should be one integer value for this API");                    
-                        Object[] errMsg = LabPLANETFrontEnd.responseError(errObject, language, schemaPrefix);
+                        Object[] errMsg = LPFrontEnd.responseError(errObject, language, schemaPrefix);
                         response.sendError((int) errMsg[0], (String) errMsg[1]);   
                         Rdbms.closeRdbms(); 
                         return ;
@@ -388,7 +388,7 @@ public class sampleAPIfrontend extends HttpServlet {
                             new String[]{"sample_id"},new Object[]{sampleId}, resultFieldToRetrieveArr, sortFieldsNameArr);
                     Rdbms.closeRdbms();
                     if (myData.contains(LPPlatform.LAB_FALSE)){  
-                        Object[] errMsg = LabPLANETFrontEnd.responseError(new String[] {myData}, language, null);
+                        Object[] errMsg = LPFrontEnd.responseError(new String[] {myData}, language, null);
                         response.sendError((int) errMsg[0], (String) errMsg[1]);                            
                     }else{
                         Response.ok().build();
@@ -402,7 +402,7 @@ public class sampleAPIfrontend extends HttpServlet {
                         errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
                         errObject = LPArray.addValueToArray1D(errObject, "sampleId="+request.getParameter(PARAMETER_SAMPLE_ID));
                         errObject = LPArray.addValueToArray1D(errObject, "API Error Message: sampleId is one mandatory param and should be one integer value for this API");                    
-                        Object[] errMsg = LabPLANETFrontEnd.responseError(errObject, language, schemaPrefix);
+                        Object[] errMsg = LPFrontEnd.responseError(errObject, language, schemaPrefix);
                         response.sendError((int) errMsg[0], (String) errMsg[1]);   
                         Rdbms.closeRdbms(); 
                         return ;
@@ -411,7 +411,7 @@ public class sampleAPIfrontend extends HttpServlet {
                             new String[]{"sample_id"},new Object[]{resultIdStr}, resultFieldToRetrieveArr, sortFieldsNameArr);
                     Rdbms.closeRdbms();
                     if (myData.contains(LPPlatform.LAB_FALSE)){  
-                        Object[] errMsg = LabPLANETFrontEnd.responseError(new String[] {myData}, language, null);
+                        Object[] errMsg = LPFrontEnd.responseError(new String[] {myData}, language, null);
                         response.sendError((int) errMsg[0], (String) errMsg[1]);                            
                     }else{
                         Response.ok().build();
@@ -451,7 +451,7 @@ return;
                 default:      
                     errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
                     errObject = LPArray.addValueToArray1D(errObject, "API Error Message: actionName "+actionName+ " not recognized as an action by this API");                                                            
-                    Object[] errMsg = LabPLANETFrontEnd.responseError(errObject, language, schemaPrefix);
+                    Object[] errMsg = LPFrontEnd.responseError(errObject, language, schemaPrefix);
                     response.sendError((int) errMsg[0], (String) errMsg[1]);    
                     Rdbms.closeRdbms();                    
                 }               
@@ -470,7 +470,7 @@ return;
         }catch(Exception e){      
             Rdbms.closeRdbms();                   
             String[] errObject = new String[]{e.getMessage()};
-            Object[] errMsg = LabPLANETFrontEnd.responseError(errObject, language, null);
+            Object[] errMsg = LPFrontEnd.responseError(errObject, language, null);
             response.sendError((int) errMsg[0], (String) errMsg[1]);           
         }        
     }

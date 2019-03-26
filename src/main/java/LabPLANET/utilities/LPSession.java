@@ -12,12 +12,12 @@ import java.util.Date;
  * Create one new app session
  * @author Administrator
  */
-public class LabPLANETSession {
+public class LPSession {
     
     public static final String FIELDNAME_SESSION_ID = "session_id";
     
     public static Object[] newAppSession( String[] fieldsName2, Object[] fieldsValue2){        
-        Date nowLocalDate = LabPLANETDate.getTimeStampLocalDate();
+        Date nowLocalDate = LPDate.getTimeStampLocalDate();
         String schemaAppName = "app";
         String tableName = "app_session";
         

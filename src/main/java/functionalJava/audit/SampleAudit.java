@@ -8,7 +8,7 @@ package functionalJava.audit;
 import databases.Rdbms;
 import LabPLANET.utilities.LPArray;
 import LabPLANET.utilities.LPPlatform;
-import LabPLANET.utilities.LabPLANETSession;
+import LabPLANET.utilities.LPSession;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Arrays;
@@ -85,7 +85,7 @@ public class SampleAudit {
         fieldNames = LPArray.addValueToArray1D(fieldNames, "person");
         fieldValues = LPArray.addValueToArray1D(fieldValues, userName);
         if (appSessionId!=null){
-            Object[] appSession = LabPLANETSession.addProcessSession(schemaName, appSessionId, new String[]{"date_started"});
+            Object[] appSession = LPSession.addProcessSession(schemaName, appSessionId, new String[]{"date_started"});
         
     //        Object[] appSession = labSession.getAppSession(appSessionId, new String[]{"date_started"});
             if ("LABPLANET_FALSE".equalsIgnoreCase(appSession[0].toString())){

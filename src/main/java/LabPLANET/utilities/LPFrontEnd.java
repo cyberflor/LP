@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Administrator
  */
-public class LabPLANETFrontEnd {
+public class LPFrontEnd {
 
     /**
      *

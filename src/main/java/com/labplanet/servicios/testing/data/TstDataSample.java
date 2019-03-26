@@ -497,7 +497,7 @@ public class TstDataSample extends HttpServlet {
             Rdbms.closeRdbms();
             tstAssertSummary=null; 
         }
-        catch(IOException|SQLException|IllegalAccessException|IllegalArgumentException|InvocationTargetException error){
+        catch(IOException|IllegalArgumentException|InvocationTargetException error){
             Rdbms.closeRdbms();
             tstAssertSummary=null; 
         }        

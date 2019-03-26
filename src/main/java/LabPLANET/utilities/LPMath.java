@@ -9,11 +9,11 @@ import functionalJava.unitsOfMeasurement.UnitsOfMeasurement;
 import java.math.BigDecimal;
 
 /**
- * LabPLANETMath is a library for adding extra maths to the standard ones.
+ * LPMath is a library for adding extra maths to the standard ones.
  * @author Fran Gomez
  * @version 0.1
  */
-public class LabPLANETMath {
+public class LPMath {
     
 /**
  * 

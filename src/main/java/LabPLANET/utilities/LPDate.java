@@ -13,7 +13,7 @@ import java.util.GregorianCalendar;
  *
  * @author Administrator
  */
-public class LabPLANETDate {
+public class LPDate {
 
 /**
  * Add some days to this given date

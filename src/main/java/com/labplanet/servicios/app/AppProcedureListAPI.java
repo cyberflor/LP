@@ -6,7 +6,7 @@
 package com.labplanet.servicios.app;
 
 import LabPLANET.utilities.LPArray;
-import LabPLANET.utilities.LabPLANETFrontEnd;
+import LabPLANET.utilities.LPFrontEnd;
 import LabPLANET.utilities.LPPlatform;
 import LabPLANET.utilities.LPHttp;
 import databases.Rdbms;
@@ -58,7 +58,7 @@ public class AppProcedureListAPI extends HttpServlet {
             String finalToken = request.getParameter("finalToken");                      
             if (finalToken==null) {                  
                 errObject = LPArray.addValueToArray1D(errObject, "API Error Message: finalToken is one mandatory param for this API");                    
-                Object[] errMsg = LabPLANETFrontEnd.responseError(errObject, language, null);
+                Object[] errMsg = LPFrontEnd.responseError(errObject, language, null);
                 response.sendError((int) errMsg[0], (String) errMsg[1]);    
                 Rdbms.closeRdbms(); 
                 return ;
@@ -75,7 +75,7 @@ public class AppProcedureListAPI extends HttpServlet {
             if (Rdbms.getRdbms().startRdbms(dbUserName, dbUserPassword)==null){
                 errObject = LPArray.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
                 errObject = LPArray.addValueToArray1D(errObject, "API Error Message: db User Name and Password not correct, connection to the database is not possible");                    
-                Object[] errMsg = LabPLANETFrontEnd.responseError(errObject, language, null);
+                Object[] errMsg = LPFrontEnd.responseError(errObject, language, null);
                 response.sendError((int) errMsg[0], (String) errMsg[1]);    
                 Rdbms.closeRdbms(); 
                 return ;               
@@ -84,7 +84,7 @@ public class AppProcedureListAPI extends HttpServlet {
             UserProfile usProf = new UserProfile();
             Object[] allUserProcedurePrefix = usProf.getAllUserProcedurePrefix(dbUserName);
             if (LPPlatform.LAB_FALSE.equalsIgnoreCase(allUserProcedurePrefix[0].toString())){
-                Object[] errMsg = LabPLANETFrontEnd.responseError(allUserProcedurePrefix, language, null);
+                Object[] errMsg = LPFrontEnd.responseError(allUserProcedurePrefix, language, null);
                 response.sendError((int) errMsg[0], (String) errMsg[1]);          
                 return;
             }
@@ -115,7 +115,7 @@ public class AppProcedureListAPI extends HttpServlet {
                 Object[][] procInfo = Rdbms.getRecordFieldsByFilter(curProc.toString()+"-config", "procedure_info", 
                         new String[]{"name is not null"}, null, procFldNameArray);
                 if (LPPlatform.LAB_FALSE.equalsIgnoreCase(procInfo[0][0].toString())){
-                    Object[] errMsg = LabPLANETFrontEnd.responseError(procInfo, language,  curProc.toString());
+                    Object[] errMsg = LPFrontEnd.responseError(procInfo, language,  curProc.toString());
                     response.sendError((int) errMsg[0], (String) errMsg[1]);                    
                 }                       
                 for (int yProc=0; yProc<procInfo[0].length; yProc++){              

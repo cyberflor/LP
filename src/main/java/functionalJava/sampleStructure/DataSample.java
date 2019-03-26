@@ -12,10 +12,10 @@ import functionalJava.analysis.UserMethod;
 import functionalJava.audit.SampleAudit;
 import functionalJava.materialSpec.DataSpec;
 import LabPLANET.utilities.LPArray;
-import LabPLANET.utilities.LabPLANETDate;
+import LabPLANET.utilities.LPDate;
 import LabPLANET.utilities.LPPlatform;
 import static LabPLANET.utilities.LPPlatform.trapErrorMessage;
-import LabPLANET.utilities.LabPLANETMath;
+import LabPLANET.utilities.LPMath;
 import databases.DataDataIntegrity;
 import functionalJava.ChangeOfCustody.ChangeOfCustody;
 import functionalJava.parameter.Parameter;
@@ -795,7 +795,7 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
             updateFieldName = LPArray.addValueToArray1D(updateFieldName, "analyst");
             updateFieldValue = LPArray.addValueToArray1D(updateFieldValue, newAnalyst);
             updateFieldName = LPArray.addValueToArray1D(updateFieldName, "analyst_assigned_on");
-            updateFieldValue = LPArray.addValueToArray1D(updateFieldValue, LabPLANETDate.getTimeStampLocalDate());
+            updateFieldValue = LPArray.addValueToArray1D(updateFieldValue, LPDate.getTimeStampLocalDate());
             updateFieldName = LPArray.addValueToArray1D(updateFieldName, "analyst_assigned_by");
             updateFieldValue = LPArray.addValueToArray1D(updateFieldValue, userName);
 
@@ -2580,7 +2580,7 @@ public Object[] logSampleAliquot( String schemaPrefix, Integer sampleId, String[
         aliqVolume = new BigDecimal(smpAliqFieldValue[LPArray.valuePosicInArray(smpAliqFieldName, smpAliqFieldName[0])].toString());         
         aliqVolumeuom = (String) smpAliqFieldValue[LPArray.valuePosicInArray(mandatorySampleAliqFields, smpAliqFieldName[1])];
         
-        Object[] diagnoses = LabPLANETMath.extractPortion(schemaPrefix, smpVolume, smpVolumeuom, sampleId, aliqVolume, aliqVolumeuom, -999);
+        Object[] diagnoses = LPMath.extractPortion(schemaPrefix, smpVolume, smpVolumeuom, sampleId, aliqVolume, aliqVolumeuom, -999);
         if (LPPlatform.LAB_FALSE.equalsIgnoreCase(diagnoses[0].toString())){return diagnoses;}    
         
         aliqVolume = new BigDecimal(diagnoses[diagnoses.length-1].toString());
@@ -2608,7 +2608,7 @@ public Object[] logSampleAliquot( String schemaPrefix, Integer sampleId, String[
     smpAliqFieldName = LPArray.addValueToArray1D(smpAliqFieldName, "created_by");
     smpAliqFieldValue = LPArray.addValueToArray1D(smpAliqFieldValue, userName);
     smpAliqFieldName = LPArray.addValueToArray1D(smpAliqFieldName, "created_on");  
-    smpAliqFieldValue = LPArray.addValueToArray1D(smpAliqFieldValue, LabPLANETDate.getTimeStampLocalDate());
+    smpAliqFieldValue = LPArray.addValueToArray1D(smpAliqFieldValue, LPDate.getTimeStampLocalDate());
 
     Object[] diagnoses = Rdbms.insertRecordInTable(schemaDataName, tableName, smpAliqFieldName, smpAliqFieldValue);
     if (!LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){
@@ -2682,7 +2682,7 @@ public Object[] logSampleSubAliquot( String schemaPrefix, Integer aliquotId, Str
         BigDecimal subAliqVolume = new BigDecimal(smpSubAliqFieldValue[LPArray.valuePosicInArray(smpSubAliqFieldName, smpSubAliqFieldName[0])].toString());         
         String subAliqVolumeuom = (String) smpSubAliqFieldValue[LPArray.valuePosicInArray(mandatorySampleSubAliqFields, smpSubAliqFieldName[1])];
         
-        Object[] diagnoses = LabPLANETMath.extractPortion(schemaPrefix, aliqVolume, aliqVolumeuom, sampleId, subAliqVolume, subAliqVolumeuom, aliquotId);
+        Object[] diagnoses = LPMath.extractPortion(schemaPrefix, aliqVolume, aliqVolumeuom, sampleId, subAliqVolume, subAliqVolumeuom, aliquotId);
         if (LPPlatform.LAB_FALSE.equalsIgnoreCase(diagnoses[0].toString())){return diagnoses;}    
         subAliqVolume = new BigDecimal(diagnoses[diagnoses.length-1].toString());
         
@@ -2712,7 +2712,7 @@ public Object[] logSampleSubAliquot( String schemaPrefix, Integer aliquotId, Str
     smpSubAliqFieldName = LPArray.addValueToArray1D(smpSubAliqFieldName, "created_by");
     smpSubAliqFieldValue = LPArray.addValueToArray1D(smpSubAliqFieldValue, userName);
     smpSubAliqFieldName = LPArray.addValueToArray1D(smpSubAliqFieldName, "created_on");  
-    smpSubAliqFieldValue = LPArray.addValueToArray1D(smpSubAliqFieldValue, LabPLANETDate.getTimeStampLocalDate());
+    smpSubAliqFieldValue = LPArray.addValueToArray1D(smpSubAliqFieldValue, LPDate.getTimeStampLocalDate());
     
     Object[] diagnoses = Rdbms.insertRecordInTable(schemaDataName, tableName, smpSubAliqFieldName, smpSubAliqFieldValue);
     if (!LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){

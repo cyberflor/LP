@@ -7,10 +7,10 @@ package com.labplanet.servicios.app;
 
 import LabPLANET.utilities.LPPlatform;
 import LabPLANET.utilities.LPArray;
-import LabPLANET.utilities.LabPLANETDate;
-import LabPLANET.utilities.LabPLANETFrontEnd;
+import LabPLANET.utilities.LPDate;
+import LabPLANET.utilities.LPFrontEnd;
 import LabPLANET.utilities.LPHttp;
-import LabPLANET.utilities.LabPLANETSession;
+import LabPLANET.utilities.LPSession;
 import databases.Rdbms;
 import databases.Token;
 import java.io.IOException;
@@ -61,7 +61,7 @@ public class authenticationAPI extends HttpServlet {
             if (LPPlatform.LAB_FALSE.equalsIgnoreCase(areMandatoryParamsInResponse[0].toString())){
                 errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
                 errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_MANDATORY_PARAMS_MISSING+": "+areMandatoryParamsInResponse[1].toString());                    
-                Object[] errMsg = LabPLANETFrontEnd.responseError(errObject, language, areMandatoryParamsInResponse[1].toString());
+                Object[] errMsg = LPFrontEnd.responseError(errObject, language, areMandatoryParamsInResponse[1].toString());
                 response.sendError((int) errMsg[0], (String) errMsg[1]);    
                 Rdbms.closeRdbms(); 
                 return ;                
@@ -76,7 +76,7 @@ public class authenticationAPI extends HttpServlet {
                     if (LPPlatform.LAB_FALSE.equalsIgnoreCase(areMandatoryParamsInResponse[0].toString())){
                         errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
                         errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_MANDATORY_PARAMS_MISSING+": "+areMandatoryParamsInResponse[1].toString());                    
-                        Object[] errMsg = LabPLANETFrontEnd.responseError(errObject, language, areMandatoryParamsInResponse[1].toString());
+                        Object[] errMsg = LPFrontEnd.responseError(errObject, language, areMandatoryParamsInResponse[1].toString());
                         response.sendError((int) errMsg[0], (String) errMsg[1]);    
                         Rdbms.closeRdbms(); 
                         return ;                
@@ -89,7 +89,7 @@ public class authenticationAPI extends HttpServlet {
                     if (!isConnected){                            
                         errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
                         errObject = LPArray.addValueToArray1D(errObject, "API Error Message: db User Name and Password not correct, connection to the database is not possible");                    
-                        Object[] errMsg = LabPLANETFrontEnd.responseError(errObject, language, null);
+                        Object[] errMsg = LPFrontEnd.responseError(errObject, language, null);
                         response.sendError((int) errMsg[0], (String) errMsg[1]);   
                         Rdbms.closeRdbms(); 
                         return ;                                 
@@ -99,7 +99,7 @@ public class authenticationAPI extends HttpServlet {
                     if (LPPlatform.LAB_FALSE.equalsIgnoreCase(internalUser[0][0].toString())){
                         errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
                         errObject = LPArray.addValueToArray1D(errObject, "API Error Message: Person does not exist or password incorrect.");                    
-                        Object[] errMsg = LabPLANETFrontEnd.responseError(errObject, language, null);
+                        Object[] errMsg = LPFrontEnd.responseError(errObject, language, null);
                         response.sendError((int) errMsg[0], (String) errMsg[1]);        
                         Rdbms.closeRdbms(); 
                         return ;                                 
@@ -126,7 +126,7 @@ public class authenticationAPI extends HttpServlet {
                     if (LPPlatform.LAB_FALSE.equalsIgnoreCase(areMandatoryParamsInResponse[0].toString())){
                         errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
                         errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_MANDATORY_PARAMS_MISSING+": "+areMandatoryParamsInResponse[1].toString());                    
-                        Object[] errMsg = LabPLANETFrontEnd.responseError(errObject, language, areMandatoryParamsInResponse[1].toString());
+                        Object[] errMsg = LPFrontEnd.responseError(errObject, language, areMandatoryParamsInResponse[1].toString());
                         response.sendError((int) errMsg[0], (String) errMsg[1]);    
                         Rdbms.closeRdbms(); 
                         return ;                
@@ -139,7 +139,7 @@ public class authenticationAPI extends HttpServlet {
                     if (!isConnected){
                         errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
                         errObject = LPArray.addValueToArray1D(errObject, "API Error Message: db User Name and Password not correct, connection to the database is not possible");                    
-                        Object[] errMsg = LabPLANETFrontEnd.responseError(errObject, language, null);
+                        Object[] errMsg = LPFrontEnd.responseError(errObject, language, null);
                         response.sendError((int) errMsg[0], (String) errMsg[1]);      
                         Rdbms.closeRdbms(); 
                         return ;  
@@ -148,13 +148,13 @@ public class authenticationAPI extends HttpServlet {
                     UserProfile usProf = new UserProfile();
                     Object[] allUserProcedurePrefix = usProf.getAllUserProcedurePrefix(dbUserName);
                     if (LPPlatform.LAB_FALSE.equalsIgnoreCase(allUserProcedurePrefix[0].toString())){
-                        Object[] errMsg = LabPLANETFrontEnd.responseError(allUserProcedurePrefix, language, null);
+                        Object[] errMsg = LPFrontEnd.responseError(allUserProcedurePrefix, language, null);
                         response.sendError((int) errMsg[0], (String) errMsg[1]);                            
                     }                    
                     
                     Object[] allUserProcedureRoles = usProf.getProcedureUserProfileFieldValues(allUserProcedurePrefix, userInfoId);
                     if (LPPlatform.LAB_FALSE.equalsIgnoreCase(allUserProcedureRoles[0].toString())){
-                        Object[] errMsg = LabPLANETFrontEnd.responseError(allUserProcedureRoles, language, null);
+                        Object[] errMsg = LPFrontEnd.responseError(allUserProcedureRoles, language, null);
                         response.sendError((int) errMsg[0], (String) errMsg[1]);                            
                     }                    
                     JSONArray jArray= new JSONArray();
@@ -169,7 +169,7 @@ public class authenticationAPI extends HttpServlet {
                                 new String[]{"user_info_id"}, new Object[]{userInfoId}, new String[]{"role_id"});
                         //Object[] recordFieldsByFilter1D =  LPArray.array2dTo1d(recordFieldsByFilter);
                     if (LPPlatform.LAB_FALSE.equalsIgnoreCase(recordFieldsByFilter[0][0].toString())){
-                        Object[] errMsg = LabPLANETFrontEnd.responseError(LPArray.array2dTo1d(recordFieldsByFilter), language, null);
+                        Object[] errMsg = LPFrontEnd.responseError(LPArray.array2dTo1d(recordFieldsByFilter), language, null);
                         response.sendError((int) errMsg[0], (String) errMsg[1]);                            
                         return;
                     }
@@ -192,7 +192,7 @@ public class authenticationAPI extends HttpServlet {
                     if (LPPlatform.LAB_FALSE.equalsIgnoreCase(areMandatoryParamsInResponse[0].toString())){
                         errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
                         errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_MANDATORY_PARAMS_MISSING+": "+areMandatoryParamsInResponse[1].toString());                    
-                        Object[] errMsg = LabPLANETFrontEnd.responseError(errObject, language, areMandatoryParamsInResponse[1].toString());
+                        Object[] errMsg = LPFrontEnd.responseError(errObject, language, areMandatoryParamsInResponse[1].toString());
                         response.sendError((int) errMsg[0], (String) errMsg[1]);    
                         Rdbms.closeRdbms(); 
                         return ;                
@@ -216,11 +216,11 @@ if (1==1){
 }else{                    
                     String[] fieldsName = new String[]{"person", "role_name"};
                     Object[] fieldsValue = new Object[]{internalUserStr, userRole};
-                    Object[] newAppSession = LabPLANETSession.newAppSession(fieldsName, fieldsValue);
+                    Object[] newAppSession = LPSession.newAppSession(fieldsName, fieldsValue);
                     if (LPPlatform.LAB_FALSE.equalsIgnoreCase(newAppSession[0].toString())){
                         errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
                         errObject = LPArray.addValueToArray1D(errObject, "API Error Message: App Session Id cannot be generated");                    
-                        Object[] errMsg = LabPLANETFrontEnd.responseError(errObject, language, null);
+                        Object[] errMsg = LPFrontEnd.responseError(errObject, language, null);
                         response.sendError((int) errMsg[0], (String) errMsg[1]);        
                         Rdbms.closeRdbms(); 
                         return ;                                 
@@ -229,13 +229,13 @@ if (1==1){
                     if (sessionId==null){
                         errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
                         errObject = LPArray.addValueToArray1D(errObject, "API Error Message: App Session Id cannot be null");                    
-                        Object[] errMsg = LabPLANETFrontEnd.responseError(errObject, language, null);
+                        Object[] errMsg = LPFrontEnd.responseError(errObject, language, null);
                         response.sendError((int) errMsg[0], (String) errMsg[1]);        
                         Rdbms.closeRdbms(); 
                         return ;                            
                     }
 }                    
-                    Date nowLocalDate = LabPLANETDate.getTimeStampLocalDate();
+                    Date nowLocalDate = LPDate.getTimeStampLocalDate();
                     
 //                    Object[][] userEsignInfo = Rdbms.getRecordFieldsByFilter("app", "users", new String[]{"user_name"}, new Object[]{userName}, new String[]{"e_sign"});
                     Object[][] userEsignInfo = new Object[1][1];
@@ -243,7 +243,7 @@ if (1==1){
                     if (LPPlatform.LAB_FALSE.equalsIgnoreCase(userEsignInfo[0][0].toString())){
                         errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
                         errObject = LPArray.addValueToArray1D(errObject, "API Error Message: eSign Info not available");                    
-                        Object[] errMsg = LabPLANETFrontEnd.responseError(errObject, language, null);
+                        Object[] errMsg = LPFrontEnd.responseError(errObject, language, null);
                         response.sendError((int) errMsg[0], (String) errMsg[1]);        
                         Rdbms.closeRdbms(); 
                         return ;                                                    
@@ -263,12 +263,12 @@ if (1==1){
                     return;
                 default:      
                     Rdbms.closeRdbms();
-                    Object[] errMsg = LabPLANETFrontEnd.responseError(errObject, language, null);
+                    Object[] errMsg = LPFrontEnd.responseError(errObject, language, null);
                     response.sendError((int) errMsg[0], (String) errMsg[1]);                            
             }
         }catch(Exception e){            
             String exceptionMessage = e.getMessage();            
-            Object[] errMsg = LabPLANETFrontEnd.responseError(new String[]{exceptionMessage}, language, null);
+            Object[] errMsg = LPFrontEnd.responseError(new String[]{exceptionMessage}, language, null);
             response.sendError((int) errMsg[0], (String) errMsg[1]);                                        
             Rdbms.closeRdbms();
         }

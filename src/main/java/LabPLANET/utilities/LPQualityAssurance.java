@@ -22,13 +22,13 @@ import java.io.IOException;
  *
  * @author Administrator
  */
-public class LabPLANETQualityAssurance {
+public class LPQualityAssurance {
 
     
     /**
      *
      */    
-    public LabPLANETQualityAssurance() { //not developed yet        
+    public LPQualityAssurance() { //not developed yet        
     }	
 
     /**

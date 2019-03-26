@@ -6,7 +6,7 @@
 package com.labplanet.servicios.ModuleBatch;
 
 import LabPLANET.utilities.LPArray;
-import LabPLANET.utilities.LabPLANETFrontEnd;
+import LabPLANET.utilities.LPFrontEnd;
 import LabPLANET.utilities.LPPlatform;
 import LabPLANET.utilities.LPHttp;
 import databases.Rdbms;
@@ -68,7 +68,7 @@ public class batchAPI extends HttpServlet {
             if (LPPlatform.LAB_FALSE.equalsIgnoreCase(areMandatoryParamsInResponse[0].toString())){
                 errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
                 errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_MANDATORY_PARAMS_MISSING+": "+areMandatoryParamsInResponse[1].toString());                    
-                Object[] errMsg = LabPLANETFrontEnd.responseError(errObject, language, areMandatoryParamsInResponse[1].toString());
+                Object[] errMsg = LPFrontEnd.responseError(errObject, language, areMandatoryParamsInResponse[1].toString());
                 response.sendError((int) errMsg[0], (String) errMsg[1]);                
                 return ;                
             }            
@@ -91,7 +91,7 @@ public class batchAPI extends HttpServlet {
             if (!isConnected){
                 errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
                 errObject = LPArray.addValueToArray1D(errObject, "API Error Message: db User Name and Password not correct, connection to the database is not possible");                    
-                Object[] errMsg = LabPLANETFrontEnd.responseError(errObject, language, schemaPrefix);
+                Object[] errMsg = LPFrontEnd.responseError(errObject, language, schemaPrefix);
                 response.sendError((int) errMsg[0], (String) errMsg[1]);   
                 Rdbms.closeRdbms(); 
                 return ;               
@@ -105,14 +105,14 @@ public class batchAPI extends HttpServlet {
             try (PrintWriter out = response.getWriter()) {
                 Object[] actionEnabled = LPPlatform.procActionEnabled(schemaPrefix, actionName);
                 if (LPPlatform.LAB_FALSE.equalsIgnoreCase(actionEnabled[0].toString())){
-                    Object[] errMsg = LabPLANETFrontEnd.responseError(actionEnabled, language, schemaPrefix);
+                    Object[] errMsg =  LPFrontEnd.responseError(actionEnabled, language, schemaPrefix);
                     response.sendError((int) errMsg[0], (String) errMsg[1]);    
                     Rdbms.closeRdbms(); 
                     return ;               
                 }            
                 actionEnabled = LPPlatform.procUserRoleActionEnabled(schemaPrefix, userRole, actionName);
                 if (LPPlatform.LAB_FALSE.equalsIgnoreCase(actionEnabled[0].toString())){            
-                    Object[] errMsg = LabPLANETFrontEnd.responseError(actionEnabled, language, schemaPrefix);
+                    Object[] errMsg = LPFrontEnd.responseError(actionEnabled, language, schemaPrefix);
                     response.sendError((int) errMsg[0], (String) errMsg[1]);    
                     Rdbms.closeRdbms(); 
                     return ;                           
@@ -130,7 +130,7 @@ public class batchAPI extends HttpServlet {
                         if (LPPlatform.LAB_FALSE.equalsIgnoreCase(areMandatoryParamsInResponse[0].toString())){
                             errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
                             errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_MANDATORY_PARAMS_MISSING+": "+areMandatoryParamsInResponse[1].toString());                    
-                            Object[] errMsg = LabPLANETFrontEnd.responseError(errObject, language, areMandatoryParamsInResponse[1].toString());
+                            Object[] errMsg = LPFrontEnd.responseError(errObject, language, areMandatoryParamsInResponse[1].toString());
                             response.sendError((int) errMsg[0], (String) errMsg[1]);                
                             return ;                
                         }            
@@ -151,7 +151,7 @@ public class batchAPI extends HttpServlet {
                             if (LPPlatform.LAB_FALSE.equalsIgnoreCase(areMandatoryParamsInResponse[0].toString())){
                                 errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
                                 errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_MANDATORY_PARAMS_MISSING+": "+areMandatoryParamsInResponse[1].toString());                    
-                                Object[] errMsg = LabPLANETFrontEnd.responseError(errObject, language, areMandatoryParamsInResponse[1].toString());
+                                Object[] errMsg = LPFrontEnd.responseError(errObject, language, Arrays.toString(mandatoryParams));
                                 response.sendError((int) errMsg[0], (String) errMsg[1]);                
                                 return ;                
                             }            
@@ -162,7 +162,7 @@ public class batchAPI extends HttpServlet {
                     default:
                         errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
                         errObject = LPArray.addValueToArray1D(errObject, "API Error Message: actionName "+actionName+ " not recognized as an action by this API");                                                            
-                        Object[] errMsg = LabPLANETFrontEnd.responseError(errObject, language, schemaPrefix);
+                        Object[] errMsg = LPFrontEnd.responseError(errObject, language, "");
                         response.sendError((int) errMsg[0], (String) errMsg[1]);    
                         Rdbms.closeRdbms();                    
                         return;                    
@@ -171,7 +171,7 @@ public class batchAPI extends HttpServlet {
                     Rdbms.rollbackWithSavePoint();
                     con.rollback();
                     con.setAutoCommit(true);
-                    Object[] errMsg = LabPLANETFrontEnd.responseError(dataSample, language, schemaPrefix);
+                    Object[] errMsg = LPFrontEnd.responseError(dataSample, language, "");
                     response.sendError((int) errMsg[0], (String) errMsg[1]);    
                 }else{
                     con.commit();
@@ -189,9 +189,8 @@ public class batchAPI extends HttpServlet {
                 }
                 Rdbms.closeRdbms();                   
                 errObject = new String[]{e.getMessage()};
-                Object[] errMsg = LabPLANETFrontEnd.responseError(errObject, language, null);
+                Object[] errMsg = LPFrontEnd.responseError(errObject, language, null);
                 response.sendError((int) errMsg[0], (String) errMsg[1]);           
-
             }finally{try {
                 con.close();
             } catch (SQLException ex) {

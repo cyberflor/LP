@@ -7,7 +7,7 @@ package _functionalJava.project;
 
 import LabPLANET.utilities.LPArray;
 import java.text.SimpleDateFormat;
-import LabPLANET.utilities.LabPLANETDate;
+import LabPLANET.utilities.LPDate;
 import LabPLANET.utilities.LPPlatform;
 import databases.Rdbms;
 import java.sql.SQLException;
@@ -114,13 +114,13 @@ public class DataProjectScheduleAdhoc {
         
         switch (itemsMeasurement.toUpperCase()){
             case "DAYS":
-                endDayLocal = LabPLANETDate.addDays(startDay, scheduleSize);
+                endDayLocal = LPDate.addDays(startDay, scheduleSize);
                 break;
             case "MONTHS":
-                endDayLocal = LabPLANETDate.addMonths(startDay, scheduleSize);
+                endDayLocal = LPDate.addMonths(startDay, scheduleSize);
                 break;
             case "YEARS":
-                endDayLocal = LabPLANETDate.addYears(startDay, scheduleSize);
+                endDayLocal = LPDate.addYears(startDay, scheduleSize);
                 break;                
             default:                
                 break;
@@ -306,7 +306,7 @@ public class DataProjectScheduleAdhoc {
         
         String datesStr = "";
 
-        Object[] daysInRange = LabPLANETDate.getDaysInRange(startDate, endDate, daysOfWeek);  
+        Object[] daysInRange = LPDate.getDaysInRange(startDate, endDate, daysOfWeek);  
         Object[] newProjSchedRecursive = null;
         if (daysInRange.length>0){
             newProjSchedRecursive = Rdbms.insertRecordInTable(schemaName, "project_schedule_recursive", 

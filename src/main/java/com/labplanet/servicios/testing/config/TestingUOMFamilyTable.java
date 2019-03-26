@@ -25,7 +25,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Fran
  */
-public class TestinguomFamilyTable extends HttpServlet {
+public class TestingUOMFamilyTable extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.

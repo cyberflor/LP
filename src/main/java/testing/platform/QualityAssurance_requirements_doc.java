@@ -5,7 +5,7 @@
  */
 package testing.platform;
 
-import LabPLANET.utilities.LabPLANETQualityAssurance;
+import LabPLANET.utilities.LPQualityAssurance;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -63,10 +63,10 @@ public class QualityAssurance_requirements_doc extends HttpServlet {
             fileContent = fileContent + "</html>" + "";
             fileContent = fileContent + "<table id=\"scriptTable\">";  
             
-            LabPLANETQualityAssurance labQA = new LabPLANETQualityAssurance();
+            LPQualityAssurance labQA = new LPQualityAssurance();
             
             try {
-                Object[][] methodsList = LabPLANETQualityAssurance.javaDocChecker();
+                Object[][] methodsList = LPQualityAssurance.javaDocChecker();
                 out.println("Number of Methods: "+methodsList.length);
                 
                 for (Integer j=0;j<methodsList[0].length;j++){

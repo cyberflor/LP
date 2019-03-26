@@ -21,7 +21,7 @@ import org.codehaus.jettison.json.JSONObject;
  * @author Fran Gomez
  */  
 
-public class LabPLANETJson {
+public class LPJson {
  /**
  * classVersion
  * {@value}
@@ -109,7 +109,7 @@ public class LabPLANETJson {
             finalString="["+finalString+"]";
             return finalString;
         } catch (SQLException ex) {
-            Logger.getLogger(LabPLANETJson.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(LPJson.class.getName()).log(Level.SEVERE, null, ex);
             return ex.getMessage();
         }
     }
@@ -139,12 +139,12 @@ public class LabPLANETJson {
                                 .toLowerCase(), resultSet.getObject(i + 1));
                         }
                     } catch (JSONException ex) {
-                        Logger.getLogger(LabPLANETJson.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(LPJson.class.getName()).log(Level.SEVERE, null, ex);
                         try {
                             obj.put(resultSet.getMetaData().getColumnLabel(i + 1)
                                     .toLowerCase(), "");
                         } catch (JSONException ex1) {
-                            Logger.getLogger(LabPLANETJson.class.getName()).log(Level.SEVERE, null, ex1);
+                            Logger.getLogger(LPJson.class.getName()).log(Level.SEVERE, null, ex1);
                         }
                     }
                     jsonArray.put(obj);
@@ -154,7 +154,7 @@ public class LabPLANETJson {
             }
             return jsonArray;
         } catch (SQLException ex) {
-            Logger.getLogger(LabPLANETJson.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(LPJson.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
     }    

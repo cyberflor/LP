@@ -6,7 +6,7 @@
 package functionalJava.ChangeOfCustody;
 
 import LabPLANET.utilities.LPArray;
-import LabPLANET.utilities.LabPLANETDate;
+import LabPLANET.utilities.LPDate;
 import LabPLANET.utilities.LPPlatform;
 import databases.Rdbms;
 import functionalJava.audit.SampleAudit;
@@ -61,15 +61,15 @@ public class ChangeOfCustody {
                 errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, schemaName);
                 return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);                  
         }
-        Object[] updateRecordFieldsByFilter = Rdbms.updateRecordFieldsByFilter( schemaName, objectTable.toLowerCase(), 
+        Object[] updateRecordFieldsByFilter = Rdbms.updateRecordFieldsByFilter(schemaName, objectTable.toLowerCase(), 
                 new String[]{"coc_requested_on", "custodian_candidate"},                 
-                new Object[]{LabPLANETDate.getTimeStampLocalDate(), custodianCandidate}, 
+                new Object[]{LPDate.getTimeStampLocalDate(), custodianCandidate}, 
                 new String[]{objectFieldName}, new Object[]{objectId});
         if (LPPlatform.LAB_FALSE.equalsIgnoreCase(updateRecordFieldsByFilter[0].toString())){
             return updateRecordFieldsByFilter;}
         
         String[] sampleFieldName = new String[]{objectFieldName, "custodian", "custodian_candidate", "coc_started_on", FIELDNAME_STATUS};
-        Object[] sampleFieldValue = new Object[]{objectId, currCustodian, custodianCandidate, LabPLANETDate.getTimeStampLocalDate(), cocStartChangeStatus};
+        Object[] sampleFieldValue = new Object[]{objectId, currCustodian, custodianCandidate, LPDate.getTimeStampLocalDate(), cocStartChangeStatus};
         
         Object[] insertRecordInTable = Rdbms.insertRecordInTable( schemaName, cocTableName, 
                 sampleFieldName, sampleFieldValue);        
@@ -141,7 +141,7 @@ public class ChangeOfCustody {
         
         
         String[] sampleFieldName=new String[]{FIELDNAME_STATUS, "coc_confirmed_on" };
-        Object[] sampleFieldValue=new Object[]{actionName,LabPLANETDate.getTimeStampLocalDate()};
+        Object[] sampleFieldValue=new Object[]{actionName,LPDate.getTimeStampLocalDate()};
         if (comment!=null){            
             sampleFieldName = LPArray.addValueToArray1D(sampleFieldName, "coc_new_custodian_notes");
             sampleFieldValue = LPArray.addValueToArray1D(sampleFieldValue, comment);
@@ -153,7 +153,7 @@ public class ChangeOfCustody {
             return updateRecordInTable;}        
         
          String[] updSampleTblFlds=new String[]{"coc_confirmed_on", "custodian_candidate"}; // , "coc_requested_on"
-         Object[] updSampleTblVls=new Object[]{LabPLANETDate.getTimeStampLocalDate(), "null*String"}; // , "null*Date"
+         Object[] updSampleTblVls=new Object[]{LPDate.getTimeStampLocalDate(), "null*String"}; // , "null*Date"
          if (actionName.equalsIgnoreCase(cocConfirmedChangeStatus)){
             updSampleTblFlds = LPArray.addValueToArray1D(updSampleTblFlds, "custodian");
             updSampleTblVls = LPArray.addValueToArray1D(updSampleTblVls, userName);

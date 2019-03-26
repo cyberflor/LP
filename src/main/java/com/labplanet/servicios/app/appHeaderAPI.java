@@ -7,7 +7,7 @@ package com.labplanet.servicios.app;
 
 import LabPLANET.utilities.LPArray;
 import LabPLANET.utilities.LPHttp;
-import LabPLANET.utilities.LabPLANETFrontEnd;
+import LabPLANET.utilities.LPFrontEnd;
 import databases.Rdbms;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -51,7 +51,7 @@ public class appHeaderAPI extends HttpServlet {
             if (actionName==null && finalToken==null) {
                 errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
                 errObject = LPArray.addValueToArray1D(errObject, "API Error Message: actionName and finalToken are mandatory params for this API");                    
-                Object[] errMsg = LabPLANETFrontEnd.responseError(errObject, language, null);
+                Object[] errMsg = LPFrontEnd.responseError(errObject, language, null);
                 response.sendError((int) errMsg[0], (String) errMsg[1]);   
                 Rdbms.closeRdbms(); 
                 return ;
@@ -88,7 +88,7 @@ public class appHeaderAPI extends HttpServlet {
                         Object[][] personInfoArr = Rdbms.getRecordFieldsByFilter("config", "person", 
                              new String[]{"person_id"}, new String[]{internalUserID}, personFieldsNameArr);             
                         if ("LABPLANET_FALSE".equals(personInfoArr[0][0].toString())){                                                                                                                                                   
-                            Object[] errMsg = LabPLANETFrontEnd.responseError(LPArray.array2dTo1d(personInfoArr), language, null);
+                            Object[] errMsg = LPFrontEnd.responseError(LPArray.array2dTo1d(personInfoArr), language, null);
                             response.sendError((int) errMsg[0], (String) errMsg[1]);   
                             return;
                         }
@@ -103,13 +103,13 @@ public class appHeaderAPI extends HttpServlet {
                 default:      
                     errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
                     errObject = LPArray.addValueToArray1D(errObject, "API Error Message: actionName "+actionName+ " not recognized as an action by this API");                                        
-                    Object[] errMsg = LabPLANETFrontEnd.responseError(errObject, language, null);
+                    Object[] errMsg = LPFrontEnd.responseError(errObject, language, null);
                     response.sendError((int) errMsg[0], (String) errMsg[1]);                   
                     Rdbms.closeRdbms();
             }            
         }catch(Exception e){            
             String exceptionMessage = e.getMessage();           
-            Object[] errMsg = LabPLANETFrontEnd.responseError(new String[]{exceptionMessage}, language, null);
+            Object[] errMsg = LPFrontEnd.responseError(new String[]{exceptionMessage}, language, null);
             response.sendError((int) errMsg[0], (String) errMsg[1]); 
             Rdbms.closeRdbms(); 
         }                                       
