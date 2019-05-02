@@ -27,8 +27,6 @@ public class RequirementDeployment {
 
     String tableName = "procedure";    
 
-    String ermessage = "";
-    
     // Originally 1196 lines
                                                                     //, String functionalArea, String values
 

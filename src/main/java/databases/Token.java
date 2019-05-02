@@ -13,21 +13,24 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.SignatureException;
-import io.jsonwebtoken.UnsupportedJwtException;
+import java.sql.Date;
 import java.util.HashMap;
 import java.util.Map;
-import javax.xml.bind.DatatypeConverter;
 
 /**
  *
  * @author Administrator
  */
 public class Token {
+    
+    String userDB;
+    String userDBPassword;
+    String personId;
+    String userRole;
+    String userEsign;
+    String appSessionId;
+    Date appSessionStartDate;
+    
     String KEY = "mi clave";
     String ISSUER = "LabPLANETdestrangisInTheNight";
     
@@ -140,6 +143,13 @@ public class Token {
                 .withHeader(myParams)
                 .withIssuer(ISSUER)
                 .sign(algorithm);
+        this.userDB=userDBId;
+        this.userDBPassword=userDBPassword;
+        this.personId=userId;
+        this.userRole=userRole;
+        this.userEsign=eSign;
+        this.appSessionId=appSessionId;
+        this.appSessionStartDate=Date.valueOf(appSessionStartedDate);        
         return token;
         
         /*long tiempo = System.currentTimeMillis();

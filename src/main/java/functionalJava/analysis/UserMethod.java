@@ -61,7 +61,7 @@ public class UserMethod {
         getFieldName = LPArray.addValueToArray1D(getFieldName, "last_analysis_on");
         
         Object[][] userMethodData = Rdbms.getRecordFieldsByFilter(schemaDataName, tableName, whereFieldName, whereFieldValue, getFieldName);
-        if ("LABPLANET_FALSE".equals(userMethodData[0][0].toString())){return userMethodNotAssigned;}    
+        if (LPPlatform.LAB_FALSE.equals(userMethodData[0][0].toString())){return userMethodNotAssigned;}    
         
         Boolean userMethodActive = (Boolean) userMethodData[0][0];
         if (!userMethodActive){return userMethodInactive;}

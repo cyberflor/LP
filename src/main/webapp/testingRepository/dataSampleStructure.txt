@@ -1,0 +1,81 @@
+numHeaderLines=4
+numTables=1
+numEvaluationArguments=1
+Table1=Schema Prefix;User;User Role;Function Being Tested;Field Name;Field Value;
+;process-us;1;analyst;REVIEWRESULT*;13600;SAMPLE;
+;process-us;1;analyst;GETSAMPLEINFO;13600;sample_id|status|status_previous|spec_code|spec_code|status
+;process-us;1;analyst;LOGALIQUOT*;13600;sampleTemplate|1;sampling_comment;my note2*String
+;process-us;1;analyst;LOGALIQUOT*;13619;sampleTemplate|1;volume|volume_uom;20*Float|ML*String
+;process-us;1;analyst;LOGSUBALIQUOT*;7;sampleTemplate|1;volume|volume_uom;1*Float|L*String
+LABPLANET_FALSE;process-eu;1;analyst;LOGSAMPLE*;template1|1;sampling_comment;my note2*String
+LABPLANET_TRUE;process-us;1;analyst;LOGSAMPLE*;sampleTemplate|1;sampling_comment;my note2*String
+LABPLANET_FALSE;process-eu;1;analyst;LOGSAMPLE*;sampleTemplate|1;sampling_comment;my note2*String
+;process-us;1;analyst;LOGSAMPLE*;sampleTemplate|1;sampling_comment;my note2*String
+;process-eu;1;analyst;RECEIVESAMPLE*;13600;2;SAMPLE
+;process-us;1;analyst;RECEIVESAMPLE*;13600;2;SAMPLE
+;process-us;1;analyst;LOGALIQUOT*;13601;sampleTemplate|1;volume|volume_uom;2*Float|ML*String
+;process-us;1;analyst;LOGALIQUOT*;13602;sampleTemplate|1;volume|volume_uom;-1.5*Float|ML*String
+;process-us;1;analyst;LOGSUBALIQUOT*;1;sampleTemplate|1;volume|volume_uom;-1.5*Float|ML*String
+;process-us;1;analyst;LOGSUBALIQUOT*;1;sampleTemplate|1;volume|volume_uom;1.5*Float|ML*String
+;process-us;1;analyst;LOGALIQUOT*;13602;sampleTemplate|1;volume|volume_uom;2.1*Float|ML*String
+;process-us;1;analyst;LOGALIQUOT*;13600;sampleTemplate|1;sampling_comment;my note2*String
+;process-us;1;analyst;ENTERRESULT*;2040;3;
+;process-us;1;analyst;ENTERRESULT*;2039;2.99;
+;process-us;1;analyst;RESULT_CHANGE_UOM*;2040;MG;
+;process-us;1;analyst;RESULT_CHANGE_UOM*;2040;G;
+;process-us;1;analyst;RESULT_CHANGE_UOM**;2040;MG;
+;process-us;1;analyst;RESULT_CHANGE_UOM*;2039;MG;
+;process-us;1;analyst;RESULT_CHANGE_UOM**;2039;KG;
+;process-us;1;analyst;RESULT_CHANGE_UOM*;2039;PA;
+;process-us;1;analyst;RESULT_CHANGE_UOM**;2039;G;
+;process-us;1;analyst;LOGSAMPLE*;sampleTemplate|1;sampling_comment;my note2*String
+;process-us;1;analyst;LOGSAMPLE*;sampleTemplate|1;sampling_comment;Edison del putas*String
+;process-us;1;analyst;COC_STARTCHANGE*;13280;2;
+;process-us;1;analyst;COC_STARTCHANGE*;13281;2;
+;process-us;1;analyst;COC_STARTCHANGE*;13282;1;
+;process-us;1;analyst;COC_STARTCHANGE*;13282;2;
+;process-us;1;analyst;COC_STARTCHANGE*;13282;2;
+;process-us;1;analyst;COC_STARTCHANGE*;13279;;
+;process-us;1;analyst;COC_CONFIRMCHANGE*;13279;This is one comment during the confirmation;
+;process-us;1;analyst;COC_CONFIRMCHANGE*;13280;This is one comment during the confirmation;
+;process-us;1;analyst;COC_CONFIRMCHANGE*;13280;This is one comment during the confirmation;
+;process-us;1;analyst;COC_ABORTCHANGE*;13281;This is one comment during the aborting
+;process-us;1;analyst;COC_CONFIRMCHANGE*;13281;This is one comment during the confirmation;
+;process-us;1;analyst;SAMPLEANALYSISADD**;146;analysis|method_name|method_version|status;LOD*String|LOD Method*String|1*Integer|NOT_STARTED*String
+;process-us;1;analyst;LOGSAMPLE*;sampleTemplate|1;sampling_comment;my note2*String
+;sample-A;1;analyst;LOGSAMPLE*;template1|1;sampling_comment;my note2*String
+;sample-A;1;analyst;LOGSAMPLE*;template1|1;sampling_date;2019-01-01*Date
+;module1;1;analyst;LOGSAMPLE*;template1|1;sampling_comment;my note*String
+;module1-A;1;analyst;LOGSAMPLE*;template1|1;sampling_comment;my note*String
+;module1-A;1;analyst2;LOGSAMPLE*;template1|1;sampling_comment;my note*String
+;module1-A;1;analyst;RECEIVESAMPLE*;166;2;SAMPLE
+;module1-A;1;analyst;LOGSAMPLE*;template1|1;;
+;module1;1;analyst;REVIEWRESULT*;2;SAMPLE
+;module1;1;analyst;LOGSAMPLE*;template2|1;;
+;module1;1;analyst;RECEIVESAMPLE*;2
+;module1;1;analyst;SAMPLEANALYSISADD*;2;analysis|method_name|method_version|status;LOD*String|LOD Method*String|1*Integer|NOT_STARTED*String
+;module1;1;analyst;SAMPLEANALYSISADD*;2;analysis|method_name|method_version|status;LOD*String|LOD Method*String|1*Integer|NOT_STARTED*String
+;module1;1;analyst;TESTASSIGNMENT*;1;1;
+;module1;1;analyst;ENTERRESULT*;1;100;
+;module1;1;analyst;ENTERRESULT*;2;98;
+;module1;1;analyst;ENTERRESULT*;3;2;
+;module1;1;analyst;GETSAMPLEINFO:1;sample_id|status|status_previous|spec_code|spec_code|status
+;module1;1;analyst;SAMPLINGCOMMENTADD*;1;My comment is this second one
+;module1;1;analyst;GETSAMPLEINFO*;1;sample_id|sampling_comment
+;module1;1;analyst;SAMPLINGCOMMENTREMOVE*;1;
+;module1;1;analyst;GETSAMPLEINFO********;1;sample_id|sampling_comment
+;module1-A;1;analyst;RECEIVESAMPLE*;1
+;module1;1;analyst;LOGSAMPLE*;template1|1;sampling_comment;my note*String
+;module1;1;analyst;RECEIVESAMPLE*;1;1
+;module1;1;analyst;SAMPLEANALYSISADD*;3;analysis|method_name|method_version|status;LOD*String|LOD method*String|1*Integer|NOT_STARTED*String
+;module1;1;analyst;TESTASSIGNMENT*;1;1;
+;module1;1;analyst;ENTERRESULT*;1;100;
+;module1;1;analyst;ENTERRESULT*;2;98;
+;module1;1;analyst;ENTERRESULT*;3;2;
+;module1;1;analyst;GETSAMPLEINFO*;1;sample_id|status|status_previous|spec_code|spec_code|status
+;module1-A;1;analyst;SAMPLINGCOMMENTADD*;1;1;My comment is this second one
+;module1-A;1;analyst;GETSAMPLEINFO*;1;sample_id|sampling_comment
+;module1-A;1;analyst;SAMPLINGCOMMENTREMOVE*;1;1;
+;module1-A;1;analyst;GETSAMPLEINFO*;1;sample_id|sampling_comment
+;module1-A;1;analyst;SAMPLINGCOMMENTADD*;1;My comment is this second one
+;module1-A;1;analyst;GETSAMPLEINFO*;1;sample_id|sample_config_code|sampling_comment

@@ -172,7 +172,6 @@ public class  LPArray {
                             // decrypt the text
                             cipher.init(Cipher.DECRYPT_MODE, aesKey);
                             String decrypted = new String(cipher.doFinal(bb));
-                            System.err.println("decrypted:" + decrypted);
                             fieldValue1[iFields] = decrypted;
                         }    
                     }        
@@ -216,7 +215,6 @@ public class  LPArray {
                     // decrypt the text
                     cipher.init(Cipher.DECRYPT_MODE, aesKey);
                     String decrypted = new String(cipher.doFinal(bb));
-                    System.err.println("decrypted:" + decrypted);   
                     fieldValue[iFields] = decrypted;
                 }
                 catch(InvalidKeyException | NoSuchAlgorithmException | BadPaddingException | IllegalBlockSizeException | NoSuchPaddingException e){
@@ -309,11 +307,8 @@ public class  LPArray {
                 System.arraycopy(inArray, 0, myArray[inumLines], 0, inArray.length);
             }            
 //            myArray = array1dTo2d(myArray1D, columnsInCsv);
-            return myArray;
-            
-        } catch (FileNotFoundException e){ 
-            System.out.println(e);}
-        
+            return myArray;            
+        } catch (FileNotFoundException e){         }
         return myArray;
     }
     
@@ -347,9 +342,7 @@ public class  LPArray {
             myArray = array1dTo2d(myArray1D, columnsInCsv);
             return myArray;
             
-        } catch (FileNotFoundException e){ 
-            System.out.println(e);}
-        
+        } catch (FileNotFoundException e){}        
         return myArray;
     }
     

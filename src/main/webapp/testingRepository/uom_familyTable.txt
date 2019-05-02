@@ -1,0 +1,7 @@
+numHeaderLines=4
+numTables=1
+numEvaluationArguments=0
+Table1=schema_name;family;fieldsToRetrieve
+config;11;name|pretty_name|is_base|factor_value|offset_value
+config;TEMPERATURE;name|pretty_name|is_base|factor_value|offset_value
+oil-pl1;TEMPERATURE;name|pretty_name|is_base|factor_value|offset_value

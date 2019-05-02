@@ -35,12 +35,12 @@ public class LPQualityAssurance {
      *
      * @param directoryName
      */
-    public static void listFilesAndFolders(String directoryName) {
+    public static void _listFilesAndFolders(String directoryName) {
             File directory = new File(directoryName);
             // get all the files from a directory
             File[] fList = directory.listFiles();
             for (File file : fList) {
-                    System.out.println(file.getName());
+                System.out.println(file.getName());
             }
     }
 	

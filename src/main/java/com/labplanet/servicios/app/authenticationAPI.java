@@ -159,7 +159,6 @@ public class authenticationAPI extends HttpServlet {
                     }                    
                     JSONArray jArray= new JSONArray();
                     jArray.addAll(Arrays.asList(allUserProcedureRoles));        
-                    System.out.println(jArray);
                     response.getWriter().write(jArray.toJSONString()); 
 
                     Rdbms.closeRdbms();                     
@@ -174,7 +173,6 @@ public class authenticationAPI extends HttpServlet {
                         return;
                     }
                     Object[] recordsFieldsByFilter1D = LPArray.array2dTo1d(recordFieldsByFilter);                    
-                    System.out.println(Arrays.toString(recordsFieldsByFilter1D));
                     
                      jArray= new JSONArray();
                     for (Object[] recordFieldsByFilter1 : recordFieldsByFilter) {
@@ -182,7 +180,6 @@ public class authenticationAPI extends HttpServlet {
                             jArray.add(recordFieldsByFilter1[j]);
                         }
                     }        
-                    System.out.println(jArray);
                     response.getWriter().write(jArray.toJSONString());                                
                     return;                                
                 case "FINALTOKEN":     

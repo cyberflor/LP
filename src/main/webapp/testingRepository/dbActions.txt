@@ -1,0 +1,43 @@
+numHeaderLines=4
+numTables=1
+numEvaluationArguments=1
+Table1=Function Being Tested;Schema Prefix;Table;Field Names;Field Values;Fields To Retrieve;Set Field Name; Set Field Value; Order By; Group By;
+;getRecordFieldsByFilter;oil-pl1-config;analysis_method_params;method_name is not null|analysis;|pH*String;analysis|param_name
+;getRecordFieldsByFilter;oil-pl1-config;analysis_method_params;method_name like|analysis;%met%*String|LOD*String;analysis|param_name
+;EXISTSRECORD;process-us-data;sample;sample_id|status in-;74*Integer|LOGGED-NOT_STARTED-STARTED-INCOMPLETE-COMPLETE-RECEIVED;sample_id|status
+;getRecordFieldsByFilter;process-us-data;sample;status;LOGGED*String;sample_id|status;;;
+;EXISTSRECORD;process-us-config;analysis_method;analysi1s;pH*String;analysis
+;getRecordFieldsByFilter;config;analysis_method;analysis;pH*String;analysis;;;analysis
+;getRecordFieldsByFilter;config;analysis_method;analysis;pH*String;analysis;;;
+;UPDATE;config;0db_queries_testing_keyChar;name;pHname*String;;groupy;cat*String;
+;UPDATE;config;0db_queries_testing_keyChar;name;pHname*String;;groupy|number;cat2*String|3*Integer;
+;INSERT;sample-A-data;sample;sampling_comment;pHname comment*String 
+;INSERT*;config;0db_queries_testing;name;pHname*String;
+;INSERT*;config;0db_queries_testing_nopkey;name;pHname*String;
+;INSERT*;config;0db_queries_testing_nopkey;analysi1s;pH*String;
+;INSERT*;config;0db_queries_testing_nopkey;number;pH*String;
+;INSERT*;config;0db_queries_testing_nopkey;number;10*Integer;
+;INSERT*;config;0db_queries_testing_keyChar;name;pHname*String;
+;INSERT*;config;0db_queries_testing_keyChar_lastFld;name;pHname*String;
+;INSERT*;config;0db_queries_testing_keyInt;number;1*Integer;
+;INSERT*;config;0db_queries_testing_keyInt_lastFld;number;1*Integer;
+;EXISTSRECORD*;config;analysis_method;analysi1s;pH*String;analysis
+;EXISTSRECORD*;config;analysis_method;analysis;pH*String;analysis
+;EXISTSRECORD*;config;analysis_method_params;analysis;pH*String;param_name
+;getRecordFieldsByFilter*;config;analysis_method;;;analysis|param_name
+;getRecordFieldsByFilter*;config;analysis_method;analysis;pH*String;analysis|param_name
+;getRecordFieldsByFilter*;oil-pl1-config;analysis_method_params;analysis;pH*String;analysis|param_name
+;getRecordFieldsByFilter*;oil-pl1-config;zzzzzzanalysis_method_paramszzzzzz;analysis;pH*String;analysis|param_name
+;getRecordFieldsByFilter*;oil-pl1-config;analysis_method_params;zzzzzanalysis;pH*String;analysis
+;getRecordFieldsByFilter*;oil-pl1-config;analysis_method_params;analysis;pH*String;zzzzzanalysis|analysis|analysis|analysis
+;getRecordFieldsByFilter*;oil-pl1-config;analysis_method_params;analysis|method_name|method_version;pH*String|pH method*String|2;analysis|analysis|analysis|analysis
+;getRecordFieldsByFilter*;oil-pl1-config;analysis_method_params;method_name is null;;analysis|param_name
+;getRecordFieldsByFilter*;oil-pl1-config;analysis_method_params;method_name is not null;;analysis|param_name
+;getRecordFieldsByFilter*;oil-pl1-config;analysis_method_params;method_name is not null|analysis;|pH;analysis|param_name
+;getRecordFieldsByFilter*;oil-pl1-config;analysis_method_params;method_name like ;%met%;analysis|param_name
+;getRecordFieldsByFilter*;oil-pl1-config;analysis_method_params;method_name like ;%met%*String;analysis|param_name
+;getRecordFieldsByFilter*;oil-pl1-config;analysis_method_params;method_name like |analysis;%met%|LOD*String;analysis|param_name
+;getRecordFieldsByFilter*;oil-pl1-config;analysis_method_params;method_name like |analysis;%Met%|LOD*String;analysis|param_name
+;getRecordFieldsByFilter*;oil-pl1-config;analysis_method_params;method_name like|analysis;%Met%*String|LOD*String;analysis|param_name
+;getRecordFieldsByFilter*;oil-pl1-config;analysis_method_params;method_name like|analysis;%met%*String|pH*String;analysis|param_name
+;getRecordFieldsByFilter*;oil-pl1-config;analysis_method_params;method_name like|analysis;%met%*String|LOD*String;analysis|param_name

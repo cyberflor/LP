@@ -1,0 +1,7 @@
+numHeaderLines=4
+numTables=1
+Table1=Rule;Text Spec;Separator
+numEvaluationArguments=2
+LABPLANET_FALSE;
+LABPLANET_TRUE;;EQUALTO;HOLA
+LABPLANET_FALSE;;EQUAL TO;HOLA

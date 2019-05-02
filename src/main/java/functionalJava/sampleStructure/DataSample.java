@@ -56,7 +56,7 @@ public class DataSample {
     public static final String FIELDNAME_TEST_ID="test_id";
     public static final String FIELDNAME_RESULT_ID="result_id";
     public static final String FIELDNAME_VOLUME_FOR_ALIQ="volume_for_aliq";
-    public static final String FIELDNAME_VOLUME_FOR_ALIQ_uom="volume_for_aliq_uom";
+    public static final String FIELDNAME_VOLUME_FOR_ALIQ_UOM="volume_for_aliq_uom";
     
     
     private static final String DIAGNOSES_SUCCESS = "SUCCESS";
@@ -722,7 +722,7 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
 
         String testStatusReviewed = Parameter.getParameterBundle(schemaDataName.replace("\"", ""), CONFIG_SAMPLEANALYSIS_STATUSREVIEWED);
         String testStatusCanceled = Parameter.getParameterBundle(schemaDataName.replace("\"", ""), CONFIG_SAMPLEANALYSIS_STATUSCANCELED);    
-       String assignmentModes = Parameter.getParameterBundle(schemaDataName.replace("\"", ""), "sampleAnalysis_analystAssigmentModes");
+        String assignmentModes = Parameter.getParameterBundle(schemaDataName.replace("\"", ""), "sampleAnalysis_analystAssigmentModes");
 
         Object[][] testData = Rdbms.getRecordFieldsByFilter(schemaDataName, tableName, new String[]{FIELDNAME_TEST_ID}, new Object[]{testId}, new String[]{FIELDNAME_SAMPLE_ID, FIELDNAME_STATUS, "analyst", FIELDNAME_ANALYSIS, "method_name", "method_version"});    
          if (LPPlatform.LAB_FALSE.equalsIgnoreCase(testData[0][0].toString())){
@@ -744,7 +744,7 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
     
         // the test status cannot be reviewed or canceled, should be checked
         if ( (testCurrAnalyst != null) && (testStatus.equalsIgnoreCase(testStatusReviewed) || testStatus.equalsIgnoreCase(testStatusCanceled)) ){
-            errorCode = "DataSample_SampleAnalysisAssignment_SameAnalyst";
+            errorCode = "DataSample_SampleAnalysisAssignment_SampleAnalysisLocked";
             errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, testStatus);
             errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, testId.toString());
             errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, newAnalyst);
@@ -759,7 +759,7 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
         if (testAssignmentMode==null){testAssignmentMode="null";}
     
         if (!assignmentModes.contains(testAssignmentMode)){
-            errorCode = "DataSample_SampleAnalysisAssignment_SameAnalyst";
+            errorCode = "DataSample_SampleAnalysisAssignment_AssignmentModeNotRecognized";
             errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, "analyst_assignment_mode");
             errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, sampleConfigCode);
             errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, sampleConfigCodeVersion);
@@ -1688,15 +1688,15 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
         Object[] testsToReview = new Object[0];
         Object[] testsSampleToReview = new Object[0];
         
+        String[] fieldsToRetrieve = new String[]{FIELDNAME_STATUS,FIELDNAME_RESULT_ID,FIELDNAME_TEST_ID, FIELDNAME_SAMPLE_ID};
+        
         String cancelScope = ""; Integer cancelScopeId = 0;
-        if (sampleId!=null ){cancelScope = FIELDNAME_SAMPLE_ID; cancelScopeId=sampleId; tableName="sample";}
-        if (testId!=null ){cancelScope = FIELDNAME_TEST_ID; cancelScopeId=testId; tableName="test";}
-        if (resultId!=null){cancelScope = FIELDNAME_RESULT_ID; cancelScopeId=resultId; tableName="result";}
+        if (sampleId!=null ){cancelScope = FIELDNAME_SAMPLE_ID; cancelScopeId=sampleId; }
+        if (testId!=null ){cancelScope = FIELDNAME_TEST_ID; cancelScopeId=testId; }
+        if (resultId!=null){cancelScope = FIELDNAME_RESULT_ID; cancelScopeId=resultId;}
         Object[][] objectInfo = null;
         objectInfo = Rdbms.getRecordFieldsByFilter(schemaDataName, tableName, 
-                                                            new String[]{cancelScope},
-                                                            new Object[]{cancelScopeId},
-                                                            new String[]{FIELDNAME_STATUS,FIELDNAME_RESULT_ID,FIELDNAME_TEST_ID, FIELDNAME_SAMPLE_ID});
+                                                            new String[]{cancelScope}, new Object[]{cancelScopeId}, fieldsToRetrieve);
         if (objectInfo.length==0){
             errorCode = "DataSample_SampleAnalysisResultNotFound";
             errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, resultId.toString());
@@ -1738,59 +1738,6 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
                     }
             }    
         }    
-        for (Integer iTstToCancel=0;iTstToCancel<testsToReview.length;iTstToCancel++){
-                Integer currTest = (Integer) testsToReview[iTstToCancel];                
-                objectInfo = Rdbms.getRecordFieldsByFilter(schemaDataName, "sample_analysis", 
-                                                                    new String[]{FIELDNAME_TEST_ID},
-                                                                    new Object[]{currTest},
-                                                                    new String[]{FIELDNAME_STATUS,FIELDNAME_STATUS_PREVIOUS,FIELDNAME_TEST_ID, FIELDNAME_SAMPLE_ID});
-                String currStatus = (String) objectInfo[0][0];               
-                if ( (!(sampleAnalysisStatusCanceled.equalsIgnoreCase(currStatus))) && (!(sampleAnalysisStatusReviewed.equalsIgnoreCase(currStatus))) && (currTest!=null) ) {                    
-                    diagnoses = Rdbms.updateRecordFieldsByFilter(schemaDataName, "sample_analysis", 
-                                                                        new String[]{FIELDNAME_STATUS, FIELDNAME_STATUS_PREVIOUS}, new Object[]{sampleAnalysisStatusReviewed, currStatus}, 
-                                                                        new String[]{FIELDNAME_TEST_ID}, new Object[]{currTest});      
-                    if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){
-                        String[] fieldsForAudit = new String[0];
-                        fieldsForAudit = LPArray.addValueToArray1D(fieldsForAudit, FIELDNAME_STATUS+":"+sampleAnalysisStatusCanceled);
-                        fieldsForAudit = LPArray.addValueToArray1D(fieldsForAudit, FIELDNAME_STATUS_PREVIOUS+":"+currStatus);
-                        SampleAudit smpAudit = new SampleAudit();
-                        smpAudit.sampleAuditAdd(schemaPrefix, "REVIEW_RESULT", "sample_analysis", currTest, sampleId, currTest, null, fieldsForAudit, userName, userRole);        
-                    }                        
-                }else{
-                    errorCode = "DataSample_SampleAnalysisResultNotReviewable";
-                    errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, LPNulls.replaceNull(currTest));
-                    errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, schemaDataName);
-                    errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, currStatus);                    
-                    return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);                                  
-                }
-        }
-        
-        for (Integer iSmpToCancel=0;iSmpToCancel<samplesToReview.length;iSmpToCancel++){
-                Integer currSample = (Integer) samplesToReview[iSmpToCancel];
-                objectInfo = Rdbms.getRecordFieldsByFilter(schemaDataName, "sample", 
-                                                                    new String[]{FIELDNAME_SAMPLE_ID},
-                                                                    new Object[]{currSample},
-                                                                    new String[]{FIELDNAME_STATUS,FIELDNAME_STATUS_PREVIOUS,FIELDNAME_SAMPLE_ID, FIELDNAME_SAMPLE_ID});
-                String currStatus = (String) objectInfo[0][0];               
-                if ( (!(sampleStatusCanceled.equalsIgnoreCase(currStatus))) && (!(sampleStatusReviewed.equalsIgnoreCase(currStatus))) && (currSample!=null) ){
-                    diagnoses = Rdbms.updateRecordFieldsByFilter(schemaDataName, "sample", 
-                                                                        new String[]{FIELDNAME_STATUS, FIELDNAME_STATUS_PREVIOUS}, new Object[]{sampleStatusReviewed, currStatus}, 
-                                                                        new String[]{FIELDNAME_SAMPLE_ID}, new Object[]{currSample});                                                        
-                    if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){
-                        String[] fieldsForAudit = new String[0];
-                        fieldsForAudit = LPArray.addValueToArray1D(fieldsForAudit, FIELDNAME_STATUS+":"+sampleStatusCanceled);
-                        fieldsForAudit = LPArray.addValueToArray1D(fieldsForAudit, FIELDNAME_STATUS_PREVIOUS+":"+currStatus);
-                        SampleAudit smpAudit = new SampleAudit();
-                        smpAudit.sampleAuditAdd(schemaPrefix, "REVIEW_RESULT", "sample", currSample, currSample, null, null, fieldsForAudit, userName, userRole);                            
-                    }                        
-                }else{
-                    errorCode = "DataSample_SampleNotReviewable";
-                    errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, LPNulls.replaceNull(currSample));
-                    errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, schemaDataName);
-                    errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, currStatus);                    
-                    diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);                       
-                }
-        }
         return diagnoses;
     }
     
@@ -1798,32 +1745,90 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
      *
      * @param schemaPrefix
      * @param userName
-     * @param resultId
+     * @param userRole
+     * @param sampleId
      */
-    public void _sampleAnalysisResultReview( String schemaPrefix, String userName, Integer resultId){
-        // Not implemented yet
+    public void sampleReview( String schemaPrefix, String userName, String userRole, Integer sampleId){
+        Object[] diagnoses = new Object[7];
+        tableName = "sample";  
+        String schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, LPPlatform.SCHEMA_DATA); 
+            
+        String sampleAnalysisStatusCanceled = Parameter.getParameterBundle(schemaDataName.replace("\"", ""), CONFIG_SAMPLEANALYSIS_STATUSCANCELED);
+        String sampleAnalysisStatusReviewed = Parameter.getParameterBundle(schemaDataName.replace("\"", ""), CONFIG_SAMPLEANALYSIS_STATUSREVIEWED);
+        String sampleStatusCanceled = Parameter.getParameterBundle(schemaDataName.replace("\"", ""), "sample_statusCanceled");
+        String sampleStatusReviewed = Parameter.getParameterBundle(schemaDataName.replace("\"", ""), "sample_statusReviewed");
+        
+        Object[][] objectInfo = Rdbms.getRecordFieldsByFilter(schemaDataName, tableName, 
+                                                            new String[]{FIELDNAME_SAMPLE_ID},
+                                                            new Object[]{sampleId},
+                                                            new String[]{FIELDNAME_STATUS,FIELDNAME_STATUS_PREVIOUS,FIELDNAME_SAMPLE_ID, FIELDNAME_SAMPLE_ID});
+        String currStatus = (String) objectInfo[0][0];               
+        if ( (!(sampleStatusCanceled.equalsIgnoreCase(currStatus))) && (!(sampleStatusReviewed.equalsIgnoreCase(currStatus))) && (sampleId!=null) ){
+            diagnoses = Rdbms.updateRecordFieldsByFilter(schemaDataName, tableName, 
+                                                                new String[]{FIELDNAME_STATUS, FIELDNAME_STATUS_PREVIOUS}, new Object[]{sampleStatusReviewed, currStatus}, 
+                                                                new String[]{FIELDNAME_SAMPLE_ID}, new Object[]{sampleId});                                                        
+            if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){
+                String[] fieldsForAudit = new String[0];
+                fieldsForAudit = LPArray.addValueToArray1D(fieldsForAudit, FIELDNAME_STATUS+":"+sampleStatusCanceled);
+                fieldsForAudit = LPArray.addValueToArray1D(fieldsForAudit, FIELDNAME_STATUS_PREVIOUS+":"+currStatus);
+                SampleAudit smpAudit = new SampleAudit();
+                smpAudit.sampleAuditAdd(schemaPrefix, "REVIEW_SAMPLE", tableName, sampleId, sampleId, null, null, fieldsForAudit, userName, userRole);                            
+            }                        
+        }else{
+            errorCode = "DataSample_SampleNotReviewable";
+            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, LPNulls.replaceNull(sampleId));
+            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, schemaDataName);
+            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, currStatus);                    
+            diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);                       
+        }
+        
     }
 
     /**
      *
      * @param schemaPrefix
      * @param userName
-     * @param resultId
+     * @param userRole
+     * @param testId
+     * @return diagnoses
      */
-    public void _sampleAnalysisReview( String schemaPrefix, String userName, Integer resultId){
-        // Not implemented yet
+    public Object[] sampleAnalysisReview( String schemaPrefix, String userName, String userRole, Integer testId){
+        Object[] diagnoses = new Object[7];
+        tableName = "sample_analysis";  
+        String schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, LPPlatform.SCHEMA_DATA); 
+            
+        String sampleAnalysisStatusCanceled = Parameter.getParameterBundle(schemaDataName.replace("\"", ""), CONFIG_SAMPLEANALYSIS_STATUSCANCELED);
+        String sampleAnalysisStatusReviewed = Parameter.getParameterBundle(schemaDataName.replace("\"", ""), CONFIG_SAMPLEANALYSIS_STATUSREVIEWED);
+        String sampleStatusCanceled = Parameter.getParameterBundle(schemaDataName.replace("\"", ""), "sample_statusCanceled");
+        String sampleStatusReviewed = Parameter.getParameterBundle(schemaDataName.replace("\"", ""), "sample_statusReviewed");
+        
+        Object[][] objectInfo = Rdbms.getRecordFieldsByFilter(schemaDataName, tableName, 
+                                                            new String[]{FIELDNAME_TEST_ID},
+                                                            new Object[]{testId},
+                                                            new String[]{FIELDNAME_STATUS,FIELDNAME_STATUS_PREVIOUS,FIELDNAME_TEST_ID, FIELDNAME_SAMPLE_ID});
+        String currStatus = (String) objectInfo[0][0];   
+        Integer sampleId = (Integer) objectInfo[0][3];  
+        if ( (!(sampleAnalysisStatusCanceled.equalsIgnoreCase(currStatus))) && (!(sampleAnalysisStatusReviewed.equalsIgnoreCase(currStatus))) && (testId!=null) ) {                    
+            diagnoses = Rdbms.updateRecordFieldsByFilter(schemaDataName, tableName, 
+                                                                new String[]{FIELDNAME_STATUS, FIELDNAME_STATUS_PREVIOUS}, new Object[]{sampleAnalysisStatusReviewed, currStatus}, 
+                                                                new String[]{FIELDNAME_TEST_ID}, new Object[]{testId});      
+            if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){
+                String[] fieldsForAudit = new String[0];
+                fieldsForAudit = LPArray.addValueToArray1D(fieldsForAudit, FIELDNAME_STATUS+":"+sampleAnalysisStatusCanceled);
+                fieldsForAudit = LPArray.addValueToArray1D(fieldsForAudit, FIELDNAME_STATUS_PREVIOUS+":"+currStatus);
+                SampleAudit smpAudit = new SampleAudit();
+                smpAudit.sampleAuditAdd(schemaPrefix, "REVIEW_SAMPLE_ANALYSIS", tableName, testId, sampleId, testId, null, fieldsForAudit, userName, userRole);                        
+            }  
+            return diagnoses;
+        }else{
+            errorCode = "DataSample_SampleAnalysisResultNotReviewable";
+            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, LPNulls.replaceNull(testId));
+            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, schemaDataName);
+            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, currStatus);                    
+            return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);                                  
+        }
     }
 
-    /**
-     *
-     * @param schemaPrefix
-     * @param userName
-     * @param resultId
-     */
-    public void _sampleAnalysisResult( String schemaPrefix, String userName, Integer resultId){
-    // Not implemented yet
-    }
-    
     /**
      *
      */
@@ -2560,7 +2565,7 @@ public Object[] logSampleAliquot( String schemaPrefix, Integer sampleId, String[
     
     String actionEnabledSampleAliquotVolumeRequired = Parameter.getParameterBundle(schemaPrefix.replace("\"", "")+"-data", "sampleAliquot_volumeRequired");   
     if (actionEnabledSampleAliquotVolumeRequired.toUpperCase().contains("ENABLE")){
-        String[] mandatorySampleFields = new String[]{FIELDNAME_VOLUME_FOR_ALIQ, FIELDNAME_VOLUME_FOR_ALIQ_uom};
+        String[] mandatorySampleFields = new String[]{FIELDNAME_VOLUME_FOR_ALIQ, FIELDNAME_VOLUME_FOR_ALIQ_UOM};
         String[] mandatorySampleAliqFields = new String[]{"volume", "volume_uom"};
         Object[][] sampleInfo = Rdbms.getRecordFieldsByFilter(schemaDataName, parentTableName, new String[] {FIELDNAME_SAMPLE_ID}, new Object[]{sampleId}, mandatorySampleFields);
         if ( (sampleInfo[0][0]!=null) && (LPPlatform.LAB_FALSE.equalsIgnoreCase(sampleInfo[0][0].toString())) ){
@@ -2603,7 +2608,7 @@ public Object[] logSampleAliquot( String schemaPrefix, Integer sampleId, String[
     smpAliqFieldValue = LPArray.addValueToArray1D(smpAliqFieldValue, sampleId);
     smpAliqFieldName = LPArray.addValueToArray1D(smpAliqFieldName, FIELDNAME_VOLUME_FOR_ALIQ);
     smpAliqFieldValue = LPArray.addValueToArray1D(smpAliqFieldValue, aliqVolume);
-    smpAliqFieldName = LPArray.addValueToArray1D(smpAliqFieldName, FIELDNAME_VOLUME_FOR_ALIQ_uom);
+    smpAliqFieldName = LPArray.addValueToArray1D(smpAliqFieldName, FIELDNAME_VOLUME_FOR_ALIQ_UOM);
     smpAliqFieldValue = LPArray.addValueToArray1D(smpAliqFieldValue, aliqVolumeuom);
     smpAliqFieldName = LPArray.addValueToArray1D(smpAliqFieldName, "created_by");
     smpAliqFieldValue = LPArray.addValueToArray1D(smpAliqFieldValue, userName);
@@ -2652,7 +2657,7 @@ public Object[] logSampleSubAliquot( String schemaPrefix, Integer aliquotId, Str
 
     if (actionEnabledSampleSubAliquotVolumeRequired.toUpperCase().contains("ENABLE")){
         mandatoryAliquotFields = LPArray.addValueToArray1D(mandatoryAliquotFields, FIELDNAME_VOLUME_FOR_ALIQ);
-        mandatoryAliquotFields = LPArray.addValueToArray1D(mandatoryAliquotFields, FIELDNAME_VOLUME_FOR_ALIQ_uom);
+        mandatoryAliquotFields = LPArray.addValueToArray1D(mandatoryAliquotFields, FIELDNAME_VOLUME_FOR_ALIQ_UOM);
         
         String[] mandatorySampleSubAliqFields = new String[]{"volume", "volume_uom"};
         Object[][] aliquotInfo = Rdbms.getRecordFieldsByFilter(schemaDataName, parentTableName, new String[] {FIELDNAME_ALIQUOTID}, new Object[]{aliquotId}, mandatoryAliquotFields);

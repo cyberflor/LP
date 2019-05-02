@@ -335,7 +335,6 @@ public class LPPlatform {
             // decrypt the text
             cipher.init(Cipher.DECRYPT_MODE, aesKey);
             String decrypted = new String(cipher.doFinal(bb));
-            System.err.println("decrypted:" + decrypted);   
             diagnoses[0] = true;
             diagnoses[1] = decrypted;            
             diagnoses[2] = encryptedString; 

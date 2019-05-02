@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.Date;
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.logging.Level;
@@ -116,7 +115,7 @@ public class TstDataSample extends HttpServlet {
                     }                      
                 }else{                
                     switch (functionBeingTested.toUpperCase()){
-                        case "LOGSAMPLE":
+                        case "LOGSAMPLE":                            
                             String sampleTemplate=null;
                             Integer sampleTemplateVersion=null;
                             String[] sampleTemplateInfo = null;
@@ -130,15 +129,10 @@ public class TstDataSample extends HttpServlet {
                             String[] fieldValue = null;
                             if (lineNumCols>=numEvaluationArguments+6)                
                                 fieldValue = LPTestingOutFormat.csvExtractFieldValueStringArr(csvFileContent[iLines][numEvaluationArguments+6]);
-
                             fileContentTable1=fileContentTable1+LPTestingOutFormat.rowAddFields(
                                 new Object[]{"templateName, templateVersion, fieldNames, fieldValues", 
                                     sampleTemplate+", "+sampleTemplateVersion.toString()+", "+Arrays.toString(fieldName)+", "+Arrays.toString(fieldValue)});                              
-                            try {
-                                dataSample = smp.logSample(schemaPrefix, sampleTemplate, sampleTemplateVersion, fieldName, fieldValue, userName, userRole, null, null);
-                            } catch (IllegalArgumentException ex) {
-                                Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
-                            }
+                            dataSample = smp.logSample(schemaPrefix, sampleTemplate, sampleTemplateVersion, fieldName, fieldValue, userName, userRole, null, null);
                             break;
                         case "RECEIVESAMPLE":  
                             Integer sampleId = null;
@@ -241,15 +235,11 @@ public class TstDataSample extends HttpServlet {
                             fileContentTable1=fileContentTable1+LPTestingOutFormat.rowAddFields(
                                 new Object[]{"userName, fieldNames, objectLevel, ObjectId", 
                                     userName+", "+objectLevel+", "+objectId.toString()});                              
-                            try {
-                                sampleId = null; Integer testId = null; resultId = null;
-                                if (objectLevel.equalsIgnoreCase("SAMPLE")){sampleId=objectId;}
-                                if (objectLevel.equalsIgnoreCase("TEST")){testId=objectId;}
-                                if (objectLevel.equalsIgnoreCase("RESULT")){resultId=objectId;}
-                                dataSample = smp.sampleResultReview(schemaPrefix, userName, sampleId, testId, resultId, userRole);
-                            } catch (IllegalArgumentException ex) {
-                                Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
-                            }
+                            sampleId = null; Integer testId = null; resultId = null;
+                            if (objectLevel.equalsIgnoreCase("SAMPLE")){sampleId=objectId;}
+                            if (objectLevel.equalsIgnoreCase("TEST")){testId=objectId;}
+                            if (objectLevel.equalsIgnoreCase("RESULT")){resultId=objectId;}
+                            dataSample = smp.sampleResultReview(schemaPrefix, userName, sampleId, testId, resultId, userRole);
                             break;                                     
                         case "CANCELRESULT":
                             objectId = 0;
@@ -261,15 +251,11 @@ public class TstDataSample extends HttpServlet {
                             fileContentTable1=fileContentTable1+LPTestingOutFormat.rowAddFields(
                                 new Object[]{"userName, fieldNames, objectLevel, ObjectId", 
                                     userName+", "+objectLevel+", "+objectId.toString()});                              
-                            try {
-                                sampleId = null; Integer testId = null; resultId = null;
-                                if (objectLevel.equalsIgnoreCase("SAMPLE")){sampleId = objectId;}
-                                if (objectLevel.equalsIgnoreCase("TEST")){testId = objectId;}
-                                if (objectLevel.equalsIgnoreCase("RESULT")){resultId = objectId;}
-                                dataSample = smp.sampleAnalysisResultCancel(schemaPrefix, userName, sampleId, testId, resultId, userRole);
-                            } catch (IllegalArgumentException ex) {
-                                Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
-                            }
+                            sampleId = null; testId = null; resultId = null;
+                            if (objectLevel.equalsIgnoreCase("SAMPLE")){sampleId = objectId;}
+                            if (objectLevel.equalsIgnoreCase("TEST")){testId = objectId;}
+                            if (objectLevel.equalsIgnoreCase("RESULT")){resultId = objectId;}
+                            dataSample = smp.sampleAnalysisResultCancel(schemaPrefix, userName, sampleId, testId, resultId, userRole);
                             break;                            
                         case "UNCANCELRESULT": 
                             objectId = 0;
@@ -281,19 +267,15 @@ public class TstDataSample extends HttpServlet {
                             fileContentTable1=fileContentTable1+LPTestingOutFormat.rowAddFields(
                                 new Object[]{"userName, fieldNames, objectLevel, ObjectId", 
                                     userName+", "+objectLevel+", "+objectId.toString()});                              
-                            try {
-                                sampleId = null; Integer testId = null; resultId = null;
+                            sampleId = null; testId = null; resultId = null;
 
-                                if (objectLevel.equalsIgnoreCase("SAMPLE")){sampleId = objectId;}
-                                if (objectLevel.equalsIgnoreCase("TEST")){testId = objectId;}
-                                if (objectLevel.equalsIgnoreCase("RESULT")){resultId = objectId;}
-                                dataSample = smp.sampleAnalysisResultUnCancel(schemaPrefix, userName, sampleId, testId, resultId, userRole);
-                            } catch (IllegalArgumentException ex) {
-                                Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
-                            }
+                            if (objectLevel.equalsIgnoreCase("SAMPLE")){sampleId = objectId;}
+                            if (objectLevel.equalsIgnoreCase("TEST")){testId = objectId;}
+                            if (objectLevel.equalsIgnoreCase("RESULT")){resultId = objectId;}
+                            dataSample = smp.sampleAnalysisResultUnCancel(schemaPrefix, userName, sampleId, testId, resultId, userRole);
                             break;       
                         case "TESTASSIGNMENT": 
-                            Integer testId = 0;
+                            testId = 0;
                             if (lineNumCols>=numEvaluationArguments+4)                
                                 testId=LPTestingOutFormat.csvExtractFieldValueInteger(csvFileContent[iLines][numEvaluationArguments+4]);
                             String newAnalyst=null;
@@ -302,11 +284,7 @@ public class TstDataSample extends HttpServlet {
                             fileContentTable1=fileContentTable1+LPTestingOutFormat.rowAddFields(
                                 new Object[]{"testId, userName, newAnalyst", 
                                     testId.toString()+", "+userName+", "+newAnalyst});                              
-                            try {
-                                dataSample = smp.sampleAnalysisAssignAnalyst(schemaPrefix, userName, testId, newAnalyst, userRole);
-                            } catch (IllegalArgumentException ex) {
-                                Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
-                            }
+                            dataSample = smp.sampleAnalysisAssignAnalyst(schemaPrefix, userName, testId, newAnalyst, userRole);
                             break;   
                         case "GETSAMPLEINFO":
                             String schemaDataName = "data";
@@ -413,13 +391,9 @@ public class TstDataSample extends HttpServlet {
                             fileContentTable1=fileContentTable1+LPTestingOutFormat.rowAddFields(
                                 new Object[]{"sample_id, fieldNames, fieldValues", 
                                     sampleId.toString()+", "+Arrays.toString(fieldName)+", "+Arrays.toString(fieldValueStrArr)});                                                                                      
-                            try {
-                                dataSample = smp.logSampleAliquot(schemaPrefix, sampleId, 
-                                        // sampleTemplate, sampleTemplateVersion, 
-                                        fieldName, fieldValueObjArr, userName, userRole, appSessionId);                                                                
-                            } catch (IllegalArgumentException ex) {
-                                Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
-                            }
+                            dataSample = smp.logSampleAliquot(schemaPrefix, sampleId, 
+                                    // sampleTemplate, sampleTemplateVersion, 
+                                    fieldName, fieldValueObjArr, userName, userRole, appSessionId);                                                                
                             break;                     
                         case "LOGSUBALIQUOT":
                             Integer aliquotId = 0;

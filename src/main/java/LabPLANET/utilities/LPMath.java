@@ -19,24 +19,23 @@ public class LPMath {
  * 
  * Calc the nth root. Common application on sampling plans.
  * @param n int - The nth root 
- * @param A double - for this value
+ * @param a double - for this value
  * @param p double 
  * @return double. returns 0 if A = 0, returns -1 in case of error.
  */    
     public static double nthroot(int n, double a, double p) {
-	if(a < 0) {
-		System.err.println("A < 0");// we handle only real positive numbers
-		return -1;
-	} else if(a == 0) {
-		return 0;
-	}
-	double xPrev = a;
-	double x = a / n;  // starting "guessed" value...
-	while(Math.abs(x - xPrev) > p) {
-		xPrev = x;
-		x = ((n - 1.0) * x + a / Math.pow(x, n - 1.0)) / n;
-	}
-	return x;
+        if(a < 0) {
+            return -1;
+        }else if(a == 0) {
+            return 0;
+        }
+        double xPrev = a;
+        double x = a / n;  // starting "guessed" value...
+        while(Math.abs(x - xPrev) > p) {
+                xPrev = x;
+                x = ((n - 1.0) * x + a / Math.pow(x, n - 1.0)) / n;
+        }
+        return x;
     }  
     
     public static Object[] extractPortion(String schemaPrefix, BigDecimal volume, String volumeUOM, Integer volumeObjectId, BigDecimal portion, String portionUOM, Integer portionObjectId){

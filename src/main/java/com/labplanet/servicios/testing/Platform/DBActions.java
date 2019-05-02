@@ -36,7 +36,6 @@ public class DBActions extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)            throws ServletException, IOException {
         response=LPTestingOutFormat.responsePreparation(response);
-
         Object[][] dataSample2D = new Object[1][6];
         Object[] dataSample2Din1D = new Object[0];
         
@@ -46,9 +45,13 @@ public class DBActions extends HttpServlet {
         String csvPathName = LPTestingOutFormat.TESTING_FILES_PATH+csvFileName; 
         String csvFileSeparator=LPTestingOutFormat.TESTING_FILES_FIELD_SEPARATOR;
         
-        Object[][] csvFileContent = LPArray.convertCSVinArray(csvPathName, csvFileSeparator); 
                 
         try (PrintWriter out = response.getWriter()) {
+            
+out.println("Executing DBACtions"); 
+out.println("File path: "+csvPathName); 
+            Object[][] csvFileContent = LPArray.convertCSVinArray(csvPathName, csvFileSeparator); 
+out.println("File csvFileContent: "+csvFileContent[0][0].toString()); 
             String fileContent = LPTestingOutFormat.getHtmlStyleHeader(this.getClass().getSimpleName());
             HashMap<String, Object> csvHeaderTags = LPTestingOutFormat.getCSVHeader(LPArray.convertCSVinArray(csvPathName, "="));
             if (csvHeaderTags.containsKey(LPPlatform.LAB_FALSE)){
