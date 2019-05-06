@@ -20,6 +20,11 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
 import org.json.simple.JSONObject;
+import org.json.simple.JSONArray;
+
+//import org.codehaus.jettison.json.JSONObject;
+//import org.codehaus.jettison.json.JSONException;
+//import org.json.simple.JSONObject;
 import databases.Rdbms;
 
 /**
@@ -763,7 +768,7 @@ public class LPPlatform {
      * @param errorArray
      * @return
      */
-    public static JSONObject trapErrorMessageJSON(Object[] errorArray){
+    public static JSONObject trapErrorMessageJSON(Object[] errorArray) {
                 
         JSONObject errorJson = new JSONObject();
             errorJson.put("evaluation", errorArray[0]);

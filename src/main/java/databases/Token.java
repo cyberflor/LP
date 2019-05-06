@@ -10,26 +10,27 @@ import LabPLANET.utilities.LPArray;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTCreationException;
+import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import java.sql.Date;
+import java.io.UnsupportedEncodingException;
+//import com.fasterxml.jackson.core.JsonProcessingException;
+//import static com.sun.xml.internal.ws.spi.db.BindingContextFactory.LOGGER;
 import java.util.HashMap;
 import java.util.Map;
-
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.io.UnsupportedEncodingException;
+//import org.apache.commons.net.util.Base64;
 /**
  *
  * @author Administrator
  */
 public class Token {
     
-    String userDB;
-    String userDBPassword;
-    String personId;
-    String userRole;
-    String userEsign;
-    String appSessionId;
-    Date appSessionStartDate;
+
     
     String KEY = "mi clave";
     String ISSUER = "LabPLANETdestrangisInTheNight";
@@ -61,11 +62,12 @@ public class Token {
     private Object[] isValidToken(String token){
         Object[] diagnoses = new Object[0];
         try {
+            
             Algorithm algorithm = Algorithm.HMAC256(KEY);
             JWTVerifier verifier = JWT.require(algorithm)
                 .withIssuer(ISSUER)
                 .build(); //Reusable verifier instance
-            //DecodedJWT decode = JWT.decode(token);
+            DecodedJWT decode = JWT.decode(token);
             DecodedJWT jwt = verifier.verify(token);            
             
             // Check that the fields in the header are present, not just verify that the token construction is ok.
@@ -133,38 +135,53 @@ public class Token {
      * @return
      */
     public String  createToken(String userDBId, String userDBPassword, String userId, String userRole, String appSessionId, String appSessionStartedDate, String eSign){        
-        Algorithm algorithm = Algorithm.HMAC256(KEY);
+        Algorithm algorithm = Algorithm.HMAC256(KEY); /*long tiempo = System.currentTimeMillis();
+        String vwt = Jwts.builder()
+        .signWith(SignatureAlgorithm.HS256, KEY)
+        .setSubject(userId)
+        .setHeaderParams(myParams)
+        //.setHeaderParam("", )
+        //.setHeaderParam("", )
+        //.setHeaderParam("", )
+        .setIssuer(ISSUER)
+        .setIssuedAt(new Date(tiempo))
+        .setExpiration(new Date(tiempo+900000))
+        .claim("email", "mymail@gmail.com")
+        .compact();
+        return vwt;*/
         Map <String, Object> myParams = new HashMap<>();
-        myParams.put(TOKEN_PARAM_USERDB, userDBId);                   myParams.put(TOKEN_PARAM_USERPW, userDBPassword);
-        myParams.put(TOKEN_PARAM_INTERNAL_USERID, userId);             myParams.put(TOKEN_PARAM_USER_ROLE, userRole);
-        myParams.put(TOKEN_PARAM_APP_SESSION_ID, appSessionId);  myParams.put(TOKEN_PARAM_APP_SESSION_STARTED_DATE, appSessionStartedDate);
-        myParams.put(TOKEN_PARAM_USER_ESIGN, eSign); 
-        String token = JWT.create()
-                .withHeader(myParams)
-                .withIssuer(ISSUER)
-                .sign(algorithm);
-        this.userDB=userDBId;
-        this.userDBPassword=userDBPassword;
-        this.personId=userId;
-        this.userRole=userRole;
-        this.userEsign=eSign;
-        this.appSessionId=appSessionId;
-        this.appSessionStartDate=Date.valueOf(appSessionStartedDate);        
-        return token;
+        myParams.put(TOKEN_PARAM_USERDB, userDBId);
+        myParams.put(TOKEN_PARAM_USERPW, userDBPassword);
+        myParams.put(TOKEN_PARAM_INTERNAL_USERID, userId);
+        myParams.put(TOKEN_PARAM_USER_ROLE, userRole);
+        myParams.put(TOKEN_PARAM_APP_SESSION_ID, appSessionId);
+        //myParams.put(TOKEN_PARAM_APP_SESSION_STARTED_DATE, appSessionStartedDate);
+        myParams.put(TOKEN_PARAM_USER_ESIGN, eSign);
+        
+        try{
+            String token = JWT.create()
+                    .withHeader(myParams)
+                    .withIssuer(ISSUER)                    
+                    .sign(algorithm);
+            return token;
+       } catch (JWTCreationException exception){
+            throw new RuntimeException("You need to enable Algorithm.HMAC256");        
+        }
+        
         
         /*long tiempo = System.currentTimeMillis();
         String vwt = Jwts.builder()
-                .signWith(SignatureAlgorithm.HS256, KEY)
-                .setSubject(userId)
-                .setHeaderParams(myParams)
-                //.setHeaderParam("", )
-                //.setHeaderParam("", )
-                //.setHeaderParam("", )
-                .setIssuer(ISSUER)
-                .setIssuedAt(new Date(tiempo))
-                .setExpiration(new Date(tiempo+900000))
-                .claim("email", "mymail@gmail.com")
-                .compact();
+        .signWith(SignatureAlgorithm.HS256, KEY)
+        .setSubject(userId)
+        .setHeaderParams(myParams)
+        //.setHeaderParam("", )
+        //.setHeaderParam("", )
+        //.setHeaderParam("", )
+        .setIssuer(ISSUER)
+        .setIssuedAt(new Date(tiempo))
+        .setExpiration(new Date(tiempo+900000))
+        .claim("email", "mymail@gmail.com")
+        .compact();
         return vwt;*/
     }    
 }

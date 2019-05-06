@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.Response;
 import databases.Token;
 import java.util.ResourceBundle;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
@@ -82,7 +83,8 @@ public class appHeaderAPI extends HttpServlet {
                         if (!Rdbms.getRdbms().startRdbms(dbUserName, dbUserPassword)) {
                                         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);           
                                         errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+"Connection not established");                        
-                                        out.println(Arrays.toString(errObject));              
+                                        out.println(Arrays.toString(errObject));   
+                                        Rdbms.closeRdbms();    
                                         return;                
                         }
                         Object[][] personInfoArr = Rdbms.getRecordFieldsByFilter("config", "person", 
@@ -90,6 +92,7 @@ public class appHeaderAPI extends HttpServlet {
                         if ("LABPLANET_FALSE".equals(personInfoArr[0][0].toString())){                                                                                                                                                   
                             Object[] errMsg = LPFrontEnd.responseError(LPArray.array2dTo1d(personInfoArr), language, null);
                             response.sendError((int) errMsg[0], (String) errMsg[1]);   
+                            Rdbms.closeRdbms();    
                             return;
                         }
                         for (int iFields=0; iFields<personFieldsNameArr.length; iFields++ ){

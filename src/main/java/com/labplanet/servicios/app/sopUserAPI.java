@@ -47,6 +47,7 @@ public class sopUserAPI extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)            throws ServletException, IOException {
         request=LPHttp.requestPreparation(request);
         response=LPHttp.responsePreparation(response);
+       
         
         String language = "en";
         
@@ -104,7 +105,7 @@ public class sopUserAPI extends HttpServlet {
             }           
 */            
             switch (actionName.toUpperCase()){
-            case "MY_SOPS":    
+            case "ALL_MY_SOPS":    
                 UserProfile usProf = new UserProfile();
                 String[] allUserProcedurePrefix = LPArray.convertObjectArrayToStringArray(usProf.getAllUserProcedurePrefix(dbUserName));
                 if (LPPlatform.LAB_FALSE.equalsIgnoreCase(allUserProcedurePrefix[0])){
@@ -135,6 +136,7 @@ public class sopUserAPI extends HttpServlet {
                 JSONArray columnNames = new JSONArray(); 
                 JSONArray mySops = new JSONArray(); 
                 JSONObject mySopsList = new JSONObject();
+                JSONArray mySopsListArr = new JSONArray();
                 
                 JSONObject columns = new JSONObject();
                 for (Object[] curSop: userSops){
@@ -151,10 +153,13 @@ public class sopUserAPI extends HttpServlet {
                 }    
                 columnNames.add(columns);
                 mySopsList.put("columns_names", columnNames);
+                //mySopsListArr.add(mySopsList);
+                //mySopsList.clear();
                 mySopsList.put("my_sops", mySops);
-
+                mySopsListArr.add(mySopsList);
+                
                 Response.ok().build();
-                response.getWriter().write(mySopsList.toString());      
+                response.getWriter().write(mySopsListArr.toString());      
                 Rdbms.closeRdbms(); 
                 return;
             case "MY_PENDING_SOPS":    

@@ -34,7 +34,8 @@ public class LPHttp {
 
         ResourceBundle prop = ResourceBundle.getBundle("parameter.config.config");
         String frontendUrl = prop.getString("frontend_url");
-
+        response.setHeader("CORS_ORIGIN_ALLOW_ALL", "True");                
+        response.setHeader("CORS_ALLOW_CREDENTIALS", "False");                
         response.setHeader("Access-Control-Allow-Origin", frontendUrl);
         response.setHeader("Access-Control-Allow-Methods", "GET");                
         return response;

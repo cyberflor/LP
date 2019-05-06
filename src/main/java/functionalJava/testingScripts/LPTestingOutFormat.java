@@ -24,7 +24,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class LPTestingOutFormat {
     
-    public static final String TESTING_FILES_PATH = "/LabPLANET-API/testingRepository"; //\\\\FRANCLOUD\\fran\\LabPlanet\\testingRepository\\";
+    public static final String TESTING_FILES_PATH = "\\\\FRANCLOUD\\fran\\LabPlanet\\testingRepository\\"; // "\\testingRepository\\";
     public static final String TESTING_FILES_FIELD_SEPARATOR=";";
     public static final String TESTING_USER="labplanet";
     public static final String TESTING_PW="avecesllegaelmomento";

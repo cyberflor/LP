@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.Response;
 //import org.codehaus.jettison.json.JSONArray;
+//import org.codehaus.jettison.json.JSONObject;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONArray;
 import functionalJava.sop.UserSop;
@@ -59,7 +60,7 @@ public class AppProcedureListAPI extends HttpServlet {
             if (finalToken==null) {                  
                 errObject = LPArray.addValueToArray1D(errObject, "API Error Message: finalToken is one mandatory param for this API");                    
                 Object[] errMsg = LPFrontEnd.responseError(errObject, language, null);
-                response.sendError((int) errMsg[0], (String) errMsg[1]);    
+                response.sendError((int) errMsg[0], errMsg[1].toString());    
                 Rdbms.closeRdbms(); 
                 return ;
             }                    
@@ -76,16 +77,19 @@ public class AppProcedureListAPI extends HttpServlet {
                 errObject = LPArray.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
                 errObject = LPArray.addValueToArray1D(errObject, "API Error Message: db User Name and Password not correct, connection to the database is not possible");                    
                 Object[] errMsg = LPFrontEnd.responseError(errObject, language, null);
-                response.sendError((int) errMsg[0], (String) errMsg[1]);    
+                response.sendError((int) errMsg[0], errMsg[1].toString());    
                 Rdbms.closeRdbms(); 
                 return ;               
             }               
+         
             String rolName = userRole;
             UserProfile usProf = new UserProfile();
             Object[] allUserProcedurePrefix = usProf.getAllUserProcedurePrefix(dbUserName);
             if (LPPlatform.LAB_FALSE.equalsIgnoreCase(allUserProcedurePrefix[0].toString())){
-                Object[] errMsg = LPFrontEnd.responseError(allUserProcedurePrefix, language, null);
-                response.sendError((int) errMsg[0], (String) errMsg[1]);          
+                //Object[] errMsg = LPFrontEnd.responseError(allUserProcedurePrefix, language, null);
+                //response.sendError((int) errMsg[0], errMsg[1].toString());      
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "line 90. usProf.getAllUserProcedurePrefix");
+                Rdbms.closeRdbms(); 
                 return;
             }
             String[] procFldNameArray = new String[0];
@@ -102,6 +106,7 @@ public class AppProcedureListAPI extends HttpServlet {
             procEventFldNameArray = LPArray.addValueToArray1D(procEventFldNameArray, "branch_level");
             procEventFldNameArray = LPArray.addValueToArray1D(procEventFldNameArray, "type");
             procEventFldNameArray = LPArray.addValueToArray1D(procEventFldNameArray, "mode");
+            procEventFldNameArray = LPArray.addValueToArray1D(procEventFldNameArray, "esign_required");
             
             Object[][] notCompletedUserSOP = null;
             Object[] notCompletedUserSOP1D = null;
@@ -112,90 +117,103 @@ public class AppProcedureListAPI extends HttpServlet {
             for (Object curProc: allUserProcedurePrefix){
                 JSONObject procedure = new JSONObject();
                 //JSONArray procEventsJson = new JSONArray();
-                Object[][] procInfo = Rdbms.getRecordFieldsByFilter(curProc.toString()+"-config", "procedure_info", 
+                String schemaName=LPPlatform.buildSchemaName(curProc.toString(), LPPlatform.SCHEMA_CONFIG);
+                Object[][] procInfo = Rdbms.getRecordFieldsByFilter(schemaName, "procedure_info", 
                         new String[]{"name is not null"}, null, procFldNameArray);
-                if (LPPlatform.LAB_FALSE.equalsIgnoreCase(procInfo[0][0].toString())){
-                    Object[] errMsg = LPFrontEnd.responseError(procInfo, language,  curProc.toString());
-                    response.sendError((int) errMsg[0], (String) errMsg[1]);                    
-                }                       
-                for (int yProc=0; yProc<procInfo[0].length; yProc++){              
-                    //procArray = LPArray.addValueToArray1D(procArray, procInfo[0][yProc]);
-                    procedure.put(procFldNameArray[yProc], procInfo[0][yProc]);
-                }
-                //procArray = LPArray.addValueToArray1D(procArray, curProc);
-                procedure.put("schemaPrefix", curProc);
-                
-                Boolean isProcedureSopEnable = userSop.isProcedureSopEnable((String) curProc);
-                if (!isProcedureSopEnable) procedure.put("SopCertification", "Disabled");                 
-                if (isProcedureSopEnable){
-                    notCompletedUserSOP = userSop.getNotCompletedUserSOP(internalUserID, curProc.toString(), new String[]{"sop_name"});
-                    notCompletedUserSOP1D = LPArray.array2dTo1d(notCompletedUserSOP);
-                    procEventFldNameArray = LPArray.addValueToArray1D(procEventFldNameArray, sopFieldName);
-                }
-                
-                Object[][] procEvent = Rdbms.getRecordFieldsByFilter(curProc.toString()+"-config", "procedure_events", 
-                        new String[]{"role_name"}, new String[]{rolName}, 
-                        procEventFldNameArray, new String[]{"order_number"});
-                if (!LPPlatform.LAB_FALSE.equalsIgnoreCase(procEvent[0][0].toString())){                                                
-                    
-                    JSONArray procEvents = new JSONArray(); 
-                    for (Object[] procEvent1 : procEvent) {
-                        JSONObject procEventJson = new JSONObject();
-                        for (int yProcEv = 0; yProcEv<procEvent[0].length; yProcEv++) {
-                            //procArray = LPArray.addValueToArray1D(procArray, procEvent[xProcEv][yProcEv]);
-                            procEventJson.put(procEventFldNameArray[yProcEv], procEvent1[yProcEv]);
-                        }
-                        Boolean userHasNotCompletedSOP = false;
-                        JSONObject procEventSopDetail = new JSONObject();
-                        String procEventSops = (String) procEvent1[LPArray.valuePosicInArray(procEventFldNameArray, sopFieldName)];
-                        if (procEventSops==null){
-                            userHasNotCompletedSOP = false;
-                            procEventJson.put(LABEL_SOPS_PASSED, true);
-                            procEventSopDetail.put(LABEL_SOP_LIST, LABEL_SOP_TOTAL_NO_SOPS);
-                            procEventSopDetail.put(LABEL_SOP_TOTAL, 0);
-                            procEventSopDetail.put(LABEL_SOP_TOTAL_COMPLETED, 0);
-                            procEventSopDetail.put(LABEL_SOP_TOTAL_NOT_COMPLETED, 0);
-                        }else{
-                            if ("".equals(procEventSops)){
-                                procEventJson.put(LABEL_SOPS_PASSED, true);
+ /*               if (LPPlatform.LAB_FALSE.equalsIgnoreCase(procInfo[0][0].toString())){
+                    //Object[] errMsg = LPFrontEnd.responseError(procInfo, language,  curProc.toString());
+                    //response.sendError((int) errMsg[0], errMsg[1].toString());      
+                    String procInfoDetail = "";
+                    for (Object fld: procInfo[0]){
+                        procInfoDetail=procInfoDetail+fld.toString();
+                    }
+                    response.sendError(HttpServletResponse.SC_BAD_REQUEST, "line 123. getRecordFieldsByFilter for procInfo "
+                            +"ProcInfo: "+procInfoDetail
+                            +"Language: "+language
+                            +"CurrProc: "+curProc.toString());
+                    Rdbms.closeRdbms(); 
+                    return;
+                } */   
+                if (!LPPlatform.LAB_FALSE.equalsIgnoreCase(procInfo[0][0].toString())){
+                    for (int yProc=0; yProc<procInfo[0].length; yProc++){              
+                        //procArray = LPArray.addValueToArray1D(procArray, procInfo[0][yProc]);
+                        procedure.put(procFldNameArray[yProc], procInfo[0][yProc]);
+                    }
+                    //procArray = LPArray.addValueToArray1D(procArray, curProc);
+                    procedure.put("schemaPrefix", curProc);
+
+                    Boolean isProcedureSopEnable = userSop.isProcedureSopEnable((String) curProc);
+                    if (!isProcedureSopEnable) procedure.put("SopCertification", "Disabled");                 
+                    if (isProcedureSopEnable){
+                        notCompletedUserSOP = userSop.getNotCompletedUserSOP(internalUserID, curProc.toString(), new String[]{"sop_name"});
+                        notCompletedUserSOP1D = LPArray.array2dTo1d(notCompletedUserSOP);
+                        procEventFldNameArray = LPArray.addValueToArray1D(procEventFldNameArray, sopFieldName);
+                    }
+
+                    Object[][] procEvent = Rdbms.getRecordFieldsByFilter(curProc.toString()+"-config", "procedure_events", 
+                            new String[]{"role_name"}, new String[]{rolName}, 
+                            procEventFldNameArray, new String[]{"order_number"});
+                    if (!LPPlatform.LAB_FALSE.equalsIgnoreCase(procEvent[0][0].toString())){                                                
+
+                        JSONArray procEvents = new JSONArray(); 
+                        for (Object[] procEvent1 : procEvent) {
+                            JSONObject procEventJson = new JSONObject();
+                            for (int yProcEv = 0; yProcEv<procEvent[0].length; yProcEv++) {
+                                //procArray = LPArray.addValueToArray1D(procArray, procEvent[xProcEv][yProcEv]);
+                                procEventJson.put(procEventFldNameArray[yProcEv], procEvent1[yProcEv]);
+                            }
+                            Boolean userHasNotCompletedSOP = false;
+                            JSONObject procEventSopDetail = new JSONObject();
+                            String procEventSops = (String) procEvent1[LPArray.valuePosicInArray(procEventFldNameArray, sopFieldName)];
+                            if (procEventSops==null){
                                 userHasNotCompletedSOP = false;
+                                procEventJson.put(LABEL_SOPS_PASSED, true);
                                 procEventSopDetail.put(LABEL_SOP_LIST, LABEL_SOP_TOTAL_NO_SOPS);
                                 procEventSopDetail.put(LABEL_SOP_TOTAL, 0);
                                 procEventSopDetail.put(LABEL_SOP_TOTAL_COMPLETED, 0);
                                 procEventSopDetail.put(LABEL_SOP_TOTAL_NOT_COMPLETED, 0);
                             }else{
-                                Object[] procEventSopsArr = procEventSops.split("\\|");
-                                String sopListStr = "";
-                                Integer sopTotalNotCompleted = 0;
-                                Integer sopTotalCompleted = 0;
-                                Integer sopTotal = 0;
-                                JSONObject procEventSopSummary = new JSONObject();   
-                                for (Object curProcEvSop: procEventSopsArr){
-                                    JSONObject procEventSopDetailJson = new JSONObject();   
-                                    sopTotal++;
-                                    procEventSopDetailJson.put("sop_name", curProcEvSop);
-                                    if (LPArray.valuePosicInArray(notCompletedUserSOP1D, curProcEvSop)==-1) {
-                                        sopTotalNotCompleted++;
-                                        sopListStr=sopListStr+curProcEvSop.toString()+"*NO, ";
-                                        userHasNotCompletedSOP = true;
-                                        procEventSopDetailJson.put("sop_completed", false);
-                                    }else{
-                                        sopTotalCompleted++;
-                                        procEventSopDetailJson.put("sop_completed", true);
+                                if ("".equals(procEventSops)){
+                                    procEventJson.put(LABEL_SOPS_PASSED, true);
+                                    userHasNotCompletedSOP = false;
+                                    procEventSopDetail.put(LABEL_SOP_LIST, LABEL_SOP_TOTAL_NO_SOPS);
+                                    procEventSopDetail.put(LABEL_SOP_TOTAL, 0);
+                                    procEventSopDetail.put(LABEL_SOP_TOTAL_COMPLETED, 0);
+                                    procEventSopDetail.put(LABEL_SOP_TOTAL_NOT_COMPLETED, 0);
+                                }else{
+                                    Object[] procEventSopsArr = procEventSops.split("\\|");
+                                    String sopListStr = "";
+                                    Integer sopTotalNotCompleted = 0;
+                                    Integer sopTotalCompleted = 0;
+                                    Integer sopTotal = 0;
+                                    JSONObject procEventSopSummary = new JSONObject();   
+                                    for (Object curProcEvSop: procEventSopsArr){
+                                        JSONObject procEventSopDetailJson = new JSONObject();   
+                                        sopTotal++;
+                                        procEventSopDetailJson.put("sop_name", curProcEvSop);
+                                        if (LPArray.valuePosicInArray(notCompletedUserSOP1D, curProcEvSop)==-1) {
+                                            sopTotalNotCompleted++;
+                                            sopListStr=sopListStr+curProcEvSop.toString()+"*NO, ";
+                                            userHasNotCompletedSOP = true;
+                                            procEventSopDetailJson.put("sop_completed", false);
+                                        }else{
+                                            sopTotalCompleted++;
+                                            procEventSopDetailJson.put("sop_completed", true);
+                                        }
+                                        procEventSopSummary.put(sopTotal, procEventSopDetailJson);
                                     }
-                                    procEventSopSummary.put(sopTotal, procEventSopDetailJson);
+                                    procEventJson.put(LABEL_SOPS_PASSED, !userHasNotCompletedSOP);
+                                    procEventSopDetail.put(LABEL_SOP_TOTAL, sopTotal);
+                                    procEventSopDetail.put(LABEL_SOP_TOTAL_COMPLETED, sopTotalCompleted);
+                                    procEventSopDetail.put(LABEL_SOP_TOTAL_NOT_COMPLETED, sopTotalNotCompleted);
+                                    procEventSopDetail.put(LABEL_SOP_LIST, procEventSopSummary);
                                 }
-                                procEventJson.put(LABEL_SOPS_PASSED, !userHasNotCompletedSOP);
-                                procEventSopDetail.put(LABEL_SOP_TOTAL, sopTotal);
-                                procEventSopDetail.put(LABEL_SOP_TOTAL_COMPLETED, sopTotalCompleted);
-                                procEventSopDetail.put(LABEL_SOP_TOTAL_NOT_COMPLETED, sopTotalNotCompleted);
-                                procEventSopDetail.put(LABEL_SOP_LIST, procEventSopSummary);
-                            }
-                        }procEventJson.put("sops", procEventSopDetail);
-                        procEvents.add(procEventJson);
-                    }
-                    procedure.put("definition", procEvents);
-                }        
+                            }procEventJson.put("sops", procEventSopDetail);
+                            procEvents.add(procEventJson);
+                        }
+                        procedure.put("definition", procEvents);
+                    } 
+                }
                 procedures.add(procedure);
             }
             procFldNameArray = LPArray.addValueToArray1D(procFldNameArray, "schemaPrefix");
@@ -204,14 +222,9 @@ public class AppProcedureListAPI extends HttpServlet {
             proceduresList.put("procedures", procedures);
 
             Response.ok().build();
-            response.getWriter().write(proceduresList.toString());               
+            response.getWriter().write(proceduresList.toString());
+            Rdbms.closeRdbms();
             return;
-//            Rdbms.closeRdbms();
-/*
-if (1==1){            
-    response.sendError(HttpServletResponse.SC_BAD_REQUEST, "allUserProcedurePrefix"+ Arrays.toString(allUserProcedurePrefix)); 
-    return;
-} */           
         }
     }
 

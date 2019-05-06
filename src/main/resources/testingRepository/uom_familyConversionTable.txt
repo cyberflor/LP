@@ -1,0 +1,12 @@
+numHeaderLines=4
+numTables=1
+numEvaluationArguments=0
+Table1=schema_name;family;fieldsToRetrieve;Base Value;Evaluation
+oil-pl1;MASS;name|pretty_name|is_base|factor_value|offset_value;122.75; ;
+config;11;name|pretty_name|is_base|factor_value|offset_value;1; ;
+config;TEMPERATURE;name|pretty_name|is_base|factor_value|offset_value;1; ;
+oil-pl1;TEMPERATURE;name|pretty_name|is_base|factor_value|offset_value;1; ;
+oil-pl1;MASS;name|pretty_name|is_base|factor_value|offset_value;5; ;
+oil-pl1;MASS;name|pretty_name|is_base|factor_value|offset_value;7; ;
+config;PRESSURE;name|pretty_name|is_base|factor_value|offset_value;13; ;
+config;PRESSURE;name|pretty_name|is_base|factor_value|offset_value;11.987899914; ;

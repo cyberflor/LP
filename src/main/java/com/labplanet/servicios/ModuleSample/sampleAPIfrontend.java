@@ -103,8 +103,14 @@ public class sampleAPIfrontend extends HttpServlet {
             
             switch (actionName.toUpperCase()){
             case "GET_SAMPLETEMPLATES":       
+                String[] filterFieldName = new String[]{"json_definition is not null"};
+                Object[] filterFieldValue = new Object[]{""};
+/*                filterFieldName = LPArray.addValueToArray1D(filterFieldName, "code");
+                if ("process-us".equalsIgnoreCase(schemaPrefix)){
+                    filterFieldValue = LPArray.addValueToArray1D(filterFieldValue, "specSamples");
+                }else{filterFieldValue = LPArray.addValueToArray1D(filterFieldValue, "sampleTemplate");}    */
                 Object[][] datas = Rdbms.getRecordFieldsByFilter(schemaPrefix+"-config", "sample", 
-                        new String[] {"code"}, new Object[]{"specSamples"}, new String[] { "json_definition"});
+                        filterFieldName, filterFieldValue, new String[] { "json_definition"});
                 Rdbms.closeRdbms();
                 JSONObject proceduresList = new JSONObject();
                 JSONArray jArray = new JSONArray();
@@ -134,9 +140,11 @@ public class sampleAPIfrontend extends HttpServlet {
                         new String[] {"received_by is null"}, new Object[]{""},
                         sampleFieldToRetrieveArr, sortFieldsNameArr);
                 Rdbms.closeRdbms();
-                if (myData.contains(LPPlatform.LAB_FALSE)){  
-                    Object[] errMsg = LPFrontEnd.responseError(new String[]{myData}, language, null);
-                    response.sendError((int) errMsg[0], (String) errMsg[1]);    
+                if (myData.contains(LPPlatform.LAB_FALSE)){ 
+                    Response.ok().build();
+                    response.getWriter().write("[]");  
+                    /*Object[] errMsg = LPFrontEnd.responseError(new String[]{myData}, language, null);
+                    response.sendError((int) errMsg[0], (String) errMsg[1]);    */
                 }else{
                     Response.ok().build();
                     response.getWriter().write(myData);           
@@ -220,12 +228,16 @@ public class sampleAPIfrontend extends HttpServlet {
                             whereFieldsNameArr, whereFieldsValueArr, sampleFieldToRetrieveArr, sortFieldsNameArr);
                     if (myData==null){
                         Rdbms.closeRdbms(); 
-                        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "No info found or error running the query for this sample "); 
+                        Response.ok().build();
+                        response.getWriter().write("[]");  
+                        //response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "No info found or error running the query for this sample "); 
                         return;
                     }
                     if ( myData.contains(LPPlatform.LAB_FALSE)) {  
-                        Object[] errMsg = LPFrontEnd.responseError(new String[]{myData}, language, null);
-                        response.sendError((int) errMsg[0], (String) errMsg[1]);                            
+                        Response.ok().build();
+                        response.getWriter().write("[]");  
+                        //Object[] errMsg = LPFrontEnd.responseError(new String[]{myData}, language, null);
+                        //response.sendError((int) errMsg[0], (String) errMsg[1]);                            
                     }else{
                         Response.ok().build();
                         response.getWriter().write(myData);           
@@ -317,21 +329,26 @@ public class sampleAPIfrontend extends HttpServlet {
                     }
                     Rdbms.closeRdbms();
                     return;         
-                case "GET_SAMPLE_ANALYSIS_LIST":
-                    String sampleIdStr = request.getParameter(PARAMETER_SAMPLE_ID);                             
-                    if ( (sampleIdStr==null) || (sampleIdStr.contains("undefined")) ) {
+                case "GET_SAMPLE_ANALYSIS_LIST":    
+                    String[] sampleAnalysisFixFieldToRetrieveArr = new String[]{"sample_id", "test_id", };
+                    String[] mandatoryParamsAction = new String[]{PARAMETER_SAMPLE_ID};
+                    Object[] areMandatoryParamsInResponse = LPHttp.areMandatoryParamsInApiRequest(request, mandatoryParamsAction);
+                    if (LPPlatform.LAB_FALSE.equalsIgnoreCase(areMandatoryParamsInResponse[0].toString())){
                         errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
-                        errObject = LPArray.addValueToArray1D(errObject, "sampleId="+request.getParameter(PARAMETER_SAMPLE_ID));
-                        errObject = LPArray.addValueToArray1D(errObject, "API Error Message: sampleId is one mandatory param and should be one integer value for this API");                    
-                        Object[] errMsg = LPFrontEnd.responseError(errObject, language, schemaPrefix);
-                        response.sendError((int) errMsg[0], (String) errMsg[1]);   
+                        errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_MANDATORY_PARAMS_MISSING+": "+areMandatoryParamsInResponse[1].toString());                    
+                        Object[] errMsg = LPFrontEnd.responseError(errObject, language, areMandatoryParamsInResponse[1].toString());
                         Rdbms.closeRdbms(); 
-                        return ;
-                    }                              
+                        return ;                
+                    }                                          
+                    String sampleIdStr = request.getParameter(PARAMETER_SAMPLE_ID);                                                      
                     Integer sampleId = Integer.parseInt(sampleIdStr);       
                     
+                    String[] sampleAnalysisFieldToRetrieveArr = new String[0];
                     String sampleAnalysisFieldToRetrieve = request.getParameter("sampleAnalysisFieldToRetrieve");  
-                    String[] sampleAnalysisFieldToRetrieveArr=  sampleAnalysisFieldToRetrieve.split("\\|");
+                    if (! ((sampleAnalysisFieldToRetrieve==null) || (sampleAnalysisFieldToRetrieve.contains("undefined"))) ) {
+                         sampleAnalysisFieldToRetrieveArr=  sampleAnalysisFieldToRetrieve.split("\\|");                             
+                    }    
+                    sampleAnalysisFieldToRetrieveArr = LPArray.addValueToArray1D(sampleAnalysisFieldToRetrieveArr, sampleAnalysisFixFieldToRetrieveArr);
                     
                     sortFieldsNameArr = null;
                     sortFieldsName = request.getParameter("sortFieldsName"); 
@@ -353,7 +370,7 @@ public class sampleAPIfrontend extends HttpServlet {
                     }
                     
                     Rdbms.closeRdbms();
-                    return;                      
+                    return;                                            
                 case "GET_SAMPLE_ANALYSIS_RESULT_LIST":
                     sampleIdStr = request.getParameter(PARAMETER_SAMPLE_ID);                             
                     if ( (sampleIdStr==null) || (sampleIdStr.contains("undefined")) ) {

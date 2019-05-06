@@ -12,9 +12,14 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.codehaus.jettison.json.JSONArray;
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
+import org.json.simple.JSONObject;
+import org.json.simple.JSONArray;
+//import org.json.simple.;
+
+//import org.glassfish.jersey.jackson.internal.FilteringJacksonJaxbJsonProvider;
+//import org.codehaus.jettison.json.JSONArray;
+//import org.codehaus.jettison.json.JSONException;
+//import org.codehaus.jettison.json.JSONObject;
 
 /**
  * LabPLANETJSon is a library of utilities for working with json objects
@@ -51,7 +56,8 @@ public class LPJson {
     public static JSONArray convertToJSON(String[] normalArray) {
         JSONArray jsonArray= new JSONArray();
         for (String normalArray1 : normalArray) {
-            jsonArray.put(normalArray1);
+            jsonArray.add(normalArray1);
+            //jsonArray.put(normalArray1);
         }
         return jsonArray;
     }
@@ -130,7 +136,7 @@ public class LPJson {
                 int totalRows = resultSet.getMetaData().getColumnCount();
                 for (int i = 0; i < totalRows; i++) {
                     JSONObject obj = new JSONObject();
-                    try {
+                    //try {
                         if (resultSet.getObject(i+1)==null){
                             obj.put(resultSet.getMetaData().getColumnLabel(i + 1)
                                     .toLowerCase(), "");                            
@@ -138,7 +144,7 @@ public class LPJson {
                         obj.put(resultSet.getMetaData().getColumnLabel(i + 1)
                                 .toLowerCase(), resultSet.getObject(i + 1));
                         }
-                    } catch (JSONException ex) {
+                    /*} catch (JSONException ex) {
                         Logger.getLogger(LPJson.class.getName()).log(Level.SEVERE, null, ex);
                         try {
                             obj.put(resultSet.getMetaData().getColumnLabel(i + 1)
@@ -146,8 +152,9 @@ public class LPJson {
                         } catch (JSONException ex1) {
                             Logger.getLogger(LPJson.class.getName()).log(Level.SEVERE, null, ex1);
                         }
-                    }
-                    jsonArray.put(obj);
+                    }*/
+                    jsonArray.add(obj);
+                    //jsonArray.put(obj);
                 }
                 resultSet.next();
                 icurrLine++;                

@@ -11,6 +11,7 @@ import LabPLANET.utilities.LPArray;
 import LabPLANET.utilities.LPPlatform;
 import java.sql.Array;
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -28,6 +29,7 @@ import javax.naming.NamingException;
 import javax.sql.DataSource;
 import java.sql.Types;
 import java.util.HashMap;
+import java.util.Properties;
 
 /**
  *
@@ -63,13 +65,51 @@ public class Rdbms {
         return rdbms;
     }
     
+    public Boolean startRdbmsTomcat(String user, String pass) {        
+            ResourceBundle prop = ResourceBundle.getBundle("parameter.config.config");
+            String url = prop.getString("dburl");
+            String dbDriver = prop.getString("dbDriver");
+            Integer conTimeOut = Integer.valueOf(prop.getString("dbtimeout"));
+            
+            String datasrc = prop.getString("datasource");
+            
+            try{
+                Context ctx = new InitialContext();
+                  //DataSource ds = (DataSource)ctx.lookup(datasrc);
+
+                Class.forName(dbDriver);
+                Properties dbProps = new Properties();
+                dbProps.setProperty("user", user);
+                dbProps.setProperty("password", pass);
+                dbProps.setProperty("Ssl", "false");
+                //dbProps.setProperty("ssl", "true");
+                dbProps.setProperty("ConnectTimeout", conTimeOut.toString());
+                //dbProps.setProperty("ConnectTimeout", "conTimeOut");
+                
+                Connection getConnection = DriverManager.getConnection(url, dbProps);          
+                setConnection(getConnection);
+                //Connection setConnection = DriverManager.getConnection(url, user, pass);          
+                setTimeout(conTimeOut);
+                if(getConnection()!=null){
+                  setIsStarted(Boolean.TRUE);                                                      
+                  return Boolean.TRUE;
+                }else{
+                  setIsStarted(Boolean.FALSE);
+                  return Boolean.FALSE;
+                }                                 
+            } catch (Exception e){
+                String errMsg = e.getMessage();
+                return false;
+            }
+            
+    }
     /**
      *
      * @param user
      * @param pass
      * @return
      */
-    public Boolean startRdbms(String user, String pass) {        
+    public Boolean startRdbmsGlassfish(String user, String pass) {        
         
         try {        
             //Rdbms rdbms = new Rdbms();
@@ -460,7 +500,7 @@ public class Rdbms {
                 return diagnoses2;
             }else{
                 rdbms.errorCode = "Rdbms_NoRecordsFound";
-                errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, tableName);
+                errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, query);
                 errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, Arrays.toString(whereFieldValues) );
                 errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, schemaName);
                 Object[] diagnosesError = LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, rdbms.errorCode, errorDetailVariables);                         

@@ -35,8 +35,22 @@ public class LPFrontEnd {
     public static Object[] responseError(Object[] errorStructure, String language, String schemaPrefix){
         Object[] responseObj = new Object[0];
         responseObj = LPArray.addValueToArray1D(responseObj, HttpServletResponse.SC_UNAUTHORIZED);
-        
-        responseObj = LPArray.addValueToArray1D(responseObj, errorStructure[errorStructure.length-1].toString());        
+        if (errorStructure.length>0){
+            responseObj = LPArray.addValueToArray1D(responseObj, errorStructure[errorStructure.length-1].toString());        
+        }else{
+            responseObj = LPArray.addValueToArray1D(responseObj, Thread.currentThread().getStackTrace()[CLIENT_CODE_STACK_INDEX].getMethodName());        
+        }
         return responseObj;
     }
+    private static final int CLIENT_CODE_STACK_INDEX;    
+    static{
+        int i = 0;
+        for (StackTraceElement ste : Thread.currentThread().getStackTrace()){
+            i++;
+            if (ste.getClassName().equals(LPPlatform.class.getName())){
+                break;
+            }
+        }
+        CLIENT_CODE_STACK_INDEX = i;
+    }    
 }

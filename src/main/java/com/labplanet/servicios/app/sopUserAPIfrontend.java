@@ -15,7 +15,6 @@ import functionalJava.sop.UserSop;
 import functionalJava.user.UserProfile;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ResourceBundle;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -139,14 +138,15 @@ public class sopUserAPIfrontend extends HttpServlet {
                     sopElement.put("version", "1");
                     sopElement.put("label_en", "SOPs");
                     sopElement.put("label_es", "P.N.T.");
-                    sopElement.put("schemaPrefix", "module1");
+                    sopElement.put("schemaPrefix", "process-us");
                     //SopElement.add(sopOption);
                     
                     JSONArray arrFinal = new JSONArray();
                     arrFinal.add(sopElement);
                     
                     Response.ok().build();
-                    response.getWriter().write(arrFinal.toString());                               
+                    response.getWriter().write(arrFinal.toString());   
+                    Rdbms.closeRdbms(); 
                     
         }
     }

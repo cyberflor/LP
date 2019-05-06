@@ -1,0 +1,68 @@
+numHeaderLines=4
+numTables=1
+numEvaluationArguments=2
+Table1=Result;Rule Type;Values;Separator;List Name;
+LABPLANET_TRUE;DataSpec_resultCheck_qualitativeIsNotOneOfOUT;Hel,lo;ISNOTONEOF;Hel,lo;,;null
+LABPLANET_FALSE;;
+LABPLANET_FALSE;;Hello
+LABPLANET_FALSE;;Hello;Equal
+LABPLANET_FALSE;;Hello;;Hello
+LABPLANET_FALSE;;;Hello;Hello
+LABPLANET_FALSE;;Hello;Hello;Hello
+LABPLANET_FALSE;;Hello;Equal To;Hello
+LABPLANET_TRUE;;Hello;EqualTo;Hello
+LABPLANET_TRUE;;Hello;EqualTo;Hello hello
+LABPLANET_FALSE;;Hello;Not Equal To;Hello
+LABPLANET_FALSE;;Hello;NotEqualTo;Hello
+LABPLANET_TRUE;;Hello;contains;Hello
+LABPLANET_TRUE;;Hello;contains;Goodbye Hello hello
+LABPLANET_TRUE;;Hello;CONTAINS;GoodbyehelloGoodbye
+LABPLANET_TRUE;;Hello;CONTAINS;Goodbye Hello Goodbye
+LABPLANET_TRUE;;e Hello G;CONTAINS;Goodbye Hello Goodbye
+LABPLANET_TRUE;;e Hello;CONTAINS;Goodbye Hello Goodbye
+LABPLANET_TRUE;;E Hello;CONTAINS;Goodbye Hello Goodbye
+LABPLANET_FALSE;;Hello goob;CONTAINS;Goodbye Hello Goodbye
+LABPLANET_FALSE;;Hello.;CONTAINS;Goodbye Hello. Goodbye
+LABPLANET_FALSE;;hello.;CONTAINS;Goodbye Hello. Goodbye
+LABPLANET_FALSE;;Hello. ;CONTAINS;Goodbye Hello. Goodbye
+LABPLANET_FALSE;;hello. ;CONTAINS;Goodbye Hello. Goodbye
+LABPLANET_FALSE;;Hello. ;CONTAINS;Goodbye Hello.Goodbye
+LABPLANET_FALSE;;hello. ;CONTAINS;Goodbye Hello.Goodbye
+LABPLANET_FALSE;;hello. ;CONTAINS;Goodbye Hello.Goodbye;.
+LABPLANET_FALSE;;hello. ;CONTAINS;Goodbye Hello.Goodbye;,
+LABPLANET_TRUE;;Hello;Not contains;Hello
+LABPLANET_TRUE;;Hello;NotContains;Goodbye Hello hello
+LABPLANET_TRUE;;Hello;Notcontains;GoodbyehelloGoodbye
+LABPLANET_TRUE;;Hello;NotCONTAINS;Goodbye Hello Goodbye
+LABPLANET_TRUE;;e Hello G;Not CONTAINS;Goodbye Hello Goodbye
+LABPLANET_TRUE;;e Hello;NotCONTAINS;Goodbye Hello Goodbye
+LABPLANET_TRUE;;E Hello;NotCONTAINS;Goodbye Hello Goodbye
+LABPLANET_FALSE;;Hello goob;NotCONTAINS;Goodbye Hello Goodbye
+LABPLANET_FALSE;;Hello.;NOTCONTAINS;Goodbye Hello. Goodbye
+LABPLANET_FALSE;;hello.;NOTCONTAINS;Goodbye Hello. Goodbye
+LABPLANET_FALSE;;Hello. ;NOTCONTAINS;Goodbye Hello. Goodbye
+LABPLANET_FALSE;;hello. ;NOTCONTAINS;Goodbye Hello. Goodbye
+LABPLANET_FALSE;;Hello. ;NOTCONTAINS;Goodbye Hello.Goodbye
+LABPLANET_FALSE;;hello. ;NOTCONTAINS;Goodbye Hello.Goodbye
+LABPLANET_FALSE;;hello. ;NOTCONTAINS;Goodbye Hello.Goodbye;.
+LABPLANET_FALSE;;hello. ;NOTCONTAINS;Goodbye Hello.Goodbye;,
+LABPLANET_FALSE;;hello. ;ISONEOF;Goodbye,Hello,Goodbye;,
+LABPLANET_FALSE;;hello. ;ISONEOF;Goodbye,Hello,Goodbye;.
+LABPLANET_FALSE;;hello. ;ISONEOF;Goodbye.Hello.Goodbye;,
+LABPLANET_FALSE;;hello. ;ISONEOF;Goodbye.hello.Goodbye;,
+LABPLANET_FALSE;;hello. ;ISONEOF;Goodbye,hello,Goodbye;,
+LABPLANET_FALSE;;hello. ;ISONEOF;Goodbye.hello.Goodbye;.
+LABPLANET_FALSE;;Goodbye.hello.Goodbye;ISONEOF;Goodbye.hello.Goodbye;.
+LABPLANET_TRUE;;Goodbye.hello.Goodbye;ISONEOF;Goodbye.hello.Goodbye;,
+LABPLANET_TRUE;;Goodbye.hello.Goodbye;ISONEOF;Goodbye.hello,Goodbye;,
+LABPLANET_TRUE;;Goodbye.hello.Goodbye;ISONEOF;Goodbye.hello,Goodbye;.
+LABPLANET_FALSE;;hello. ;ISNOTONEOF;Goodbye,Hello,Goodbye;,
+LABPLANET_FALSE;;hello. ;ISNOTONEOF;Goodbye,Hello,Goodbye;.
+LABPLANET_FALSE;;hello. ;ISNOTONEOF;Goodbye.Hello.Goodbye;,
+LABPLANET_FALSE;;hello. ;ISNOTONEOF;Goodbye.hello.Goodbye;,
+LABPLANET_FALSE;;hello. ;ISNOTONEOF;Goodbye,hello,Goodbye;,
+LABPLANET_FALSE;;hello. ;ISNOTONEOF;Goodbye.hello.Goodbye;.
+LABPLANET_FALSE;;Goodbye.hello.Goodbye;ISNOTONEOF;Goodbye.hello.Goodbye;.
+LABPLANET_TRUE;;Goodbye.hello.Goodbye;ISNOTONEOF;Goodbye.hello.Goodbye;,
+LABPLANET_TRUE;;Goodbye.hello.Goodbye;ISNOTONEOF;Goodbye.hello,Goodbye;,
+LABPLANET_TRUE;;Goodbye.hello.Goodbye;ISNOTONEOF;Goodbye.hello,Goodbye;.

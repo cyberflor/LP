@@ -290,6 +290,7 @@ public class  LPArray {
         Scanner scanIn = null;
         Integer columnsInCsv=0;
         String inputLine = ""; 
+        
         try{
             scanIn = new Scanner(new BufferedReader(new FileReader(xfileLocation)));
             Integer numLines = 0;
@@ -308,8 +309,11 @@ public class  LPArray {
             }            
 //            myArray = array1dTo2d(myArray1D, columnsInCsv);
             return myArray;            
-        } catch (FileNotFoundException e){         }
-        return myArray;
+        } catch (FileNotFoundException e){               
+            myArray1D = addValueToArray1D(myArray1D, e.getMessage());
+            return array1dTo2d(myArray1D, 1);
+            
+        }
     }
     
     /**

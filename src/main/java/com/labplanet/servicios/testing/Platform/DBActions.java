@@ -36,6 +36,7 @@ public class DBActions extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)            throws ServletException, IOException {
         response=LPTestingOutFormat.responsePreparation(response);
+
         Object[][] dataSample2D = new Object[1][6];
         Object[] dataSample2Din1D = new Object[0];
         
@@ -45,13 +46,12 @@ public class DBActions extends HttpServlet {
         String csvPathName = LPTestingOutFormat.TESTING_FILES_PATH+csvFileName; 
         String csvFileSeparator=LPTestingOutFormat.TESTING_FILES_FIELD_SEPARATOR;
         
+        Object[][] csvFileContent = LPArray.convertCSVinArray(csvPathName, csvFileSeparator); 
                 
         try (PrintWriter out = response.getWriter()) {
-            
-out.println("Executing DBACtions"); 
-out.println("File path: "+csvPathName); 
-            Object[][] csvFileContent = LPArray.convertCSVinArray(csvPathName, csvFileSeparator); 
-out.println("File csvFileContent: "+csvFileContent[0][0].toString()); 
+if (1==1)            {
+            out.println("Before connection to DB");
+            }            
             String fileContent = LPTestingOutFormat.getHtmlStyleHeader(this.getClass().getSimpleName());
             HashMap<String, Object> csvHeaderTags = LPTestingOutFormat.getCSVHeader(LPArray.convertCSVinArray(csvPathName, "="));
             if (csvHeaderTags.containsKey(LPPlatform.LAB_FALSE)){
@@ -59,7 +59,14 @@ out.println("File csvFileContent: "+csvFileContent[0][0].toString());
                 out.println(fileContent); 
                 return;
             }            
-            if (Rdbms.getRdbms().startRdbms(LPTestingOutFormat.TESTING_USER, LPTestingOutFormat.TESTING_PW)==null){fileContent=fileContent+"Connection to the database not established";return;}
+if (1==1)            {
+            out.println("Before connection to DB");
+            }
+            if (Rdbms.getRdbms().startRdbms(LPTestingOutFormat.TESTING_USER, LPTestingOutFormat.TESTING_PW)==null){fileContent=fileContent+"Connection to the database not established";out.println(fileContent);return;}
+            if (!Rdbms.getRdbms().startRdbms(LPTestingOutFormat.TESTING_USER, LPTestingOutFormat.TESTING_PW)){fileContent=fileContent+"Connection to the database not established";out.println(fileContent);return;}
+if (1==1)            {
+            out.println("connected to DB");
+            }
                 
             Integer numEvaluationArguments = Integer.valueOf(csvHeaderTags.get(LPTestingOutFormat.FILEHEADER_NUM_EVALUATION_ARGUMENTS).toString());   
             Integer numHeaderLines = Integer.valueOf(csvHeaderTags.get(LPTestingOutFormat.FILEHEADER_NUM_HEADER_LINES_TAG_NAME).toString());   

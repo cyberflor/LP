@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 import databases.Rdbms;
 import functionalJava.materialSpec._ConfigSamplingPlanForSpec;
 import functionalJava.testingScripts.LPTestingOutFormat;
+import functionalJava.testingScripts.TestingAssertSummary;
 
 /**
  *
@@ -41,13 +42,34 @@ public class _TestingConfigSamplingPlanStructure extends HttpServlet {
         try (PrintWriter out = response.getWriter()) {
             _ConfigSamplingPlanForSpec smpPlan = new _ConfigSamplingPlanForSpec();
 
-            if (Rdbms.getRdbms().startRdbms("labplanet", "avecesllegaelmomento")==null){out.println("Connection to the database not established");return;}
-                
+            //if (Rdbms.getRdbms().startRdbms("labplanet", "avecesllegaelmomento")==null){out.println("Connection to the database not established");return;}
+            
+            if (Rdbms.getRdbms().startRdbms("labplanet", "avecesllegaelmomento")){
+                out.println("Connection to the database established with SUCCESS :) ");
+            }else{
+                out.println("Connection to the database NOT established :( ");
+                return;
+            }
+            
+            Object[] exRec =  Rdbms.existsRecord("app", "users", new String[]{"user_name"}, new Object[]{"labplanet"});
+            out.println("Exists record? " + Arrays.toString(exRec));
+        
+        String csvFileName = "dbActions.txt"; 
+        TestingAssertSummary tstAssertSummary = new TestingAssertSummary();
+
+        String csvPathName = LPTestingOutFormat.TESTING_FILES_PATH+csvFileName; 
+        String csvFileSeparator=LPTestingOutFormat.TESTING_FILES_FIELD_SEPARATOR;
+        
+        Object[][] csvFileContent = LPArray.convertCSVinArray(csvPathName, csvFileSeparator); 
+        
+        out.println("Reading file: " + csvFileContent[0][0].toString());
+        
             Integer numTesting = 1;
             Integer inumTesting = 0;
             Object[][] configSamplingPlanTestingArray = new Object[numTesting][6];
             String userName="1"; 
             String userRole="oil1plant_analyst";
+
 
             if (inumTesting<numTesting){
                 String[] fieldName= new String[0];
@@ -77,11 +99,12 @@ public class _TestingConfigSamplingPlanStructure extends HttpServlet {
             out.println("<title>Servlet TestingConfigSamplingPlanStructure</title>");            
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet TestingConfigSamplingPlanStructure at " + request.getContextPath() + "</h1>");
+            out.println("<h1>ssssss Servlet TestingConfigSamplingPlanStructure at " + request.getContextPath() + "</h1>");
             out.println("<table>");
             out.println("<th>Test#</th><th>Schema Prefix</th><th>Function Being Tested</th><th>Field Name</th><th>Field Value</th><th>Evaluation</th>");           
             
             for (Integer i=0;i<configSamplingPlanTestingArray.length;i++){
+out.println(Arrays.toString(configSamplingPlanTestingArray));                
                 //if (configSamplingPlanTestingArray[i][2]==null && configSamplingPlanTestingArray[i][3]==null){
                 out.println("<tr>");
                 String[] fieldName=null;    

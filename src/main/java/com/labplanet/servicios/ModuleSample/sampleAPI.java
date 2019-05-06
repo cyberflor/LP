@@ -227,8 +227,9 @@ public class sampleAPI extends HttpServlet {
                     if (fieldName!=null) fieldNames = fieldName.split("\\|");                                            
                     if (fieldValue!=null) fieldValues = LPArray.convertStringWithDataTypeToObjectArray(fieldValue.split("\\|"));                                                            
 
-                    String numSamplesToLogStr=request.getParameter(PARAMETER_NUM_SAMPLES_TO_LOG);       
-                    Integer numSamplesToLog = Integer.parseInt(numSamplesToLogStr);  
+                    Integer numSamplesToLog = 1;
+                    String numSamplesToLogStr=request.getParameter(PARAMETER_NUM_SAMPLES_TO_LOG);    
+                    if (numSamplesToLogStr!=null){numSamplesToLog = Integer.parseInt(numSamplesToLogStr);}
 
                     if (numSamplesToLogStr==null){
                         dataSample = smp.logSample(schemaPrefix, sampleTemplate, sampleTemplateVersion, fieldNames, fieldValues, internalUserID, userRole, Integer.parseInt(appSessionIdStr));
