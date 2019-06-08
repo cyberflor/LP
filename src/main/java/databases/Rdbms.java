@@ -9,6 +9,7 @@ import LabPLANET.utilities.LPNulls;
 import com.sun.rowset.CachedRowSetImpl;
 import LabPLANET.utilities.LPArray;
 import LabPLANET.utilities.LPPlatform;
+import functionalJava.testingScripts.LPTestingOutFormat;
 import java.sql.Array;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -64,6 +65,15 @@ public class Rdbms {
         }
         return rdbms;
     }
+    
+    public Boolean startRdbms(){
+        return startRdbmsGlassfish(LPTestingOutFormat.TESTING_USER, LPTestingOutFormat.TESTING_PW);
+    }
+
+    public Boolean startRdbms(String us, String pw){
+        return startRdbmsGlassfish(LPTestingOutFormat.TESTING_USER, LPTestingOutFormat.TESTING_PW);
+        //return startRdbmsTomcat(us, pw);
+    }    
     
     public Boolean startRdbmsTomcat(String user, String pass) {        
             ResourceBundle prop = ResourceBundle.getBundle("parameter.config.config");
@@ -621,7 +631,7 @@ public class Rdbms {
         SqlStatement sql = new SqlStatement(); 
         HashMap<String, Object[]> hmQuery = sql.buildSqlStatement(SQLSELECT, schemaName, tableName,
                 whereFieldNames, whereFieldValues,
-                fieldsToRetrieve,  orderBy, null, null, null);            
+                fieldsToRetrieve,  null, null, orderBy, null);            
         String query= hmQuery.keySet().iterator().next();   
         Object[] keyFieldValueNew = hmQuery.get(query);
         
@@ -827,7 +837,7 @@ public class Rdbms {
     }
   
 
-    private static Integer prepUpQuery(String consultaconinterrogaciones, Object [] valoresinterrogaciones) {
+    public static Integer prepUpQuery(String consultaconinterrogaciones, Object [] valoresinterrogaciones) {
         Integer reg;    
         try {
             reg = prepUpQuery(consultaconinterrogaciones, valoresinterrogaciones, null);

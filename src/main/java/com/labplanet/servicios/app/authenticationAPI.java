@@ -18,6 +18,7 @@ import static databases.Token.TOKEN_PARAM_INTERNAL_USERID;
 import static databases.Token.TOKEN_PARAM_USERDB;
 import static databases.Token.TOKEN_PARAM_USERPW;
 import static databases.Token.TOKEN_PARAM_USER_ESIGN;
+import functionalJava.testingScripts.LPTestingOutFormat;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Arrays;
@@ -30,6 +31,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.Response;
 import functionalJava.user.Role;
 import functionalJava.user.UserProfile;
+import functionalJava.user.UserSecurity;
 import java.sql.SQLException;
 import java.util.Date;
 import org.json.simple.JSONArray;
@@ -91,7 +93,9 @@ public class authenticationAPI extends HttpServlet {
                     String dbUserPassword = request.getParameter("dbUserPassword");       
                     
                     boolean isConnected = false;
-                    isConnected = Rdbms.getRdbms().startRdbms(dbUserName, dbUserPassword);           
+                    
+                    //isConnected = Rdbms.getRdbms().startRdbmsTomcat(dbUserName, dbUserPassword);           
+                    isConnected = Rdbms.getRdbms().startRdbms(LPTestingOutFormat.TESTING_USER, LPTestingOutFormat.TESTING_PW);      
                     if (!isConnected){                            
                         errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
                         errObject = LPArray.addValueToArray1D(errObject, "API Error Message: db User Name and Password not correct, connection to the database is not possible");                    
@@ -110,6 +114,18 @@ public class authenticationAPI extends HttpServlet {
                         Rdbms.closeRdbms(); 
                         return ;                                 
                     }
+                    
+                    UserSecurity usSec = new UserSecurity();
+                    Object[] validUserPassword = usSec.isValidUserPassword(dbUserName, dbUserPassword);
+                    if (LPPlatform.LAB_FALSE.equalsIgnoreCase(validUserPassword[0].toString())){
+                        errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
+                        errObject = LPArray.addValueToArray1D(errObject, "API Error Message: db User Name and Password not correct, connection to the database is not possible");                    
+                        Object[] errMsg = LPFrontEnd.responseError(errObject, language, null);
+                        response.sendError((int) errMsg[0], (String) errMsg[1]);   
+                        Rdbms.closeRdbms(); 
+                        return ;                                 
+                    }                    
+                    
  if (1!=1){
      JSONObject obj = new JSONObject();
      obj.put("userInfoId", 1);

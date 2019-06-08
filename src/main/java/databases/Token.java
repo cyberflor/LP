@@ -184,4 +184,14 @@ public class Token {
         .compact();
         return vwt;*/
     }    
+        
+    public String getTokenParamValue(String token, String paramName){
+       Object[] tokenObj = isValidToken(token);
+        
+       if ((Boolean) tokenObj[0]==false) return LPPlatform.LAB_FALSE;
+
+       DecodedJWT jwt = (DecodedJWT) tokenObj[1];
+       Claim header1 = jwt.getHeaderClaim(paramName);            
+       return header1.asString();                    
+    }
 }

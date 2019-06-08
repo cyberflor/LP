@@ -104,6 +104,10 @@
         <servlet-name>TestingConfig_specQualitative_ruleFormat</servlet-name>
         <servlet-class>com.labplanet.servicios.testing.config.noDB.TestingConfig_specQualitative_ruleFormat</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ProcedureDeployment</servlet-name>
+        <servlet-class>com.labplanet.servicios.testing.Platform.ProcedureDeployment</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>DBActions</servlet-name>
         <url-pattern>/testing/platform/DBActions</url-pattern>
@@ -198,6 +202,10 @@
     <servlet-mapping>
         <servlet-name>TestingConfig_specQualitative_ruleFormat</servlet-name>
         <url-pattern>/testing/config/noDB/TestingConfig_specQualitative_ruleFormat</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ProcedureDeployment</servlet-name>
+        <url-pattern>/testing/platform/ProcedureDeployment</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

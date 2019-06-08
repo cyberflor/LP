@@ -46,7 +46,7 @@ public class UserSecurity {
             if (pass==null || "null".equalsIgnoreCase(pass)){diagnoses[1]="password cannot be set to null, user has to be validated"; return diagnoses;}
             if (newEsign==null || "null".equalsIgnoreCase(newEsign)){diagnoses[1]="new word for eSign cannot be set to null"; return diagnoses;}
             
-            Object[] validUserPassword = _isValidUserPassword(user, pass);
+            Object[] validUserPassword = isValidUserPassword(user, pass);
             if (!(Boolean) validUserPassword[0]){
                 diagnoses[1] = "Invalid password for the user "+user;   
             }
@@ -128,7 +128,7 @@ public class UserSecurity {
         try {
             Object[] diagnoses = new Object[2];
             diagnoses[0]=false;
-            Object[] validUserPassword = _isValidUserPassword(user, pass);
+            Object[] validUserPassword = isValidUserPassword(user, pass);
             if (!(Boolean) validUserPassword[0]){
                 diagnoses[1] = "Invalid password for the user "+user;   
             }            
@@ -154,21 +154,9 @@ public class UserSecurity {
      * @throws SQLException
      * @throws NamingException
      */
-    public Object[] _isValidUserPassword(String user, String pass) throws IllegalAccessException, InstantiationException, SQLException, NamingException {            
-        Object[] diagnoses = new Object[2];
-        diagnoses[0]=false;        
-        
-        if (Rdbms.getRdbms().startRdbms(user, pass)==null){
-            diagnoses[0] = false; diagnoses[1]="eSign incorrect for the user "+user;    
-            return diagnoses;
-        }else{
-            diagnoses[0] = true; diagnoses[1] = "The eSign password is correct"; 
-        }    
-        Connection connection = Rdbms.getConnection();
-        connection.close();
-        Rdbms.closeRdbms();        
-        return diagnoses;
-        
+    public Object[] isValidUserPassword(String user, String pass) throws IllegalAccessException, InstantiationException, SQLException, NamingException {            
+        //Object[][] recordFieldsByFilter = Rdbms.getRecordFieldsByFilter(, new String[]{"user_name"});
+        return Rdbms.existsRecord("app", "users", new String[]{"user_name", "password"}, new Object[]{user, pass});
     }    
     
 }

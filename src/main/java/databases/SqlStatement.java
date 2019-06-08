@@ -60,7 +60,7 @@ public class SqlStatement {
                     }
                     queryWhere = queryWhere.substring(0, queryWhere.length() - 1);
                     queryWhere = queryWhere + ")";
-                    whereFieldValues = whereFieldValuesNew;
+                    //whereFieldValues = whereFieldValuesNew;
                 } else {
                     queryWhere = queryWhere + fn + "=? ";
                     whereFieldValuesNew = LPArray.addValueToArray1D(whereFieldValuesNew, whereFieldValues[iwhereFieldNames]);

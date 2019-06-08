@@ -5,6 +5,7 @@
  */
 package functionalJava.requirement;
 
+import LabPLANET.utilities.LPArray;
 import databases.Rdbms;
 import functionalJava.sop.Sop;
 import functionalJava.sop.UserSop;
@@ -18,6 +19,8 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import LabPLANET.utilities.LPPlatform;
+import static functionalJava.requirement.RequirementLogFile.requirementsLogEntry;
+
 /**
  *
  * @author Administrator
@@ -26,6 +29,7 @@ public class RequirementDeployment {
     String classVersion = "0.1";
 
     String tableName = "procedure";    
+    String SCHEMA_AUTHORIZATION_ROLE = "labplanet";
 
     // Originally 1196 lines
                                                                     //, String functionalArea, String values
@@ -33,13 +37,24 @@ public class RequirementDeployment {
     /**
      *
      * @param procedure
-     * @param procVersion
+     * @param pVersion
      * @return
      * @throws SQLException
      * @throws IOException
      */
     @SuppressWarnings("ConvertToTryWithResources")
-    public String _newRequirement ( String procedure, Integer procVersion) throws SQLException, IOException {    
+    public String procedureDeployment ( String procedure, Integer pVersion) throws SQLException, IOException {    
+        
+        String schemaNamePrefix = "jonadavid-dev";
+        
+        String[] schemaNames = new String[0];        
+        schemaNames = LPArray.addValueToArray1D(schemaNames, LPPlatform.SCHEMA_CONFIG);
+        schemaNames = LPArray.addValueToArray1D(schemaNames, LPPlatform.SCHEMA_DATA);        
+        schemaNames = LPArray.addValueToArray1D(schemaNames, LPPlatform.SCHEMA_DATA_AUDIT); 
+
+        createDBSchemas(schemaNamePrefix, schemaNames);
+        // createDBSchemasTable(schemaNamePrefix, schemaNames);
+       
         return "";
     }
 /*    
@@ -60,12 +75,12 @@ public class RequirementDeployment {
         String schemaPrefix = (String) procedureInfo[0][0];   
 
             d = new Date();
-        newEntry = d+" createDataBaseSchemas. Begin" + d;
+        newEntry = d+" createDBSchemas. Begin" + d;
             try {requirementsLogEntry(methodName, newEntry,null);
             } catch (IOException ex) { Logger.getLogger(Requirement.class.getName()).log(Level.SEVERE, null, ex);}            
-        createDataBaseSchemas(schemaPrefix);        
+        createDBSchemas(schemaPrefix);        
             d = new Date();
-        newEntry = d+" createDataBaseSchemas. End" + d;
+        newEntry = d+" createDBSchemas. End" + d;
             try {requirementsLogEntry(methodName, newEntry,null);
             } catch (IOException ex) { Logger.getLogger(Requirement.class.getName()).log(Level.SEVERE, null, ex);}            
 
@@ -84,12 +99,12 @@ public class RequirementDeployment {
             return "Ended by 1==1 in line "+String.valueOf(elements[1].getLineNumber())+"of method "+elements[1].getClassName() + "." + elements[1].getMethodName();
         }
             d = new Date();
-        newEntry = d+" addProcRolesAndPrivileges. Begin" + d;
+        newEntry = d+" _addProcRolesAndPrivileges. Begin" + d;
             try {requirementsLogEntry(methodName, newEntry,null);
             } catch (IOException ex) { Logger.getLogger(Requirement.class.getName()).log(Level.SEVERE, null, ex);}            
-        addProcRolesAndPrivileges(procedure, pVersion); 
+       _addProcRolesAndPrivilegess(procedure, pVersion); 
             d = new Date();
-        newEntry = d+" addProcRolesAndPrivileges. End" + d;
+        newEntry = d+_addProcRolesAndPrivilegeses. End" + d;
             try {requirementsLogEntry(methodName, newEntry,null);
             } catch (IOException ex) {Logger.getLogger(Requirement.class.getName()).log(Level.SEVERE, null, ex);}
         
@@ -107,7 +122,7 @@ public class RequirementDeployment {
         newEntry = d+" add SOP. Begin..." + d;
             try {requirementsLogEntry(methodName, newEntry,null);
             } catch (IOException ex) {Logger.getLogger(Requirement.class.getName()).log(Level.SEVERE, null, ex);}              
-        addSop(procedure, pVersion, schemaPrefix+"-config");
+        _addSop(procedure, pVersion, schemaPrefix+"-config");
             d = new Date();
         newEntry = d+" add SOP. End..." + d;
             try {requirementsLogEntry(methodName, newEntry,null);
@@ -127,7 +142,7 @@ public class RequirementDeployment {
         newEntry = d+" adding UserSOP. Begin..." + d;
             try {requirementsLogEntry(methodName, newEntry,null);
             } catch (IOException ex) {Logger.getLogger(Requirement.class.getName()).log(Level.SEVERE, null, ex);}                
-        addUserSop(procedure, pVersion,schemaPrefix);
+        _addUserSop(procedure, pVersion,schemaPrefix);
             d = new Date();
         newEntry = d+" adding UserSOP. End..." + d;
             try {requirementsLogEntry(methodName, newEntry,null);
@@ -169,7 +184,7 @@ public class RequirementDeployment {
                 String navRootTagValue = (String) procNavInfo[0][0];
                 privId = procName + "_" + procUserReqBranchesInfo[0][3].toString();                      
 
-                rootNode = createNav(navCode, rdbm, privId, 0, true, procName, procVersion, navCode, "", "");      
+                rootNode = _createNav(navCode, rdbm, privId, 0, true, procName, procVersion, navCode, "", "");      
                 Parameter param = new Parameter();
                 String logEntry = param.addTagInPropertiesFile("usernav", "nav_id_"+String.valueOf(rootNode), navRootTagValue);
                 requirementsLogEntry(methodName, logEntry,5);
@@ -192,7 +207,7 @@ public class RequirementDeployment {
                 String sopSection = (String) procUserReqBranchesInfo[icontProcUserReqBranches+1][5]; 
 
                 Parameter param = new Parameter();
-                newBranch = createNav(navCode, rdbm, privId, rootNode, false, procName, procVersion, procCode, sopName, sopSection);
+                newBranch =_createNavv(navCode, rdbm, privId, rootNode, false, procName, procVersion, procCode, sopName, sopSection);
                 String logEntry = param.addTagInPropertiesFile("usernav", "nav_id_"+String.valueOf(newBranch), navTagValue);
                 requirementsLogEntry("nav_id_"+String.valueOf(newBranch), logEntry,5);
 
@@ -271,7 +286,7 @@ public class RequirementDeployment {
 
                 if(!subTabsAdded.contains(navCode)){        
                     subTabsAdded = subTabsAdded + navCode + "|";
-                    navTabId = createNavTab(navCode, rdbm, navId, "true", procName, procVersion, procCode, sopName, sopSection);
+                    navTabId = _createNavTab(navCode, rdbm, navId, "true", procName, procVersion, procCode, sopName, sopSection);
                     Parameter param = new Parameter();
                     String logEntry = param.addTagInPropertiesFile("userview", navCode, prurs_widget_desc); 
                     requirementsLogEntry(navCode, logEntry,5);                    
@@ -320,7 +335,7 @@ public class RequirementDeployment {
      * @return
      * @throws SQLException
      */
-    public Integer createNav(String nodeName,  String privilegeId, Integer fatherNode, Boolean hasChildren, String procedure, Integer version, String code, String sopName, String sopSection) throws SQLException   {            
+    public Integer _createNavav(String nodeName,  String privilegeId, Integer fatherNode, Boolean hasChildren, String procedure, Integer version, String code, String sopName, String sopSection) throws SQLException   {            
         StackTraceElement[] elements = Thread.currentThread().getStackTrace();
         String methodName = elements[1].getMethodName();
         String schemaConfigName = LPPlatform.SCHEMA_CONFIG; 
@@ -336,12 +351,12 @@ public class RequirementDeployment {
             if ( !LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){
                 diagnoses = rol.createPrivilege(procedure);
                 try {
-                    requirementsLogEntry(methodName, (String) diagnoses[6], 3);
+                    requirementsLogEntry("", methodName, (String) diagnoses[6], 3);
                 } catch (IOException ex) {Logger.getLogger(Requirement.class.getName()).log(Level.SEVERE, null, ex);}                    
             }
             diagnoses = rol.addPrivilegeToRole(procedure, "ALL", procedure);
             try {
-                requirementsLogEntry(methodName, (String) diagnoses[6], 3);
+                requirementsLogEntry("", methodName, (String) diagnoses[6], 3);
             } catch (IOException ex) {Logger.getLogger(Requirement.class.getName()).log(Level.SEVERE, null, ex);}                    
             
             privilegeId = procedure;
@@ -372,12 +387,12 @@ public class RequirementDeployment {
 
         if (numr>0){newEntry = " created navId " + numr + " for the node name " + nodeName;}
 
-        try {requirementsLogEntry(methodName, newEntry,2);
+        try {requirementsLogEntry("", methodName, newEntry,2);
         } catch (IOException ex) {Logger.getLogger(Requirement.class.getName()).log(Level.SEVERE, null, ex);}        
         return created;
     }
 
-    private Integer createNavTab(String subtabname,  Integer navId, String glypname, String procName, Integer procVersion, String procCode, String sopName, String sopSection) throws SQLException     {
+    private Integer _createNavTab(String subtabname,  Integer navId, String glypname, String procName, Integer procVersion, String procCode, String sopName, String sopSection) throws SQLException     {
         StackTraceElement[] elements = Thread.currentThread().getStackTrace();
         String methodName = elements[1].getMethodName();
         
@@ -389,14 +404,14 @@ public class RequirementDeployment {
                                     new Object[]{navId, false, procName, procVersion, procCode, sopName, sopSection});
         if ("LABPLANET_FALSE".equalsIgnoreCase(diagnoses[0].toString())){
             newEntry = " ***Error creating nav Tab for the proc Code " + procVersion + ". Error: "+ diagnoses[4] + " / " + diagnoses[5];
-            try {requirementsLogEntry(methodName, newEntry,3);
+            try {requirementsLogEntry("", methodName, newEntry,3);
             } catch (IOException ex) {Logger.getLogger(Requirement.class.getName()).log(Level.SEVERE, null, ex);}
             return 0;
         }    
         numr = Integer.parseInt(diagnoses[6].toString());
         if (numr>0){
             newEntry = " created Nav Tab Id " + numr + " for the proc Code " + procCode;
-            try {requirementsLogEntry(methodName, newEntry,3);
+            try {requirementsLogEntry("", methodName, newEntry,3);
             } catch (IOException ex) {Logger.getLogger(Requirement.class.getName()).log(Level.SEVERE, null, ex);}
 
             diagnoses = Rdbms.updateRecordFieldsByFilter(LPPlatform.SCHEMA_CONFIG, "nav_tab", 
@@ -512,30 +527,7 @@ public class RequirementDeployment {
         return created;
     }
 */
-    void requirementsLogEntry(String functionName, String entryValue, Integer numTabs) throws IOException{
 
-        String newLogFileName = "Requirements.txt";        
-        ResourceBundle prop = ResourceBundle.getBundle("parameter.config.config");        
-        String logDir = prop.getString("logDirPath");
-
-        FileWriter fw = null;  
-        
-        String logFile = logDir + "/" + newLogFileName;
-        logFile = logFile.replace("/", "\\");
-        try{
-            fw = new FileWriter(logFile, true);                  
-            String newEntry = "";
-            if (numTabs!=null){
-                for (Integer i=0;i<numTabs;i++){
-                    newEntry = newEntry + "     ";
-                }
-            }
-            newEntry = newEntry + functionName + ": " + entryValue + "\n";            
-            fw.append(newEntry);
-
-            fw.close();        
-        }finally{fw.close();}
-    }    
 
     /**
      *
@@ -543,7 +535,7 @@ public class RequirementDeployment {
      * @param procVersion
      * @throws SQLException
      */
-    public void addProcRolesAndPrivileges( String procName, Integer procVersion) throws SQLException{
+    public void _addProcRolesAndPrivilegesges( String procName, Integer procVersion) throws SQLException{
         String schemaConfigName = LPPlatform.SCHEMA_CONFIG; 
     
         String methodName = "addProcRolesAndPrivileges";
@@ -558,7 +550,7 @@ public class RequirementDeployment {
 
         String newEntry = " query returns " + contProcUserReqInfo+1 + " records.";
         try {
-            requirementsLogEntry(methodName, newEntry,1);
+            requirementsLogEntry("", methodName, newEntry,1);
         } catch (IOException ex) {Logger.getLogger(Requirement.class.getName()).log(Level.SEVERE, null, ex);}
 
         // Create the root node for the procedure being deployed.    
@@ -569,7 +561,7 @@ public class RequirementDeployment {
 
             newEntry = " Parsing record " + (icontProcUserReqInfo+1) + "/" + contProcUserReqInfo + ": Roles=" + roles + " // Privileges: " + privName;
             try {
-                requirementsLogEntry(methodName, newEntry,2);
+                requirementsLogEntry("", methodName, newEntry,2);
             } catch (IOException ex) {Logger.getLogger(Requirement.class.getName()).log(Level.SEVERE, null, ex);}
 
             if (roles!=null){
@@ -584,7 +576,7 @@ public class RequirementDeployment {
                     if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){                  
                         diagnoses = rol.createRole(r);
                         try {
-                            requirementsLogEntry(methodName, diagnoses[6].toString(), 3);
+                            requirementsLogEntry("", methodName, diagnoses[6].toString(), 3);
                         } catch (IOException ex) {Logger.getLogger(Requirement.class.getName()).log(Level.SEVERE, null, ex);}                    
                     }
                 }
@@ -600,7 +592,7 @@ public class RequirementDeployment {
                     if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){
                         diagnoses = rol.createPrivilege(pr);
                         try {
-                            requirementsLogEntry(methodName, diagnoses[6].toString(), 3);
+                            requirementsLogEntry("", methodName, diagnoses[6].toString(), 3);
                         } catch (IOException ex) {Logger.getLogger(Requirement.class.getName()).log(Level.SEVERE, null, ex);}                    
                         
                     }
@@ -620,7 +612,7 @@ public class RequirementDeployment {
 
                                 diagnoses = rol.addPrivilegeToRole(pr, r, procName);
                                 try {
-                                    requirementsLogEntry(methodName, diagnoses[6].toString(), 3);
+                                    requirementsLogEntry("", methodName, diagnoses[6].toString(), 3);
                                 } catch (IOException ex) {Logger.getLogger(Requirement.class.getName()).log(Level.SEVERE, null, ex);}                    
 
                             }
@@ -631,7 +623,7 @@ public class RequirementDeployment {
         }
     }     
 
-    private void addSop( String procName, Integer procVersion, String schemaName) throws SQLException{
+    private void _addSop( String procName, Integer procVersion, String schemaName) throws SQLException{
 
         String methodName = "addSop";
         Sop sop = new Sop();
@@ -647,7 +639,7 @@ public class RequirementDeployment {
         Integer contProcUseReqInfo = procUseReqInfo.length;       
 
         String newEntry = " query returns " + contProcUseReqInfo+1 + " records.";
-        try {requirementsLogEntry(methodName, newEntry,1);
+        try {requirementsLogEntry("", methodName, newEntry,1);
         } catch (IOException ex) {Logger.getLogger(Requirement.class.getName()).log(Level.SEVERE, null, ex);}
 
         out.println(contProcUseReqInfo.toString());
@@ -659,7 +651,7 @@ public class RequirementDeployment {
             String sopSectionName = (String) procUseReqInfo[icontProcUseReqInfo][3];
             
             newEntry = " Parsing record " + (icontProcUseReqInfo+1) + "/" + contProcUseReqInfo + ": SOP=" + sopName;
-            try {requirementsLogEntry(methodName, newEntry,2);
+            try {requirementsLogEntry("", methodName, newEntry,2);
             } catch (IOException ex) {Logger.getLogger(Requirement.class.getName()).log(Level.SEVERE, null, ex);}
 
             if (sopName!=null){
@@ -686,7 +678,7 @@ public class RequirementDeployment {
         }
     }         
 
-    private void addUserSop( String procName, Integer procVersion, String schemaName){
+    private void _addUserSop( String procName, Integer procVersion, String schemaName){
 
         String methodName = "addUserSop";
         String newEntry = "";
@@ -703,7 +695,7 @@ public class RequirementDeployment {
         newEntry = " query returns " + contProcUserReqInfo++ + " records.";
         contProcUserReqInfo--;
         try {
-            requirementsLogEntry(methodName, newEntry,1);
+            requirementsLogEntry("", methodName, newEntry,1);
         } catch (IOException ex) {
             Logger.getLogger(Requirement.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -714,7 +706,7 @@ public class RequirementDeployment {
             String role = (String) procUserReqInfo[icontProcUserReqInfo][4];
             
             newEntry = " Parsing record " + (icontProcUserReqInfo+1) + "/" + contProcUserReqInfo + ": Sop=" + sopName + " Section=" + sopSectionName + " Role=" + role;
-            try {requirementsLogEntry(methodName, newEntry,2);
+            try {requirementsLogEntry("", methodName, newEntry,2);
             } catch (IOException ex) {Logger.getLogger(Requirement.class.getName()).log(Level.SEVERE, null, ex);}
 
             if (sopName!=null){                
@@ -734,7 +726,7 @@ public class RequirementDeployment {
                             Integer contUser = userProfileInfo.length;     
 
                             newEntry = "Found " + contUser + " users having assigned the role "+procName+"_"+r;
-                            try {requirementsLogEntry(methodName, newEntry,3);
+                            try {requirementsLogEntry("", methodName, newEntry,3);
                             } catch (IOException ex) {Logger.getLogger(Requirement.class.getName()).log(Level.SEVERE, null, ex);}
 
                             for (Integer icontUser=0;icontUser<contUser;icontUser++){
@@ -744,7 +736,7 @@ public class RequirementDeployment {
                                 Object[] newSopUser = usSop.addSopToUserByName(schemaName+"-data", userInfoId, sopName);
 
                                 newEntry = icontUser+"/"+contUser+"  "+newSopUser[newSopUser.length-1].toString();
-                                try {requirementsLogEntry(methodName, newEntry,4);
+                                try {requirementsLogEntry("", methodName, newEntry,4);
                                 } catch (IOException ex) {
                                     Logger.getLogger(Requirement.class.getName()).log(Level.SEVERE, null, ex);}
 
@@ -757,37 +749,26 @@ public class RequirementDeployment {
         }
     }         
 
-    private void _createDataBaseSchemas( String schemaNamePrefix){
-        // Not implemented yet
-    }
-/*
-        String methodName = "createDataBaseSchemas";
+    private void createDBSchemas(String schemaNamePrefix,  String[] schemaNames){
+
+        String methodName = "createDataBaseSchemas";       
         String newEntry = "";
-        String[] schemaNames = new String[0];
-        
-        schemaNames = LabPLANETArray.addValueToArray1D(schemaNames, LPPlatform.SCHEMA_CONFIG);
-        schemaNames = LabPLANETArray.addValueToArray1D(schemaNames, "data");        
-        schemaNames = LabPLANETArray.addValueToArray1D(schemaNames, "data-audit"); 
 
         for (String fn:schemaNames){
             String configSchemaName = schemaNamePrefix+"-"+fn;
             try {
-                requirementsLogEntry(methodName, configSchemaName,2);
+                requirementsLogEntry("", methodName, configSchemaName,2);
             } catch (IOException ex) {
                 Logger.getLogger(RequirementDeployment.class.getName()).log(Level.SEVERE, null, ex);
             }
             
-            configSchemaName = labPlat.buildSchemaName(configSchemaName, fn);
-            String configSchemaScript = "CREATE SCHEMA "+configSchemaName+"  AUTHORIZATION postgres;";     
-            try {
-                Rdbms.prepUpQuery(configSchemaScript, null);
-            } catch (SQLException ex) {
-                Logger.getLogger(RequirementDeployment.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            configSchemaName = LPPlatform.buildSchemaName(configSchemaName, fn);
+            String configSchemaScript = "CREATE SCHEMA "+configSchemaName+"  AUTHORIZATION "+SCHEMA_AUTHORIZATION_ROLE+";";     
+            Rdbms.prepUpQuery(configSchemaScript, null);
         }
 
     }
-*/
+
     private void _createDataBaseSchemaTable( String schemaNamePrefix, String procedure, Integer procVersion){
         // Not implemented yet
     }

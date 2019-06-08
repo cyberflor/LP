@@ -152,7 +152,7 @@ public class AppProcedureListAPI extends HttpServlet {
 
                     Object[][] procEvent = Rdbms.getRecordFieldsByFilter(curProc.toString()+"-config", "procedure_events", 
                             new String[]{"role_name"}, new String[]{rolName}, 
-                            procEventFldNameArray, new String[]{"order_number"});
+                            procEventFldNameArray, new String[]{"branch_level", "order_number"});
                     if (!LPPlatform.LAB_FALSE.equalsIgnoreCase(procEvent[0][0].toString())){                                                
 
                         JSONArray procEvents = new JSONArray(); 

@@ -136,8 +136,37 @@ public class sampleAPIfrontend extends HttpServlet {
                 if (sampleFieldToRetrieve!=null){
                     sampleFieldToRetrieveArr=LPArray.addValueToArray1D(sampleFieldToRetrieveArr, sampleFieldToRetrieve.split("\\|"));
                 }                
+                
+                String[] whereFieldsNameArr = null;
+                Object[] whereFieldsValueArr = null;
+                String whereFieldsName = request.getParameter("whereFieldsName"); 
+                if (whereFieldsName==null){whereFieldsName="";}
+                String whereFieldsValue = request.getParameter("whereFieldsValue"); 
+                if (whereFieldsValue==null){whereFieldsValue="";}
+                
+                if ( (whereFieldsName=="") && (whereFieldsValue=="") ){
+                    whereFieldsNameArr = LPArray.addValueToArray1D(whereFieldsNameArr, "received_by is null");
+                    whereFieldsValueArr = LPArray.addValueToArray1D(whereFieldsValueArr, "");
+                }else{
+                    whereFieldsNameArr=LPArray.addValueToArray1D(whereFieldsNameArr, whereFieldsName.split("\\|"));
+                    whereFieldsValueArr = LPArray.addValueToArray1D(whereFieldsValueArr, LPArray.convertStringWithDataTypeToObjectArray(whereFieldsValue.split("\\|")));                                          
+                    for (int iFields=0; iFields<whereFieldsNameArr.length; iFields++){
+                        if (LPPlatform.isEncryptedField(schemaPrefix+"-data", "sample", whereFieldsNameArr[iFields])){                
+                            HashMap<String, String> hm = LPPlatform.encryptEncryptableFieldsAddBoth(whereFieldsNameArr[iFields], whereFieldsNameArr[iFields]);
+                            whereFieldsNameArr[iFields]= hm.keySet().iterator().next();    
+                            if ( hm.get(whereFieldsNameArr[iFields]).length()!=whereFieldsNameArr[iFields].length()){
+                                String newWhereFieldValues = hm.get(whereFieldsNameArr[iFields]);
+                                whereFieldsValueArr[iFields]=newWhereFieldValues;
+                            }
+                        }
+                        String[] tokenFieldValue = LPPlatform.getTokenFieldValue(whereFieldsValueArr[iFields].toString(), finalToken);
+                        if (LPPlatform.LAB_TRUE.equalsIgnoreCase(tokenFieldValue[0])) 
+                            whereFieldsValueArr[iFields]=tokenFieldValue[1];                                                    
+                    }                                    
+                }  
+                
                 String myData = Rdbms.getRecordFieldsByFilterJSON(schemaPrefix+"-data", "sample",
-                        new String[] {"received_by is null"}, new Object[]{""},
+                        whereFieldsNameArr, whereFieldsValueArr,
                         sampleFieldToRetrieveArr, sortFieldsNameArr);
                 Rdbms.closeRdbms();
                 if (myData.contains(LPPlatform.LAB_FALSE)){ 
@@ -152,16 +181,13 @@ public class sampleAPIfrontend extends HttpServlet {
                 Rdbms.closeRdbms();
                 return;
             case "SAMPLES_INPROGRESS_LIST":   
-                String whereFieldsName = request.getParameter("whereFieldsName"); 
+                whereFieldsName = request.getParameter("whereFieldsName"); 
                 if (whereFieldsName==null){whereFieldsName="";}
-                String whereFieldsValue = request.getParameter("whereFieldsValue"); 
+                whereFieldsValue = request.getParameter("whereFieldsValue"); 
 
                 sampleFieldToRetrieve = request.getParameter("sampleFieldToRetrieve"); 
                 String testFieldToRetrieve = request.getParameter("testFieldToRetrieve"); 
-                String sampleLastLevel = request.getParameter("sampleLastLevel");                 
-                
-                String[] whereFieldsNameArr = null;
-                Object[] whereFieldsValueArr = null;
+                String sampleLastLevel = request.getParameter("sampleLastLevel");                                
                 
                 if (sampleLastLevel==null){
                     sampleLastLevel="SAMPLE";
@@ -174,8 +200,11 @@ public class sampleAPIfrontend extends HttpServlet {
                 if (testFieldToRetrieve!=null){
                     testFieldToRetrieveArr=LPArray.addValueToArray1D(testFieldToRetrieveArr, testFieldToRetrieve.split("\\|"));
                 }                
-                
+                whereFieldsNameArr = null;
+                whereFieldsValueArr = null;                
                 if (!whereFieldsName.contains("status")){
+                    whereFieldsNameArr = LPArray.addValueToArray1D(whereFieldsNameArr, "received_by is not null");
+                    whereFieldsValueArr = LPArray.addValueToArray1D(whereFieldsValueArr, "");
                     Object[] recEncrypted = LPPlatform.encryptString("RECEIVED");
                     whereFieldsNameArr=LPArray.addValueToArray1D(whereFieldsNameArr, "status in|");                
                     whereFieldsValueArr=LPArray.addValueToArray1D(whereFieldsValueArr, "RECEIVED|"+recEncrypted[1]);                
@@ -192,6 +221,9 @@ public class sampleAPIfrontend extends HttpServlet {
                                 whereFieldsValueArr[iFields]=newWhereFieldValues;
                             }
                         }
+                        String[] tokenFieldValue = LPPlatform.getTokenFieldValue(whereFieldsValueArr[iFields].toString(), finalToken);
+                        if (LPPlatform.LAB_TRUE.equalsIgnoreCase(tokenFieldValue[0])) 
+                            whereFieldsValueArr[iFields]=tokenFieldValue[1];                                                    
                     }                                    
                 }            
 /*                Object[] whereFieldsValueArr = new Object[]{"RECEIVED"};
@@ -413,7 +445,99 @@ public class sampleAPIfrontend extends HttpServlet {
                     }                    
                     Rdbms.closeRdbms();
                     return;  
-                case "GET_SAMPLE_ANALYSIS_RESULT_SPECK":
+                case "CHANGEOFCUSTODY_SAMPLE_HISTORY":     
+                    sampleIdStr = request.getParameter(PARAMETER_SAMPLE_ID);                             
+                    if ( (sampleIdStr==null) || (sampleIdStr.contains("undefined")) ) {
+                        errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
+                        errObject = LPArray.addValueToArray1D(errObject, "sampleId="+request.getParameter(PARAMETER_SAMPLE_ID));
+                        errObject = LPArray.addValueToArray1D(errObject, "API Error Message: sampleId is one mandatory param and should be one integer value for this API");                    
+                        Object[] errMsg = LPFrontEnd.responseError(errObject, language, schemaPrefix);
+                        response.sendError((int) errMsg[0], (String) errMsg[1]);   
+                        Rdbms.closeRdbms(); 
+                        return ;
+                    }                              
+                    sampleId = Integer.parseInt(sampleIdStr);      
+
+                    fieldToRetrieve = request.getParameter("fieldToRetrieve");                    
+                    sortFieldsName = request.getParameter("sortFieldsName");
+                    
+                    fieldToRetrieveArr = new String[0];
+                    if ( (fieldToRetrieve==null) || (fieldToRetrieve.length()==0) ){
+                        fieldToRetrieveArr=LPArray.addValueToArray1D(fieldToRetrieveArr, "sample_id");
+                        fieldToRetrieveArr=LPArray.addValueToArray1D(fieldToRetrieveArr, "custodian");
+                        fieldToRetrieveArr=LPArray.addValueToArray1D(fieldToRetrieveArr, "custodian_candidate");                           
+                        fieldToRetrieveArr=LPArray.addValueToArray1D(fieldToRetrieveArr, "coc_started_on");                           
+                        fieldToRetrieveArr=LPArray.addValueToArray1D(fieldToRetrieveArr, "status");                           
+                        fieldToRetrieveArr=LPArray.addValueToArray1D(fieldToRetrieveArr, "coc_confirmed_on");                           
+                    }else{
+                        fieldToRetrieveArr=LPArray.addValueToArray1D(fieldToRetrieveArr, fieldToRetrieve.split("\\|"));
+                        if (LPArray.valuePosicInArray(fieldToRetrieveArr, "custodian")==-1){
+                            fieldToRetrieveArr=LPArray.addValueToArray1D(fieldToRetrieveArr, "sample_id");
+                            fieldToRetrieveArr=LPArray.addValueToArray1D(fieldToRetrieveArr, "custodian");
+                            fieldToRetrieveArr=LPArray.addValueToArray1D(fieldToRetrieveArr, "custodian_candidate");                           
+                            fieldToRetrieveArr=LPArray.addValueToArray1D(fieldToRetrieveArr, "coc_started_on");                           
+                            fieldToRetrieveArr=LPArray.addValueToArray1D(fieldToRetrieveArr, "status");                           
+                            fieldToRetrieveArr=LPArray.addValueToArray1D(fieldToRetrieveArr, "coc_confirmed_on");                           
+                        }                    
+                    }                       
+                    sortFieldsNameArr = null;
+                    sortFieldsName = request.getParameter("sortFieldsName"); 
+                    if (! ((sortFieldsName==null) || (sortFieldsName.contains("undefined"))) ) {
+                        sortFieldsNameArr = sortFieldsName.split("\\|");                                    
+                    }else{   
+                        sortFieldsNameArr = LPArray.addValueToArray1D(sortFieldsNameArr, "sample_id");
+                        sortFieldsNameArr = LPArray.addValueToArray1D(sortFieldsNameArr, "coc_started_on");                        
+                    }  
+                    
+                    myData = Rdbms.getRecordFieldsByFilterJSON(schemaPrefix+"-data", "sample_coc",
+                            new String[]{"sample_id"},new Object[]{sampleId}, fieldToRetrieveArr, sortFieldsNameArr);
+                    Rdbms.closeRdbms();
+                    if (myData.contains(LPPlatform.LAB_FALSE)){  
+                        Object[] errMsg = LPFrontEnd.responseError(new String[] {myData}, language, null);
+                        response.sendError((int) errMsg[0], (String) errMsg[1]);                            
+                    }else{
+                        Response.ok().build();
+                        response.getWriter().write(myData);           
+                    }                             
+                    Rdbms.closeRdbms();
+                    return;                      
+                case "CHANGEOFCUSTODY_USERS_LIST":     
+
+                    fieldToRetrieve = request.getParameter("fieldToRetrieve");                    
+                    sortFieldsName = request.getParameter("sortFieldsName");
+                    
+                    fieldToRetrieveArr = new String[0];
+                    if ( (fieldToRetrieve==null) || (fieldToRetrieve.length()==0) ){
+                        fieldToRetrieveArr=LPArray.addValueToArray1D(fieldToRetrieveArr, "user_name");
+                        fieldToRetrieveArr=LPArray.addValueToArray1D(fieldToRetrieveArr, "person_name");
+                    }else{
+                        fieldToRetrieveArr=LPArray.addValueToArray1D(fieldToRetrieveArr, fieldToRetrieve.split("\\|"));
+                        if (LPArray.valuePosicInArray(fieldToRetrieveArr, "person_name")==-1){
+                            fieldToRetrieveArr=LPArray.addValueToArray1D(fieldToRetrieveArr, "person_name");
+                        }                    
+                    }                       
+                    sortFieldsNameArr = null;
+                    sortFieldsName = request.getParameter("sortFieldsName"); 
+                    if (! ((sortFieldsName==null) || (sortFieldsName.contains("undefined"))) ) {
+                        sortFieldsNameArr = sortFieldsName.split("\\|");                                    
+                    }else{   
+                        sortFieldsNameArr = LPArray.addValueToArray1D(sortFieldsNameArr, "user_name");
+                        sortFieldsNameArr = LPArray.addValueToArray1D(sortFieldsNameArr, "person_name");                        
+                    }  
+                    
+                    myData = Rdbms.getRecordFieldsByFilterJSON("app", "users",
+                            new String[]{"user_name NOT IN|"},new Object[]{"0"}, fieldToRetrieveArr, sortFieldsNameArr);
+                    Rdbms.closeRdbms();
+                    if (myData.contains(LPPlatform.LAB_FALSE)){  
+                        Object[] errMsg = LPFrontEnd.responseError(new String[] {myData}, language, null);
+                        response.sendError((int) errMsg[0], (String) errMsg[1]);                            
+                    }else{
+                        Response.ok().build();
+                        response.getWriter().write(myData);           
+                    }                             
+                    Rdbms.closeRdbms();
+                    return;                      
+                case "GET_SAMPLE_ANALYSIS_RESULT_SPEC":
                     String resultIdStr = request.getParameter("result_id");
                     if ( (resultIdStr==null) || (resultIdStr.contains("undefined")) ) {
                         errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);

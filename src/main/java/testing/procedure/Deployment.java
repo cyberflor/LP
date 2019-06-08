@@ -53,7 +53,7 @@ public class Deployment extends HttpServlet {
             String procedure = "sampleA"; 
             Integer procVersion = 1;
             try {                
-                String log = reqDep._newRequirement(procedure, procVersion);
+                String log = reqDep.procedureDeployment(procedure, procVersion);
                 out.println(log);
             } catch (SQLException ex) {
                 Logger.getLogger(Deployment.class.getName()).log(Level.SEVERE, null, ex);

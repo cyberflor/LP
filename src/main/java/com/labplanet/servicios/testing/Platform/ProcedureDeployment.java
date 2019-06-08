@@ -3,11 +3,16 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package testing.functionalConfig;
+package com.labplanet.servicios.testing.Platform;
 
-import functionalJava.parameter.Parameter;
+import databases.Rdbms;
+import functionalJava.requirement.RequirementDeployment;
+import functionalJava.testingScripts.LPTestingOutFormat;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -17,7 +22,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Administrator
  */
-public class TestingBundle extends HttpServlet {
+public class ProcedureDeployment extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -27,26 +32,27 @@ public class TestingBundle extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response)  throws ServletException, IOException {
+        
+        String procName = "jonaDavid"; Integer procVersion = 1;
+        
+        response=LPTestingOutFormat.responsePreparation(response);
+        String fileContent = LPTestingOutFormat.getHtmlStyleHeader(this.getClass().getSimpleName());
         try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet TestingBundle</title>");            
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet TestingBundle at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
+                if (1==1)            {               out.println("Before connection to DB");            }
+            if (Rdbms.getRdbms().startRdbms(LPTestingOutFormat.TESTING_USER, LPTestingOutFormat.TESTING_PW)==null){fileContent=fileContent+"Connection to the database not established";out.println(fileContent);return;}
+            if (!Rdbms.getRdbms().startRdbms(LPTestingOutFormat.TESTING_USER, LPTestingOutFormat.TESTING_PW)){fileContent=fileContent+"Connection to the database not established";out.println(fileContent);return;}
             
-            String schemaDataName = "oil-pl1-data";
-            String testStatusReviewed = Parameter.getParameterBundle(schemaDataName.replace("\"", ""), "sampleAnalysis_statusReviewed");
-            out.println(testStatusReviewed);
-            testStatusReviewed = Parameter.getParameterBundleInConfigFile(schemaDataName.replace("\"", ""), "sampleAnalysis_statusReviewed", "es");
-            out.println(testStatusReviewed);
+            if (1==1)            {            out.println("connected to DB");            }
+        
+
+            RequirementDeployment reqDep = new RequirementDeployment();
+        
+            try {
+                reqDep.procedureDeployment(procName, procVersion);
+            } catch (SQLException ex) {
+                Logger.getLogger(ProcedureDeployment.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 

@@ -26,6 +26,7 @@ import org.json.simple.JSONArray;
 //import org.codehaus.jettison.json.JSONException;
 //import org.json.simple.JSONObject;
 import databases.Rdbms;
+import databases.Token;
 
 /**
  * LPPlatform is a library for methods solving topics that are specifically part of the LabPLANET Paradigm.
@@ -52,6 +53,8 @@ public class LPPlatform {
     private static final String JAVADOC_CLASS_FLDNAME = "class";
     private static final String JAVADOC_METHOD_FLDNAME = "method";
     private static final String JAVADOC_LINE_FLDNAME = "line";
+    
+    private static final String TOKEN_PARAM_PREFIX = "TOKEN_";
     
     /**
      *
@@ -203,7 +206,23 @@ public class LPPlatform {
             return trapErrorMessage(LAB_TRUE, errorCode, errorDetailVariables);               
         }    
     }    
-    
+    /**
+     * The fieldName should include one prefix that is "TOKEN_" otherwise it will not be interpreted as a correct param.
+     * @param token
+     * @param fieldName
+     * @return
+     */
+    public static String[] getTokenFieldValue(String fieldName, String token){    
+        if (fieldName==null){return new String[]{LPPlatform.LAB_FALSE, ""};}
+        if (!fieldName.toUpperCase().contains(TOKEN_PARAM_PREFIX)){return new String[]{LPPlatform.LAB_FALSE, ""};}
+        Token tokenObj = new Token();
+        String tokenParamValue = tokenObj.getTokenParamValue(token, fieldName.replace(TOKEN_PARAM_PREFIX, ""));
+        if ( tokenParamValue!=null){
+            return new String[]{LPPlatform.LAB_TRUE, tokenParamValue};
+        }else{
+            return new String[]{LPPlatform.LAB_FALSE, ""};
+        }
+    }    
     /**
      *
      * @param schemaName
@@ -223,7 +242,7 @@ public class LPPlatform {
         if ( ("".equals(tableEncrytedFields)) ){return diagnoses;}        
         return LPArray.valueInArray(tableEncrytedFields.split("\\|"), fieldName);        
     }
-    
+        
     /**
      *
      * @param fieldName
