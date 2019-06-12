@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package _functionalJava.project;
+package functionalJava.environmentalMonitoring;
 
 import LabPLANET.utilities.LPArray;
 import LabPLANET.utilities.LPPlatform;
@@ -21,7 +21,7 @@ import functionalJava.sampleStructure.DataSample;
  *
  * @author Administrator
  */
-public class DataProject extends DataSample{
+public class DataProgram extends DataSample{
 
     private Object[] diagnosesProj = new Object[7];
 
@@ -41,7 +41,7 @@ public class DataProject extends DataSample{
      *
      * @param grouperName
      */
-    public DataProject(String grouperName) {
+    public DataProgram(String grouperName) {
         super(grouperName);
     }
 
@@ -60,18 +60,18 @@ public class DataProject extends DataSample{
      * @throws InvocationTargetException
      * @throws SQLException
      */
-    public Object[] createProjectDev( String schemaPrefix, String sampleTemplate, Integer sampleTemplateVersion, String[] sampleFieldName, Object[] sampleFieldValue, String userName, String userRole) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException{
-    Object[] diag = createProject(schemaPrefix, sampleTemplate, sampleTemplateVersion, sampleFieldName, sampleFieldValue, userName, userRole, true);
+    public Object[] createProgramDev( String schemaPrefix, String sampleTemplate, Integer sampleTemplateVersion, String[] sampleFieldName, Object[] sampleFieldValue, String userName, String userRole) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException{
+    Object[] diag = DataProgram.this.createProgram(schemaPrefix, sampleTemplate, sampleTemplateVersion, sampleFieldName, sampleFieldValue, userName, userRole, true);
     return diag;
 }
 
     /**
      *
      * @param schemaPrefix
-     * @param sampleTemplate
-     * @param sampleTemplateVersion
-     * @param sampleFieldName
-     * @param sampleFieldValue
+     * @param template
+     * @param templateVersion
+     * @param fieldName
+     * @param fieldValue
      * @param userName
      * @param userRole
      * @return
@@ -80,12 +80,12 @@ public class DataProject extends DataSample{
      * @throws InvocationTargetException
      * @throws SQLException
      */
-    public Object[] createProject( String schemaPrefix, String sampleTemplate, Integer sampleTemplateVersion, String[] sampleFieldName, Object[] sampleFieldValue, String userName, String userRole) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException{
-    Object[] diag = createProject(schemaPrefix, sampleTemplate, sampleTemplateVersion, sampleFieldName, sampleFieldValue, userName, userRole, false);
+    public Object[] createProgram( String schemaPrefix, String template, Integer templateVersion, String[] fieldName, Object[] fieldValue, String userName, String userRole) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException{
+    Object[] diag = DataProgram.this.createProgram(schemaPrefix, template, templateVersion, fieldName, fieldValue, userName, userRole, false);
     return diag;
 }
 
-Object[] createProject( String schemaPrefix, String projectTemplate, Integer projectTemplateVersion, String[] sampleFieldName, Object[] sampleFieldValue, String userName, String userRole, Boolean devMode) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException{
+Object[] createProgram( String schemaPrefix, String projectTemplate, Integer projectTemplateVersion, String[] sampleFieldName, Object[] sampleFieldValue, String userName, String userRole, Boolean devMode) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException{
     DataDataIntegrity labIntChecker = new DataDataIntegrity();
 
     if (devMode==true){
@@ -262,51 +262,12 @@ Object[] createProject( String schemaPrefix, String projectTemplate, Integer pro
     return diagnosesProj; 
 }    
 
-    /**
-     *
-     * @param schemaPrefix
-     * @param projectTemplate
-     * @param projectTemplateVersion
-     * @param fieldName
-     * @param fieldValue
-     * @param userName
-     * @param userRole
-     * @param projectName
-     * @param appSessionId
-     * @return
-     */
-    public Object[] logProjectSample( String schemaPrefix, String projectTemplate, Integer projectTemplateVersion, String[] fieldName, Object[] fieldValue, String userName, String userRole, String projectName, Integer appSessionId){    
-    Object[] newProjSample = new Object[0];
-        try {
-            DataSample ds = new DataSample("project");
-            fieldName = LPArray.addValueToArray1D(fieldName, "project");
-            fieldValue = LPArray.addValueToArray1D(fieldValue, projectName);
-            newProjSample = ds.logSample(schemaPrefix, projectTemplate, projectTemplateVersion, fieldName, fieldValue, userName, userRole, appSessionId);
-            /*if (!newProjSample[3].equalsIgnoreCase(LPPlatform.LAB_FALSE)){
-                String schemaDataNameProj = "data";
-                String schemaConfigNameProj = LPPlatform.SCHEMA_CONFIG;
-
-                LPPlatform labPlat = new LPPlatform();
-                schemaDataNameProj = labPlat.buildSchemaName(schemaPrefix, schemaDataNameProj);    
-                schemaConfigNameProj = labPlat.buildSchemaName(schemaPrefix, schemaConfigNameProj);                 
-                
-                newProjSample = rdbm.updateRecordFieldsByFilter(rdbm, schemaDataNameProj, "project_sample", 
-                        new String[]{"project"}, new Object[]{projectName}, 
-                        new String[]{"sample_id"}, new Object[]{Integer.parseInt(newProjSample[newProjSample.length-1])});
-            }*/
-        } catch (IllegalArgumentException ex) {
-            Logger.getLogger(DataProject.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
-        return newProjSample;
-    
-}
 
     /**
      *
      */
-    public void createProjectName(){
-    DataSample prjSmp = new DataSample("project");
+    public void createProgramName(){
+    DataSample prjSmp = new DataSample("program");
     
 }
 

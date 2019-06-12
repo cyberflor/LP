@@ -138,7 +138,7 @@ public class projectStructure extends HttpServlet {
                             fieldValue = LPArray.convertStringWithDataTypeToObjectArray(configSpecTestingArray[i][6].toString().split("\\|"));
                             fileContent = fileContent + "<td>sampleId, userName, fieldNames, fieldValues</td>";
                             fileContent = fileContent + LPTestingOutFormat.fieldStart()+sampleId.toString()+", "+userName+", "
-                                +configSpecTestingArray[i][5].toString()+", "+configSpecTestingArray[i][6].toString()+LPTestingOutFormat.fieldEnd();                            
+                                +configSpecTestingArray[i][5].toString()+", "+configSpecTestingArray[i][6].toString()+LPTestingOutFormat.fieldEnd();                             
                             dataProject = prj.sampleAnalysisAddtoSample(schemaPrefix, userName, sampleId, fieldName, fieldValue, userRole);
                         } catch (IllegalArgumentException | NullPointerException ex) {
                             Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);

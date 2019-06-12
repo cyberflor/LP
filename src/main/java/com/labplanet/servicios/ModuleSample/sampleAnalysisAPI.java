@@ -186,7 +186,7 @@ public class sampleAnalysisAPI extends HttpServlet {
                     fieldNameArr = (String[]) fieldName.split("\\|");                                    
                     String fieldValue = request.getParameter("fieldValue");
                     fieldValueArr = (String[]) fieldValue.split("\\|");                        
-                    fieldValueArr = LPArray.convertStringWithDataTypeToObjectArray((String[]) fieldValueArr);
+                    fieldValueArr = LPArray.convertStringWithDataTypeToObjectArray((String[]) fieldValueArr);                    
                     dataSample = smp.sampleAnalysisAddtoSample(schemaPrefix, internalUserID, sampleId, fieldNameArr, fieldValueArr, userRole);                    
                     break;              
                 case "REVIEWRESULT":
