@@ -9,6 +9,7 @@ import LabPLANET.utilities.LPArray;
 import LabPLANET.utilities.LPFrontEnd;
 import LabPLANET.utilities.LPPlatform;
 import LabPLANET.utilities.LPHttp;
+import com.labplanet.servicios.testing.module.envmonit.envMonAPI;
 import databases.Rdbms;
 import databases.Token;
 import functionalJava.ChangeOfCustody.ChangeOfCustody;
@@ -17,6 +18,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.Date;
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -171,7 +173,12 @@ public class sampleAPI extends HttpServlet {
              response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "The Transaction cannot be created, the action should be aborted");
              return;
         }
-        
+        try {
+            con.rollback();
+            con.setAutoCommit(true);    
+        } catch (SQLException ex) {
+            Logger.getLogger(envMonAPI.class.getName()).log(Level.SEVERE, null, ex);
+        }        
 /*        try {
             con.close();
         } catch (SQLException ex) {
@@ -641,8 +648,7 @@ public class sampleAPI extends HttpServlet {
             if (LPPlatform.LAB_FALSE.equalsIgnoreCase(dataSample[0].toString())){  
                 Rdbms.rollbackWithSavePoint();
                 con.rollback();
-                con.setAutoCommit(true);
-                
+                con.setAutoCommit(true);                
                 Object[] errMsg = LPFrontEnd.responseError(dataSample, language, schemaPrefix);
                 response.sendError((int) errMsg[0], (String) errMsg[1]);    
             }else{

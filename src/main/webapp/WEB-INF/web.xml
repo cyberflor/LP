@@ -108,6 +108,14 @@
         <servlet-name>ProcedureDeployment</servlet-name>
         <servlet-class>com.labplanet.servicios.testing.Platform.ProcedureDeployment</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>TstDataEnvMonit</servlet-name>
+        <servlet-class>com.labplanet.servicios.testing.module.envmonit.TstDataEnvMonit</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>envMonAPI</servlet-name>
+        <servlet-class>com.labplanet.servicios.testing.module.envmonit.envMonAPI</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>DBActions</servlet-name>
         <url-pattern>/testing/platform/DBActions</url-pattern>
@@ -206,6 +214,14 @@
     <servlet-mapping>
         <servlet-name>ProcedureDeployment</servlet-name>
         <url-pattern>/testing/platform/ProcedureDeployment</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>TstDataEnvMonit</servlet-name>
+        <url-pattern>/Testing/DB/TstDataEnvMonit</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>envMonAPI</servlet-name>
+        <url-pattern>/moduleEnvMon/envMonAPI</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

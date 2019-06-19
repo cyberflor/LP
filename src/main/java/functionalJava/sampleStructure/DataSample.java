@@ -341,6 +341,8 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
            return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);    
         }               
         
+        //schemaConfigName = "em-demo-a-config";
+        //Object[][] diagnosis = Rdbms.getRecordFieldsByFilter(schemaConfigName, tableName, new String[]{FIELDNAME_CODE,FIELDNAME_CODE_VERSION}, new Object[]{sampleTemplate, sampleTemplateVersion}, new String[]{FIELDNAME_CODE,FIELDNAME_CODE_VERSION});
         Object[] diagnosis = Rdbms.existsRecord(schemaConfigName, tableName, new String[]{FIELDNAME_CODE,FIELDNAME_CODE_VERSION}, new Object[]{sampleTemplate, sampleTemplateVersion});
         if (LPPlatform.LAB_FALSE.equalsIgnoreCase(diagnosis[0].toString())){
            errorCode = "DataSample_MissingConfigCode";
