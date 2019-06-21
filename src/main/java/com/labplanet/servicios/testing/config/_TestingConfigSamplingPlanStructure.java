@@ -111,15 +111,15 @@ out.println(Arrays.toString(configSamplingPlanTestingArray));
                 Object[] fieldValue=null;
                 String schemaPrefix=null;
                 userName=null;                
-                String functionBeingTested=null;
+                String actionName=null;
                 Object[] dataSample = null;
 
                 if (configSamplingPlanTestingArray[i][0]!=null){schemaPrefix = (String) configSamplingPlanTestingArray[i][0];}
-                if (configSamplingPlanTestingArray[i][5]!=null){functionBeingTested = (String) configSamplingPlanTestingArray[i][5];}
+                if (configSamplingPlanTestingArray[i][5]!=null){actionName = (String) configSamplingPlanTestingArray[i][5];}
                     
-                out.println(LPTestingOutFormat.fieldStart()+i+LPTestingOutFormat.fieldStart()+LPTestingOutFormat.fieldEnd()+schemaPrefix+LPTestingOutFormat.fieldStart()+LPTestingOutFormat.fieldEnd()+functionBeingTested+LPTestingOutFormat.fieldStart()+LPTestingOutFormat.fieldEnd()+Arrays.toString(fieldName)+LPTestingOutFormat.fieldStart()+LPTestingOutFormat.fieldEnd()+"<b>"+Arrays.toString(fieldValue)+"</b>"+LPTestingOutFormat.fieldEnd());
+                out.println(LPTestingOutFormat.fieldStart()+i+LPTestingOutFormat.fieldStart()+LPTestingOutFormat.fieldEnd()+schemaPrefix+LPTestingOutFormat.fieldStart()+LPTestingOutFormat.fieldEnd()+actionName+LPTestingOutFormat.fieldStart()+LPTestingOutFormat.fieldEnd()+Arrays.toString(fieldName)+LPTestingOutFormat.fieldStart()+LPTestingOutFormat.fieldEnd()+"<b>"+Arrays.toString(fieldValue)+"</b>"+LPTestingOutFormat.fieldEnd());
 
-                switch (LPNulls.replaceNull((String) functionBeingTested).toUpperCase()){
+                switch (LPNulls.replaceNull((String) actionName).toUpperCase()){
                     case "NEWSAMPLINGDETAIL":
                         String sampleTemplate=null;
                         Integer sampleTemplateVersion=null;

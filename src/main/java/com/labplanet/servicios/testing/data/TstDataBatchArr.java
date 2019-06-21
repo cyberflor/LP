@@ -71,10 +71,10 @@ public class TstDataBatchArr extends HttpServlet {
                 String[] setFieldName=null;                    String[] setFieldValue=null;
                 String[] orderBy=null;                    String[] groupBy=null;
                 String[] fieldsToRetrieve=null;   
-                String functionBeingTested="";                     
+                String actionName="";                     
                 Object[] dataSample2Din1D = new Object[0];
 
-                if (configSpecTestingArray[i][1]!=null){functionBeingTested = (String) configSpecTestingArray[i][1];}
+                if (configSpecTestingArray[i][1]!=null){actionName = (String) configSpecTestingArray[i][1];}
                 if (configSpecTestingArray[i][2]!=null){schemaPrefix = (String) configSpecTestingArray[i][2];}
                 if (configSpecTestingArray[i][3]!=null){tableName = (String) configSpecTestingArray[i][3];}
                 if (configSpecTestingArray[i][4]!=null){fieldName = configSpecTestingArray[i][4].toString().split("\\|");}else{fieldName = new String[0];}              
@@ -99,7 +99,7 @@ public class TstDataBatchArr extends HttpServlet {
                 Object[] setFieldValues = LPArray.convertStringWithDataTypeToObjectArray(setFieldValue);
                 
                 fileContent = fileContent + "<td>"+i+LPTestingOutFormat.fieldEnd()+LPTestingOutFormat.fieldStart()
-                        +functionBeingTested+LPTestingOutFormat.fieldEnd()+LPTestingOutFormat.fieldStart()+schemaPrefix+LPTestingOutFormat.fieldEnd()+LPTestingOutFormat.fieldStart()+tableName
+                        +actionName+LPTestingOutFormat.fieldEnd()+LPTestingOutFormat.fieldStart()+schemaPrefix+LPTestingOutFormat.fieldEnd()+LPTestingOutFormat.fieldStart()+tableName
                         +LPTestingOutFormat.fieldEnd()+LPTestingOutFormat.fieldStart()+Arrays.toString(fieldName)+LPTestingOutFormat.fieldEnd()+LPTestingOutFormat.fieldStart()+"<b>"+Arrays.toString(fieldValue)+"</b>"+LPTestingOutFormat.fieldEnd()+LPTestingOutFormat.fieldStart()+Arrays.toString(fieldsToRetrieve)
                         +LPTestingOutFormat.fieldEnd()+LPTestingOutFormat.fieldStart()+Arrays.toString(setFieldName)+LPTestingOutFormat.fieldEnd()+LPTestingOutFormat.fieldStart()+"<b>"+Arrays.toString(setFieldValue)+"</b>"+"</td>"
                         +LPTestingOutFormat.fieldEnd()+LPTestingOutFormat.fieldStart()+Arrays.toString(orderBy)+LPTestingOutFormat.fieldEnd()+LPTestingOutFormat.fieldStart()+"<b>"+Arrays.toString(groupBy)+"</b></td>";
@@ -110,7 +110,7 @@ public class TstDataBatchArr extends HttpServlet {
                 allFunctionsBeingTested = LPArray.addValueToArray1D(allFunctionsBeingTested, "GETRECORDFIELDSBYFILTER");
                 allFunctionsBeingTested = LPArray.addValueToArray1D(allFunctionsBeingTested, "UPDATE");
                 
-                switch (functionBeingTested.toUpperCase()){
+                switch (actionName.toUpperCase()){
                     case "CREATEBATCHARRAY":   
                         //batch.dbCreateBatchArray();
                         Object[] exRec =  Rdbms.existsRecord(schemaPrefix, tableName, fieldName, fieldValues);
@@ -138,20 +138,20 @@ public class TstDataBatchArr extends HttpServlet {
                         String errorCode = "ERROR: FUNCTION NOT RECOGNIZED";
                         Object[] errorDetail = new Object [1];
                         errorDetail[0]="The function <*1*> is not one of the declared ones therefore nothing can be performed for it. Functions are: <*2*>";
-                        errorDetail = LPArray.addValueToArray1D(errorDetail, functionBeingTested);
+                        errorDetail = LPArray.addValueToArray1D(errorDetail, actionName);
                         errorDetail = LPArray.addValueToArray1D(errorDetail, Arrays.toString(allFunctionsBeingTested));
                         Object[] trapErrorMessage = LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetail);            
                         dataSample2D = LPArray.array1dTo2d(trapErrorMessage, trapErrorMessage.length);
                         break;
                 }        
-                if (dataSample2D[0].length==0){fileContent = fileContent + "<td>No content in the array dataSample2D returned for function "+functionBeingTested;}
+                if (dataSample2D[0].length==0){fileContent = fileContent + "<td>No content in the array dataSample2D returned for function "+actionName;}
                 if (dataSample2D[0].length>0){fileContent = fileContent + "<td>"+dataSample2D[0][0].toString();}
                 if (dataSample2D[0].length>1){fileContent = fileContent + ". "+LPNulls.replaceNull((String) dataSample2D[0][1]);}
                 if (dataSample2D[0].length>2){fileContent = fileContent + ". "+LPNulls.replaceNull((String) dataSample2D[0][2]);}
                 if (dataSample2D[0].length>3){fileContent = fileContent + ". "+LPNulls.replaceNull((String) dataSample2D[0][3]);}
                 if (dataSample2D[0].length>4){fileContent = fileContent + ". "+LPNulls.replaceNull((String) dataSample2D[0][4]);}                
                 if (dataSample2D[0].length>5){fileContent = fileContent + ". "+LPNulls.replaceNull((String) dataSample2D[0][5]);}
-                if ( ("GETRECORDFIELDSBYFILTER".equalsIgnoreCase(functionBeingTested)) && (!LPPlatform.LAB_FALSE.equalsIgnoreCase(dataSample2D[0][0].toString())) ){
+                if ( ("GETRECORDFIELDSBYFILTER".equalsIgnoreCase(actionName)) && (!LPPlatform.LAB_FALSE.equalsIgnoreCase(dataSample2D[0][0].toString())) ){
                     fileContent = fileContent + LPTestingOutFormat.fieldEnd()+LPTestingOutFormat.fieldStart()+Arrays.toString(dataSample2Din1D);
                 }
 

@@ -80,9 +80,9 @@ if (1==1)            {
                 TestingAssert tstAssert = new TestingAssert(csvFileContent[iLines], numEvaluationArguments);
                 
                 Integer lineNumCols = csvFileContent[0].length-1;
-                String functionBeingTested = null;
+                String actionName = null;
                 if (lineNumCols>=numEvaluationArguments)
-                    {functionBeingTested=LPTestingOutFormat.csvExtractFieldValueString(csvFileContent[iLines][numEvaluationArguments]);}
+                    {actionName=LPTestingOutFormat.csvExtractFieldValueString(csvFileContent[iLines][numEvaluationArguments]);}
                 String schemaPrefix = null;
                 if (lineNumCols>=numEvaluationArguments+1)
                     schemaPrefix = LPTestingOutFormat.csvExtractFieldValueString(csvFileContent[iLines][numEvaluationArguments+1]);
@@ -127,7 +127,7 @@ if (1==1)            {
                 Object[] setFieldValues = null;
                 if (setFieldValue!=null){
                     setFieldValues = LPArray.convertStringWithDataTypeToObjectArray(setFieldValue);}
-                fileContentTable1=fileContentTable1+LPTestingOutFormat.rowAddField(iLines.toString())+LPTestingOutFormat.rowAddField(functionBeingTested)
+                fileContentTable1=fileContentTable1+LPTestingOutFormat.rowAddField(iLines.toString())+LPTestingOutFormat.rowAddField(actionName)
                         +LPTestingOutFormat.rowAddField(schemaPrefix)+LPTestingOutFormat.rowAddField(tableName)
                         +LPTestingOutFormat.rowAddField(Arrays.toString(fieldName))+LPTestingOutFormat.rowAddField(Arrays.toString(fieldValue))
                         +LPTestingOutFormat.rowAddField(Arrays.toString(fieldsToRetrieve))
@@ -142,7 +142,7 @@ if (1==1)            {
 
 //                fileContentTable1=fileContentTable1+LPTestingOutFormat.rowAddFields(
 //                        new Object[]{iLines, result, ruleType, values, separator, listName});
-                switch (functionBeingTested.toUpperCase()){
+                switch (actionName.toUpperCase()){
                     case "EXISTSRECORD":   
                         Object[] exRec =  Rdbms.existsRecord(schemaPrefix, tableName, fieldName, fieldValues);
                         dataSample2D = LPArray.array1dTo2d(exRec, exRec.length);
@@ -169,7 +169,7 @@ if (1==1)            {
                         String errorCode = "ERROR: FUNCTION NOT RECOGNIZED";
                         Object[] errorDetail = new Object [1];
                         errorDetail[0]="The function <*1*> is not one of the declared ones therefore nothing can be performed for it. Functions are: <*2*>";
-                        errorDetail = LPArray.addValueToArray1D(errorDetail, functionBeingTested);
+                        errorDetail = LPArray.addValueToArray1D(errorDetail, actionName);
                         errorDetail = LPArray.addValueToArray1D(errorDetail, Arrays.toString(allFunctionsBeingTested));
                         Object[] trapErrorMessage = LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetail);            
                         dataSample2D = LPArray.array1dTo2d(trapErrorMessage, trapErrorMessage.length);
@@ -179,7 +179,7 @@ if (1==1)            {
                 if (dataSample2D[0].length==0){
                     fileContentTable1 = fileContentTable1 +LPTestingOutFormat.rowAddField("No content in the array dataSample2D returned for function");                     
                 }else{
-                    if ( ("GETRECORDFIELDSBYFILTER".equalsIgnoreCase(functionBeingTested)) && (!LPPlatform.LAB_FALSE.equalsIgnoreCase(dataSample2D[0][0].toString())) ){
+                    if ( ("GETRECORDFIELDSBYFILTER".equalsIgnoreCase(actionName)) && (!LPPlatform.LAB_FALSE.equalsIgnoreCase(dataSample2D[0][0].toString())) ){
                         if (numEvaluationArguments==0){                    
                             fileContentTable1=fileContentTable1+LPTestingOutFormat.rowAddField(Arrays.toString(dataSample2Din1D));                     
                         }
@@ -189,7 +189,7 @@ if (1==1)            {
                         }
                         //fileContent = fileContent +LPTestingOutFormat.rowAddField(Arrays.toString(dataSample2Din1D));
                     }
-                    if ( (!"GETRECORDFIELDSBYFILTER".equalsIgnoreCase(functionBeingTested)) && (!LPPlatform.LAB_FALSE.equalsIgnoreCase(dataSample2D[0][0].toString())) ){                        
+                    if ( (!"GETRECORDFIELDSBYFILTER".equalsIgnoreCase(actionName)) && (!LPPlatform.LAB_FALSE.equalsIgnoreCase(dataSample2D[0][0].toString())) ){                        
                         String dataSampleFldOut = "";
                         for (int iFields=0; iFields<dataSample2D[0].length;iFields++){
                             dataSampleFldOut=dataSampleFldOut+LPNulls.replaceNull((String) dataSample2D[0][iFields])+ ". ";

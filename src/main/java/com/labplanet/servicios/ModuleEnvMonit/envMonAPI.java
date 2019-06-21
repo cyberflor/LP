@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.labplanet.servicios.testing.module.envmonit;
+package com.labplanet.servicios.ModuleEnvMonit;
 
 import LabPLANET.utilities.LPArray;
 import LabPLANET.utilities.LPFrontEnd;
@@ -217,8 +217,14 @@ public class envMonAPI extends HttpServlet {
             Object[] dataSample = null;
             
             switch (actionName.toUpperCase()){
-                case "LOGSAMPLE":
-                    String[] mandatoryParamsAction = new String[]{PARAMETER_PROGRAM_SAMPLE_TEMPLATE};
+                case "LOGSAMPLExxxxxxx":
+//                    String programName=request.getParameter("programName");
+//                    String programLocation=request.getParameter("programLocation");
+
+                    RequestDispatcher rd2 = request.getRequestDispatcher("/moduleSample/sampleAPI");
+                    rd2.forward(request,response); 
+                    break;     
+/*                    String[] mandatoryParamsAction = new String[]{PARAMETER_PROGRAM_SAMPLE_TEMPLATE};
                     mandatoryParamsAction = LPArray.addValueToArray1D(mandatoryParams, PARAMETER_PROGRAM_SAMPLE_TEMPLATE_VERSION);  
                     mandatoryParamsAction = LPArray.addValueToArray1D(mandatoryParams, PARAMETER_PROGRAM_SAMPLE_PROGRAM_FIELD);   
                     areMandatoryParamsInResponse = LPHttp.areMandatoryParamsInApiRequest(request, mandatoryParamsAction);
@@ -255,56 +261,22 @@ public class envMonAPI extends HttpServlet {
                         dataSample = prgSmp.logSample(schemaPrefix, sampleTemplate, sampleTemplateVersion, fieldNames, fieldValues, internalUserID, userRole, Integer.parseInt(appSessionIdStr), numSamplesToLog);
                     }
                     break;
-                case "GETSAMPLEINFO":
-                    RequestDispatcher rd = request.getRequestDispatcher("/moduleSample/sampleAPI");
-                    rd.forward(request,response);         
+*/
+                case "GETSAMPLEINFO2":
+                    RequestDispatcher rd3 = request.getRequestDispatcher("/moduleSample/sampleAPI");
+                    rd3.forward(request,response);         
                     return;
-                    //break;
-/*                    mandatoryParamsAction = new String[]{PARAMETER_SAMPLE_ID};
-                    mandatoryParamsAction = LPArray.addValueToArray1D(mandatoryParamsAction, "sampleFieldToRetrieve");
-                    areMandatoryParamsInResponse = LPHttp.areMandatoryParamsInApiRequest(request, mandatoryParamsAction);
-                    if (LPPlatform.LAB_FALSE.equalsIgnoreCase(areMandatoryParamsInResponse[0].toString())){
-                        errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
-                        errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_MANDATORY_PARAMS_MISSING+": "+areMandatoryParamsInResponse[1].toString());                    
-                        Object[] errMsg = LPFrontEnd.responseError(errObject, language, areMandatoryParamsInResponse[1].toString());
-                        response.sendError((int) errMsg[0], (String) errMsg[1]);    
-                        Rdbms.closeRdbms(); 
-                        return ;                
-                    }                                            
-                    
-                    String sampleIdStr = request.getParameter(PARAMETER_SAMPLE_ID);                             
-                    Integer sampleId = Integer.parseInt(sampleIdStr);                                               
-                    String sampleFieldToRetrieve = request.getParameter("sampleFieldToRetrieve");                                                                                     
-
-                    String[] sampleFieldToRetrieveArr =sampleFieldToRetrieve.split("\\|");                           
-                    schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, LPPlatform.SCHEMA_DATA);              
-
-                    String[] sortFieldsNameArr = null;
-                    String sortFieldsName = request.getParameter("sortFieldsName"); 
-                    if (! ((sortFieldsName==null) || (sortFieldsName.contains("undefined"))) ) {
-                        sortFieldsNameArr = sortFieldsName.split("\\|");                                    
-                    }else{   sortFieldsNameArr=null;}  
-                    
-                    String dataSampleStr = Rdbms.getRecordFieldsByFilterJSON(schemaDataName, TABLE_NAME_SAMPLE, 
-                            new String[]{FIELD_NAME_SAMPLE_ID}, new Object[]{sampleId}, sampleFieldToRetrieveArr, sortFieldsNameArr);
-                   if (dataSampleStr.contains(LPPlatform.LAB_FALSE)){                                 
-                        Object[] errMsg = LPFrontEnd.responseError(dataSampleStr.split("\\|"), language, schemaPrefix);
-                        response.sendError((int) errMsg[0], (String) errMsg[1]);        
-                    }else{
-                        response.getWriter().write(dataSampleStr);
-                        Response.ok().build();
-                    }  
-                    Rdbms.closeRdbms();                    
-                    return; 
-*/                    
-                default:      
-                    //errObject = frontEnd.APIHandler.actionNotRecognized(errObject, functionBeingTested, response);
-                    errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
+                default:    
+                    RequestDispatcher rd = request.getRequestDispatcher("/moduleSample/sampleAPI");
+                    rd.forward(request,response);   
+                    return;
+                    //errObject = frontEnd.APIHandler.actionNotRecognized(errObject, actionName, response);
+/*                    errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
                     errObject = LPArray.addValueToArray1D(errObject, "API Error Message: actionName "+actionName+ " not recognized as an action by this API");                                                            
                     Object[] errMsg = LPFrontEnd.responseError(errObject, language, schemaPrefix);
                     response.sendError((int) errMsg[0], (String) errMsg[1]);    
                     Rdbms.closeRdbms();
-                    return;                    
+                    return;                    */
             }    
             if (LPPlatform.LAB_FALSE.equalsIgnoreCase(dataSample[0].toString())){  
                 Rdbms.rollbackWithSavePoint();

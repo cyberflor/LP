@@ -81,15 +81,15 @@ public class projectStructure extends HttpServlet {
                 String schemaPrefix=null;
                 Integer sampleId=null;
                 userName=null;                
-                String functionBeingTested=null;
+                String actionName=null;
                 Object[] dataProject = null;
 
                 if (configSpecTestingArray[i][1]!=null){schemaPrefix = (String) configSpecTestingArray[i][1];}
-                if (configSpecTestingArray[i][2]!=null){functionBeingTested = (String) configSpecTestingArray[i][2];}
+                if (configSpecTestingArray[i][2]!=null){actionName = (String) configSpecTestingArray[i][2];}
 
-                fileContent = fileContent + LPTestingOutFormat.fieldStart()+i+"</td><td>"+schemaPrefix+"</td><td>"+functionBeingTested+LPTestingOutFormat.fieldEnd();
+                fileContent = fileContent + LPTestingOutFormat.fieldStart()+i+"</td><td>"+schemaPrefix+"</td><td>"+actionName+LPTestingOutFormat.fieldEnd();
 
-                switch (functionBeingTested.toUpperCase()){
+                switch (actionName.toUpperCase()){
                     case "CREATEPROJECT":
                         String projectTemplate=null;
                         Integer projectTemplateVersion=null;
@@ -147,7 +147,7 @@ public class projectStructure extends HttpServlet {
                     default:                
                         break;
                 }
-                if (functionBeingTested.equalsIgnoreCase("GETSAMPLEINFO")){
+                if (actionName.equalsIgnoreCase("GETSAMPLEINFO")){
                     fileContent = fileContent + LPTestingOutFormat.fieldStart()+dataSample2D[0][0].toString();
                     fileContent = fileContent + ". "+LPNulls.replaceNull((String) dataSample2D[0][1]);
                     fileContent = fileContent + ". "+LPNulls.replaceNull((String) dataSample2D[0][2]);

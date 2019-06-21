@@ -93,18 +93,18 @@ public class TstDataSample extends HttpServlet {
                 String userRole = null;
                 if (lineNumCols>=numEvaluationArguments+2)
                     userRole = LPTestingOutFormat.csvExtractFieldValueString(csvFileContent[iLines][numEvaluationArguments+2]);
-                String functionBeingTested = null;
+                String actionName = null;
                 if (lineNumCols>=numEvaluationArguments+3)                
-                    functionBeingTested = LPTestingOutFormat.csvExtractFieldValueString(csvFileContent[iLines][numEvaluationArguments+3]);
+                    actionName = LPTestingOutFormat.csvExtractFieldValueString(csvFileContent[iLines][numEvaluationArguments+3]);
 
                 fileContentTable1=fileContentTable1+LPTestingOutFormat.rowAddField(iLines.toString())+LPTestingOutFormat.rowAddField(schemaPrefix)
                         +LPTestingOutFormat.rowAddField(userName)+LPTestingOutFormat.rowAddField(userRole)
-                        +LPTestingOutFormat.rowAddField(functionBeingTested);
+                        +LPTestingOutFormat.rowAddField(actionName);
 
-                Object[] actionEnabledForRole = LPPlatform.procUserRoleActionEnabled(schemaPrefix, userRole, functionBeingTested);
+                Object[] actionEnabledForRole = LPPlatform.procUserRoleActionEnabled(schemaPrefix, userRole, actionName);
                 if (LPPlatform.LAB_FALSE.equalsIgnoreCase(actionEnabledForRole[0].toString())){
                     //StackTraceElement[] elementsDev = Thread.currentThread().getStackTrace();
-                    if ("GETSAMPLEINFO".equalsIgnoreCase(functionBeingTested)){                
+                    if ("GETSAMPLEINFO".equalsIgnoreCase(actionName)){                
                             dataSample2D[0][0] = actionEnabledForRole[0];
                             dataSample2D[0][1] = actionEnabledForRole[1]; dataSample2D[0][2] = actionEnabledForRole[2]; 
                             dataSample2D[0][3] = actionEnabledForRole[3]; dataSample2D[0][4] = actionEnabledForRole[4]; 
@@ -114,7 +114,7 @@ public class TstDataSample extends HttpServlet {
                             dataSample[3] = actionEnabledForRole[3]; dataSample[4] = actionEnabledForRole[4]; dataSample[5] = actionEnabledForRole[5]; 
                     }                      
                 }else{                
-                    switch (functionBeingTested.toUpperCase()){
+                    switch (actionName.toUpperCase()){
                         case "LOGSAMPLE":                            
                             String sampleTemplate=null;
                             Integer sampleTemplateVersion=null;
@@ -420,7 +420,7 @@ public class TstDataSample extends HttpServlet {
                                     fieldName, fieldValueObjArr, userName, userRole, appSessionId);                                                                
                             break;                     
                         default:                       
-                            dataSample[0] = "function "+functionBeingTested+" not recognized";
+                            dataSample[0] = "function "+actionName+" not recognized";
                             dataSample[1] = ""; dataSample[2] = ""; dataSample[3] = ""; dataSample[4] = ""; dataSample[5] = ""; 
 
                             break;
@@ -430,7 +430,7 @@ public class TstDataSample extends HttpServlet {
                         +dataSample[1].toString()+". "+dataSample[2].toString()+". "+dataSample[3].toString()+". "+dataSample[4].toString()
                         +". "+dataSample[dataSample.length-1].toString());
 
-                if (functionBeingTested.equalsIgnoreCase("GETSAMPLEINFO")){
+                if (actionName.equalsIgnoreCase("GETSAMPLEINFO")){
                     String value = "";
                     value = value + dataSample2D[0][0].toString();
                     value = value + ". "+LPNulls.replaceNull((String) dataSample2D[0][1]);
@@ -449,7 +449,7 @@ public class TstDataSample extends HttpServlet {
                             +". "+dataSample[dataSample.length-1].toString());
                 }    
 */                
-                if ("GETSAMPLEINFO".equalsIgnoreCase(functionBeingTested))  dataSample = LPArray.array2dTo1d(dataSample2D);
+                if ("GETSAMPLEINFO".equalsIgnoreCase(actionName))  dataSample = LPArray.array2dTo1d(dataSample2D);
 
                 if (numEvaluationArguments==0){                    
                     fileContentTable1=fileContentTable1+LPTestingOutFormat.rowAddField(Arrays.toString(dataSample));                     

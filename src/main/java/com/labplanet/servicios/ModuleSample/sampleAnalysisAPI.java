@@ -50,7 +50,7 @@ public class sampleAnalysisAPI extends HttpServlet {
         String[] errObject = new String[]{"Servlet sampleAPI at " + request.getServletPath()};   
 
         String[] mandatoryParams = new String[]{"schemaPrefix"};
-        mandatoryParams = LPArray.addValueToArray1D(mandatoryParams, "functionBeingTested");
+        mandatoryParams = LPArray.addValueToArray1D(mandatoryParams, "actionName");
         mandatoryParams = LPArray.addValueToArray1D(mandatoryParams, "finalToken");
                 
         Object[] areMandatoryParamsInResponse = LPHttp.areMandatoryParamsInApiRequest(request, mandatoryParams);
@@ -63,7 +63,7 @@ public class sampleAnalysisAPI extends HttpServlet {
         }            
 
         String schemaPrefix = request.getParameter("schemaPrefix");            
-        String functionBeingTested = request.getParameter("functionBeingTested");
+        String actionName = request.getParameter("actionName");
         String finalToken = request.getParameter("finalToken");                   
 
         
@@ -81,13 +81,13 @@ public class sampleAnalysisAPI extends HttpServlet {
         
         mandatoryParams = null;                        
 
-        Object[] procActionRequiresUserConfirmation = LPPlatform.procActionRequiresUserConfirmation(schemaPrefix, functionBeingTested);
+        Object[] procActionRequiresUserConfirmation = LPPlatform.procActionRequiresUserConfirmation(schemaPrefix, actionName);
         if (LPPlatform.LAB_TRUE.equalsIgnoreCase(procActionRequiresUserConfirmation[0].toString())){     
             mandatoryParams = LPArray.addValueToArray1D(mandatoryParams, "userToVerify");    
             mandatoryParams = LPArray.addValueToArray1D(mandatoryParams, "passwordToVerify");    
         }
 
-        Object[] procActionRequiresEsignConfirmation = LPPlatform.procActionRequiresEsignConfirmation(schemaPrefix, functionBeingTested);
+        Object[] procActionRequiresEsignConfirmation = LPPlatform.procActionRequiresEsignConfirmation(schemaPrefix, actionName);
         if (LPPlatform.LAB_TRUE.equalsIgnoreCase(procActionRequiresEsignConfirmation[0].toString())){                                                      
             mandatoryParams = LPArray.addValueToArray1D(mandatoryParams, "eSignToVerify");    
         }        
@@ -146,14 +146,14 @@ public class sampleAnalysisAPI extends HttpServlet {
         try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */                     
 
-            Object[] actionEnabled = LPPlatform.procActionEnabled(schemaPrefix, functionBeingTested);
+            Object[] actionEnabled = LPPlatform.procActionEnabled(schemaPrefix, actionName);
             if (LPPlatform.LAB_FALSE.equalsIgnoreCase(actionEnabled[0].toString())){
                 Object[] errMsg = LPFrontEnd.responseError(actionEnabled, language, schemaPrefix);
                 response.sendError((int) errMsg[0], (String) errMsg[1]);    
                 Rdbms.closeRdbms(); 
                 return ;               
             }            
-            actionEnabled = LPPlatform.procUserRoleActionEnabled(schemaPrefix, userRole, functionBeingTested);
+            actionEnabled = LPPlatform.procUserRoleActionEnabled(schemaPrefix, userRole, actionName);
             if (LPPlatform.LAB_FALSE.equalsIgnoreCase(actionEnabled[0].toString())){            
                 Object[] errMsg = LPFrontEnd.responseError(actionEnabled, language, schemaPrefix);
                 response.sendError((int) errMsg[0], (String) errMsg[1]);    
@@ -164,7 +164,7 @@ public class sampleAnalysisAPI extends HttpServlet {
             DataSample smp = new DataSample("");            
             Object[] dataSample = null;
             
-            switch (functionBeingTested.toUpperCase()){
+            switch (actionName.toUpperCase()){
                 case "SAMPLEANALYSISADD":
                     String[] mandatoryParamsAction = new String[]{"sampleId"};
                     mandatoryParamsAction = LPArray.addValueToArray1D(mandatoryParamsAction, "fieldName");
@@ -279,9 +279,9 @@ public class sampleAnalysisAPI extends HttpServlet {
                     }
                     break;                      
                 default:      
-                    //errObject = frontEnd.APIHandler.actionNotRecognized(errObject, functionBeingTested, response);
+                    //errObject = frontEnd.APIHandler.actionNotRecognized(errObject, actionName, response);
                     errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
-                    errObject = LPArray.addValueToArray1D(errObject, "API Error Message: actionName "+functionBeingTested+ " not recognized as an action by this API");                                                            
+                    errObject = LPArray.addValueToArray1D(errObject, "API Error Message: actionName "+actionName+ " not recognized as an action by this API");                                                            
                     Object[] errMsg = LPFrontEnd.responseError(errObject, language, schemaPrefix);
                     response.sendError((int) errMsg[0], (String) errMsg[1]);    
                     Rdbms.closeRdbms();                    

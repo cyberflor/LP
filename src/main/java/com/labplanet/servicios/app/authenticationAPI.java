@@ -125,14 +125,7 @@ public class authenticationAPI extends HttpServlet {
                         Rdbms.closeRdbms(); 
                         return ;                                 
                     }                    
-                    
- if (1!=1){
-     JSONObject obj = new JSONObject();
-     obj.put("userInfoId", 1);
-     obj.put("myToken", "eyJ1c2VyREIiOiJsYWJwbGFuZXQiLCJ0eXAiOiJKV1QiLCJ1c2VyUm9sZSI6ImNvb3JkaW5hdG9yIiwidXNlckRCUGFzc3dvcmQiOiJMYWJQbGFuZXQiLCJhbGciOiJIUzI1NiIsImludGVybmFsVXNlcklEIjoiMSJ9.eyJpc3MiOiJMYWJQTEFORVRkZXN0cmFuZ2lzSW5UaGVOaWdodCJ9.4_dqXo8ebPx6Oiyh6Ef3HxhFdmZG8qzZ0oyirgVG7zU");
-     response.getWriter().write(obj.toString());
-     return;
- }                   
+                                      
                     Token token = new Token();
                     String internalUserStr = internalUser[0][0].toString();
                     String myToken = token.createToken(dbUserName, dbUserPassword, internalUserStr, "Admin", "", "", "");                    

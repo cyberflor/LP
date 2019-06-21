@@ -51,7 +51,7 @@ public class TstDataEnvMonit extends HttpServlet {
         String[] errObject = new String[]{"Servlet programAPI at " + request.getServletPath()};   
 
         String[] mandatoryParams = new String[]{"schemaPrefix"};
-        mandatoryParams = LPArray.addValueToArray1D(mandatoryParams, "functionBeingTested");
+        mandatoryParams = LPArray.addValueToArray1D(mandatoryParams, "actionName");
         mandatoryParams = LPArray.addValueToArray1D(mandatoryParams, "finalToken");
                 
         Object[] areMandatoryParamsInResponse = LPHttp.areMandatoryParamsInApiRequest(request, mandatoryParams);
@@ -216,7 +216,7 @@ public class TstDataEnvMonit extends HttpServlet {
                     }
                     break;
                 default:      
-                    //errObject = frontEnd.APIHandler.actionNotRecognized(errObject, functionBeingTested, response);
+                    //errObject = frontEnd.APIHandler.actionNotRecognized(errObject, actionName, response);
                     errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
                     errObject = LPArray.addValueToArray1D(errObject, "API Error Message: actionName "+actionName+ " not recognized as an action by this API");                                                            
                     Object[] errMsg = LPFrontEnd.responseError(errObject, language, schemaPrefix);

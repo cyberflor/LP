@@ -29,16 +29,16 @@ public class DataProgramSample extends DataSample{
      * @param fieldValue
      * @param userName
      * @param userRole
-     * @param projectName
+     * @param programName
      * @param appSessionId
      * @return
      */
-    public Object[] logProgramSample(String schemaPrefix, String programTemplate, Integer programTemplateVersion, String[] fieldName, Object[] fieldValue, String userName, String userRole, String projectName, Integer appSessionId) {
+    public Object[] logProgramSample(String schemaPrefix, String programTemplate, Integer programTemplateVersion, String[] fieldName, Object[] fieldValue, String userName, String userRole, String programName, String programLocation, Integer appSessionId) {
         Object[] newProjSample = new Object[0];
         try {
             DataSample ds = new DataSample("program");
             fieldName = LPArray.addValueToArray1D(fieldName, "program");
-            fieldValue = LPArray.addValueToArray1D(fieldValue, projectName);
+            fieldValue = LPArray.addValueToArray1D(fieldValue, programName);
             newProjSample = ds.logSample(schemaPrefix, programTemplate, programTemplateVersion, fieldName, fieldValue, userName, userRole, appSessionId);
             /*if (!newProjSample[3].equalsIgnoreCase(LPPlatform.LAB_FALSE)){
             String schemaDataNameProj = "data";

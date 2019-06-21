@@ -11,18 +11,13 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
-import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import java.io.UnsupportedEncodingException;
 //import com.fasterxml.jackson.core.JsonProcessingException;
 //import static com.sun.xml.internal.ws.spi.db.BindingContextFactory.LOGGER;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.io.UnsupportedEncodingException;
 //import org.apache.commons.net.util.Base64;
 /**
  *
