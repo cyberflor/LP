@@ -284,7 +284,7 @@ public class UserSop {
      */
         
     public Object[][] getUserProfileFieldValues(String[] filterFieldName, Object[] filterFieldValue, String[] fieldsToReturn, String[] schemaPrefix){                
-        String tableName = "user_sop";
+        String tableName = "user_and_meta_data_sop_vw"; //user_sop";
         
         if (fieldsToReturn.length<=0){
             Object[] diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, "Rdbms_NotFilterSpecified", new Object[]{tableName, schemaPrefix});

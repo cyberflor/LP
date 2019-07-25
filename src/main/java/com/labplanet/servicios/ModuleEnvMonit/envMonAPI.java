@@ -74,7 +74,6 @@ public class envMonAPI extends HttpServlet {
             response.sendError((int) errMsg[0], (String) errMsg[1]);                
             return ;                
         }            
-
         String schemaPrefix = request.getParameter("schemaPrefix");            
         String actionName = request.getParameter("actionName");
         String finalToken = request.getParameter("finalToken");                   
@@ -267,6 +266,7 @@ public class envMonAPI extends HttpServlet {
                     rd3.forward(request,response);         
                     return;
                 default:    
+                    Rdbms.closeRdbms(); 
                     RequestDispatcher rd = request.getRequestDispatcher("/moduleSample/sampleAPI");
                     rd.forward(request,response);   
                     return;
@@ -289,8 +289,8 @@ public class envMonAPI extends HttpServlet {
                 // con.commit();
                 // con.setAutoCommit(true);
                 
-                Response.ok().build();
                 response.getWriter().write(Arrays.toString(dataSample));      
+                Response.ok().build();
             }            
             Rdbms.closeRdbms();
         }catch(Exception e){   

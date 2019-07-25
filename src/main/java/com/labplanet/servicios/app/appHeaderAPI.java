@@ -100,8 +100,8 @@ public class appHeaderAPI extends HttpServlet {
                         }
                     }             
                     response.getWriter().write(personInfoJsonObj.toString());                                                                                                                           
-                    Response.ok().build();                     
                     Rdbms.closeRdbms();
+                    Response.ok().build();                     
                     return;
                 default:      
                     errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);

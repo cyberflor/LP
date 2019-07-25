@@ -844,7 +844,20 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
 
     String schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, LPPlatform.SCHEMA_DATA); 
     tableName = "sample_analysis";      
-            
+        
+    String sampleStatusFirst = Parameter.getParameterBundle(schemaDataName.replace("\"", ""), "sample_statusFirst");
+    String sampleStatusInReceived = Parameter.getParameterBundle(schemaDataName.replace("\"", ""), "sample_statusReceived");
+    
+    Object[][] sampleInfo = Rdbms.getRecordFieldsByFilter(schemaDataName, "sample", new String[]{FIELDNAME_SAMPLE_ID},
+            new Object[]{sampleId}, new String[]{FIELDNAME_STATUS});
+    if ( (sampleStatusFirst.equalsIgnoreCase(sampleInfo[0][0].toString())) || (sampleStatusInReceived.equalsIgnoreCase(sampleInfo[0][0].toString()))){
+        String[] fieldsForAudit = new String[0];
+        fieldsForAudit = LPArray.addValueToArray1D(fieldsForAudit, FIELDNAME_STATUS+": keep status "+sampleInfo[0][0].toString());
+        SampleAudit smpAudit = new SampleAudit();        
+        smpAudit.sampleAuditAdd(schemaPrefix, auditActionName, "sample", sampleId, sampleId, null, null, fieldsForAudit, userName, userRole);              
+        return new Object[]{LPPlatform.LAB_TRUE};
+    }
+    
     String sampleStatusIncomplete = Parameter.getParameterBundle(schemaDataName.replace("\"", ""), "sample_statusIncomplete");
     String sampleStatusComplete = Parameter.getParameterBundle(schemaDataName.replace("\"", ""), "sample_statusComplete");
     
@@ -1061,6 +1074,9 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
         fieldsValue = LPArray.addValueToArray1D(fieldsValue, Rdbms.getCurrentDate());
         fieldsName = LPArray.addValueToArray1D(fieldsName, FIELDNAME_STATUS);
         fieldsValue = LPArray.addValueToArray1D(fieldsValue, newResultStatus);
+        fieldsName = LPArray.addValueToArray1D(fieldsName, "pretty_value");
+        Object[] prettyValue = sarRawToPrettyResult(resultValue);
+        fieldsValue = LPArray.addValueToArray1D(fieldsValue, prettyValue[1]);             
         Object[] diagnoses = Rdbms.updateRecordFieldsByFilter(schemaDataName, tableName, fieldsName, fieldsValue, new String[] {FIELDNAME_RESULT_ID} , new Object[] {resultId});
         if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){
             String[] fieldsForAudit = LPArray.joinTwo1DArraysInOneOf1DString(fieldsName, fieldsValue, ":");
@@ -1111,6 +1127,10 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
         fieldsValue = LPArray.addValueToArray1D(fieldsValue, Rdbms.getCurrentDate());
         fieldsName = LPArray.addValueToArray1D(fieldsName, FIELDNAME_STATUS);
         fieldsValue = LPArray.addValueToArray1D(fieldsValue, newResultStatus);
+        
+        fieldsName = LPArray.addValueToArray1D(fieldsName, "pretty_value");
+        Object[] prettyValue = sarRawToPrettyResult(resultValue);
+        fieldsValue = LPArray.addValueToArray1D(fieldsValue, prettyValue[1]);        
         Object[] diagnoses = Rdbms.updateRecordFieldsByFilter(schemaDataName, tableName, fieldsName, fieldsValue, new String[] {FIELDNAME_RESULT_ID} , new Object[] {resultId});
         if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){            String[] fieldsForAudit = LPArray.joinTwo1DArraysInOneOf1DString(fieldsName, fieldsValue, ":");
             SampleAudit smpAudit = new SampleAudit();    
@@ -2729,6 +2749,9 @@ public Object[] logSampleSubAliquot( String schemaPrefix, Integer aliquotId, Str
         this.errorDetailVariables = LPArray.addValueToArray1D(this.errorDetailVariables, testId.toString());
         this.errorDetailVariables = LPArray.addValueToArray1D(this.errorDetailVariables, schemaDataName);
         return LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, this.errorCode, this.errorDetailVariables);
+    }
+    public Object[] sarRawToPrettyResult(Object rawValue){
+        return new Object[]{LPPlatform.LAB_TRUE, rawValue};
     }
 
 }

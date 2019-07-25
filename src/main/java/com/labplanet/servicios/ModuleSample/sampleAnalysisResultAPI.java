@@ -282,8 +282,8 @@ public class sampleAnalysisResultAPI extends HttpServlet {
             }else{
                 con.commit();
                 con.setAutoCommit(true);
-                Response.ok().build();
                 response.getWriter().write(Arrays.toString(dataSample));      
+                Response.ok().build();
             }            
             Rdbms.closeRdbms();
         }catch(Exception e){   

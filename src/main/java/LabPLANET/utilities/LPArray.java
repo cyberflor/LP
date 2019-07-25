@@ -13,6 +13,13 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.charset.CharsetDecoder;
+import java.nio.charset.CodingErrorAction;
+import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -285,6 +292,86 @@ public class  LPArray {
      * @return
      */
     public static String[][] convertCSVinArray(String xfileLocation, String csvSeparator){
+        
+        URL url = null;
+        try {
+            url = new URL(xfileLocation);
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(LPArray.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        final StringBuilder sb = new StringBuilder();
+
+        final char[] buf = new char[4096];
+
+        final CharsetDecoder decoder = StandardCharsets.UTF_8.newDecoder()
+                .onMalformedInput(CodingErrorAction.REPORT);
+        Integer columnsInCsv=0;
+        String[] myArray1D = new String[0];
+        try {
+            final InputStream in = url.openStream();
+            final InputStreamReader reader = new InputStreamReader(in, decoder);
+            BufferedReader bufin = new BufferedReader(reader);
+            int nrChars;
+            Integer numLines = 0;
+            String line = null;
+            String[][] myArray = new String[0][0];
+            
+            //while ((nrChars = reader.read(buf)) != -1){
+            
+            while((line = bufin.readLine()) != null) {            
+                numLines++;            
+                myArray1D = addValueToArray1D(myArray1D, line);  
+                String[] inArray = line.split(String.valueOf(csvSeparator));
+                if (inArray.length>columnsInCsv) {columnsInCsv = inArray.length;}                
+            }
+                //sb.append(buf, 0, nrChars);
+
+            myArray = new String[numLines][columnsInCsv];    
+            for (Integer inumLines=0;inumLines<numLines;inumLines++){                
+                String[] inArray = myArray1D[inumLines].split(String.valueOf(csvSeparator));
+                System.arraycopy(inArray, 0, myArray[inumLines], 0, inArray.length);
+            }              
+            return myArray;  
+            
+        } catch (IOException ex) {
+            myArray1D = addValueToArray1D(myArray1D, ex.getMessage());
+            return array1dTo2d(myArray1D, 1);
+        }
+    }
+/*            
+        String[][] myArray = new String[0][0];
+        String[] myArray1D = new String[0];
+        Scanner scanIn = null;
+        Integer columnsInCsv=0;
+        String inputLine = ""; 
+        
+        try{
+            scanIn = new Scanner(new BufferedReader(new FileReader(xfileLocation)));
+            Integer numLines = 0;
+            while (scanIn.hasNextLine()){
+                inputLine = scanIn.nextLine();
+                numLines++;
+                myArray1D = addValueToArray1D(myArray1D, inputLine );                
+                String[] inArray = inputLine.split(String.valueOf(csvSeparator));
+                if (inArray.length>columnsInCsv) {columnsInCsv = inArray.length;}
+            }
+            scanIn.close();
+            myArray = new String[numLines][columnsInCsv];    
+            for (Integer inumLines=0;inumLines<numLines;inumLines++){                
+                String[] inArray = myArray1D[inumLines].split(String.valueOf(csvSeparator));
+                System.arraycopy(inArray, 0, myArray[inumLines], 0, inArray.length);
+            }            
+//            myArray = array1dTo2d(myArray1D, columnsInCsv);
+            return myArray;            
+        } catch (FileNotFoundException e){               
+            myArray1D = addValueToArray1D(myArray1D, e.getMessage());
+            return array1dTo2d(myArray1D, 1);
+            
+        }
+        
+    }*/
+        
+    public static String[][] convertCSVinArrayNetwork(String xfileLocation, String csvSeparator){
         String[][] myArray = new String[0][0];
         String[] myArray1D = new String[0];
         Scanner scanIn = null;

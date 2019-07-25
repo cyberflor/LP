@@ -172,14 +172,15 @@ public class batchAPI extends HttpServlet {
                     con.rollback();
                     con.setAutoCommit(true);
                     Object[] errMsg = LPFrontEnd.responseError(dataSample, language, "");
+                    Rdbms.closeRdbms();
                     response.sendError((int) errMsg[0], (String) errMsg[1]);    
                 }else{
                     con.commit();
                     con.setAutoCommit(true);
-                    Response.ok().build();
                     response.getWriter().write(Arrays.toString(dataSample));      
+                    Rdbms.closeRdbms();
+                    Response.ok().build();
                 }            
-                Rdbms.closeRdbms();
             }catch(SQLException e){   
                 try {
                     con.rollback();

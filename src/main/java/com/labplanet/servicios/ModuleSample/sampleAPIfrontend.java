@@ -9,6 +9,7 @@ import LabPLANET.utilities.LPArray;
 import LabPLANET.utilities.LPHttp;
 import LabPLANET.utilities.LPFrontEnd;
 import LabPLANET.utilities.LPPlatform;
+import LabPLANET.utilities.LPJson;
 import com.sun.rowset.CachedRowSetImpl;
 import databases.Rdbms;
 import databases.Token;
@@ -118,11 +119,11 @@ public class sampleAPIfrontend extends HttpServlet {
                     Object[] errMsg = LPFrontEnd.responseError(LPArray.array2dTo1d(datas), language, null);
                     response.sendError((int) errMsg[0], (String) errMsg[1]);    
                     return;
-                }else{
-                   Response.ok().build();                   
-                   jArray.addAll(Arrays.asList(LPArray.array2dTo1d(datas)));                                 
+                }else{                   
+                   jArray.addAll(Arrays.asList(LPArray.array2dTo1d(datas)));    
                 }           
-                response.getWriter().write(jArray.toString());                  
+                response.getWriter().write(jArray.toString());  
+                Response.ok().build();                
                 return;
             case "UNRECEIVESAMPLES_LIST":            
                 String[] sortFieldsNameArr = null;
@@ -162,7 +163,9 @@ public class sampleAPIfrontend extends HttpServlet {
                         String[] tokenFieldValue = LPPlatform.getTokenFieldValue(whereFieldsValueArr[iFields].toString(), finalToken);
                         if (LPPlatform.LAB_TRUE.equalsIgnoreCase(tokenFieldValue[0])) 
                             whereFieldsValueArr[iFields]=tokenFieldValue[1];                                                    
-                    }                                    
+                    } 
+                    whereFieldsNameArr = LPArray.addValueToArray1D(whereFieldsNameArr, "received_by is null");
+                    whereFieldsValueArr = LPArray.addValueToArray1D(whereFieldsValueArr, "");
                 }  
                 
                 String myData = Rdbms.getRecordFieldsByFilterJSON(schemaPrefix+"-data", "sample",
@@ -170,15 +173,15 @@ public class sampleAPIfrontend extends HttpServlet {
                         sampleFieldToRetrieveArr, sortFieldsNameArr);
                 Rdbms.closeRdbms();
                 if (myData.contains(LPPlatform.LAB_FALSE)){ 
-                    Response.ok().build();
                     response.getWriter().write("[]");  
+                    Response.ok().build();                
+
                     /*Object[] errMsg = LPFrontEnd.responseError(new String[]{myData}, language, null);
                     response.sendError((int) errMsg[0], (String) errMsg[1]);    */
                 }else{
-                    Response.ok().build();
                     response.getWriter().write(myData);           
+                    Response.ok().build();                
                 }
-                Rdbms.closeRdbms();
                 return;
             case "SAMPLES_INPROGRESS_LIST":   
                 whereFieldsName = request.getParameter("whereFieldsName"); 
@@ -187,7 +190,23 @@ public class sampleAPIfrontend extends HttpServlet {
 
                 sampleFieldToRetrieve = request.getParameter("sampleFieldToRetrieve"); 
                 String testFieldToRetrieve = request.getParameter("testFieldToRetrieve"); 
-                String sampleLastLevel = request.getParameter("sampleLastLevel");                                
+                String sampleLastLevel = request.getParameter("sampleLastLevel");                 
+                
+                String addSampleAnalysis = request.getParameter("addSampleAnalysis"); 
+                if (addSampleAnalysis==null){addSampleAnalysis="false";}
+                String addSampleAnalysisFieldToRetrieve = request.getParameter("addSampleAnalysisFieldToRetrieve"); 
+                String[] addSampleAnalysisFieldToRetrieveArr = new String[]{"test_id", "status", "analysis", "method_name", "method_version"};
+                if ( (addSampleAnalysisFieldToRetrieve!=null) && (addSampleAnalysisFieldToRetrieve.length()>0) ) {
+                    addSampleAnalysisFieldToRetrieveArr=LPArray.addValueToArray1D(addSampleAnalysisFieldToRetrieveArr, addSampleAnalysisFieldToRetrieve.split("\\|"));
+                }                                
+
+                String addSampleAnalysisResult = request.getParameter("addSampleAnalysisResult"); 
+                if (addSampleAnalysisResult==null){addSampleAnalysisResult="false";}
+                String addSampleAnalysisResultFieldToRetrieve = request.getParameter("addSampleAnalysisResultFieldToRetrieve"); 
+                String[] addSampleAnalysisResultFieldToRetrieveArr = new String[]{"result_id", "status", "param_name", "raw_value", "pretty_value"};
+                if ( (addSampleAnalysisResultFieldToRetrieve!=null) && (addSampleAnalysisResultFieldToRetrieve.length()>0) ) {
+                    addSampleAnalysisResultFieldToRetrieveArr=LPArray.addValueToArray1D(addSampleAnalysisResultFieldToRetrieveArr, addSampleAnalysisResultFieldToRetrieve.split("\\|"));
+                }                                
                 
                 if (sampleLastLevel==null){
                     sampleLastLevel="SAMPLE";
@@ -256,27 +275,81 @@ public class sampleAPIfrontend extends HttpServlet {
                 }else{   sortFieldsNameArr=null;}  
                 
                 if ("SAMPLE".equals(sampleLastLevel)){
-                    myData = Rdbms.getRecordFieldsByFilterJSON(schemaPrefix+"-data", "sample",
-                            whereFieldsNameArr, whereFieldsValueArr, sampleFieldToRetrieveArr, sortFieldsNameArr);
-                    if (myData==null){
+                    Object[][] mySamples = Rdbms.getRecordFieldsByFilter(schemaPrefix+"-data", "sample",
+                        whereFieldsNameArr, whereFieldsValueArr, sampleFieldToRetrieveArr, sortFieldsNameArr);
+                    if (mySamples==null){
                         Rdbms.closeRdbms(); 
-                        Response.ok().build();
                         response.getWriter().write("[]");  
+                        Response.ok().build();
                         //response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "No info found or error running the query for this sample "); 
                         return;
                     }
-                    if ( myData.contains(LPPlatform.LAB_FALSE)) {  
-                        Response.ok().build();
+                    if ( LPPlatform.LAB_FALSE.equalsIgnoreCase(mySamples[0][0].toString())) {  
                         response.getWriter().write("[]");  
+                        Response.ok().build();
                         //Object[] errMsg = LPFrontEnd.responseError(new String[]{myData}, language, null);
                         //response.sendError((int) errMsg[0], (String) errMsg[1]);                            
+                        return;
                     }else{
-                        Response.ok().build();
-                        response.getWriter().write(myData);           
+                        
+                        JSONArray mySamplesJSArr = new JSONArray();
+                        Integer iLines = 0;
+                        for (Object[] mySample : mySamples) {
+                            iLines++;
+                            JSONObject mySampleJSObj = LPJson.convertArrayRowToJSONObject(sampleFieldToRetrieveArr, mySample);
+                            //mySamplesJSArr.add(mySampleJSObj);
+                            //response.getWriter().write(mySamplesJSArr.toString());
+                            //Response.ok().build();                            
+                            if ("TRUE".equalsIgnoreCase(addSampleAnalysis)){
+                                String[] testWhereFieldsNameArr = new String[]{"sample_id"};
+                                Integer sampleIdPosicInArray = LPArray.valuePosicInArray(sampleFieldToRetrieveArr, "sample_id");
+                                Object[] testWhereFieldsValueArr = new Object[]{Integer.parseInt(mySample[sampleIdPosicInArray].toString())};
+                                Object[][] mySampleAnalysis = Rdbms.getRecordFieldsByFilter(schemaPrefix+"-data", "sample_analysis",
+                                        testWhereFieldsNameArr, testWhereFieldsValueArr, addSampleAnalysisFieldToRetrieveArr);          
+                                JSONArray mySamplesAnaJSArr = new JSONArray();
+                                if ( LPPlatform.LAB_FALSE.equalsIgnoreCase(mySampleAnalysis[0][0].toString()) ){
+                                    mySampleJSObj.put("sample_analysis", mySamplesAnaJSArr);
+                                }else{                                    
+                                    for (Object[] mySampleAnalysi : mySampleAnalysis) {
+                                        JSONObject mySampleAnaJSObj = LPJson.convertArrayRowToJSONObject(addSampleAnalysisFieldToRetrieveArr, mySampleAnalysi);
+
+                                        if ("TRUE".equalsIgnoreCase(addSampleAnalysisResult)){
+                                            String[] sarWhereFieldsNameArr = new String[]{"test_id"};
+                                            Integer testIdPosicInArray = LPArray.valuePosicInArray(addSampleAnalysisFieldToRetrieveArr, "test_id");
+                                            Object[] sarWhereFieldsValueArr = new Object[]{Integer.parseInt(mySampleAnalysi[testIdPosicInArray].toString())};
+                                            Object[][] mySampleAnalysisResults = Rdbms.getRecordFieldsByFilter(schemaPrefix+"-data", "sample_analysis_result",
+                                                    sarWhereFieldsNameArr, sarWhereFieldsValueArr, addSampleAnalysisResultFieldToRetrieveArr);          
+                                            JSONArray mySamplesAnaResJSArr = new JSONArray();
+                                            if ( LPPlatform.LAB_FALSE.equalsIgnoreCase(mySampleAnalysisResults[0][0].toString()) ){
+                                                mySampleAnaJSObj.put("sample_analysis_result", mySamplesAnaResJSArr);                                        
+                                            }
+                                            JSONObject mySampleAnaResJSObj = new JSONObject();
+                                            for (Object[] mySampleAnalysisResult : mySampleAnalysisResults) {
+                                                mySampleAnaResJSObj = LPJson.convertArrayRowToJSONObject(addSampleAnalysisResultFieldToRetrieveArr, mySampleAnalysisResult);
+                                                mySamplesAnaResJSArr.add(mySampleAnaResJSObj);
+                                            }
+                                            mySampleAnaJSObj.put("sample_analysis_result", mySamplesAnaResJSArr);  
+                                            //mySamplesAnaResJSArr.add(mySampleAnaResJSObj);
+                                        }
+
+                                        mySamplesAnaJSArr.add(mySampleAnaJSObj);
+                                    }        
+                                    mySampleJSObj.put("sample_analysis", mySamplesAnaJSArr);
+                                }
+                            }
+                            mySamplesJSArr.add(mySampleJSObj);
+/*                            if (iLines >=4){
+                            response.getWriter().write(mySamplesJSArr.toString());
+                            Response.ok().build();  
+                            return;}*/
+                        }
+                            response.getWriter().write(mySamplesJSArr.toString());
+                            Response.ok().build();                                     
+                            return;
                     }
                 }else{                    
-                    whereFieldsNameArr = LPArray.addValueToArray1D(whereFieldsNameArr, "sample_id");
-                    whereFieldsValueArr = LPArray.addValueToArray1D(whereFieldsValueArr, 2);
+                    whereFieldsNameArr = LPArray.addValueToArray1D(whereFieldsNameArr, "sample_id is not null");
+                    whereFieldsValueArr = LPArray.addValueToArray1D(whereFieldsValueArr, "");
                     JSONArray samplesArray = new JSONArray();    
                     JSONArray sampleArray = new JSONArray();    
                     Object[][] mySamples = Rdbms.getRecordFieldsByFilter(schemaPrefix+"-data", "sample",
@@ -320,8 +393,8 @@ public class sampleAPIfrontend extends HttpServlet {
                     samplesArray.add(sampleArray);
                     JSONObject jsonObj = new JSONObject();
                     jsonObj.put("samples", samplesArray);                    
-                    Response.ok().build();
                     response.getWriter().write(jsonObj.toString());               
+                    Response.ok().build();
                 }
                     //Response.serverError().entity(myData).build();
                     //return Response.ok(myData).build();     
@@ -356,12 +429,13 @@ public class sampleAPIfrontend extends HttpServlet {
                         Object[] errMsg = LPFrontEnd.responseError(new String[] {myData}, language, null);
                         response.sendError((int) errMsg[0], (String) errMsg[1]);                            
                     }else{
-                        Response.ok().build();
                         response.getWriter().write(myData);           
+                        Response.ok().build();
                     }
                     Rdbms.closeRdbms();
                     return;         
                 case "GET_SAMPLE_ANALYSIS_LIST":    
+                    
                     String[] sampleAnalysisFixFieldToRetrieveArr = new String[]{"sample_id", "test_id", };
                     String[] mandatoryParamsAction = new String[]{PARAMETER_SAMPLE_ID};
                     Object[] areMandatoryParamsInResponse = LPHttp.areMandatoryParamsInApiRequest(request, mandatoryParamsAction);
@@ -397,8 +471,8 @@ public class sampleAPIfrontend extends HttpServlet {
                         Object[] errMsg = LPFrontEnd.responseError(new String[] {myData}, language, null);
                         response.sendError((int) errMsg[0], (String) errMsg[1]);                            
                     }else{
-                        Response.ok().build();
                         response.getWriter().write(myData);           
+                        Response.ok().build();
                     }
                     
                     Rdbms.closeRdbms();
@@ -440,8 +514,8 @@ public class sampleAPIfrontend extends HttpServlet {
                         Object[] errMsg = LPFrontEnd.responseError(new String[] {myData}, language, null);
                         response.sendError((int) errMsg[0], (String) errMsg[1]);                            
                     }else{
-                        Response.ok().build();
                         response.getWriter().write(myData);           
+                        Response.ok().build();
                     }                    
                     Rdbms.closeRdbms();
                     return;  
@@ -465,7 +539,9 @@ public class sampleAPIfrontend extends HttpServlet {
                     if ( (fieldToRetrieve==null) || (fieldToRetrieve.length()==0) ){
                         fieldToRetrieveArr=LPArray.addValueToArray1D(fieldToRetrieveArr, "sample_id");
                         fieldToRetrieveArr=LPArray.addValueToArray1D(fieldToRetrieveArr, "custodian");
-                        fieldToRetrieveArr=LPArray.addValueToArray1D(fieldToRetrieveArr, "custodian_candidate");                           
+                        fieldToRetrieveArr=LPArray.addValueToArray1D(fieldToRetrieveArr, "custodian_name");
+                        fieldToRetrieveArr=LPArray.addValueToArray1D(fieldToRetrieveArr, "custodian_candidate"); 
+                        fieldToRetrieveArr=LPArray.addValueToArray1D(fieldToRetrieveArr, "candidate_name"); 
                         fieldToRetrieveArr=LPArray.addValueToArray1D(fieldToRetrieveArr, "coc_started_on");                           
                         fieldToRetrieveArr=LPArray.addValueToArray1D(fieldToRetrieveArr, "status");                           
                         fieldToRetrieveArr=LPArray.addValueToArray1D(fieldToRetrieveArr, "coc_confirmed_on");                           
@@ -474,7 +550,9 @@ public class sampleAPIfrontend extends HttpServlet {
                         if (LPArray.valuePosicInArray(fieldToRetrieveArr, "custodian")==-1){
                             fieldToRetrieveArr=LPArray.addValueToArray1D(fieldToRetrieveArr, "sample_id");
                             fieldToRetrieveArr=LPArray.addValueToArray1D(fieldToRetrieveArr, "custodian");
+                            fieldToRetrieveArr=LPArray.addValueToArray1D(fieldToRetrieveArr, "custodian_name");
                             fieldToRetrieveArr=LPArray.addValueToArray1D(fieldToRetrieveArr, "custodian_candidate");                           
+                            fieldToRetrieveArr=LPArray.addValueToArray1D(fieldToRetrieveArr, "candidate_name"); 
                             fieldToRetrieveArr=LPArray.addValueToArray1D(fieldToRetrieveArr, "coc_started_on");                           
                             fieldToRetrieveArr=LPArray.addValueToArray1D(fieldToRetrieveArr, "status");                           
                             fieldToRetrieveArr=LPArray.addValueToArray1D(fieldToRetrieveArr, "coc_confirmed_on");                           
@@ -487,17 +565,16 @@ public class sampleAPIfrontend extends HttpServlet {
                     }else{   
                         sortFieldsNameArr = LPArray.addValueToArray1D(sortFieldsNameArr, "sample_id");
                         sortFieldsNameArr = LPArray.addValueToArray1D(sortFieldsNameArr, "coc_started_on");                        
-                    }  
-                    
-                    myData = Rdbms.getRecordFieldsByFilterJSON(schemaPrefix+"-data", "sample_coc",
+                    }                      
+                    myData = Rdbms.getRecordFieldsByFilterJSON(schemaPrefix+"-data", "sample_coc_names",
                             new String[]{"sample_id"},new Object[]{sampleId}, fieldToRetrieveArr, sortFieldsNameArr);
                     Rdbms.closeRdbms();
                     if (myData.contains(LPPlatform.LAB_FALSE)){  
                         Object[] errMsg = LPFrontEnd.responseError(new String[] {myData}, language, null);
                         response.sendError((int) errMsg[0], (String) errMsg[1]);                            
                     }else{
-                        Response.ok().build();
                         response.getWriter().write(myData);           
+                        Response.ok().build();
                     }                             
                     Rdbms.closeRdbms();
                     return;                      
@@ -532,8 +609,8 @@ public class sampleAPIfrontend extends HttpServlet {
                         Object[] errMsg = LPFrontEnd.responseError(new String[] {myData}, language, null);
                         response.sendError((int) errMsg[0], (String) errMsg[1]);                            
                     }else{
-                        Response.ok().build();
                         response.getWriter().write(myData);           
+                        Response.ok().build();
                     }                             
                     Rdbms.closeRdbms();
                     return;                      
@@ -544,8 +621,8 @@ public class sampleAPIfrontend extends HttpServlet {
                         errObject = LPArray.addValueToArray1D(errObject, "sampleId="+request.getParameter(PARAMETER_SAMPLE_ID));
                         errObject = LPArray.addValueToArray1D(errObject, "API Error Message: sampleId is one mandatory param and should be one integer value for this API");                    
                         Object[] errMsg = LPFrontEnd.responseError(errObject, language, schemaPrefix);
-                        response.sendError((int) errMsg[0], (String) errMsg[1]);   
                         Rdbms.closeRdbms(); 
+                        response.sendError((int) errMsg[0], (String) errMsg[1]);   
                         return ;
                     }
 /*                    myData = Rdbms.getRecordFieldsByFilterJSON(schemaPrefix+"-data", "sample_analysis_result",
@@ -555,8 +632,8 @@ public class sampleAPIfrontend extends HttpServlet {
                         Object[] errMsg = LPFrontEnd.responseError(new String[] {myData}, language, null);
                         response.sendError((int) errMsg[0], (String) errMsg[1]);                            
                     }else{
-                        Response.ok().build();
                         response.getWriter().write(myData);           
+                        Response.ok().build();
                     }
   */                  
                     Rdbms.closeRdbms();
@@ -579,14 +656,15 @@ public class sampleAPIfrontend extends HttpServlet {
                                     +"from \"process-us-data\".sample s where s.sample_id = 146 ) sQry   ";
                 
             CachedRowSetImpl prepRdQuery = Rdbms.prepRdQuery(qry, new Object[]{sampleId});
-            Response.ok().build();            
+      
             
             boolean first = prepRdQuery.first();
             String finalString = "";
             
             String jsonarrayf = prepRdQuery.getString(1);
                     
-            response.getWriter().write(jsonarrayf);                    
+            response.getWriter().write(jsonarrayf);   
+            Response.ok().build();                  
             Rdbms.closeRdbms();    
 return;
                 default:      

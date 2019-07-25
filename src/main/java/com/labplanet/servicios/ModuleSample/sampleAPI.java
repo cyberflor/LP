@@ -648,16 +648,17 @@ public class sampleAPI extends HttpServlet {
             }    
             if (LPPlatform.LAB_FALSE.equalsIgnoreCase(dataSample[0].toString())){  
                 Rdbms.rollbackWithSavePoint();
-                con.rollback();
-                con.setAutoCommit(true);                
+                if (!con.getAutoCommit()){
+                    con.rollback();
+                    con.setAutoCommit(true);}                
                 Object[] errMsg = LPFrontEnd.responseError(dataSample, language, schemaPrefix);
                 response.sendError((int) errMsg[0], (String) errMsg[1]);    
             }else{
-                con.commit();
-                con.setAutoCommit(true);
-                
-                Response.ok().build();
+                if (!con.getAutoCommit()){
+                    con.rollback();
+                    con.setAutoCommit(true);}                
                 response.getWriter().write(Arrays.toString(dataSample));      
+                Response.ok().build();
             }            
             Rdbms.closeRdbms();
         }catch(Exception e){   

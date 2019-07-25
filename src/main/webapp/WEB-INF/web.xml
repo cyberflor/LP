@@ -124,6 +124,10 @@
         <servlet-name>envMonitSampleAPIfrontend</servlet-name>
         <servlet-class>com.labplanet.servicios.ModuleEnvMonit.envMonitSampleAPIfrontend</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>testingServer</servlet-name>
+        <servlet-class>com.labplanet.servicios.app.testingServer</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>DBActions</servlet-name>
         <url-pattern>/testing/platform/DBActions</url-pattern>
@@ -238,6 +242,10 @@
     <servlet-mapping>
         <servlet-name>envMonitSampleAPIfrontend</servlet-name>
         <url-pattern>/frontEnd/envMonitSampleAPIfrontend</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>testingServer</servlet-name>
+        <url-pattern>/app/testingServer</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

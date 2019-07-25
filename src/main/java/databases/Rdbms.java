@@ -67,11 +67,11 @@ public class Rdbms {
     }
     
     public Boolean startRdbms(){
-        return startRdbmsGlassfish(LPTestingOutFormat.TESTING_USER, LPTestingOutFormat.TESTING_PW);
+        return startRdbmsTomcat(LPTestingOutFormat.TESTING_USER, LPTestingOutFormat.TESTING_PW);
     }
 
     public Boolean startRdbms(String us, String pw){
-        return startRdbmsGlassfish(LPTestingOutFormat.TESTING_USER, LPTestingOutFormat.TESTING_PW);
+        return startRdbmsTomcat(LPTestingOutFormat.TESTING_USER, LPTestingOutFormat.TESTING_PW);
         //return startRdbmsTomcat(us, pw);
     }    
     
@@ -87,7 +87,7 @@ public class Rdbms {
                 Context ctx = new InitialContext();
                   //DataSource ds = (DataSource)ctx.lookup(datasrc);
 
-                Class.forName(dbDriver);
+                //Class.forName(dbDriver);
                 Properties dbProps = new Properties();
                 dbProps.setProperty("user", user);
                 dbProps.setProperty("password", pass);
@@ -433,6 +433,7 @@ public class Rdbms {
                 //return diagnoses2;
 */            
             }else{
+                
                 rdbms.errorCode = "Rdbms_NoRecordsFound";
                 errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, tableName);
                 errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, Arrays.toString(whereFieldValues) );
@@ -682,9 +683,10 @@ public class Rdbms {
                 return diagnoses2;
             }else{
                 rdbms.errorCode = "Rdbms_NoRecordsFound";
-                errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, tableName);
+                errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, query);
                 errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, Arrays.toString(whereFieldValues) );
-                errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, schemaName);
+                errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, schemaName);                
+                
                 Object[] diagnosesError = LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, rdbms.errorCode, errorDetailVariables);                         
                 return LPArray.array1dTo2d(diagnosesError, diagnosesError.length);                
             }

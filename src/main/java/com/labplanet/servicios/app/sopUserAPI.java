@@ -7,24 +7,23 @@ package com.labplanet.servicios.app;
 
 import LabPLANET.utilities.LPPlatform;
 import LabPLANET.utilities.LPArray;
-import LabPLANET.utilities.LPHttp;
 import LabPLANET.utilities.LPFrontEnd;
+import LabPLANET.utilities.LPHttp;
 import databases.Rdbms;
 import databases.Token;
-import functionalJava.sop.UserSop;
-import functionalJava.user.UserProfile;
+import functionalJava.testingScripts.LPTestingOutFormat;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Arrays;
-import java.util.ResourceBundle;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.Response;
+import functionalJava.user.UserProfile;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-
+import functionalJava.sop.UserSop;
 /**
  *
  * @author Administrator
@@ -76,7 +75,8 @@ public class sopUserAPI extends HttpServlet {
 //            String userRole = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, Token.TOKEN_PARAM_USER_ROLE)];                     
                         
             boolean isConnected = false;
-            isConnected = Rdbms.getRdbms().startRdbms(dbUserName, dbUserPassword);
+            //isConnected = Rdbms.getRdbms().startRdbms(dbUserName, dbUserPassword);
+            isConnected = Rdbms.getRdbms().startRdbms(LPTestingOutFormat.TESTING_USER, LPTestingOutFormat.TESTING_PW);      
             if (!isConnected){
                 errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
                 errObject = LPArray.addValueToArray1D(errObject, "API Error Message: db User Name and Password not correct, connection to the database is not possible");                    
@@ -157,10 +157,10 @@ public class sopUserAPI extends HttpServlet {
                 //mySopsList.clear();
                 mySopsList.put("my_sops", mySops);
                 mySopsListArr.add(mySopsList);
-                
+                 response.getWriter().write(mySopsListArr.toString());      
+                Rdbms.closeRdbms();                
                 Response.ok().build();
-                response.getWriter().write(mySopsListArr.toString());      
-                Rdbms.closeRdbms(); 
+
                 return;
             case "MY_PENDING_SOPS":    
                 usProf = new UserProfile();
@@ -186,30 +186,32 @@ public class sopUserAPI extends HttpServlet {
                     Object[][] userProcSops = userSop.getNotCompletedUserSOP(internalUserID, currProc, fieldsToRetrieve);
                     //userSops = userSop.getUserProfileFieldValues(rdbm, 
                     //        new String[]{"user_id"}, new Object[]{internalUserID}, fieldsToRetrieve, allUserProcedurePrefix);
-                    if (LPPlatform.LAB_FALSE.equalsIgnoreCase(Arrays.toString(userProcSops[0]))){
-                        Object[] errMsg = LPFrontEnd.responseError(userProcSops, language, null);
-                        response.sendError((int) errMsg[0], (String) errMsg[1]);    
-                        Rdbms.closeRdbms();
-                        return; 
-                    }
-                    mySops = new JSONArray(); 
-                    mySopsList = new JSONObject();
-
-                    //for (Object curProcSop: userProcSops){
-                    for (int xProc=0; xProc<userProcSops.length; xProc++){                                                
-                        JSONObject sop = new JSONObject();
-                        for (int yProc=0; yProc<userProcSops[0].length; yProc++){
-                            sop.put(fieldsToRetrieve[yProc], userProcSops[xProc][yProc]);
+                    if (userProcSops.length>0){
+                        if (LPPlatform.LAB_FALSE.equalsIgnoreCase(Arrays.toString(userProcSops[0]))){
+                            Object[] errMsg = LPFrontEnd.responseError(userProcSops, language, null);
+                            response.sendError((int) errMsg[0], (String) errMsg[1]);    
+                            Rdbms.closeRdbms();
+                            return; 
                         }
-                        mySops.add(sop);
-                    }    
-                    mySopsList.put("pending_sops", mySops);
-                    mySopsList.put("procedure_name", currProc);
-                    myPendingSopsByProc.add(mySopsList);
+                        mySops = new JSONArray(); 
+                        mySopsList = new JSONObject();
+
+                        //for (Object curProcSop: userProcSops){
+                        for (Object[] userProcSop : userProcSops) {                                                
+                            JSONObject sop = new JSONObject();
+                            for (int yProc = 0; yProc<userProcSops[0].length; yProc++) {
+                                sop.put(fieldsToRetrieve[yProc], userProcSop[yProc]);
+                            }
+                            mySops.add(sop);
+                        }    
+                        mySopsList.put("pending_sops", mySops);
+                        mySopsList.put("procedure_name", currProc);
+                        myPendingSopsByProc.add(mySopsList);
+                    }
                 }                
                 Rdbms.closeRdbms();
-                Response.ok().build();
                 response.getWriter().write(myPendingSopsByProc.toString());                    
+                Response.ok().build();
                 return;
             case "PROCEDURE_SOPS":    
                 usProf = new UserProfile();
@@ -244,22 +246,25 @@ public class sopUserAPI extends HttpServlet {
                     }
                     mySops = new JSONArray(); 
                     mySopsList = new JSONObject();
-
-                    //for (Object curProcSop: userProcSops){
-                    for (int xProc=0; xProc<procSops.length; xProc++){                                                
-                        JSONObject sop = new JSONObject();
-                        for (int yProc=0; yProc<procSops[0].length; yProc++){
-                            sop.put(fieldsToRetrieve[yProc], procSops[xProc][yProc]);
+                    if (procSops.length>0){
+                        if (!LPPlatform.LAB_FALSE.equalsIgnoreCase(procSops[0][0].toString())){
+                            //for (Object curProcSop: userProcSops){
+                            for (Object[] procSop : procSops) {                                                
+                                JSONObject sop = new JSONObject();
+                                for (int yProc = 0; yProc<procSops[0].length; yProc++) {
+                                    sop.put(fieldsToRetrieve[yProc], procSop[yProc]);
+                                }
+                                mySops.add(sop);
+                            }    
                         }
-                        mySops.add(sop);
-                    }    
+                    }
                     mySopsList.put("procedure_sops", mySops);
                     mySopsList.put("procedure_name", currProc);
                     myPendingSopsByProc.add(mySopsList);
                 }                
-                Response.ok().build();
                 response.getWriter().write(myPendingSopsByProc.toString());                    
                 Rdbms.closeRdbms();
+                Response.ok().build();
                 return;
             default:                
                 errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);

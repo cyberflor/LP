@@ -49,7 +49,9 @@ public class TestingConfig_specQualitative_ruleFormat extends HttpServlet {
                 
         try (PrintWriter out = response.getWriter()) {
             String fileContent = LPTestingOutFormat.getHtmlStyleHeader(this.getClass().getSimpleName());
-            HashMap<String, Object> csvHeaderTags = LPTestingOutFormat.getCSVHeader(LPArray.convertCSVinArray(csvPathName, "="));
+            String[][] headerInfo = LPArray.convertCSVinArray(csvPathName, "=");
+            HashMap<String, Object> csvHeaderTags = LPTestingOutFormat.getCSVHeader(headerInfo);
+            //HashMap<String, Object> csvHeaderTags = LPTestingOutFormat.getCSVHeader(csvFileContent);
             if (csvHeaderTags.containsKey(LPPlatform.LAB_FALSE)){
                 fileContent=fileContent+"There are missing tags in the file header: "+csvHeaderTags.get(LPPlatform.LAB_FALSE);                        
                 out.println(fileContent); 

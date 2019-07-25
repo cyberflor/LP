@@ -12,6 +12,7 @@ import LabPLANET.utilities.LPHttp;
 import databases.Rdbms;
 import databases.Token;
 import functionalJava.sop.UserSop;
+import functionalJava.testingScripts.LPTestingOutFormat;
 import functionalJava.user.UserProfile;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -73,7 +74,8 @@ public class sopUserAPIfrontend extends HttpServlet {
 //                String userRole = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, Token.TOKEN_PARAM_USER_ROLE)];                     
 
                 boolean isConnected = false;
-                isConnected = Rdbms.getRdbms().startRdbms(dbUserName, dbUserPassword);
+                //isConnected = Rdbms.getRdbms().startRdbms(dbUserName, dbUserPassword);
+                isConnected = Rdbms.getRdbms().startRdbms(LPTestingOutFormat.TESTING_USER, LPTestingOutFormat.TESTING_PW); 
                 if (!isConnected){
                     errObject = LPArray.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
                     errObject = LPArray.addValueToArray1D(errObject, "API Error Message: db User Name and Password not correct, connection to the database is not possible");                    
@@ -95,7 +97,10 @@ public class sopUserAPIfrontend extends HttpServlet {
                 String[] fieldsToRetrieve = new String[]{"sop_id"};
                 for (String curProc: allUserProcedurePrefix){
                     Object[][] userProcSops = userSop.getNotCompletedUserSOP(internalUserID, curProc, fieldsToRetrieve);       
-                    if (!LPPlatform.LAB_FALSE.equalsIgnoreCase(userProcSops[0][0].toString())){numPendingSOPs=numPendingSOPs+userProcSops.length;}
+                    if (userProcSops.length>0){
+                        if (!LPPlatform.LAB_FALSE.equalsIgnoreCase(userProcSops[0][0].toString())){
+                            numPendingSOPs=numPendingSOPs+userProcSops.length;}                            
+                        }
                 }
                    JSONArray sopOptions = new JSONArray(); 
                     
@@ -144,9 +149,9 @@ public class sopUserAPIfrontend extends HttpServlet {
                     JSONArray arrFinal = new JSONArray();
                     arrFinal.add(sopElement);
                     
-                    Response.ok().build();
                     response.getWriter().write(arrFinal.toString());   
                     Rdbms.closeRdbms(); 
+                    Response.ok().build();
                     
         }
     }

@@ -23,7 +23,8 @@ import javax.servlet.http.HttpServletResponse;
  * @author Administrator
  */
 public class ProcedureDeployment extends HttpServlet {
-
+        private static final Boolean PROC_DEPLOYMENT_ENTIRE_PROCEDURE=false;
+        private static final Boolean PROC_DEPLOYMENT_ASSIGN_USER_SOPS=false;
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      *
@@ -34,7 +35,9 @@ public class ProcedureDeployment extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)  throws ServletException, IOException {
         
-        String procName = "jonaDavid"; Integer procVersion = 1;
+
+        
+        String procName = "process-us"; Integer procVersion = 1;
         
         response=LPTestingOutFormat.responsePreparation(response);
         String fileContent = LPTestingOutFormat.getHtmlStyleHeader(this.getClass().getSimpleName());
@@ -49,7 +52,10 @@ public class ProcedureDeployment extends HttpServlet {
             RequirementDeployment reqDep = new RequirementDeployment();
         
             try {
-                reqDep.procedureDeployment(procName, procVersion);
+                if (PROC_DEPLOYMENT_ENTIRE_PROCEDURE){reqDep.procedureDeployment(procName, procVersion);}
+
+                if (PROC_DEPLOYMENT_ASSIGN_USER_SOPS){reqDep.procedureDeployment(procName, procVersion);}
+                
             } catch (SQLException ex) {
                 Logger.getLogger(ProcedureDeployment.class.getName()).log(Level.SEVERE, null, ex);
             }

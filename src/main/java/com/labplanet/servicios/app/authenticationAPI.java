@@ -22,8 +22,6 @@ import functionalJava.testingScripts.LPTestingOutFormat;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Arrays;
-import javax.json.Json;
-import javax.json.JsonObject;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -32,7 +30,6 @@ import javax.ws.rs.core.Response;
 import functionalJava.user.Role;
 import functionalJava.user.UserProfile;
 import functionalJava.user.UserSecurity;
-import java.sql.SQLException;
 import java.util.Date;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -60,7 +57,7 @@ public class authenticationAPI extends HttpServlet {
         response=LPHttp.responsePreparation(response);
 
         String language = "en";
-    
+        
         try (PrintWriter out = response.getWriter()) {            
             String[] errObject = new String[]{"Servlet sampleAPI at " + request.getServletPath()};            
 
@@ -85,7 +82,7 @@ public class authenticationAPI extends HttpServlet {
                         errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
                         errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_MANDATORY_PARAMS_MISSING+": "+areMandatoryParamsInResponse[1].toString());                    
                         Object[] errMsg = LPFrontEnd.responseError(errObject, language, areMandatoryParamsInResponse[1].toString());
-                        response.sendError((int) errMsg[0], (String) errMsg[1]);    
+                        response.sendError((int) errMsg[0], "ERROR_BEGIN"+errMsg[1].toString()+"ERROR_END");    
                         Rdbms.closeRdbms(); 
                         return ;                
                     }                          
@@ -100,8 +97,8 @@ public class authenticationAPI extends HttpServlet {
                         errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
                         errObject = LPArray.addValueToArray1D(errObject, "API Error Message: db User Name and Password not correct, connection to the database is not possible");                    
                         Object[] errMsg = LPFrontEnd.responseError(errObject, language, null);
-                        response.sendError((int) errMsg[0], (String) errMsg[1]);   
                         Rdbms.closeRdbms(); 
+                        response.sendError((int) errMsg[0], (String) errMsg[1]);   
                         return ;                                 
                     }
                     Role rol = new Role();
@@ -110,39 +107,47 @@ public class authenticationAPI extends HttpServlet {
                         errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
                         errObject = LPArray.addValueToArray1D(errObject, "API Error Message: Person does not exist or password incorrect.");                    
                         Object[] errMsg = LPFrontEnd.responseError(errObject, language, null);
-                        response.sendError((int) errMsg[0], (String) errMsg[1]);        
-                        Rdbms.closeRdbms(); 
+                        Rdbms.closeRdbms();                         
+                        response.getWriter().write( (String) errMsg[1]);
+                        response.setStatus((int) errMsg[0]);
+                        //response.sendError((int) errMsg[0], (String) errMsg[1]);        
                         return ;                                 
                     }
                     
                     UserSecurity usSec = new UserSecurity();
                     Object[] validUserPassword = usSec.isValidUserPassword(dbUserName, dbUserPassword);
                     if (LPPlatform.LAB_FALSE.equalsIgnoreCase(validUserPassword[0].toString())){
-                        errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
-                        errObject = LPArray.addValueToArray1D(errObject, "API Error Message: db User Name and Password not correct, connection to the database is not possible");                    
-                        Object[] errMsg = LPFrontEnd.responseError(errObject, language, null);
-                        response.sendError((int) errMsg[0], (String) errMsg[1]);   
-                        Rdbms.closeRdbms(); 
-                        return ;                                 
+                        isConnected = Rdbms.getRdbms().startRdbms(LPTestingOutFormat.TESTING_USER, LPTestingOutFormat.TESTING_PW); 
+                        validUserPassword = usSec.isValidUserPassword(dbUserName, dbUserPassword);
+                        if (LPPlatform.LAB_FALSE.equalsIgnoreCase(validUserPassword[0].toString())){                        
+                            errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
+                            errObject = LPArray.addValueToArray1D(errObject, "API Error Message: isValidUserPassword returned error then app User Name and Password not correct");                    
+                            Object[] errMsg = LPFrontEnd.responseError(errObject, language, null);
+                         Rdbms.closeRdbms();                         
+                        response.getWriter().write( errMsg[1].toString());
+                        response.setStatus((int) errMsg[0]);                           
+                        //response.sendError((int) errMsg[0], "ERROR_BEGIN"+errMsg[1].toString()+"ERROR_END");    
+                        return ;                               
+                        }
                     }                    
                                       
                     Token token = new Token();
                     String internalUserStr = internalUser[0][0].toString();
                     String myToken = token.createToken(dbUserName, dbUserPassword, internalUserStr, "Admin", "", "", "");                    
-                    
-                    JsonObject json = Json.createObjectBuilder()
-                            .add("userInfoId", internalUserStr)
-                            .add("myToken", myToken)
-                            .build();                                                
-                    response.getWriter().write(json.toString());                                        
-                    
-                    Response.ok().build();    
+
+                    JSONObject jsonObj = new JSONObject();
+                    jsonObj.put("userInfoId", internalUserStr);
+                    jsonObj.put("myToken", myToken);
+                    response.getWriter().write(jsonObj.toString());
+                
                     Rdbms.closeRdbms();
+                    Response.ok().build();    
                     return;
                 case "GETUSERROLE":         
-                    mandatoryParamsAction = new String[]{"dbUserName"};
-                    mandatoryParamsAction = LPArray.addValueToArray1D(mandatoryParamsAction, "dbUserPassword");
-                    mandatoryParamsAction = LPArray.addValueToArray1D(mandatoryParamsAction, "userInfoId");
+                    
+                    mandatoryParamsAction = new String[]{"myToken"};
+                    //mandatoryParamsAction = LPArray.addValueToArray1D(mandatoryParamsAction, "dbUserPassword");
+                    //mandatoryParamsAction = LPArray.addValueToArray1D(mandatoryParamsAction, "userInfoId");
                     areMandatoryParamsInResponse = LPHttp.areMandatoryParamsInApiRequest(request, mandatoryParamsAction);
                     if (LPPlatform.LAB_FALSE.equalsIgnoreCase(areMandatoryParamsInResponse[0].toString())){
                         errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
@@ -152,11 +157,19 @@ public class authenticationAPI extends HttpServlet {
                         Rdbms.closeRdbms(); 
                         return ;                
                     }                                              
-                    dbUserName = request.getParameter("dbUserName");                   
+                    String firstToken = request.getParameter("myToken");                   
+                    
+                    token = new Token();
+                    String[] tokenParams = token.tokenParamsList();
+                    String[] tokenParamsValues = token.validateToken(firstToken, tokenParams);
+                    
+                    String userName = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, TOKEN_PARAM_USERDB)];
+                    String password = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, TOKEN_PARAM_USERPW)];
+                    internalUserStr = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, TOKEN_PARAM_INTERNAL_USERID)];                    
                     dbUserPassword = request.getParameter("dbUserPassword");      
                     String userInfoId = request.getParameter("userInfoId");      
                     
-                    isConnected = Rdbms.getRdbms().startRdbms(dbUserName, dbUserPassword);                    
+                    isConnected = Rdbms.getRdbms().startRdbms(userName, password);                    
                     if (!isConnected){
                         errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
                         errObject = LPArray.addValueToArray1D(errObject, "API Error Message: db User Name and Password not correct, connection to the database is not possible");                    
@@ -167,13 +180,13 @@ public class authenticationAPI extends HttpServlet {
                     }                    
                     
                     UserProfile usProf = new UserProfile();
-                    Object[] allUserProcedurePrefix = usProf.getAllUserProcedurePrefix(dbUserName);
+                    Object[] allUserProcedurePrefix = usProf.getAllUserProcedurePrefix(userName);
                     if (LPPlatform.LAB_FALSE.equalsIgnoreCase(allUserProcedurePrefix[0].toString())){
                         Object[] errMsg = LPFrontEnd.responseError(allUserProcedurePrefix, language, null);
                         response.sendError((int) errMsg[0], (String) errMsg[1]);                            
                     }                    
                     
-                    Object[] allUserProcedureRoles = usProf.getProcedureUserProfileFieldValues(allUserProcedurePrefix, userInfoId);
+                    Object[] allUserProcedureRoles = usProf.getProcedureUserProfileFieldValues(allUserProcedurePrefix, internalUserStr);
                     if (LPPlatform.LAB_FALSE.equalsIgnoreCase(allUserProcedureRoles[0].toString())){
                         Object[] errMsg = LPFrontEnd.responseError(allUserProcedureRoles, language, null);
                         response.sendError((int) errMsg[0], (String) errMsg[1]);                            
@@ -186,7 +199,7 @@ public class authenticationAPI extends HttpServlet {
                     if (1==1) return;
                     
                     Object[][] recordFieldsByFilter = Rdbms.getRecordFieldsByFilter("config", "user_profile", 
-                                new String[]{"user_info_id"}, new Object[]{userInfoId}, new String[]{"role_id"});
+                                new String[]{"user_info_id"}, new Object[]{internalUserStr}, new String[]{"role_id"});
                         //Object[] recordFieldsByFilter1D =  LPArray.array2dTo1d(recordFieldsByFilter);
                     if (LPPlatform.LAB_FALSE.equalsIgnoreCase(recordFieldsByFilter[0][0].toString())){
                         Object[] errMsg = LPFrontEnd.responseError(LPArray.array2dTo1d(recordFieldsByFilter), language, null);
@@ -217,7 +230,7 @@ public class authenticationAPI extends HttpServlet {
                         Rdbms.closeRdbms(); 
                         return ;                
                     }                                              
-                    String firstToken = request.getParameter("myToken");                   
+                    firstToken = request.getParameter("myToken");                   
                     String userRole = request.getParameter("userRole");                      
  if (1!=1){
      JSONObject obj = new JSONObject();
@@ -228,11 +241,11 @@ public class authenticationAPI extends HttpServlet {
      return;
  }        
                     token = new Token();
-                    String[] tokenParams = token.tokenParamsList();
-                    String[] tokenParamsValues = token.validateToken(firstToken, tokenParams);
+                    tokenParams = token.tokenParamsList();
+                    tokenParamsValues = token.validateToken(firstToken, tokenParams);
                     
-                    String userName = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, TOKEN_PARAM_USERDB)];
-                    String password = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, TOKEN_PARAM_USERPW)];
+                    userName = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, TOKEN_PARAM_USERDB)];
+                    password = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, TOKEN_PARAM_USERPW)];
                     internalUserStr = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, TOKEN_PARAM_INTERNAL_USERID)];
                     //String sessionIdStr = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, "appSessionId")];
                     //String appSessionStartedDate = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, "appSessionStartedDate")];
@@ -279,15 +292,30 @@ if (1==1){
                     
                     String myFinalToken = token.createToken(userName, password, internalUserStr, userRole, sessionIdStr, nowLocalDate.toString(), userEsignInfo[0][0].toString());
                     
-                    json = Json.createObjectBuilder()
+                    
+/*                    JsonObject json = Json.createObjectBuilder()
                             .add("finalToken", myFinalToken)
                             .add("appSessionId", sessionIdStr)
                             .add("appSessionStartDate", nowLocalDate.toString())
-                            .build();                                                
-                    response.getWriter().write(json.toString());
-                    Response.ok().build();                    
-                    Response.status(Response.Status.CREATED).entity(json).build();   
+                            .build();           */
+                    
+                    jsonObj = new JSONObject();
+                    jsonObj.put("finalToken", myFinalToken);
+                    jsonObj.put("appSessionId", sessionIdStr);
+                    jsonObj.put("appSessionStartDate", nowLocalDate.toString());
+                    response.getWriter().write(jsonObj.toString());                    
+
+//                       json.put("finalToken", myFinalToken);
+                //mySopsList.put("my_sops", mySops);
+                //mySopsListArr.add(mySopsList);
+//                       JSONArray jsonArr = new JSONArray();
+//                jsonArr.add(json);
+                
+                    //response.getWriter().write(json.toString());
+                     //  response.getWriter().write(json.toString());
+                    //Response.status(Response.Status.CREATED).entity(json).build();   
                     Rdbms.closeRdbms();
+                    Response.ok().build();                    
                     return;
                 case "TOKEN_VALIDATE_ESIGN_PHRASE":     
                     mandatoryParamsAction = new String[]{"myToken"};

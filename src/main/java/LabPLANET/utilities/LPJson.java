@@ -35,9 +35,31 @@ public class LPJson {
 
     /**
      *
-     * @param diagn
+     * @param header
+     * @param row
      * @return
      */
+    public static JSONObject convertArrayRowToJSONObject(String[] header, Object[] row){
+        JSONObject jObj = new JSONObject();    
+        if (header.length>0){
+                    for (int iField=0; iField<header.length; iField++){     
+                        if ("sampling_date".equalsIgnoreCase(header[iField])){
+                            int i=0;
+                        }
+                        if (row[iField]==null){
+                            jObj.put(header[iField], "");
+                        }else{
+                            String clase = row[iField].getClass().toString();
+                            if (clase.toUpperCase().equalsIgnoreCase("class java.sql.Date")){
+                                jObj.put(header[iField], row[iField].toString());
+                            }else{
+                                jObj.put(header[iField], row[iField]);
+                            }
+                        }
+                    }            
+        }
+        return jObj;
+    }
     public static String convertToJSON(Object[] diagn) {
         StringBuilder jsonStr = new StringBuilder().append("{");
         
