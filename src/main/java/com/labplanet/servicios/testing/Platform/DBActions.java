@@ -6,6 +6,8 @@
 package com.labplanet.servicios.testing.Platform;
 
 import LabPLANET.utilities.LPArray;
+import LabPLANET.utilities.LPFrontEnd;
+import LabPLANET.utilities.LPHttp;
 import LabPLANET.utilities.LPNulls;
 import LabPLANET.utilities.LPPlatform;
 import functionalJava.testingScripts.LPTestingOutFormat;
@@ -35,7 +37,10 @@ public class DBActions extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)            throws ServletException, IOException {
-        response=LPTestingOutFormat.responsePreparation(response);
+        request=LPHttp.requestPreparation(request);
+        response=LPHttp.responsePreparation(response);
+
+        String language = LPFrontEnd.setLanguage(request); 
 
         Object[][] dataSample2D = new Object[1][6];
         Object[] dataSample2Din1D = new Object[0];

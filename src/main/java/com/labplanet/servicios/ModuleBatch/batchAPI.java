@@ -53,12 +53,14 @@ public class batchAPI extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)            throws ServletException, IOException {
-            request=LPHttp.requestPreparation(request);
-            response=LPHttp.responsePreparation(response);
+        request=LPHttp.requestPreparation(request);
+        response=LPHttp.responsePreparation(response);
+
+        String language = LPFrontEnd.setLanguage(request); 
 
         Connection con = null;
         
-            String language = "es";
+
             String[] errObject = new String[]{"Servlet sampleAPI at " + request.getServletPath()};   
 
             String[] mandatoryParams = new String[]{PARAMS_SCHEMA_PREFIX};

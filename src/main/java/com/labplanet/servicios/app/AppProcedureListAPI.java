@@ -20,8 +20,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.Response;
-//import org.codehaus.jettison.json.JSONArray;
-//import org.codehaus.jettison.json.JSONObject;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONArray;
 import functionalJava.sop.UserSop;
@@ -60,10 +58,10 @@ public class AppProcedureListAPI extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)            throws ServletException, IOException {   
-        response = LPHttp.responsePreparation(response);
-        request = LPHttp.requestPreparation(request);      
+        request=LPHttp.requestPreparation(request);
+        response=LPHttp.responsePreparation(response);
 
-        String language = "en";
+        String language = LPFrontEnd.setLanguage(request); 
             
         try (PrintWriter out = response.getWriter()) {
             String[] errObject = new String[]{"Servlet AppProcedureList at " + request.getServletPath()};                  

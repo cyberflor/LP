@@ -46,7 +46,7 @@ public class sampleAnalysisAPI extends HttpServlet {
         request=LPHttp.requestPreparation(request);
         response=LPHttp.responsePreparation(response);
 
-        String language = "es";
+        String language = LPFrontEnd.setLanguage(request); 
         String[] errObject = new String[]{"Servlet sampleAPI at " + request.getServletPath()};   
 
         String[] mandatoryParams = new String[]{"schemaPrefix"};

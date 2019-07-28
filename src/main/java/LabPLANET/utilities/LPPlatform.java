@@ -45,8 +45,22 @@ public class LPPlatform {
     public static final String SCHEMA_DATA_AUDIT = "data-audit";
     public static final String SCHEMA_REQUIREMENTS = LPPlatform.SCHEMA_REQUIREMENTS;
     
-    private static final String CONFIG_FILES_FOLDER = "LabPLANET";
+    public static final String CONFIG_FILES_FOLDER = "LabPLANET";
     private static final String CONFIG_FILES_ERRORTRAPING = "errorTraping";
+    public static final String CONFIG_FILES_API_ERRORTRAPING = "api-platform";
+    
+    public static final String API_ERRORTRAPING_PROPERTY_DATABASE_NOT_CONNECTED= "databaseConnectivityError";
+    public static final String API_ERRORTRAPING__MANDATORY_PARAMS_MISSING="missingManatoryParametersInRequest";
+    public static final String API_ERRORTRAPING_PROPERTY_ENDPOINT_NOT_FOUND = "endPointNotFound";
+
+    public static final String SERVLETS_REPONSE_SUCCESS_SERVLET_NAME="/responseSuccess";
+    public static final String SERVLETS_REPONSE_SUCCESS_ATTRIBUTE_NAME="response";
+    public static final String SERVLETS_REPONSE_ERROR_SERVLET_NAME="/responseTheError";
+    public static final String SERVLETS_REPONSE_ERROR_ATTRIBUTE_NAME="errorDetail";
+    
+    public static final String REQUEST_PARAM_LANGUAGE = "language";
+    public static final String REQUEST_PARAM_LANGUAGE_DEFAULT_VALUE = "ALL";    
+    
 
     private static final String CONFIG_PROC_FILE_NAME = "-procedure";
     private static final String ENCRYPTION_KEY = "Bar12345Bar12345";

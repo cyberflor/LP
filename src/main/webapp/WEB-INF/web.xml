@@ -128,6 +128,22 @@
         <servlet-name>testingServer</servlet-name>
         <servlet-class>com.labplanet.servicios.app.testingServer</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>responseError</servlet-name>
+        <servlet-class>com.labplanet.servicios.responseError</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>responseTheError</servlet-name>
+        <servlet-class>com.labplanet.servicios.responseTheError</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>responseSuccess</servlet-name>
+        <servlet-class>com.labplanet.servicios.responseSuccess</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>authenticationAPIParams</servlet-name>
+        <servlet-class>com.labplanet.servicios.app.authenticationAPIParams</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>DBActions</servlet-name>
         <url-pattern>/testing/platform/DBActions</url-pattern>
@@ -246,6 +262,26 @@
     <servlet-mapping>
         <servlet-name>testingServer</servlet-name>
         <url-pattern>/app/testingServer</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>responseError</servlet-name>
+        <url-pattern>/responseError</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>responseTheError</servlet-name>
+        <url-pattern>/responseTheError</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>responseSuccess</servlet-name>
+        <url-pattern>/responseSuccess</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>requestMandatoryParameters</servlet-name>
+        <url-pattern>/requestMandatoryParameters</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>authenticationAPIParams</servlet-name>
+        <url-pattern>/authenticationAPIParams</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

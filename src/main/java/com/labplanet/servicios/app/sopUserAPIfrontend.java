@@ -42,9 +42,9 @@ public class sopUserAPIfrontend extends HttpServlet {
         request=LPHttp.requestPreparation(request);
         response=LPHttp.responsePreparation(response);
 
-        UserSop userSop = new UserSop();
-         
-         String language = "es";
+        String language = LPFrontEnd.setLanguage(request); 
+
+        UserSop userSop = new UserSop();        
         
         try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */

@@ -45,9 +45,9 @@ public class sampleAnalysisResultAPI extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)            throws ServletException, IOException {
         request=LPHttp.requestPreparation(request);
-        response=LPHttp.responsePreparation(response);    
-        
-        String language = "es";
+        response=LPHttp.responsePreparation(response);
+
+        String language = LPFrontEnd.setLanguage(request); 
         String[] errObject = new String[]{"Servlet sampleAPI at " + request.getServletPath()};   
 
         String[] mandatoryParams = new String[]{"schemaPrefix"};

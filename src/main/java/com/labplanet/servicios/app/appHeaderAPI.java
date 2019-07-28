@@ -42,7 +42,7 @@ public class appHeaderAPI extends HttpServlet {
         request=LPHttp.requestPreparation(request);
         response=LPHttp.responsePreparation(response);
 
-        String language = "en";
+        String language = LPFrontEnd.setLanguage(request); 
    
         try (PrintWriter out = response.getWriter()) {            
             String[] errObject = new String[]{"Servlet sampleAPI at " + request.getServletPath()};            

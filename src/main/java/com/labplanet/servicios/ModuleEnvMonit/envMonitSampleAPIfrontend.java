@@ -9,9 +9,6 @@ import LabPLANET.utilities.LPArray;
 import LabPLANET.utilities.LPFrontEnd;
 import LabPLANET.utilities.LPHttp;
 import LabPLANET.utilities.LPPlatform;
-import static com.labplanet.servicios.ModuleEnvMonit.envMonAPIfrontend.ERRORMSG_ERROR_STATUS_CODE;
-import static com.labplanet.servicios.ModuleEnvMonit.envMonAPIfrontend.ERRORMSG_MANDATORY_PARAMS_MISSING;
-import static com.labplanet.servicios.ModuleSample.sampleAPIfrontend.ERRORMSG_ERROR_STATUS_CODE;
 import databases.Rdbms;
 import databases.Token;
 import java.io.IOException;
@@ -43,7 +40,8 @@ public class envMonitSampleAPIfrontend extends HttpServlet {
             throws ServletException, IOException {
         request=LPHttp.requestPreparation(request);
         response=LPHttp.responsePreparation(response);
-        String language = "en";
+
+        String language = LPFrontEnd.setLanguage(request); 
 
         try (PrintWriter out = response.getWriter()) {
             String[] errObject = new String[]{"Servlet sampleAPI at " + request.getServletPath()};            

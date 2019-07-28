@@ -50,7 +50,8 @@ public class sampleAPIfrontend extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)            throws ServletException, IOException {
         request=LPHttp.requestPreparation(request);
         response=LPHttp.responsePreparation(response);
-        String language = "en";
+
+        String language = LPFrontEnd.setLanguage(request); 
 
         try (PrintWriter out = response.getWriter()) {
             String[] errObject = new String[]{"Servlet sampleAPI at " + request.getServletPath()};            

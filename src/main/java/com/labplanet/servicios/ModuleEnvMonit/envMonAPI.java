@@ -11,9 +11,6 @@ import LabPLANET.utilities.LPHttp;
 import LabPLANET.utilities.LPPlatform;
 import static com.labplanet.servicios.ModuleSample.sampleAPI.ERRORMSG_ERROR_STATUS_CODE;
 import static com.labplanet.servicios.ModuleSample.sampleAPI.ERRORMSG_MANDATORY_PARAMS_MISSING;
-import static com.labplanet.servicios.ModuleSample.sampleAPI.FIELD_NAME_SAMPLE_ID;
-import static com.labplanet.servicios.ModuleSample.sampleAPI.PARAMETER_SAMPLE_ID;
-import static com.labplanet.servicios.ModuleSample.sampleAPI.TABLE_NAME_SAMPLE;
 import databases.Rdbms;
 import databases.Token;
 import functionalJava.environmentalMonitoring.DataProgramSample;
@@ -59,7 +56,7 @@ public class envMonAPI extends HttpServlet {
         request=LPHttp.requestPreparation(request);
         response=LPHttp.responsePreparation(response);
 
-        String language = "es";
+        String language = LPFrontEnd.setLanguage(request); 
         String[] errObject = new String[]{"Servlet programAPI at " + request.getServletPath()};   
 
         String[] mandatoryParams = new String[]{"schemaPrefix"};

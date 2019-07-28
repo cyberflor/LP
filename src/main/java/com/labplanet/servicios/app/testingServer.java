@@ -7,6 +7,7 @@ package com.labplanet.servicios.app;
 
 import LabPLANET.utilities.LPArray;
 import LabPLANET.utilities.LPFrontEnd;
+import LabPLANET.utilities.LPHttp;
 import static com.labplanet.servicios.app.sopUserAPI.ERRORMSG_ERROR_STATUS_CODE;
 import databases.Rdbms;
 import databases.Token;
@@ -41,7 +42,11 @@ public class testingServer extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
+        request=LPHttp.requestPreparation(request);
+        response=LPHttp.responsePreparation(response);
+
+        String language = LPFrontEnd.setLanguage(request);         
+        
         try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
             out.println("<!DOCTYPE html>");
@@ -53,7 +58,7 @@ public class testingServer extends HttpServlet {
             out.println("<h1>Servlet testingServer at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
-            String language = "en";
+
             String[] errObject = new String[]{"Servlet sampleAPI at " + request.getServletPath()};          
             boolean isConnected = false;
             //isConnected = Rdbms.getRdbms().startRdbms(dbUserName, dbUserPassword);
@@ -79,9 +84,11 @@ public class testingServer extends HttpServlet {
             
  //           response.sendError(Response.SC_OK, "SC_OK response");
  //           if (1==1){                return;            }
-            response.getWriter().write("Unauthorized response zzzzzzzzzzzz");
-            response.setStatus(Response.SC_UNAUTHORIZED);
-            //response.sendError(Response.SC_UNAUTHORIZED, "Unauthorized response");
+
+            //response.getWriter().write("Unauthorized response zzzzzzzzzzzz");
+            //response.setStatus(Response.SC_UNAUTHORIZED);
+//String CustomResponse = "CustomResponse";
+//            Response response2 = Response.status (Response.SC_UNAUTHORIZED).entity(CustomResponse).build ();
             
             out.println("Reading web text file");
             //String exampleUrl = "https://www.w3.org/TR/PNG/iso_8859-1.txt";
