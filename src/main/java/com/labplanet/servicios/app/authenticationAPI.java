@@ -101,10 +101,7 @@ public class authenticationAPI extends HttpServlet {
                     JSONObject jsonObj = new JSONObject();
                     jsonObj.put(authenticationAPIParams.RESPONSE_JSON_TAG_USER_INFO_ID, internalUserStr);
                     jsonObj.put(authenticationAPIParams.RESPONSE_JSON_TAG_MY_TOKEN, myToken);
-                    Rdbms.closeRdbms();      
-                    request.setAttribute(LPPlatform.SERVLETS_REPONSE_SUCCESS_ATTRIBUTE_NAME, jsonObj.toString());
-                    RequestDispatcher rd = request.getRequestDispatcher(LPPlatform.SERVLETS_REPONSE_SUCCESS_SERVLET_NAME);
-                    rd.forward(request,response);   
+                    LPFrontEnd.servletReturnSuccess(request, response, jsonObj);
                     return;
                 case authenticationAPIParams.API_ENDPOINT_GET_USER_ROLE:                                                 
                     areMandatoryParamsInResponse = LPHttp.areMandatoryParamsInApiRequest(request, authenticationAPIParams.MANDATORY_PARAMS_CASE_GETUSERROLE.split("\\|"));
@@ -227,11 +224,8 @@ if (1==1){
                     jsonObj.put(authenticationAPIParams.RESPONSE_JSON_TAG_FINAL_TOKEN, myFinalToken);
                     jsonObj.put(authenticationAPIParams.RESPONSE_JSON_TAG_APP_SESSION_ID, sessionIdStr);
                     jsonObj.put(authenticationAPIParams.RESPONSE_JSON_TAG_APP_SESSION_DATE, nowLocalDate.toString());
-                    Rdbms.closeRdbms();      
-                    request.setAttribute(LPPlatform.SERVLETS_REPONSE_SUCCESS_ATTRIBUTE_NAME, jsonObj.toString());
-                    rd = request.getRequestDispatcher(LPPlatform.SERVLETS_REPONSE_SUCCESS_SERVLET_NAME);
-                    rd.forward(request,response);   
-                    return;                    
+                    LPFrontEnd.servletReturnSuccess(request, response, jsonObj);
+                    return;                                   
                 case authenticationAPIParams.API_ENDPOINT_TOKEN_VALIDATE_ESIGN_PHRASE:     
                     areMandatoryParamsInResponse = LPHttp.areMandatoryParamsInApiRequest(request, authenticationAPIParams.MANDATORY_PARAMS_CASE_TOKEN_VALIDATE_ESIGN_PHRASE.split("\\|"));
                     if (LPPlatform.LAB_FALSE.equalsIgnoreCase(areMandatoryParamsInResponse[0].toString())){
@@ -247,12 +241,9 @@ if (1==1){
                     tokenParamsValues = token.validateToken(myToken, tokenParams);
                     
                     String tokenEsign = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, TOKEN_PARAM_USER_ESIGN)];
-                    if(esignPhraseToCheck.equals(tokenEsign)){                         
-                        Rdbms.closeRdbms();      
-                        request.setAttribute(LPPlatform.SERVLETS_REPONSE_SUCCESS_ATTRIBUTE_NAME,"");
-                        rd = request.getRequestDispatcher(LPPlatform.SERVLETS_REPONSE_SUCCESS_SERVLET_NAME);
-                        rd.forward(request,response);   
-                        return;                        
+                    if(esignPhraseToCheck.equals(tokenEsign)){   
+                        LPFrontEnd.servletReturnSuccess(request, response, null);
+                        return;                                             
                     }else{               
                         LPFrontEnd.servletReturnResponseError(request, response, authenticationAPIParams.ERROR_API_ERRORTRAPING_PROPERTY_ESIGN_TO_CHECK_INVALID, new Object[]{esignPhraseToCheck}, language);
                         return;                             
@@ -276,11 +267,8 @@ if (1==1){
                     String tokenUser = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, TOKEN_PARAM_USERDB)];
                     String tokenPassword = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, TOKEN_PARAM_USERPW)];
                     if ( (userToCheck.equals(tokenUser)) && (passwordToCheck.equals(tokenPassword)) ){
-                        Rdbms.closeRdbms();      
-                        request.setAttribute(LPPlatform.SERVLETS_REPONSE_SUCCESS_ATTRIBUTE_NAME,"");
-                        rd = request.getRequestDispatcher(LPPlatform.SERVLETS_REPONSE_SUCCESS_SERVLET_NAME);
-                        rd.forward(request,response);   
-                        return;                        
+                        LPFrontEnd.servletReturnSuccess(request, response, null);
+                        return;                                            
                     }else{                        
                         LPFrontEnd.servletReturnResponseError(request, response, authenticationAPIParams.ERROR_API_ERRORTRAPING_PROPERTY_USER_PASSWORD_TO_CHECK_INVALID, new Object[]{userToCheck}, language);              
                     }                                      

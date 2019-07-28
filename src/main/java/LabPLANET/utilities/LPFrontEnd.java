@@ -126,11 +126,26 @@ public class LPFrontEnd {
             Logger.getLogger(LPFrontEnd.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    private static void servetInvokeResponseSuccessServlet(HttpServletRequest request, HttpServletResponse response){
+        Rdbms.closeRdbms();      
+        
+        RequestDispatcher rd = request.getRequestDispatcher(LPPlatform.SERVLETS_REPONSE_SUCCESS_SERVLET_NAME);
+        try {           
+            rd.forward(request,response);
+        } catch (ServletException | IOException ex) {
+            Logger.getLogger(LPFrontEnd.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
     public static final void servletReturnResponseError(HttpServletRequest request, HttpServletResponse response, String errorCode, Object[] errorCodeVars, String language){  
         JSONObject errJSONMsg = LPFrontEnd.responseJSONError(errorCode,errorCodeVars, language);
         request.setAttribute(LPPlatform.SERVLETS_REPONSE_ERROR_ATTRIBUTE_NAME, errJSONMsg.toString());
         servetInvokeResponseErrorServlet(request, response);
     }
+    public static final void servletReturnSuccess(HttpServletRequest request, HttpServletResponse response, JSONObject jsonObj){  
+        if (jsonObj==null){request.setAttribute(LPPlatform.SERVLETS_REPONSE_SUCCESS_ATTRIBUTE_NAME,"");}
+        else{request.setAttribute(LPPlatform.SERVLETS_REPONSE_SUCCESS_ATTRIBUTE_NAME, jsonObj.toString());}
+        servetInvokeResponseSuccessServlet(request, response);
+    }    
     public static final void servletReturnResponseErrorLPFalseDiagnostic(HttpServletRequest request, HttpServletResponse response, Object[] LPFalseObject){       
         JSONObject errJSONMsg = LPFrontEnd.responseJSONDiagnosticLPFalse(LPFalseObject);
         request.setAttribute(LPPlatform.SERVLETS_REPONSE_ERROR_ATTRIBUTE_NAME, errJSONMsg.toString());        
