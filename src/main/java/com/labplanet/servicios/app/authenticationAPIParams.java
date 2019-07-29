@@ -23,17 +23,7 @@ public class authenticationAPIParams extends HttpServlet {
     public static final String API_ENDPOINT_FINAL_TOKEN = "FINALTOKEN";
     public static final String API_ENDPOINT_AUTHENTICATE = "AUTHENTICATE";
     public static final String API_ENDPOINT_TOKEN_VALIDATE_ESIGN_PHRASE = "TOKEN_VALIDATE_ESIGN_PHRASE";
-    
-    public static final String REQUEST_PARAM_DB_USERNAME = "dbUserName";
-    public static final String REQUEST_PARAM_MY_TOKEN = "myToken";
-    public static final String REQUEST_PARAM_PASSWORD_TO_CHECK = "passwordToCheck";
-    public static final String REQUEST_PARAM_DB_PASSWORD = "dbUserPassword";
-    public static final String REQUEST_PARAM_ESIGN_TO_CHECK = "esignPhraseToCheck";
-    public static final String REQUEST_PARAM_USER_ROLE = "userRole";
-    public static final String REQUEST_PARAM_ACTION_NAME = "actionName";
-    public static final String REQUEST_PARAM_USER_TO_CHECK = "userToCheck";
-    public static final String REQUEST_PARAM_USER_INFO = "userInfoId";
-    
+        
     public static final String RESPONSE_JSON_TAG_USER_INFO_ID = "userInfoId";
     public static final String RESPONSE_JSON_TAG_FINAL_TOKEN = "finalToken";
     public static final String RESPONSE_JSON_TAG_MY_TOKEN = "myToken";

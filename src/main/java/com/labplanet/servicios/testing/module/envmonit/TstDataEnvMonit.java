@@ -9,8 +9,6 @@ import LabPLANET.utilities.LPArray;
 import LabPLANET.utilities.LPFrontEnd;
 import LabPLANET.utilities.LPHttp;
 import LabPLANET.utilities.LPPlatform;
-import static com.labplanet.servicios.ModuleSample.sampleAPI.ERRORMSG_ERROR_STATUS_CODE;
-import static com.labplanet.servicios.ModuleSample.sampleAPI.ERRORMSG_MANDATORY_PARAMS_MISSING;
 import databases.Rdbms;
 import databases.Token;
 import functionalJava.environmentalMonitoring.DataProgramSample;
@@ -56,8 +54,8 @@ public class TstDataEnvMonit extends HttpServlet {
                 
         Object[] areMandatoryParamsInResponse = LPHttp.areMandatoryParamsInApiRequest(request, mandatoryParams);
         if (LPPlatform.LAB_FALSE.equalsIgnoreCase(areMandatoryParamsInResponse[0].toString())){
-            errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
-            errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_MANDATORY_PARAMS_MISSING+": "+areMandatoryParamsInResponse[1].toString());                    
+            errObject = LPArray.addValueToArray1D(errObject, "ERRORMSG_ERROR_STATUS_CODE"+": "+HttpServletResponse.SC_BAD_REQUEST);
+            errObject = LPArray.addValueToArray1D(errObject, "ERRORMSG_MANDATORY_PARAMS_MISSING"+": "+areMandatoryParamsInResponse[1].toString());                    
             Object[] errMsg =  LPFrontEnd.responseError(errObject, language, areMandatoryParamsInResponse[1].toString());
             response.sendError((int) errMsg[0], (String) errMsg[1]);                
             return ;                
@@ -79,7 +77,8 @@ public class TstDataEnvMonit extends HttpServlet {
 //        String appSessionStartedDate = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, Token.TOKEN_PARAM_APP_SESSION_STARTED_DATE)];       
         String eSign = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, Token.TOKEN_PARAM_USER_ESIGN)];            
         if (LPPlatform.LAB_FALSE.equalsIgnoreCase(dbUserName)){
-                errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
+            errObject = LPArray.addValueToArray1D(errObject, "ERRORMSG_ERROR_STATUS_CODE"+": "+HttpServletResponse.SC_BAD_REQUEST);
+
                 errObject = LPArray.addValueToArray1D(errObject, "API Error Message: The token is not valid");                    
                 Object[] errMsg =  LPFrontEnd.responseError(errObject, language, areMandatoryParamsInResponse[1].toString());
                 response.sendError((int) errMsg[0], (String) errMsg[1]);                
@@ -100,8 +99,9 @@ public class TstDataEnvMonit extends HttpServlet {
         if (mandatoryParams!=null){
             areMandatoryParamsInResponse = LPHttp.areMandatoryParamsInApiRequest(request, mandatoryParams);
             if (LPPlatform.LAB_FALSE.equalsIgnoreCase(areMandatoryParamsInResponse[0].toString())){
-                errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
-                errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_MANDATORY_PARAMS_MISSING+": "+
+            errObject = LPArray.addValueToArray1D(errObject, "ERRORMSG_ERROR_STATUS_CODE"+": "+HttpServletResponse.SC_BAD_REQUEST);
+
+                errObject = LPArray.addValueToArray1D(errObject, "ERRORMSG_MANDATORY_PARAMS_MISSING"+": "+
                         areMandatoryParamsInResponse[1].toString());                    
                 Object[] errMsg =  LPFrontEnd.responseError(errObject, language, areMandatoryParamsInResponse[1].toString());
                 response.sendError((int) errMsg[0], (String) errMsg[1]);                
@@ -113,7 +113,8 @@ public class TstDataEnvMonit extends HttpServlet {
             String userToVerify = request.getParameter("userToVerify");                   
             String passwordToVerify = request.getParameter("passwordToVerify");    
             if ( (!userToVerify.equalsIgnoreCase(dbUserName)) || (!passwordToVerify.equalsIgnoreCase(dbUserPassword)) ){
-                errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
+            errObject = LPArray.addValueToArray1D(errObject, "ERRORMSG_ERROR_STATUS_CODE"+": "+HttpServletResponse.SC_BAD_REQUEST);
+
                 errObject = LPArray.addValueToArray1D(errObject, "API Error Message: User Verification returned error, the user or the password are not correct.");                    
                 Object[] errMsg = LPFrontEnd.responseError(errObject, language, "");
                 response.sendError((int) errMsg[0], (String) errMsg[1]);                
@@ -124,7 +125,8 @@ public class TstDataEnvMonit extends HttpServlet {
         if (LPPlatform.LAB_TRUE.equalsIgnoreCase(procActionRequiresEsignConfirmation[0].toString())){                                                      
             String eSignToVerify = request.getParameter("eSignToVerify");                   
             if (!eSignToVerify.equalsIgnoreCase(eSign)) {
-                errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
+            errObject = LPArray.addValueToArray1D(errObject, "ERRORMSG_ERROR_STATUS_CODE"+": "+HttpServletResponse.SC_BAD_REQUEST);
+
                 errObject = LPArray.addValueToArray1D(errObject, "API Error Message: eSign Verification returned error, the value is not correct.");                    
                 Object[] errMsg = LPFrontEnd.responseError(errObject, language, "");
                 response.sendError((int) errMsg[0], (String) errMsg[1]);                
@@ -136,7 +138,8 @@ public class TstDataEnvMonit extends HttpServlet {
         
         isConnected = Rdbms.getRdbms().startRdbms(dbUserName, dbUserPassword);
         if (!isConnected){
-            errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
+            errObject = LPArray.addValueToArray1D(errObject, "ERRORMSG_ERROR_STATUS_CODE"+": "+HttpServletResponse.SC_BAD_REQUEST);
+
             errObject = LPArray.addValueToArray1D(errObject, "API Error Message: db User Name and Password not correct, connection to the database is not possible");                    
             Object[] errMsg = LPFrontEnd.responseError(errObject, language, "");
             response.sendError((int) errMsg[0], (String) errMsg[1]);   
@@ -187,8 +190,9 @@ public class TstDataEnvMonit extends HttpServlet {
                     mandatoryParamsAction = LPArray.addValueToArray1D(mandatoryParams, PARAMETER_PROGRAM_SAMPLE_TEMPLATE_VERSION);                    
                     areMandatoryParamsInResponse = LPHttp.areMandatoryParamsInApiRequest(request, mandatoryParamsAction);
                     if (LPPlatform.LAB_FALSE.equalsIgnoreCase(areMandatoryParamsInResponse[0].toString())){
-                        errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
-                        errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_MANDATORY_PARAMS_MISSING+": "+areMandatoryParamsInResponse[1].toString());                    
+            errObject = LPArray.addValueToArray1D(errObject, "ERRORMSG_ERROR_STATUS_CODE"+": "+HttpServletResponse.SC_BAD_REQUEST);
+
+                        errObject = LPArray.addValueToArray1D(errObject, "ERRORMSG_MANDATORY_PARAMS_MISSING"+": "+areMandatoryParamsInResponse[1].toString());                    
                         Object[] errMsg = LPFrontEnd.responseError(errObject, language, areMandatoryParamsInResponse[1].toString());
                         response.sendError((int) errMsg[0], (String) errMsg[1]);    
                         Rdbms.closeRdbms(); 
@@ -217,7 +221,8 @@ public class TstDataEnvMonit extends HttpServlet {
                     break;
                 default:      
                     //errObject = frontEnd.APIHandler.actionNotRecognized(errObject, actionName, response);
-                    errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
+            errObject = LPArray.addValueToArray1D(errObject, "ERRORMSG_ERROR_STATUS_CODE"+": "+HttpServletResponse.SC_BAD_REQUEST);
+
                     errObject = LPArray.addValueToArray1D(errObject, "API Error Message: actionName "+actionName+ " not recognized as an action by this API");                                                            
                     Object[] errMsg = LPFrontEnd.responseError(errObject, language, schemaPrefix);
                     response.sendError((int) errMsg[0], (String) errMsg[1]);    

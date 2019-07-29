@@ -9,6 +9,7 @@ import databases.Rdbms;
 import functionalJava.analysis.UserMethod;
 import _functionalJava.project.DataProject;
 import LabPLANET.utilities.LPArray;
+import LabPLANET.utilities.LPFrontEnd;
 import LabPLANET.utilities.LPNulls;
 import functionalJava.testingScripts.LPTestingOutFormat;
 import java.io.File;
@@ -49,8 +50,8 @@ public class projectStructure extends HttpServlet {
             response.setContentType("text/html;charset=UTF-8");
             UserMethod um = new UserMethod();
 
-        if (Rdbms.getRdbms().startRdbms("labplanet", "avecesllegaelmomento")==null){out.println("Connection to the database not established");return;}
-
+            if (!LPFrontEnd.servletStablishDBConection(request, response)){return;} 
+            
             String csvFileName = "dataProjectStructure.txt"; String csvFileSeparator=";";
             String csvPathName = "\\\\FRANCLOUD\\fran\\LabPlanet\\testingRepository\\"+csvFileName; 
  

@@ -82,16 +82,7 @@ public class AppProcedureListAPI extends HttpServlet {
             String internalUserID = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, Token.TOKEN_PARAM_INTERNAL_USERID)];         
             String userRole = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, Token.TOKEN_PARAM_USER_ROLE)];                     
                         
-            //if (Rdbms.getRdbms().startRdbms(dbUserName, dbUserPassword)==null){                
-            Boolean isConnected = Rdbms.getRdbms().startRdbms(dbUserName, dbUserPassword);                
-            if (!isConnected){
-                errObject = LPArray.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
-                errObject = LPArray.addValueToArray1D(errObject, "API Error Message: db User Name and Password not correct, connection to the database is not possible");                    
-                Object[] errMsg = LPFrontEnd.responseError(errObject, language, null);
-                response.sendError((int) errMsg[0], errMsg[1].toString());    
-                Rdbms.closeRdbms(); 
-                return ;               
-            }               
+           if (!LPFrontEnd.servletStablishDBConection(request, response)){return;}               
          
             String rolName = userRole;
             UserProfile usProf = new UserProfile();
@@ -104,15 +95,14 @@ public class AppProcedureListAPI extends HttpServlet {
                 return;
             }
             String[] procFldNameArray = PROC_FLD_NAME.split("\\|");
-            String[] procEventFldNameArray = PROC_EVENT_FLD_NAME.split("\\|");
-            
+            String[] procEventFldNameArray = PROC_EVENT_FLD_NAME.split("\\|");            
 
             JSONArray procedures = new JSONArray();     
             for (Object curProc: allUserProcedurePrefix){
                 JSONObject procedure = new JSONObject();
                 String schemaName=LPPlatform.buildSchemaName(curProc.toString(), LPPlatform.SCHEMA_CONFIG);
 
-                Rdbms.getRdbms().startRdbms(dbUserName, dbUserPassword);
+                if (!LPFrontEnd.servletStablishDBConection(request, response)){return;}           
 
                 Object[][] procInfo = Rdbms.getRecordFieldsByFilter(schemaName, "procedure_info", 
                         new String[]{"name is not null"}, null, procFldNameArray);
@@ -120,7 +110,7 @@ public class AppProcedureListAPI extends HttpServlet {
                     procedure = LPJson.convertArrayRowToJSONObject(procFldNameArray, procInfo[0]);
                     procedure.put(LABEL_PROC_SCHEMA, curProc);
 
-                    Rdbms.getRdbms().startRdbms(dbUserName, dbUserPassword);
+                    if (!LPFrontEnd.servletStablishDBConection(request, response)){return;}           
                     Object[][] procEvent = Rdbms.getRecordFieldsByFilter(curProc.toString()+"-config", "procedure_events", 
                             new String[]{"role_name"}, new String[]{rolName}, 
                             procEventFldNameArray, new String[]{"branch_level", "order_number"});
@@ -150,10 +140,8 @@ public class AppProcedureListAPI extends HttpServlet {
             //Object[][] procArray2d = LPArray.array1dTo2d(procArray, procFldNameArray.length);              
             JSONObject proceduresList = new JSONObject();
             proceduresList.put(LABEL_ARRAY_PROCEDURES, procedures);
-            Rdbms.closeRdbms();
-            response.getWriter().write(proceduresList.toString());
-            Response.ok().build();
-            return;
+            LPFrontEnd.servletReturnSuccess(request, response, proceduresList);
+            return;  
         }
     }
     

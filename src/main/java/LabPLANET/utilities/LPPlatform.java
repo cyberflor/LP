@@ -20,7 +20,6 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
 import org.json.simple.JSONObject;
-import org.json.simple.JSONArray;
 
 //import org.codehaus.jettison.json.JSONObject;
 //import org.codehaus.jettison.json.JSONException;
@@ -52,6 +51,9 @@ public class LPPlatform {
     public static final String API_ERRORTRAPING_PROPERTY_DATABASE_NOT_CONNECTED= "databaseConnectivityError";
     public static final String API_ERRORTRAPING__MANDATORY_PARAMS_MISSING="missingManatoryParametersInRequest";
     public static final String API_ERRORTRAPING_PROPERTY_ENDPOINT_NOT_FOUND = "endPointNotFound";
+    public static final String API_ERRORTRAPING_INVALID_TOKEN = "invalidToken";
+    public static final String API_ERRORTRAPING_INVALID_USER_VERIFICATION = "invalidUserVerification";
+    public static final String API_ERRORTRAPING_INVALID_ESIGN = "invalidEsign";
 
     public static final String SERVLETS_REPONSE_SUCCESS_SERVLET_NAME="/responseSuccess";
     public static final String SERVLETS_REPONSE_SUCCESS_ATTRIBUTE_NAME="response";

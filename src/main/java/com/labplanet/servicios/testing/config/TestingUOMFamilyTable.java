@@ -9,6 +9,7 @@ import LabPLANET.utilities.LPPlatform;
 import databases.Rdbms;
 import functionalJava.unitsOfMeasurement.UnitsOfMeasurement;
 import LabPLANET.utilities.LPArray;
+import LabPLANET.utilities.LPFrontEnd;
 import functionalJava.testingScripts.LPTestingOutFormat;
 import functionalJava.testingScripts.TestingAssert;
 import functionalJava.testingScripts.TestingAssertSummary;
@@ -46,8 +47,8 @@ public class TestingUOMFamilyTable extends HttpServlet {
         Object[][] csvFileContent = LPArray.convertCSVinArray(csvPathName, csvFileSeparator); 
 
         String fileContent = LPTestingOutFormat.getHtmlStyleHeader(this.getClass().getSimpleName());
-
-        if (Rdbms.getRdbms().startRdbms("labplanet", "avecesllegaelmomento")==null){fileContent=fileContent+"Connection to the database not established";return;}
+        
+        if (!LPFrontEnd.servletStablishDBConection(request, response)){return;}   
         
         try (PrintWriter out = response.getWriter()) {
             HashMap<String, Object> csvHeaderTags = LPTestingOutFormat.getCSVHeader(LPArray.convertCSVinArray(csvPathName, "="));

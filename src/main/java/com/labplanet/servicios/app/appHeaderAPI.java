@@ -80,13 +80,8 @@ public class appHeaderAPI extends HttpServlet {
                     if ( personFieldsName!=null){
                         String[] personFieldsNameArr = personFieldsName.split("\\|");
                         
-                        if (!Rdbms.getRdbms().startRdbms(dbUserName, dbUserPassword)) {
-                                        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);           
-                                        errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+"Connection not established");                        
-                                        out.println(Arrays.toString(errObject));   
-                                        Rdbms.closeRdbms();    
-                                        return;                
-                        }
+                        if (!LPFrontEnd.servletStablishDBConection(request, response)){return;}   
+        
                         Object[][] personInfoArr = Rdbms.getRecordFieldsByFilter("config", "person", 
                              new String[]{"person_id"}, new String[]{internalUserID}, personFieldsNameArr);             
                         if ("LABPLANET_FALSE".equals(personInfoArr[0][0].toString())){                                                                                                                                                   
@@ -99,10 +94,8 @@ public class appHeaderAPI extends HttpServlet {
                             personInfoJsonObj.put(personFieldsNameArr[iFields], personInfoArr[0][iFields]);
                         }
                     }             
-                    response.getWriter().write(personInfoJsonObj.toString());                                                                                                                           
-                    Rdbms.closeRdbms();
-                    Response.ok().build();                     
-                    return;
+                    LPFrontEnd.servletReturnSuccess(request, response, personInfoJsonObj);
+                    return;  
                 default:      
                     errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
                     errObject = LPArray.addValueToArray1D(errObject, "API Error Message: actionName "+actionName+ " not recognized as an action by this API");                                        

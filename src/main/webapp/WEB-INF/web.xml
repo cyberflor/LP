@@ -144,6 +144,14 @@
         <servlet-name>authenticationAPIParams</servlet-name>
         <servlet-class>com.labplanet.servicios.app.authenticationAPIParams</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>globalAPIsParams</servlet-name>
+        <servlet-class>com.labplanet.servicios.app.globalAPIsParams</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>sampleAPIParams</servlet-name>
+        <servlet-class>com.labplanet.servicios.ModuleSample.sampleAPIParams</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>DBActions</servlet-name>
         <url-pattern>/testing/platform/DBActions</url-pattern>
@@ -276,12 +284,16 @@
         <url-pattern>/responseSuccess</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>requestMandatoryParameters</servlet-name>
-        <url-pattern>/requestMandatoryParameters</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
         <servlet-name>authenticationAPIParams</servlet-name>
         <url-pattern>/authenticationAPIParams</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>globalAPIsParams</servlet-name>
+        <url-pattern>/globalAPIsParams</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>sampleAPIParams</servlet-name>
+        <url-pattern>/sampleAPIParams</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

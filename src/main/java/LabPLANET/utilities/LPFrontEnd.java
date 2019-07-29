@@ -6,6 +6,7 @@
 package LabPLANET.utilities;
 
 import com.labplanet.servicios.app.authenticationAPIParams;
+import com.labplanet.servicios.app.globalAPIsParams;
 import databases.Rdbms;
 import functionalJava.parameter.Parameter;
 import functionalJava.testingScripts.LPTestingOutFormat;
@@ -16,6 +17,7 @@ import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
@@ -29,6 +31,48 @@ public class LPFrontEnd {
     public static final String RESPONSE_JSON_TAG_DIAGNOSTIC= "diagnostic"; 
     //public static final String RESPONSE_JSON_TAG_ERROR_MESSAGE= "error_value"; 
     
+
+    
+    public static String setLanguage(HttpServletRequest request){
+        String language = request.getParameter(LPPlatform.REQUEST_PARAM_LANGUAGE);
+        if (language == null){language = LPPlatform.REQUEST_PARAM_LANGUAGE_DEFAULT_VALUE;}
+        return language;
+    }
+    
+    public static final Boolean servletStablishDBConection(HttpServletRequest request, HttpServletResponse response){
+        String dbUserName = request.getParameter(globalAPIsParams.REQUEST_PARAM_DB_USERNAME);                   
+        String dbUserPassword = request.getParameter(globalAPIsParams.REQUEST_PARAM_DB_PASSWORD);     
+
+        //isConnected = Rdbms.getRdbms().startRdbmsTomcat(dbUserName, dbUserPassword);
+        boolean isConnected = false;                               
+        isConnected = Rdbms.getRdbms().startRdbms(LPTestingOutFormat.TESTING_USER, LPTestingOutFormat.TESTING_PW);      
+        if (!isConnected){      
+            LPFrontEnd.servletReturnResponseError(request, response, 
+                    LPPlatform.API_ERRORTRAPING_PROPERTY_DATABASE_NOT_CONNECTED, null, null);                                                                
+        }  
+        return isConnected;
+    }
+    public static final Boolean servletUserToVerify(HttpServletRequest request, HttpServletResponse response, Object[] procActionRequiresUserConfirmation, String dbUserName, String dbUserPassword){    
+        if (LPPlatform.LAB_TRUE.equalsIgnoreCase(procActionRequiresUserConfirmation[0].toString())){    
+            String userToVerify = request.getParameter(globalAPIsParams.REQUEST_PARAM_USER_TO_CHECK);                   
+            String passwordToVerify = request.getParameter(globalAPIsParams.REQUEST_PARAM_PASSWORD_TO_CHECK);    
+            if ( (!userToVerify.equalsIgnoreCase(dbUserName)) || (!passwordToVerify.equalsIgnoreCase(dbUserPassword)) ){
+                servletReturnResponseError(request, response, LPPlatform.API_ERRORTRAPING_INVALID_USER_VERIFICATION, null, null);           
+                return false;                                
+            }            
+        }
+        return true;
+    }
+    public static final Boolean servletEsignToVerify(HttpServletRequest request, HttpServletResponse response, Object[] procActionRequiresEsignConfirmation, String eSign){    
+        if (LPPlatform.LAB_TRUE.equalsIgnoreCase(procActionRequiresEsignConfirmation[0].toString())){                                                      
+            String eSignToVerify = request.getParameter(globalAPIsParams.REQUEST_PARAM_ESIGN_TO_CHECK);                   
+            if (!eSignToVerify.equalsIgnoreCase(eSign)) {  
+                servletReturnResponseError(request, response, LPPlatform.API_ERRORTRAPING_INVALID_ESIGN, null, null);           
+                return false;                                
+            }            
+        }
+        return true;
+    }
     /**
      *
      * @param errorStructure
@@ -40,13 +84,6 @@ public class LPFrontEnd {
         responseObj = LPArray.addValueToArray1D(responseObj, errorStructure[errorStructure.length-1].toString());        
         return responseObj;
     }
-    
-    public static String setLanguage(HttpServletRequest request){
-        String language = request.getParameter(LPPlatform.REQUEST_PARAM_LANGUAGE);
-        if (language == null){language = LPPlatform.REQUEST_PARAM_LANGUAGE_DEFAULT_VALUE;}
-        return language;
-    }
-
     public static JSONObject responseJSONDiagnosticLPFalse(Object[] lpFalseStructure){
         JSONObject errJsObj = new JSONObject();
         errJsObj.put(RESPONSE_JSON_TAG_DIAGNOSTIC, lpFalseStructure[0]);
@@ -54,6 +91,13 @@ public class LPFrontEnd {
         errJsObj.put(PROPERTY_VALUE+"_en", lpFalseStructure[lpFalseStructure.length-1]);
         return errJsObj;
     }
+    public static JSONObject responseJSONDiagnosticLPTrue(Object[] lpTrueStructure){
+        JSONObject errJsObj = new JSONObject();
+        errJsObj.put(RESPONSE_JSON_TAG_DIAGNOSTIC, lpTrueStructure[0]);
+        errJsObj.put(PROPERTY_VALUE+"_es", lpTrueStructure[lpTrueStructure.length-1]);
+        errJsObj.put(PROPERTY_VALUE+"_en", lpTrueStructure[lpTrueStructure.length-1]);
+        return errJsObj;
+    }    
     public static JSONObject responseJSONError(String errorPropertyName, Object[] errorPropertyValue, String language){
         JSONObject errJsObj = new JSONObject();
         errJsObj.put(PROPERTY_NAME, errorPropertyName);
@@ -102,20 +146,7 @@ public class LPFrontEnd {
         }
         CLIENT_CODE_STACK_INDEX = i;
     }   
-    
-    public static final Boolean servletStablishDBConection(HttpServletRequest request, HttpServletResponse response){
-        String dbUserName = request.getParameter(authenticationAPIParams.REQUEST_PARAM_DB_USERNAME);                   
-        String dbUserPassword = request.getParameter(authenticationAPIParams.REQUEST_PARAM_DB_PASSWORD);     
-
-        //isConnected = Rdbms.getRdbms().startRdbmsTomcat(dbUserName, dbUserPassword);
-        boolean isConnected = false;                               
-        isConnected = Rdbms.getRdbms().startRdbms(LPTestingOutFormat.TESTING_USER, LPTestingOutFormat.TESTING_PW);      
-        if (!isConnected){      
-            LPFrontEnd.servletReturnResponseError(request, response, 
-                    LPPlatform.API_ERRORTRAPING_PROPERTY_DATABASE_NOT_CONNECTED, null, null);                                                                
-        }  
-        return isConnected;
-    }
+  
     
     private static void servetInvokeResponseErrorServlet(HttpServletRequest request, HttpServletResponse response){
         Rdbms.closeRdbms();      
@@ -141,14 +172,34 @@ public class LPFrontEnd {
         request.setAttribute(LPPlatform.SERVLETS_REPONSE_ERROR_ATTRIBUTE_NAME, errJSONMsg.toString());
         servetInvokeResponseErrorServlet(request, response);
     }
+    public static final void servletReturnSuccess(HttpServletRequest request, HttpServletResponse response){  
+        request.setAttribute(LPPlatform.SERVLETS_REPONSE_SUCCESS_ATTRIBUTE_NAME,"");
+        servetInvokeResponseSuccessServlet(request, response);
+    }    
+    public static final void servletReturnSuccess(HttpServletRequest request, HttpServletResponse response, String myStr){  
+        if (myStr==null){request.setAttribute(LPPlatform.SERVLETS_REPONSE_SUCCESS_ATTRIBUTE_NAME,"");}
+        else{request.setAttribute(LPPlatform.SERVLETS_REPONSE_SUCCESS_ATTRIBUTE_NAME, myStr);}
+        servetInvokeResponseSuccessServlet(request, response);
+    }       
     public static final void servletReturnSuccess(HttpServletRequest request, HttpServletResponse response, JSONObject jsonObj){  
         if (jsonObj==null){request.setAttribute(LPPlatform.SERVLETS_REPONSE_SUCCESS_ATTRIBUTE_NAME,"");}
         else{request.setAttribute(LPPlatform.SERVLETS_REPONSE_SUCCESS_ATTRIBUTE_NAME, jsonObj.toString());}
         servetInvokeResponseSuccessServlet(request, response);
-    }    
+    }   
+    public static final void servletReturnSuccess(HttpServletRequest request, HttpServletResponse response, JSONArray jsonArr){  
+        if (jsonArr==null){request.setAttribute(LPPlatform.SERVLETS_REPONSE_SUCCESS_ATTRIBUTE_NAME,"");}
+        else{request.setAttribute(LPPlatform.SERVLETS_REPONSE_SUCCESS_ATTRIBUTE_NAME, jsonArr.toString());}
+        servetInvokeResponseSuccessServlet(request, response);
+    }  
+    
     public static final void servletReturnResponseErrorLPFalseDiagnostic(HttpServletRequest request, HttpServletResponse response, Object[] LPFalseObject){       
         JSONObject errJSONMsg = LPFrontEnd.responseJSONDiagnosticLPFalse(LPFalseObject);
         request.setAttribute(LPPlatform.SERVLETS_REPONSE_ERROR_ATTRIBUTE_NAME, errJSONMsg.toString());        
         servetInvokeResponseErrorServlet(request, response);
-    }                    
+    }    
+    public static final void servletReturnResponseErrorLPTrueDiagnostic(HttpServletRequest request, HttpServletResponse response, Object[] LPTrueObject){       
+        JSONObject successJSONMsg = LPFrontEnd.responseJSONDiagnosticLPTrue(LPTrueObject);
+        request.setAttribute(LPPlatform.SERVLETS_REPONSE_ERROR_ATTRIBUTE_NAME, successJSONMsg.toString());        
+        servetInvokeResponseErrorServlet(request, response);
+    }      
 }

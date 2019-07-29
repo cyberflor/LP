@@ -5,6 +5,7 @@
  */
 package com.labplanet.servicios.testing.Platform;
 
+import LabPLANET.utilities.LPFrontEnd;
 import databases.Rdbms;
 import functionalJava.requirement.RequirementDeployment;
 import functionalJava.testingScripts.LPTestingOutFormat;
@@ -42,13 +43,8 @@ public class ProcedureDeployment extends HttpServlet {
         response=LPTestingOutFormat.responsePreparation(response);
         String fileContent = LPTestingOutFormat.getHtmlStyleHeader(this.getClass().getSimpleName());
         try (PrintWriter out = response.getWriter()) {
-                if (1==1)            {               out.println("Before connection to DB");            }
-            if (Rdbms.getRdbms().startRdbms(LPTestingOutFormat.TESTING_USER, LPTestingOutFormat.TESTING_PW)==null){fileContent=fileContent+"Connection to the database not established";out.println(fileContent);return;}
-            if (!Rdbms.getRdbms().startRdbms(LPTestingOutFormat.TESTING_USER, LPTestingOutFormat.TESTING_PW)){fileContent=fileContent+"Connection to the database not established";out.println(fileContent);return;}
-            
-            if (1==1)            {            out.println("connected to DB");            }
+             if (!LPFrontEnd.servletStablishDBConection(request, response)){return;}   
         
-
             RequirementDeployment reqDep = new RequirementDeployment();
         
             try {

@@ -7,6 +7,7 @@ package com.labplanet.servicios.testing.config;
 
 import functionalJava.testingScripts.LPTestingOutFormat;
 import LabPLANET.utilities.LPArray;
+import LabPLANET.utilities.LPFrontEnd;
 import functionalJava.sop.*;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -62,10 +63,8 @@ public class TestingConfigSop extends HttpServlet {
 //            String schemaDataName = "\"oil-pl1-data\"";
 //            HttpSession miSession = request.getSession(false);         
             
-            //DBTransac dbObj = null;          
-            if (Rdbms.getRdbms().startRdbms("labplanet", "avecesllegaelmomento")==null){
-                fileContent = fileContent + "<th>Error connecting to the database</th>";
-            }
+            if (!LPFrontEnd.servletStablishDBConection(request, response)){return;}   
+        
             String currentUser = "labplanet";
             Integer sopId = 1;
             

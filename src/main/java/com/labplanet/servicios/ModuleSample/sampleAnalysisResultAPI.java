@@ -121,16 +121,8 @@ public class sampleAnalysisResultAPI extends HttpServlet {
             }
         }
         
-        boolean isConnected = false;
-        isConnected = Rdbms.getRdbms().startRdbms(dbUserName, dbUserPassword);
-        if (!isConnected){
-            errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
-            errObject = LPArray.addValueToArray1D(errObject, "API Error Message: db User Name and Password not correct, connection to the database is not possible");                    
-            Object[] errMsg = LPFrontEnd.responseError(errObject, language, schemaPrefix);
-            response.sendError((int) errMsg[0], (String) errMsg[1]);   
-            Rdbms.closeRdbms(); 
-            return ;               
-        }        
+        if (!LPFrontEnd.servletStablishDBConection(request, response)){return;}   
+        
         Connection con = Rdbms.createTransactionWithSavePoint();
         if (con==null){
              response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "The Transaction cannot be created, the action should be aborted");

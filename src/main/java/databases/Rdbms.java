@@ -31,6 +31,7 @@ import javax.sql.DataSource;
 import java.sql.Types;
 import java.util.HashMap;
 import java.util.Properties;
+import org.json.simple.JSONObject;
 
 /**
  *
@@ -371,6 +372,10 @@ public class Rdbms {
      * @param fieldsSortBy
      * @return
      */
+    public static String getRecordFieldsByFilterJSONString(String schemaName, String tableName, String[] whereFieldNames, Object[] whereFieldValues, String[] fieldsToRetrieve, String[] fieldsSortBy){
+        // Falta implementar que devuelva JSON
+        return "";
+    }
     public static String getRecordFieldsByFilterJSON(String schemaName, String tableName, String[] whereFieldNames, Object[] whereFieldValues, String[] fieldsToRetrieve, String[] fieldsSortBy){
         String[] errorDetailVariables = new String[0];        
         schemaName = LPPlatform.buildSchemaName(schemaName, "");

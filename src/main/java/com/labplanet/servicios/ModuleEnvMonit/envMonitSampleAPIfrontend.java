@@ -72,16 +72,7 @@ public class envMonitSampleAPIfrontend extends HttpServlet {
 //            String internalUserID = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, Token.TOKEN_PARAM_INTERNAL_USERID)];         
 //            String userRole = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, Token.TOKEN_PARAM_USER_ROLE)];                     
 
-            boolean isConnected = false;
-            isConnected = Rdbms.getRdbms().startRdbms(dbUserName, dbUserPassword);
-            if (!isConnected){
-                Rdbms.closeRdbms();                
-                errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
-                errObject = LPArray.addValueToArray1D(errObject, "API Error Message: db User Name and Password not correct, connection to the database is not possible");                    
-                Object[] errMsg = LPFrontEnd.responseError(errObject, language, null);
-                response.sendError((int) errMsg[0], (String) errMsg[1]);    
-                return ;               
-            }                
+            if (!LPFrontEnd.servletStablishDBConection(request, response)){return;}              
             
             switch (actionName.toUpperCase()){
                 case "UNRECEIVESAMPLES_LIST":

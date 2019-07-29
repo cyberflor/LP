@@ -75,16 +75,7 @@ public class envMonAPIfrontend extends HttpServlet {
 //            String internalUserID = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, Token.TOKEN_PARAM_INTERNAL_USERID)];         
 //            String userRole = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, Token.TOKEN_PARAM_USER_ROLE)];                     
 
-            boolean isConnected = false;
-            isConnected = Rdbms.getRdbms().startRdbms(dbUserName, dbUserPassword);
-            if (!isConnected){
-                Rdbms.closeRdbms();                
-                errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
-                errObject = LPArray.addValueToArray1D(errObject, "API Error Message: db User Name and Password not correct, connection to the database is not possible");                    
-                Object[] errMsg = LPFrontEnd.responseError(errObject, language, null);
-                response.sendError((int) errMsg[0], (String) errMsg[1]);    
-                return ;               
-            }            
+            if (!LPFrontEnd.servletStablishDBConection(request, response)){return;}
         
             switch (actionName.toUpperCase()){
                 case "xxx":
@@ -171,16 +162,7 @@ public class envMonAPIfrontend extends HttpServlet {
                                 programLocationFldNameArray, programLocationFldSortArray);
                         if (LPPlatform.LAB_FALSE.equalsIgnoreCase(programLocations[0][0].toString())){
 //                            programJsonObj.put("program_location_error", programLocations[0][programLocations[0].length-1]);        
-                            isConnected = false;
-                            isConnected = Rdbms.getRdbms().startRdbms(dbUserName, dbUserPassword);
-                            if (!isConnected){
-                                Rdbms.closeRdbms();                
-                                errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
-                                errObject = LPArray.addValueToArray1D(errObject, "API Error Message: db User Name and Password not correct, connection to the database is not possible");                    
-                                Object[] errMsg = LPFrontEnd.responseError(errObject, language, null);
-                                response.sendError((int) errMsg[0], (String) errMsg[1]);    
-                                return ;               
-                            }                               
+                            if (!LPFrontEnd.servletStablishDBConection(request, response)){return;}                           
                             programLocations = Rdbms.getRecordFieldsByFilter(schemaName, "program_location", 
                                                            new String[]{"program_name"}, new String[]{currProgram}, 
                                                            programLocationFldNameArray, programLocationFldSortArray);                            
@@ -301,11 +283,6 @@ public class envMonAPIfrontend extends HttpServlet {
                     RequestDispatcher rd = request.getRequestDispatcher("/frontEnd/sampleAPIfrontEnd");
                     rd.forward(request,response);   
                     return;
-/*                    errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
-                    errObject = LPArray.addValueToArray1D(errObject, "API Error Message: actionName "+actionName+ " not recognized as an action by this API");                                                            
-                    Object[] errMsg = LPFrontEnd.responseError(errObject, language, schemaPrefix);
-                    response.sendError((int) errMsg[0], (String) errMsg[1]);    
-                    Rdbms.closeRdbms();                         */
             }
             }catch(Exception e){      
                 Rdbms.closeRdbms();                   

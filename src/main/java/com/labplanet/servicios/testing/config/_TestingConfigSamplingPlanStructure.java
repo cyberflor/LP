@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import LabPLANET.utilities.LPArray;
+import LabPLANET.utilities.LPFrontEnd;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -42,17 +43,10 @@ public class _TestingConfigSamplingPlanStructure extends HttpServlet {
         try (PrintWriter out = response.getWriter()) {
             _ConfigSamplingPlanForSpec smpPlan = new _ConfigSamplingPlanForSpec();
 
-            //if (Rdbms.getRdbms().startRdbms("labplanet", "avecesllegaelmomento")==null){out.println("Connection to the database not established");return;}
+        if (!LPFrontEnd.servletStablishDBConection(request, response)){return;}           
             
-            if (Rdbms.getRdbms().startRdbms("labplanet", "avecesllegaelmomento")){
-                out.println("Connection to the database established with SUCCESS :) ");
-            }else{
-                out.println("Connection to the database NOT established :( ");
-                return;
-            }
-            
-            Object[] exRec =  Rdbms.existsRecord("app", "users", new String[]{"user_name"}, new Object[]{"labplanet"});
-            out.println("Exists record? " + Arrays.toString(exRec));
+        Object[] exRec =  Rdbms.existsRecord("app", "users", new String[]{"user_name"}, new Object[]{"labplanet"});
+        out.println("Exists record? " + Arrays.toString(exRec));
         
         String csvFileName = "dbActions.txt"; 
         TestingAssertSummary tstAssertSummary = new TestingAssertSummary();

@@ -73,18 +73,8 @@ public class sopUserAPI extends HttpServlet {
             String internalUserID = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, Token.TOKEN_PARAM_INTERNAL_USERID)];         
 //            String userRole = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, Token.TOKEN_PARAM_USER_ROLE)];                     
                         
-            boolean isConnected = false;
-            //isConnected = Rdbms.getRdbms().startRdbms(dbUserName, dbUserPassword);
-            isConnected = Rdbms.getRdbms().startRdbms(LPTestingOutFormat.TESTING_USER, LPTestingOutFormat.TESTING_PW);      
-            if (!isConnected){
-                errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
-                errObject = LPArray.addValueToArray1D(errObject, "API Error Message: db User Name and Password not correct, connection to the database is not possible");                    
-                Object[] errMsg = LPFrontEnd.responseError(errObject, language, null);
-                response.sendError((int) errMsg[0], (String) errMsg[1]);  
-                Rdbms.closeRdbms(); 
-                return ;               
-            }            
-        
+             if (!LPFrontEnd.servletStablishDBConection(request, response)){return;}   
+             
             String actionName = request.getParameter("actionName");
             if (actionName==null) {
                 errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
@@ -156,10 +146,7 @@ public class sopUserAPI extends HttpServlet {
                 //mySopsList.clear();
                 mySopsList.put("my_sops", mySops);
                 mySopsListArr.add(mySopsList);
-                 response.getWriter().write(mySopsListArr.toString());      
-                Rdbms.closeRdbms();                
-                Response.ok().build();
-
+                LPFrontEnd.servletReturnSuccess(request, response, mySopsListArr);
                 return;
             case "MY_PENDING_SOPS":    
                 usProf = new UserProfile();
@@ -208,9 +195,7 @@ public class sopUserAPI extends HttpServlet {
                         myPendingSopsByProc.add(mySopsList);
                     }
                 }                
-                Rdbms.closeRdbms();
-                response.getWriter().write(myPendingSopsByProc.toString());                    
-                Response.ok().build();
+                LPFrontEnd.servletReturnSuccess(request, response, myPendingSopsByProc);
                 return;
             case "PROCEDURE_SOPS":    
                 usProf = new UserProfile();
@@ -262,8 +247,7 @@ public class sopUserAPI extends HttpServlet {
                     myPendingSopsByProc.add(mySopsList);
                 }                
                 response.getWriter().write(myPendingSopsByProc.toString());                    
-                Rdbms.closeRdbms();
-                Response.ok().build();
+                LPFrontEnd.servletReturnSuccess(request, response, myPendingSopsByProc);
                 return;
             default:                
                 errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);

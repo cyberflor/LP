@@ -29,7 +29,6 @@ import functionalJava.user.Role;
 import functionalJava.user.UserProfile;
 import functionalJava.user.UserSecurity;
 import java.util.Date;
-import javax.servlet.RequestDispatcher;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 //import com.google.gson.Gson;
@@ -63,7 +62,7 @@ public class authenticationAPI extends HttpServlet {
                         LPPlatform.API_ERRORTRAPING__MANDATORY_PARAMS_MISSING, new Object[]{areMandatoryParamsInResponse[1].toString()}, language);              
                 return;          
             }                        
-            String actionName = request.getParameter(authenticationAPIParams.REQUEST_PARAM_ACTION_NAME);
+            String actionName = request.getParameter(globalAPIsParams.REQUEST_PARAM_ACTION_NAME);
                                     
             switch (actionName.toUpperCase()){
                 case authenticationAPIParams.API_ENDPOINT_AUTHENTICATE:                         
@@ -73,8 +72,8 @@ public class authenticationAPI extends HttpServlet {
                                 LPPlatform.API_ERRORTRAPING__MANDATORY_PARAMS_MISSING, new Object[]{areMandatoryParamsInResponse[1].toString()}, language);              
                         return;                                    
                     }     
-                    String dbUserName = request.getParameter(authenticationAPIParams.REQUEST_PARAM_DB_USERNAME);                   
-                    String dbUserPassword = request.getParameter(authenticationAPIParams.REQUEST_PARAM_DB_PASSWORD);  
+                    String dbUserName = request.getParameter(globalAPIsParams.REQUEST_PARAM_DB_USERNAME);                   
+                    String dbUserPassword = request.getParameter(globalAPIsParams.REQUEST_PARAM_DB_PASSWORD);  
                     
                     if (!LPFrontEnd.servletStablishDBConection(request, response)){return;}
                    
@@ -110,7 +109,7 @@ public class authenticationAPI extends HttpServlet {
                                 LPPlatform.API_ERRORTRAPING__MANDATORY_PARAMS_MISSING, new Object[] {areMandatoryParamsInResponse[1].toString()}, language);              
                         return;                          
                     }                                             
-                    String firstToken = request.getParameter(authenticationAPIParams.REQUEST_PARAM_MY_TOKEN);                   
+                    String firstToken = request.getParameter(globalAPIsParams.REQUEST_PARAM_MY_TOKEN);                   
                     
                     token = new Token();
                     String[] tokenParams = token.tokenParamsList();
@@ -119,8 +118,8 @@ public class authenticationAPI extends HttpServlet {
                     String userName = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, TOKEN_PARAM_USERDB)];
                     String password = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, TOKEN_PARAM_USERPW)];
                     internalUserStr = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, TOKEN_PARAM_INTERNAL_USERID)];                    
-                    dbUserPassword = request.getParameter(authenticationAPIParams.REQUEST_PARAM_DB_PASSWORD);      
-                    String userInfoId = request.getParameter(authenticationAPIParams.REQUEST_PARAM_USER_INFO);      
+                    dbUserPassword = request.getParameter(globalAPIsParams.REQUEST_PARAM_DB_PASSWORD);      
+                    String userInfoId = request.getParameter(globalAPIsParams.REQUEST_PARAM_USER_INFO);      
                     
                     if (!LPFrontEnd.servletStablishDBConection(request, response)){return;}             
                     
@@ -168,8 +167,8 @@ public class authenticationAPI extends HttpServlet {
                                 LPPlatform.API_ERRORTRAPING__MANDATORY_PARAMS_MISSING, new Object[] {areMandatoryParamsInResponse[1].toString()}, language);              
                         return;                                               
                     }                                                     
-                    firstToken = request.getParameter(authenticationAPIParams.REQUEST_PARAM_MY_TOKEN);                   
-                    String userRole = request.getParameter(authenticationAPIParams.REQUEST_PARAM_USER_ROLE);                      
+                    firstToken = request.getParameter(globalAPIsParams.REQUEST_PARAM_MY_TOKEN);                   
+                    String userRole = request.getParameter(globalAPIsParams.REQUEST_PARAM_USER_ROLE);                      
  if (1!=1){
      JSONObject obj = new JSONObject();
      obj.put(   authenticationAPIParams.RESPONSE_JSON_TAG_APP_SESSION_ID, "12");
@@ -233,8 +232,8 @@ if (1==1){
                                 LPPlatform.API_ERRORTRAPING__MANDATORY_PARAMS_MISSING, new Object[] {areMandatoryParamsInResponse[1].toString()}, language);  
                         return;                                                                                          
                     }                                               
-                    myToken = request.getParameter(authenticationAPIParams.REQUEST_PARAM_MY_TOKEN);                   
-                    String esignPhraseToCheck = request.getParameter(authenticationAPIParams.REQUEST_PARAM_ESIGN_TO_CHECK);                      
+                    myToken = request.getParameter(globalAPIsParams.REQUEST_PARAM_MY_TOKEN);                   
+                    String esignPhraseToCheck = request.getParameter(globalAPIsParams.REQUEST_PARAM_ESIGN_TO_CHECK);                      
 
                     token = new Token();
                     tokenParams = token.tokenParamsList();
@@ -242,7 +241,7 @@ if (1==1){
                     
                     String tokenEsign = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, TOKEN_PARAM_USER_ESIGN)];
                     if(esignPhraseToCheck.equals(tokenEsign)){   
-                        LPFrontEnd.servletReturnSuccess(request, response, null);
+                        LPFrontEnd.servletReturnSuccess(request, response);
                         return;                                             
                     }else{               
                         LPFrontEnd.servletReturnResponseError(request, response, authenticationAPIParams.ERROR_API_ERRORTRAPING_PROPERTY_ESIGN_TO_CHECK_INVALID, new Object[]{esignPhraseToCheck}, language);
@@ -256,9 +255,9 @@ if (1==1){
                                 LPPlatform.API_ERRORTRAPING__MANDATORY_PARAMS_MISSING, new Object[] {areMandatoryParamsInResponse[1].toString()}, language);
                         return;                                          
                     }                                                                                            
-                    myToken = request.getParameter(authenticationAPIParams.REQUEST_PARAM_MY_TOKEN);                   
-                    String userToCheck = request.getParameter(authenticationAPIParams.REQUEST_PARAM_USER_TO_CHECK);                      
-                    String passwordToCheck = request.getParameter(authenticationAPIParams.REQUEST_PARAM_PASSWORD_TO_CHECK);                      
+                    myToken = request.getParameter(globalAPIsParams.REQUEST_PARAM_MY_TOKEN);                   
+                    String userToCheck = request.getParameter(globalAPIsParams.REQUEST_PARAM_USER_TO_CHECK);                      
+                    String passwordToCheck = request.getParameter(globalAPIsParams.REQUEST_PARAM_PASSWORD_TO_CHECK);                      
                     
                     token = new Token();
                     tokenParams = token.tokenParamsList();
@@ -267,7 +266,7 @@ if (1==1){
                     String tokenUser = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, TOKEN_PARAM_USERDB)];
                     String tokenPassword = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, TOKEN_PARAM_USERPW)];
                     if ( (userToCheck.equals(tokenUser)) && (passwordToCheck.equals(tokenPassword)) ){
-                        LPFrontEnd.servletReturnSuccess(request, response, null);
+                        LPFrontEnd.servletReturnSuccess(request, response);
                         return;                                            
                     }else{                        
                         LPFrontEnd.servletReturnResponseError(request, response, authenticationAPIParams.ERROR_API_ERRORTRAPING_PROPERTY_USER_PASSWORD_TO_CHECK_INVALID, new Object[]{userToCheck}, language);              
@@ -277,14 +276,10 @@ if (1==1){
             }
         }catch(IOException | JWTCreationException e){            
             String exceptionMessage = e.getMessage();            
-            Object[] errMsg = LPFrontEnd.responseError(new String[]{exceptionMessage}, language, null);
-            //response.sendError((int) errMsg[0], (String) errMsg[1]);                                        
-            Rdbms.closeRdbms();        
+            LPFrontEnd.servletReturnResponseError(request, response, exceptionMessage, null, null);  
         }catch(@SuppressWarnings("FieldNameHidesFieldInSuperclass") Exception e){            
             String exceptionMessage = e.getMessage();     
-            Object[] errMsg = LPFrontEnd.responseError(new String[]{exceptionMessage}, language, null);
-            response.sendError((int) errMsg[0], (String) errMsg[1]);                                        
-            Rdbms.closeRdbms();                        
+            LPFrontEnd.servletReturnResponseError(request, response, exceptionMessage, null, null);                    
         }        
         
     }

@@ -6,6 +6,7 @@
 package com.labplanet.servicios;
 
 import LabPLANET.utilities.LPHttp;
+import LabPLANET.utilities.LPPlatform;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
@@ -32,7 +33,7 @@ public class responseSuccess extends HttpServlet {
         request=LPHttp.requestPreparation(request);
         response=LPHttp.responsePreparation(response);
         try (PrintWriter out = response.getWriter()) {
-            String responseMsg=(String) request.getAttribute("response");
+            String responseMsg=(String) request.getAttribute(LPPlatform.SERVLETS_REPONSE_SUCCESS_ATTRIBUTE_NAME);
             response.getWriter().write(responseMsg);
             Response.ok().build();    
         }

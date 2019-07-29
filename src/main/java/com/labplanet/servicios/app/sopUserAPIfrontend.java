@@ -73,17 +73,7 @@ public class sopUserAPIfrontend extends HttpServlet {
                 String internalUserID = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, Token.TOKEN_PARAM_INTERNAL_USERID)];         
 //                String userRole = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, Token.TOKEN_PARAM_USER_ROLE)];                     
 
-                boolean isConnected = false;
-                //isConnected = Rdbms.getRdbms().startRdbms(dbUserName, dbUserPassword);
-                isConnected = Rdbms.getRdbms().startRdbms(LPTestingOutFormat.TESTING_USER, LPTestingOutFormat.TESTING_PW); 
-                if (!isConnected){
-                    errObject = LPArray.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
-                    errObject = LPArray.addValueToArray1D(errObject, "API Error Message: db User Name and Password not correct, connection to the database is not possible");                    
-                    Object[] errMsg = LPFrontEnd.responseError(errObject, language, null);
-                    response.sendError((int) errMsg[0], (String) errMsg[1]);   
-                    Rdbms.closeRdbms(); 
-                    return ;               
-                }
+                if (!LPFrontEnd.servletStablishDBConection(request, response)){return;}   
                
                 UserProfile usProf = new UserProfile();
                 String[] allUserProcedurePrefix = LPArray.convertObjectArrayToStringArray(usProf.getAllUserProcedurePrefix(dbUserName));
@@ -147,12 +137,8 @@ public class sopUserAPIfrontend extends HttpServlet {
                     //SopElement.add(sopOption);
                     
                     JSONArray arrFinal = new JSONArray();
-                    arrFinal.add(sopElement);
-                    
-                    response.getWriter().write(arrFinal.toString());   
-                    Rdbms.closeRdbms(); 
-                    Response.ok().build();
-                    
+                    arrFinal.add(sopElement);                    
+                    LPFrontEnd.servletReturnSuccess(request, response, arrFinal);
         }
     }
 

@@ -54,9 +54,7 @@ public class DBActions extends HttpServlet {
         Object[][] csvFileContent = LPArray.convertCSVinArray(csvPathName, csvFileSeparator); 
                 
         try (PrintWriter out = response.getWriter()) {
-if (1==1)            {
-            out.println("Before connection to DB");
-            }            
+     
             String fileContent = LPTestingOutFormat.getHtmlStyleHeader(this.getClass().getSimpleName());
             HashMap<String, Object> csvHeaderTags = LPTestingOutFormat.getCSVHeader(LPArray.convertCSVinArray(csvPathName, "="));
             if (csvHeaderTags.containsKey(LPPlatform.LAB_FALSE)){
@@ -64,14 +62,8 @@ if (1==1)            {
                 out.println(fileContent); 
                 return;
             }            
-if (1==1)            {
-            out.println("Before connection to DB");
-            }
-            if (Rdbms.getRdbms().startRdbms(LPTestingOutFormat.TESTING_USER, LPTestingOutFormat.TESTING_PW)==null){fileContent=fileContent+"Connection to the database not established";out.println(fileContent);return;}
-            if (!Rdbms.getRdbms().startRdbms(LPTestingOutFormat.TESTING_USER, LPTestingOutFormat.TESTING_PW)){fileContent=fileContent+"Connection to the database not established";out.println(fileContent);return;}
-if (1==1)            {
-            out.println("connected to DB");
-            }
+            if (!LPFrontEnd.servletStablishDBConection(request, response)){return;}   
+        
                 
             Integer numEvaluationArguments = Integer.valueOf(csvHeaderTags.get(LPTestingOutFormat.FILEHEADER_NUM_EVALUATION_ARGUMENTS).toString());   
             Integer numHeaderLines = Integer.valueOf(csvHeaderTags.get(LPTestingOutFormat.FILEHEADER_NUM_HEADER_LINES_TAG_NAME).toString());   
