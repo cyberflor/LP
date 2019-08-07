@@ -47,7 +47,7 @@ public class DataProgram extends DataSample{
      * @throws InvocationTargetException
      * @throws SQLException
      */
-    public Object[] createProgramDev( String schemaPrefix, String sampleTemplate, Integer sampleTemplateVersion, String[] sampleFieldName, Object[] sampleFieldValue, String userName, String userRole) throws IllegalAccessException, InvocationTargetException, SQLException{
+    public Object[] createProgramDev( String schemaPrefix, String sampleTemplate, Integer sampleTemplateVersion, String[] sampleFieldName, Object[] sampleFieldValue, String userName, String userRole) throws IllegalAccessException, InvocationTargetException{
         return DataProgram.this.createProgram(schemaPrefix, sampleTemplate, sampleTemplateVersion, sampleFieldName, sampleFieldValue, userName, userRole, true);
     }
 
@@ -66,7 +66,7 @@ public class DataProgram extends DataSample{
      * @throws InvocationTargetException
      * @throws SQLException
      */
-    public Object[] createProgram( String schemaPrefix, String template, Integer templateVersion, String[] fieldName, Object[] fieldValue, String userName, String userRole) throws IllegalAccessException, InvocationTargetException, SQLException{
+    public Object[] createProgram( String schemaPrefix, String template, Integer templateVersion, String[] fieldName, Object[] fieldValue, String userName, String userRole) throws IllegalAccessException, InvocationTargetException{
         return DataProgram.this.createProgram(schemaPrefix, template, templateVersion, fieldName, fieldValue, userName, userRole, false);
     }
 
