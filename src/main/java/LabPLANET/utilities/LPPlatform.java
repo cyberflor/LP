@@ -61,9 +61,9 @@ public class LPPlatform {
 
     private static final String CONFIG_PROC_FILE_NAME = "-procedure";
     private static final String ENCRYPTION_KEY = "Bar12345Bar12345";
-    private static final String JAVADOC_CLASS_FLDNAME = "class";
+    public static final String JAVADOC_CLASS_FLDNAME = "class";
     private static final String JAVADOC_METHOD_FLDNAME = "method";
-    private static final String JAVADOC_LINE_FLDNAME = "line";
+    public static final String JAVADOC_LINE_FLDNAME = "line";
     
     
     private static final String JSON_TAG_ERROR_MSG_EVALUATION = "evaluation";

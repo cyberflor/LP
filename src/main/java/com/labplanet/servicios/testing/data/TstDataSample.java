@@ -19,12 +19,9 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.lang.reflect.InvocationTargetException;
 import java.sql.Date;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.script.Invocable;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
@@ -303,11 +300,7 @@ public class TstDataSample extends HttpServlet {
                         case "ENTERRESULT_LOD":
                             ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
                             try {
-                                try {
-                                    engine.eval(new FileReader("C:\\home\\judas\\myResult.js"));
-                                } catch (ScriptException ex) {
-                                    Logger.getLogger(TstDataSample.class.getName()).log(Level.SEVERE, null, ex);
-                                }
+                                engine.eval(new FileReader("C:\\home\\judas\\myResult.js"));
                                 Invocable invocable = (Invocable) engine;
                                 Object result;
                                 result = invocable.invokeFunction("lossOnDrying", 10, 7);
@@ -472,7 +465,7 @@ public class TstDataSample extends HttpServlet {
             Rdbms.closeRdbms();
             tstAssertSummary=null; 
         }
-        catch(IOException|IllegalArgumentException|InvocationTargetException error){
+        catch(IOException e){
             Rdbms.closeRdbms();
             tstAssertSummary=null; 
         }        

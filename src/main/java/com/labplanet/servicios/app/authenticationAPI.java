@@ -72,9 +72,8 @@ public class authenticationAPI extends HttpServlet {
                     String dbUserPassword = request.getParameter(globalAPIsParams.REQUEST_PARAM_DB_PSSWD);  
                     
                     if (!LPFrontEnd.servletStablishDBConection(request, response)){return;}
-                   
-                    Role rol = new Role();
-                    Object[][] internalUser = rol.getInternalUser(dbUserName);
+                                       
+                    Object[][] internalUser = Role.getInternalUser(dbUserName);
                     if (LPPlatform.LAB_FALSE.equalsIgnoreCase(internalUser[0][0].toString())){               
                         LPFrontEnd.servletReturnResponseError(request, response, authenticationAPIParams.ERROR_PROPERTY_PERSON_NOT_FOUND, null, language);              
                         return;                                                          

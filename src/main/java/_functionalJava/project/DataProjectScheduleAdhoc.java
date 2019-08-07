@@ -24,9 +24,9 @@ public class DataProjectScheduleAdhoc {
 
     String project;
     int scheduleId;
-    int schedule_size;
+    int scheduleSize;
     String itemsMeasurement; 
-    Date FirstDay;
+    Date firstDay;
     Date endDay;
 
     private static class DataProjectSchedule {
@@ -109,8 +109,8 @@ public class DataProjectScheduleAdhoc {
         //EnumUtils.isValidEnum(itemsMeasurementType.class, itemsMeasurement);
         Date endDayLocal = new Date();
         this.itemsMeasurement =itemsMeasurement;
-        this.schedule_size=scheduleSize;
-        this.FirstDay=startDay;
+        this.scheduleSize=scheduleSize;
+        this.firstDay=startDay;
         
         switch (itemsMeasurement.toUpperCase()){
             case "DAYS":
@@ -163,8 +163,8 @@ public class DataProjectScheduleAdhoc {
             this.project = (String) projectSchedInfo[0][i];
             this.scheduleId =(int) projectSchedInfo[0][i++];
             this.itemsMeasurement = (String) projectSchedInfo[0][i++];
-            this.schedule_size=(int) projectSchedInfo[0][i++];
-            this.FirstDay=(Date) projectSchedInfo[0][i++];
+            this.scheduleSize=(int) projectSchedInfo[0][i++];
+            this.firstDay=(Date) projectSchedInfo[0][i++];
             this.endDay=(Date) projectSchedInfo[0][i++];
             proj.add(aux);
         }    

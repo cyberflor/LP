@@ -11,7 +11,6 @@ import databases.DataDataIntegrity;
 import databases.Rdbms;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -51,7 +50,6 @@ public class DataProject extends DataSample{
      * @throws IllegalAccessException
      * @throws IllegalArgumentException
      * @throws InvocationTargetException
-     * @throws SQLException
      */
     public Object[] createProjectDev( String schemaPrefix, String sampleTemplate, Integer sampleTemplateVersion, String[] sampleFieldName, Object[] sampleFieldValue, String userName, String userRole) throws IllegalAccessException, InvocationTargetException{
         return createProject(schemaPrefix, sampleTemplate, sampleTemplateVersion, sampleFieldName, sampleFieldValue, userName, userRole, true);
@@ -70,7 +68,6 @@ public class DataProject extends DataSample{
      * @throws IllegalAccessException
      * @throws IllegalArgumentException
      * @throws InvocationTargetException
-     * @throws SQLException
      */
     public Object[] createProject( String schemaPrefix, String sampleTemplate, Integer sampleTemplateVersion, String[] sampleFieldName, Object[] sampleFieldValue, String userName, String userRole) throws IllegalAccessException, InvocationTargetException{
         return createProject(schemaPrefix, sampleTemplate, sampleTemplateVersion, sampleFieldName, sampleFieldValue, userName, userRole, false);
@@ -88,10 +85,10 @@ Object[] createProject( String schemaPrefix, String projectTemplate, Integer pro
 
     if (devMode==true){
         StackTraceElement[] elementsDev = Thread.currentThread().getStackTrace();
-        javaDocLineNameProj = "BEGIN";
-        javaDocFieldsProj = LPArray.addValueToArray1D(javaDocFieldsProj, "line_name");
+        javaDocLineNameProj = "BEGIN"; 
+        javaDocFieldsProj = LPArray.addValueToArray1D(javaDocFieldsProj, LPPlatform.JAVADOC_LINE_FLDNAME);
         javaDocValuesProj = LPArray.addValueToArray1D(javaDocValuesProj, javaDocLineNameProj);
-        javaDocFieldsProj = LPArray.addValueToArray1D(javaDocFieldsProj, "class_version");
+        javaDocFieldsProj = LPArray.addValueToArray1D(javaDocFieldsProj, LPPlatform.JAVADOC_CLASS_FLDNAME);
         javaDocValuesProj = LPArray.addValueToArray1D(javaDocValuesProj, classVersionProj);
         LPPlatform.addJavaClassDoc(javaDocFieldsProj, javaDocValuesProj, elementsDev);
     }    
@@ -111,9 +108,9 @@ Object[] createProject( String schemaPrefix, String projectTemplate, Integer pro
     if (devMode==true){
         StackTraceElement[] elementsDev = Thread.currentThread().getStackTrace();
         javaDocLineNameProj = "CHECK sampleFieldName and sampleFieldValue match in length";
-        javaDocFieldsProj = LPArray.addValueToArray1D(javaDocFieldsProj, "line_name");
+        javaDocFieldsProj = LPArray.addValueToArray1D(javaDocFieldsProj, LPPlatform.JAVADOC_LINE_FLDNAME);
         javaDocValuesProj = LPArray.addValueToArray1D(javaDocValuesProj, javaDocLineNameProj);
-        javaDocFieldsProj = LPArray.addValueToArray1D(javaDocFieldsProj, "class_version");
+        javaDocFieldsProj = LPArray.addValueToArray1D(javaDocFieldsProj, LPPlatform.JAVADOC_CLASS_FLDNAME);
         javaDocValuesProj = LPArray.addValueToArray1D(javaDocValuesProj, classVersionProj);
         LPPlatform.addJavaClassDoc(javaDocFieldsProj, javaDocValuesProj, elementsDev);
     }    
@@ -133,9 +130,9 @@ Object[] createProject( String schemaPrefix, String projectTemplate, Integer pro
     if (devMode==true){
         StackTraceElement[] elementsDev = Thread.currentThread().getStackTrace();
         javaDocLineNameProj = "CHECK sampleFieldName and sampleFieldValue match in length";
-        javaDocFieldsProj = LPArray.addValueToArray1D(javaDocFieldsProj, "line_name");
+        javaDocFieldsProj = LPArray.addValueToArray1D(javaDocFieldsProj, LPPlatform.JAVADOC_LINE_FLDNAME);
         javaDocValuesProj = LPArray.addValueToArray1D(javaDocValuesProj, javaDocLineNameProj);
-        javaDocFieldsProj = LPArray.addValueToArray1D(javaDocFieldsProj, "class_version");
+        javaDocFieldsProj = LPArray.addValueToArray1D(javaDocFieldsProj, LPPlatform.JAVADOC_CLASS_FLDNAME);
         javaDocValuesProj = LPArray.addValueToArray1D(javaDocValuesProj, classVersionProj);
         LPPlatform.addJavaClassDoc(javaDocFieldsProj, javaDocValuesProj, elementsDev);
     }    
@@ -249,9 +246,9 @@ Object[] createProject( String schemaPrefix, String projectTemplate, Integer pro
     if (devMode==true){
         StackTraceElement[] elementsDev = Thread.currentThread().getStackTrace();
         javaDocLineNameProj = "END";
-        Integer specialFieldIndex = Arrays.asList(javaDocFieldsProj).indexOf("line_name");
+        Integer specialFieldIndex = Arrays.asList(javaDocFieldsProj).indexOf(LPPlatform.JAVADOC_LINE_FLDNAME);
         if (specialFieldIndex==-1){
-            javaDocFieldsProj = LPArray.addValueToArray1D(javaDocFieldsProj, "line_name");         javaDocValuesProj = LPArray.addValueToArray1D(javaDocValuesProj, javaDocLineNameProj);         
+            javaDocFieldsProj = LPArray.addValueToArray1D(javaDocFieldsProj, LPPlatform.JAVADOC_LINE_FLDNAME);         javaDocValuesProj = LPArray.addValueToArray1D(javaDocValuesProj, javaDocLineNameProj);         
         }else{    
             javaDocValuesProj[specialFieldIndex] = javaDocLineNameProj;             
         }

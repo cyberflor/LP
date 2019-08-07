@@ -30,6 +30,8 @@ public class ConfigSpecStructure {
     Object[] mandatoryFieldValue = new String[0];
     String mandatoryFieldsMissing = "";
     private static final String DIAGNOSES_SUCCESS = "SUCCESS";
+    private static final String DIAGNOSES_ERROR = "ERROR";
+    
 
     private String[] getSpecialFields(){
         String[] mySpecialFields = new String[6];
@@ -168,7 +170,6 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
      *
      * @param schemaPrefix
      * @return
-     * @throws SQLException
      */
     public String specialFieldCheckSpecLimitsVariationName(String schemaPrefix){ //, String schemaPrefix, String analysisList){                        
                 
@@ -330,7 +331,6 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
      * @param specFieldName
      * @param specFieldValue
      * @return
-     * @throws SQLException
      */
     public Object[] specUpdate( String schemaPrefix, String specCode, Integer specCodeVersion, String[] specFieldName, Object[] specFieldValue) {
         
@@ -360,13 +360,13 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
                 }
                 String[] parameters = new String[3];
                 parameters[0]=schemaConfigName;                parameters[1]=currFieldValue;                parameters[2]=specCode;
-                Object specialFunctionReturn = "ERROR";
+                Object specialFunctionReturn = DIAGNOSES_ERROR;
                 try {                        
                     if (method!=null){ specialFunctionReturn = method.invoke(this, (Object[]) parameters);}
                 } catch (IllegalAccessException | NullPointerException | IllegalArgumentException | InvocationTargetException ex) {
                     Logger.getLogger(ConfigSpecStructure.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                if ( (specialFunctionReturn.toString().contains("ERROR")) ){
+                if ( (specialFunctionReturn.toString().contains(DIAGNOSES_ERROR)) ){
                     errorCode = "DataSample_SpecialFunctionReturnedERROR";
                     errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, currField);
                     errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, aMethod);
@@ -470,9 +470,9 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
                     parameters[0]=schemaConfigName;
                     parameters[1]=currFieldValue;
                     parameters[2]=newCode;
-                    Object specialFunctionReturn = "ERROR";
+                    Object specialFunctionReturn = DIAGNOSES_ERROR;
                     if (method!=null){ specialFunctionReturn = method.invoke(this, (Object[]) parameters); }     
-                    if (specialFunctionReturn.toString().contains("ERROR")){
+                    if (specialFunctionReturn.toString().contains(DIAGNOSES_ERROR)){
                         errorCode = "DataSample_SpecialFunctionReturnedERROR";
                         errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, currField);
                         errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, aMethod);
@@ -659,9 +659,9 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
                     Logger.getLogger(ConfigSpecStructure.class.getName()).log(Level.SEVERE, null, ex);
                 }                        
                 try {                    
-                    Object specialFunctionReturn = "ERROR";
+                    Object specialFunctionReturn = DIAGNOSES_ERROR;
                     if (method!=null){ specialFunctionReturn = method.invoke(this, schemaName); }
-                    if (specialFunctionReturn.toString().contains("ERROR")){
+                    if (specialFunctionReturn.toString().contains(DIAGNOSES_ERROR)){
                         errorCode = "DataSample_SpecialFunctionReturnedERROR";
                         errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, currField);
                         errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, aMethod);

@@ -209,11 +209,7 @@ public class sampleAnalysisAPI extends HttpServlet {
                     objectIdStr = request.getParameter("testId");
                     testId = Integer.parseInt(objectIdStr);     
                     String newAnalyst = request.getParameter("newAnalyst");
-                    try {
-                        dataSample = smp.sampleAnalysisAssignAnalyst(schemaPrefix, token.getPersonName(), testId, newAnalyst, token.getUserRole());
-                    } catch (IllegalArgumentException ex) {
-                        Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
-                    }
+                    dataSample = smp.sampleAnalysisAssignAnalyst(schemaPrefix, token.getPersonName(), testId, newAnalyst, token.getUserRole());
                     break;                      
                 default:      
                     LPFrontEnd.servletReturnResponseError(request, response, LPPlatform.API_ERRORTRAPING_PROPERTY_ENDPOINT_NOT_FOUND, new Object[]{actionName, this.getServletName()}, language);              

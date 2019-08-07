@@ -6,164 +6,21 @@
 package functionalJava.user;
 
 import databases.Rdbms;
-import java.sql.SQLException;
 import LabPLANET.utilities.LPPlatform;
 /**
  *
  * @author Administrator
  */
 public class Role {
-    String classVersion = "0.1";
 
-    private static final String DIAGNOSES_SUCCESS = "SUCCESS";
-    /**
-     *
-     * @param roleId
-     * @return
-     * @throws SQLException
-     */
-    public Object[] createRole( String roleId){        
-        Object[] diagnoses = new Object[7];
-        if (roleId.toUpperCase().contains("ALL")){            
-            StackTraceElement[] elements = Thread.currentThread().getStackTrace();
-            diagnoses[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
-            diagnoses[1]= classVersion;
-            diagnoses[2]= "Code Line " +(elements[1].getLineNumber());
-            diagnoses[3]=LPPlatform.LAB_FALSE;
-            diagnoses[4]="ERROR ALL IS SPECIAL WORD";
-            diagnoses[5]="The word ALL in roles is an special one, it means this privilege should be added to all the roles present in this procedure.";
-            return diagnoses;
-        }                
-        diagnoses = Rdbms.insertRecordInTable(LPPlatform.SCHEMA_CONFIG, "role", new String[]{"role_id", "active"}, new Object[]{roleId, true });
-           if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){	
-            StackTraceElement[] elements = Thread.currentThread().getStackTrace();
-            diagnoses[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
-            diagnoses[1]= classVersion;
-            diagnoses[2]= "Code Line " + (elements[1].getLineNumber());
-            diagnoses[3]="TRUE";
-            diagnoses[4]=DIAGNOSES_SUCCESS;
-            diagnoses[5]=" for role " + roleId + ". Success, The record is created.";
-            return diagnoses;            
-        }else{
-            StackTraceElement[] elements = Thread.currentThread().getStackTrace();
-            diagnoses[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
-            diagnoses[1]= classVersion;
-            diagnoses[2]= "Code Line " + (elements[1].getLineNumber());
-            diagnoses[3]=LPPlatform.LAB_FALSE;
-            diagnoses[4]="ERROR CREATING ROLE RECORD IN DB";
-            //diagnoses[5]=diagnoses[5];
-            return diagnoses;        
-        }
-    }    
     
     /**
      *
-     * @param privilegeId
-     * @param roleId
-     * @param procName
-     * @return
-     * @throws SQLException
-     */
-    public Object[] addPrivilegeToRole( String privilegeId, String roleId, String procName){
-        Integer id;      
-        Integer numRecords = 0;
-        String schemaConfigName = LPPlatform.SCHEMA_CONFIG;
-        Object[] diagnoses = new Object[7];
-
-//        ResultSet resRole = null;
-        String newRoleId = "";
-        Object[][] resRole = new Object[0][0];
-        
-        // ALL means assign the privilege to all the sopName present in this procedure.
-        if (roleId.toUpperCase().contains("ALL")){   
-            String tableName = "role";
-            
-            resRole = Rdbms.getRecordFieldsByFilter(procName, tableName, 
-                    new String[]{tableName+"_id like %"}, new Object[]{procName}, new String[]{tableName+"_id"});
-            numRecords = resRole.length;
-/*            String queryRoles = "SELECT " + tableName + "_id from config." + tableName + " where " + tableName + "_id like ?";  
-            procName = procName + "%";
-            resRole = Rdbms.prepRdQuery(queryRoles, new Object [] {procName});
-            resRole.last();
-            numRecords = resRole.getRow();
-            resRole.first();
-*/            
-//            newRoleId = resRole.getString("role_id");
-        }
-        else{
-            numRecords = 1;
-            newRoleId = roleId;
-        }
-        for (Integer inumRecords=0; inumRecords<numRecords; inumRecords++){
-            if (roleId.toUpperCase().contains("ALL")){newRoleId = resRole[inumRecords][0].toString();}
-            diagnoses = Rdbms.existsRecord(schemaConfigName, "role_privilege", 
-                    new String[]{"privilege_id"}, new Object[]{privilegeId + "," + roleId} );
-            if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){      
-                diagnoses = Rdbms.insertRecordInTable(LPPlatform.SCHEMA_CONFIG, "role_privilege", new String[]{"role_id", "privilege_id"}, new Object[]{newRoleId, privilegeId });
-                if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){
-                    StackTraceElement[] elements = Thread.currentThread().getStackTrace();
-                    diagnoses[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
-                    diagnoses[1]= classVersion;
-                    diagnoses[2]= "Code Line " + (elements[1].getLineNumber());
-                    diagnoses[3]="TRUE";
-                    diagnoses[4]=DIAGNOSES_SUCCESS;
-                    diagnoses[5]=" for role " + newRoleId + " and privilege " + privilegeId + ". The record created.";
-                    //return diagnoses;                                    
-                }else{
-                    StackTraceElement[] elements = Thread.currentThread().getStackTrace();
-                    diagnoses[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
-                    diagnoses[1]= classVersion;
-                    diagnoses[2]= "Code Line " + (elements[1].getLineNumber());
-                    diagnoses[3]=LPPlatform.LAB_FALSE;
-                    diagnoses[4]="ERROR ROLE_PRIVILEGE RECORD CANNOT BE CREATED";
-                    //diagnoses[5]=diagnoses[5];
-                    //return diagnoses;                
-                }                        
-            }               
-//            if (roleId.toUpperCase().contains("ALL")){resRole.next();}            
-        }    
-    return diagnoses;
-    }         
-
-    /**
-     *
-     * @param privilegeId
-     * @return
-     * @throws SQLException
-     */
-    public Object[] createPrivilege( String privilegeId){
-/*        String methodName = "createPrivilege";
-        Integer id;                
-*/        
-        Object[] diagnoses = new Object[7];
-        diagnoses = Rdbms.insertRecordInTable(LPPlatform.SCHEMA_CONFIG, "privilege", new String[]{"privilege_id"}, new Object[]{privilegeId});
-        if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){
-            StackTraceElement[] elements = Thread.currentThread().getStackTrace();
-            diagnoses[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
-            diagnoses[1]= classVersion;
-            diagnoses[2]= "Code Line " + (elements[1].getLineNumber());
-            diagnoses[3]="TRUE";
-            diagnoses[4]=DIAGNOSES_SUCCESS;
-            diagnoses[5]=" for privilege " + privilegeId + ". Success, The record created.";
-        }else{
-            StackTraceElement[] elements = Thread.currentThread().getStackTrace();
-            diagnoses[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
-            diagnoses[1]= classVersion;
-            diagnoses[2]= "Code Line " + (elements[1].getLineNumber());
-            diagnoses[3]=LPPlatform.LAB_FALSE;
-            diagnoses[4]="ERROR PRIVILEGE RECORD NOT CREATED";
-            //diagnoses[5]=diagnoses[5];
-        }
-        return diagnoses;
-    }   
-
-    /**
-     *
-     * @param dbUserName
+     * @param userName
      * @return
      */
-    public static final Object[][] getInternalUser( String dbUserName) {
-        return Rdbms.getRecordFieldsByFilter("app", "users", new String[]{"user_name"}, new Object[]{dbUserName},
+    public static final Object[][] getInternalUser( String userName) {
+        return Rdbms.getRecordFieldsByFilter(LPPlatform.SCHEMA_APP, "users", new String[]{"user_name"}, new Object[]{userName},
                 new String[]{"person_name"});        
     }
     

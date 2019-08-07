@@ -16,6 +16,12 @@ import java.math.BigDecimal;
 public class DataSpec {
     String classVersion = "0.1";
     
+    public static final String ERROR_TRAPPING_RESULT_CHECK_STRICT_DOES_NOT_ALLOW_EQUALS="DataSpec_resultCheck_StrictDoesNotAllowPairOfSameValue";
+    public static final String ERROR_TRAPPING_RESULT_CHECK_NULL_MANDATORY_FIELD="DataSpec_resultCheck_mandatoryFieldIsNull";
+    
+    
+    
+    
     public static final String EVALUATION_CODE_QUANTITATIVE_IN="DataSpec_resultCheck_quantitativeIn";
     public static final String EVALUATION_CODE_QUALITATIVE_IN="DataSpec_resultCheck_qualitativeIN";
     
@@ -61,7 +67,7 @@ public class DataSpec {
         ConfigSpecRule matQualit = new ConfigSpecRule();
         Object [] errorVariables = new Object[0];        
 
-        String errorCode = "DataSpec_resultCheck_mandatoryFieldIsNull";        
+        String errorCode = ERROR_TRAPPING_RESULT_CHECK_NULL_MANDATORY_FIELD;        
         if (result==null || "".equals(result)){
             errorVariables = LPArray.addValueToArray1D(errorVariables, "Result");
             Object[] diagnoses =  LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorVariables);
@@ -145,7 +151,7 @@ public class DataSpec {
 
             case "ISONEOF": 
                 if ((separator==null) || (separator.length()==0)){
-                    errorCode = "DataSpec_resultCheck_mandatoryFieldIsNull";
+                    errorCode = ERROR_TRAPPING_RESULT_CHECK_NULL_MANDATORY_FIELD;
                     errorVariables = LPArray.addValueToArray1D(errorVariables, "Separator");
                     Object[] diagnoses =  LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorVariables);
                     diagnoses = LPArray.addValueToArray1D(diagnoses, EVALUATION_WRONG_RULE);
@@ -170,7 +176,7 @@ public class DataSpec {
                 }
             case "ISNOTONEOF": 
                 if ((separator==null) || (separator.length()==0)){
-                    errorCode = "DataSpec_resultCheck_mandatoryFieldIsNull";
+                    errorCode = ERROR_TRAPPING_RESULT_CHECK_NULL_MANDATORY_FIELD;
                     errorVariables = LPArray.addValueToArray1D(errorVariables, "Separator");
                     Object[] diagnoses =  LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorVariables);
                     diagnoses = LPArray.addValueToArray1D(diagnoses, EVALUATION_WRONG_RULE);
@@ -216,7 +222,7 @@ public class DataSpec {
         Object[] errorVariables = new Object[0];        
         
         if (result==null){
-            String errorCode = "DataSpec_resultCheck_mandatoryFieldIsNull";
+            String errorCode = ERROR_TRAPPING_RESULT_CHECK_NULL_MANDATORY_FIELD;
             errorVariables = LPArray.addValueToArray1D(errorVariables, "Result");
             Object[] diagnoses =  LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorVariables);
             diagnoses = LPArray.addValueToArray1D(diagnoses, EVALUATION_WRONG_RULE);
@@ -293,7 +299,7 @@ public class DataSpec {
         Object [] errorVariables = new Object[0];        
         
         if (result==null){
-            String errorCode = "DataSpec_resultCheck_mandatoryFieldIsNull";
+            String errorCode = ERROR_TRAPPING_RESULT_CHECK_NULL_MANDATORY_FIELD;
             errorVariables = LPArray.addValueToArray1D(errorVariables, "Result");
             Object[] diagnoses =  LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorVariables);
             diagnoses = LPArray.addValueToArray1D(diagnoses, EVALUATION_WRONG_RULE);
@@ -353,7 +359,7 @@ public class DataSpec {
         Object [] errorVariables = new Object[0]; 
 
         if (result==null){
-                errorCode = "DataSpec_resultCheck_mandatoryFieldIsNull";
+                errorCode = ERROR_TRAPPING_RESULT_CHECK_NULL_MANDATORY_FIELD;
                 errorVariables = LPArray.addValueToArray1D(errorVariables, "Result");
                 Object[] diagnoses =  LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorVariables);
                 diagnoses = LPArray.addValueToArray1D(diagnoses, EVALUATION_WRONG_RULE);
@@ -373,7 +379,7 @@ public class DataSpec {
         if (minControl!=null){
             if (minControl.equals(minSpec)) {                
                 if (minStrict==false || minStrict==null){
-                    errorCode = "DataSpec_resultCheck_StrictDoesNotAllowPairOfSameValue";
+                    errorCode = ERROR_TRAPPING_RESULT_CHECK_STRICT_DOES_NOT_ALLOW_EQUALS;
                     errorVariables = LPArray.addValueToArray1D(errorVariables, "Min Spec and Min Control");                   
                     errorVariables = LPArray.addValueToArray1D(errorVariables, minSpec);
                     errorVariables = LPArray.addValueToArray1D(errorVariables, "Min Strict  is set to false.");                   
@@ -383,7 +389,7 @@ public class DataSpec {
                 }
 
                 if (minStrict==true && minControlStrict==true){
-                    errorCode = "DataSpec_resultCheck_StrictDoesNotAllowPairOfSameValue";
+                    errorCode = ERROR_TRAPPING_RESULT_CHECK_STRICT_DOES_NOT_ALLOW_EQUALS;
                     errorVariables = LPArray.addValueToArray1D(errorVariables, "Min Spec and Min Control");                   
                     errorVariables = LPArray.addValueToArray1D(errorVariables, minSpec);
                     errorVariables = LPArray.addValueToArray1D(errorVariables, "both, min Spec & Control Strict, set to true");                   
@@ -422,7 +428,7 @@ public class DataSpec {
         if (maxControl!=null){
             if (maxControl.equals(maxSpec)) {                
                 if (maxStrict==false || maxStrict==null){
-                    errorCode = "DataSpec_resultCheck_StrictDoesNotAllowPairOfSameValue";
+                    errorCode = ERROR_TRAPPING_RESULT_CHECK_STRICT_DOES_NOT_ALLOW_EQUALS;
                     errorVariables = LPArray.addValueToArray1D(errorVariables, "Max spec and control");                   
                     errorVariables = LPArray.addValueToArray1D(errorVariables, maxSpec);
                     errorVariables = LPArray.addValueToArray1D(errorVariables, "max Strict is set to false.");                   
@@ -432,7 +438,7 @@ public class DataSpec {
                 }
 
                 if (maxStrict==true && maxControlStrict==true){
-                    errorCode = "DataSpec_resultCheck_StrictDoesNotAllowPairOfSameValue";
+                    errorCode = ERROR_TRAPPING_RESULT_CHECK_STRICT_DOES_NOT_ALLOW_EQUALS;
                     errorVariables = LPArray.addValueToArray1D(errorVariables, "Max spec and control");                   
                     errorVariables = LPArray.addValueToArray1D(errorVariables, maxSpec);
                     errorVariables = LPArray.addValueToArray1D(errorVariables, "both, max Spec & Control Strict, set to true..");                   
@@ -491,7 +497,7 @@ public class DataSpec {
         Object [] errorVariables = new Object[0]; 
 
         if (result==null){
-                errorCode = "DataSpec_resultCheck_mandatoryFieldIsNull";
+                errorCode = ERROR_TRAPPING_RESULT_CHECK_NULL_MANDATORY_FIELD;
                 errorVariables = LPArray.addValueToArray1D(errorVariables, "Result");
                 Object[] diagnoses =  LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorVariables);
                 diagnoses = LPArray.addValueToArray1D(diagnoses, EVALUATION_WRONG_RULE);
@@ -511,7 +517,7 @@ public class DataSpec {
         if (minControl!=null){
             if (minControl.equals(minSpec)) {                
                 if (minStrict==false || minStrict==null){
-                    errorCode = "DataSpec_resultCheck_StrictDoesNotAllowPairOfSameValue";
+                    errorCode = ERROR_TRAPPING_RESULT_CHECK_STRICT_DOES_NOT_ALLOW_EQUALS;
                     errorVariables = LPArray.addValueToArray1D(errorVariables, "Min Spec and Min Control");                   
                     errorVariables = LPArray.addValueToArray1D(errorVariables, minSpec);
                     errorVariables = LPArray.addValueToArray1D(errorVariables, "Min Strict  is set to false.");                   
@@ -521,7 +527,7 @@ public class DataSpec {
                 }
 
                 if (minStrict==true && minControlStrict==true){
-                    errorCode = "DataSpec_resultCheck_StrictDoesNotAllowPairOfSameValue";
+                    errorCode = ERROR_TRAPPING_RESULT_CHECK_STRICT_DOES_NOT_ALLOW_EQUALS;
                     errorVariables = LPArray.addValueToArray1D(errorVariables, "Min Spec and Min Control");                   
                     errorVariables = LPArray.addValueToArray1D(errorVariables, minSpec);
                     errorVariables = LPArray.addValueToArray1D(errorVariables, "both, min Spec & Control Strict, set to true");                   
@@ -549,7 +555,7 @@ public class DataSpec {
             
             if (maxControl.equals(maxSpec)) {                
                 if (maxStrict==false || maxStrict==null){
-                    errorCode = "DataSpec_resultCheck_StrictDoesNotAllowPairOfSameValue";
+                    errorCode = ERROR_TRAPPING_RESULT_CHECK_STRICT_DOES_NOT_ALLOW_EQUALS;
                     errorVariables = LPArray.addValueToArray1D(errorVariables, "Max spec and control");                   
                     errorVariables = LPArray.addValueToArray1D(errorVariables, maxSpec);
                     errorVariables = LPArray.addValueToArray1D(errorVariables, "max Strict is set to false.");                   
@@ -559,7 +565,7 @@ public class DataSpec {
                 }
 
                 if (maxStrict==true && maxControlStrict==true){
-                    errorCode = "DataSpec_resultCheck_StrictDoesNotAllowPairOfSameValue";
+                    errorCode = ERROR_TRAPPING_RESULT_CHECK_STRICT_DOES_NOT_ALLOW_EQUALS;
                     errorVariables = LPArray.addValueToArray1D(errorVariables, "Max spec and control");                   
                     errorVariables = LPArray.addValueToArray1D(errorVariables, maxSpec);
                     errorVariables = LPArray.addValueToArray1D(errorVariables, "both, max Spec & Control Strict, set to true..");                   

@@ -23,10 +23,10 @@ import org.json.simple.JSONObject;
  */
 public class procedureDefinitionToInstance extends HttpServlet {
 
-    Boolean  PROC_DEPLOY_PROCEDURE_INFO=true;
-    Boolean  PROC_DEPLOY_PROCEDURE_USER_ROLES=true;
-    Boolean  PROC_DEPLOY_PROCEDURE_SOP_META_DATA=true;
-    Boolean  PROC_DEPLOY_ASSIGN_PROCEDURE_SOPS_TO_USERS=true;
+    private static final Boolean  PROC_DEPLOY_PROCEDURE_INFO=true;
+    private static final Boolean  PROC_DEPLOY_PROCEDURE_USER_ROLES=true;
+    private static final Boolean  PROC_DEPLOY_PROCEDURE_SOP_META_DATA=true;
+    private static final Boolean  PROC_DEPLOY_ASSIGN_PROCEDURE_SOPS_TO_USERS=true;
     
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.

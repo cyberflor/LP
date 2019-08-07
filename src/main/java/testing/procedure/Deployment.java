@@ -10,9 +10,6 @@ import databases.Rdbms;
 import functionalJava.requirement.RequirementDeployment;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -52,12 +49,8 @@ public class Deployment extends HttpServlet {
             RequirementDeployment reqDep = new RequirementDeployment();
             String procedure = "sampleA"; 
             Integer procVersion = 1;
-            try {                
-                String log = reqDep.procedureDeployment(procedure, procVersion);
-                out.println(log);
-            } catch (SQLException ex) {
-                Logger.getLogger(Deployment.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            String log = reqDep.procedureDeployment(procedure, procVersion);
+            out.println(log);
             Rdbms.closeRdbms();
         }    
     }

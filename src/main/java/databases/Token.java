@@ -25,8 +25,8 @@ import java.util.Map;
  * @author Administrator
  */
 public class Token {   
-    String KEY = "mi clave";
-    String ISSUER = "LabPLANETdestrangisInTheNight";
+    private static final String KEY = "mi clave";
+    private static final String ISSUER = "LabPLANETdestrangisInTheNight";
     
     private static final String TOKEN_PARAM_USERDB="userDB";
     private static final String TOKEN_PARAM_USERPW="userDBPassword";

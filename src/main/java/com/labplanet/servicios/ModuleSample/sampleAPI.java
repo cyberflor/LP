@@ -323,11 +323,8 @@ public class sampleAPI extends HttpServlet {
                     objectIdStr = request.getParameter(globalAPIsParams.REQUEST_PARAM_TEST_ID);
                     testId = Integer.parseInt(objectIdStr);     
                     String newAnalyst = request.getParameter(globalAPIsParams.REQUEST_PARAM_NEW_ANALYST);
-                    try {
-                        dataSample = smp.sampleAnalysisAssignAnalyst(schemaPrefix, token.getPersonName(), testId, newAnalyst, token.getUserRole());
-                    } catch (IllegalArgumentException ex) {
-                        Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
-                    }
+                    dataSample = smp.sampleAnalysisAssignAnalyst(schemaPrefix, token.getPersonName(), testId, newAnalyst, token.getUserRole());
+ 
                     break;                       
                 case sampleAPIParams.API_ENDPOINT_GETSAMPLEINFO:
                     areMandatoryParamsInResponse = LPHttp.areMandatoryParamsInApiRequest(request, sampleAPIParams.MANDATORY_PARAMS_GETSAMPLEINFO.split("\\|"));
@@ -421,13 +418,9 @@ public class sampleAPI extends HttpServlet {
                     fieldValues=null;
                     if (fieldName!=null) fieldNames = fieldName.split("\\|");                                            
                     if (fieldValue!=null) fieldValues = LPArray.convertStringWithDataTypeToObjectArray(fieldValue.split("\\|"));                                                                                
-                    try {
-                        dataSample = smp.logSampleAliquot(schemaPrefix, sampleId, 
+                    dataSample = smp.logSampleAliquot(schemaPrefix, sampleId, 
                                 // sampleTemplate, sampleTemplateVersion, 
                                 fieldNames, fieldValues, token.getPersonName(), token.getUserRole(), Integer.parseInt(token.getAppSessionId()));                                                                
-                    } catch (IllegalArgumentException ex) {
-                        Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
-                    }
                     break;                     
                 case sampleAPIParams.API_ENDPOINT_LOGSUBALIQUOT:
                     areMandatoryParamsInResponse = LPHttp.areMandatoryParamsInApiRequest(request, sampleAPIParams.MANDATORY_PARAMS_LOGSUBALIQUOT.split("\\|"));
@@ -449,13 +442,9 @@ public class sampleAPI extends HttpServlet {
                     fieldValues=null;
                     if (fieldName!=null) fieldNames =  fieldName.split("\\|");                                            
                     if (fieldValue!=null) fieldValues = LPArray.convertStringWithDataTypeToObjectArray(fieldValue.split("\\|"));                                                                                
-                    try {
-                        dataSample = smp.logSampleSubAliquot(schemaPrefix, aliquotId, 
+                    dataSample = smp.logSampleSubAliquot(schemaPrefix, aliquotId, 
                                 // sampleTemplate, sampleTemplateVersion, 
                                 fieldNames, fieldValues, token.getPersonName(), token.getUserRole(), Integer.parseInt(token.getAppSessionId()));                                                                
-                    } catch (IllegalArgumentException ex) {
-                        Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
-                    }
                     break;                                  
                 default:      
                     LPFrontEnd.servletReturnResponseError(request, response, LPPlatform.API_ERRORTRAPING_PROPERTY_ENDPOINT_NOT_FOUND, new Object[]{actionName, this.getServletName()}, language);              

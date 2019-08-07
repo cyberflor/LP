@@ -17,7 +17,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
-import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -171,7 +170,7 @@ public class projectStructure extends HttpServlet {
 
             Rdbms.closeRdbms();
 
-            }   catch (SQLException|IOException ex) {
+            }   catch (IOException ex) {
                     Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);   
 
             }        

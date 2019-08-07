@@ -15,8 +15,8 @@ import databases.Rdbms;
  */
 public class UserProfile {
     //String schemaDataName = "data";
-    String SCHEMANAMEAPP = LPPlatform.SCHEMA_APP;
-    String FIELDVALUE_ACTIVE="active";
+    private static final String SCHEMANAMEAPP = LPPlatform.SCHEMA_APP;
+    private static final String FIELDVALUE_ACTIVE="active";
     /**
      *
      * @param userInfoId

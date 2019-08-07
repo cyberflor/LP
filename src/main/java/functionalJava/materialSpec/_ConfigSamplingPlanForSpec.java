@@ -77,8 +77,8 @@ public class _ConfigSamplingPlanForSpec {
     if (devMode==true){
         StackTraceElement[] elementsDev = Thread.currentThread().getStackTrace();
         javaDocLineName = "BEGIN";
-        javaDocFields = LPArray.addValueToArray1D(javaDocFields, "line_name");         javaDocValues = LPArray.addValueToArray1D(javaDocValues, javaDocLineName);         
-        javaDocFields = LPArray.addValueToArray1D(javaDocFields, "class_version");         javaDocValues = LPArray.addValueToArray1D(javaDocValues, classVersion);         
+        javaDocFields = LPArray.addValueToArray1D(javaDocFields, LPPlatform.JAVADOC_LINE_FLDNAME);         javaDocValues = LPArray.addValueToArray1D(javaDocValues, javaDocLineName);         
+        javaDocFields = LPArray.addValueToArray1D(javaDocFields, LPPlatform.JAVADOC_CLASS_FLDNAME);         javaDocValues = LPArray.addValueToArray1D(javaDocValues, classVersion);         
         LPPlatform.addJavaClassDoc(javaDocFields, javaDocValues, elementsDev);
     }  
         String actionName = "Insert";
@@ -88,8 +88,8 @@ public class _ConfigSamplingPlanForSpec {
     if (devMode==true){
         StackTraceElement[] elementsDev = Thread.currentThread().getStackTrace();
         javaDocLineName = "CHECK fieldsName and fieldsValue match in length";
-        javaDocFields = LPArray.addValueToArray1D(javaDocFields, "line_name");         javaDocValues = LPArray.addValueToArray1D(javaDocValues, javaDocLineName);         
-        javaDocFields = LPArray.addValueToArray1D(javaDocFields, "class_version");         javaDocValues = LPArray.addValueToArray1D(javaDocValues, classVersion);         
+        javaDocFields = LPArray.addValueToArray1D(javaDocFields, LPPlatform.JAVADOC_LINE_FLDNAME);         javaDocValues = LPArray.addValueToArray1D(javaDocValues, javaDocLineName);         
+        javaDocFields = LPArray.addValueToArray1D(javaDocFields, LPPlatform.JAVADOC_CLASS_FLDNAME);         javaDocValues = LPArray.addValueToArray1D(javaDocValues, classVersion);         
         LPPlatform.addJavaClassDoc(javaDocFields, javaDocValues, elementsDev);
     }    
     if (devMode==false){
@@ -99,8 +99,8 @@ public class _ConfigSamplingPlanForSpec {
     if (devMode==true){
         StackTraceElement[] elementsDev = Thread.currentThread().getStackTrace();
         javaDocLineName = "CHECK MANDATORY FIELDS";
-        javaDocFields = LPArray.addValueToArray1D(javaDocFields, "line_name");         javaDocValues = LPArray.addValueToArray1D(javaDocValues, javaDocLineName);         
-        javaDocFields = LPArray.addValueToArray1D(javaDocFields, "class_version");         javaDocValues = LPArray.addValueToArray1D(javaDocValues, classVersion);         
+        javaDocFields = LPArray.addValueToArray1D(javaDocFields, LPPlatform.JAVADOC_LINE_FLDNAME);         javaDocValues = LPArray.addValueToArray1D(javaDocValues, javaDocLineName);         
+        javaDocFields = LPArray.addValueToArray1D(javaDocFields, LPPlatform.JAVADOC_CLASS_FLDNAME);         javaDocValues = LPArray.addValueToArray1D(javaDocValues, classVersion);         
         LPPlatform.addJavaClassDoc(javaDocFields, javaDocValues, elementsDev);
     }  
     if (devMode==false){
@@ -124,8 +124,8 @@ public class _ConfigSamplingPlanForSpec {
     if (devMode==true){
         StackTraceElement[] elementsDev = Thread.currentThread().getStackTrace();
         javaDocLineName = "CHECK CONFIG OBJECT EXISTS";
-        javaDocFields = LPArray.addValueToArray1D(javaDocFields, "line_name");         javaDocValues = LPArray.addValueToArray1D(javaDocValues, javaDocLineName);         
-        javaDocFields = LPArray.addValueToArray1D(javaDocFields, "class_version");         javaDocValues = LPArray.addValueToArray1D(javaDocValues, classVersion);         
+        javaDocFields = LPArray.addValueToArray1D(javaDocFields, LPPlatform.JAVADOC_LINE_FLDNAME);         javaDocValues = LPArray.addValueToArray1D(javaDocValues, javaDocLineName);         
+        javaDocFields = LPArray.addValueToArray1D(javaDocFields, LPPlatform.JAVADOC_CLASS_FLDNAME);         javaDocValues = LPArray.addValueToArray1D(javaDocValues, classVersion);         
         LPPlatform.addJavaClassDoc(javaDocFields, javaDocValues, elementsDev);
     } 
     if (devMode==false){
@@ -135,8 +135,8 @@ public class _ConfigSamplingPlanForSpec {
     if (devMode==true){
         StackTraceElement[] elementsDev = Thread.currentThread().getStackTrace();
         javaDocLineName = "CHECK SPECIAL FIELDS";
-        javaDocFields = LPArray.addValueToArray1D(javaDocFields, "line_name");         javaDocValues = LPArray.addValueToArray1D(javaDocValues, javaDocLineName);         
-        javaDocFields = LPArray.addValueToArray1D(javaDocFields, "class_version");         javaDocValues = LPArray.addValueToArray1D(javaDocValues, classVersion);         
+        javaDocFields = LPArray.addValueToArray1D(javaDocFields, LPPlatform.JAVADOC_LINE_FLDNAME);         javaDocValues = LPArray.addValueToArray1D(javaDocValues, javaDocLineName);         
+        javaDocFields = LPArray.addValueToArray1D(javaDocFields, LPPlatform.JAVADOC_CLASS_FLDNAME);         javaDocValues = LPArray.addValueToArray1D(javaDocValues, classVersion);         
         LPPlatform.addJavaClassDoc(javaDocFields, javaDocValues, elementsDev);
     }  
     if (devMode==false){
@@ -147,8 +147,8 @@ public class _ConfigSamplingPlanForSpec {
     if (devMode==true){
         StackTraceElement[] elementsDev = Thread.currentThread().getStackTrace();
         javaDocLineName = "INSERT RECORD IN PROJECT TABLE";
-        javaDocFields = LPArray.addValueToArray1D(javaDocFields, "line_name");         javaDocValues = LPArray.addValueToArray1D(javaDocValues, javaDocLineName);         
-        javaDocFields = LPArray.addValueToArray1D(javaDocFields, "class_version");         javaDocValues = LPArray.addValueToArray1D(javaDocValues, classVersion);         
+        javaDocFields = LPArray.addValueToArray1D(javaDocFields, LPPlatform.JAVADOC_LINE_FLDNAME);         javaDocValues = LPArray.addValueToArray1D(javaDocValues, javaDocLineName);         
+        javaDocFields = LPArray.addValueToArray1D(javaDocFields, LPPlatform.JAVADOC_CLASS_FLDNAME);         javaDocValues = LPArray.addValueToArray1D(javaDocValues, classVersion);         
         LPPlatform.addJavaClassDoc(javaDocFields, javaDocValues, elementsDev);
     }  
     if (devMode==false){
@@ -158,8 +158,8 @@ public class _ConfigSamplingPlanForSpec {
     if (devMode==true){
         StackTraceElement[] elementsDev = Thread.currentThread().getStackTrace();
         javaDocLineName = "END";
-        javaDocFields = LPArray.addValueToArray1D(javaDocFields, "line_name");         javaDocValues = LPArray.addValueToArray1D(javaDocValues, javaDocLineName);         
-        javaDocFields = LPArray.addValueToArray1D(javaDocFields, "class_version");         javaDocValues = LPArray.addValueToArray1D(javaDocValues, classVersion);         
+        javaDocFields = LPArray.addValueToArray1D(javaDocFields, LPPlatform.JAVADOC_LINE_FLDNAME);         javaDocValues = LPArray.addValueToArray1D(javaDocValues, javaDocLineName);         
+        javaDocFields = LPArray.addValueToArray1D(javaDocFields, LPPlatform.JAVADOC_CLASS_FLDNAME);         javaDocValues = LPArray.addValueToArray1D(javaDocValues, classVersion);         
         LPPlatform.addJavaClassDoc(javaDocFields, javaDocValues, elementsDev);
     }      
         return diagnoses;

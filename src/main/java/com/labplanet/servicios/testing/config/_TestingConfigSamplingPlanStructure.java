@@ -8,7 +8,6 @@ package com.labplanet.servicios.testing.config;
 import LabPLANET.utilities.LPNulls;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -117,11 +116,7 @@ out.println(Arrays.toString(configSamplingPlanTestingArray));
                         if (configSamplingPlanTestingArray[i][1]!=null){userName = (String) configSamplingPlanTestingArray[i][2];}
                         if (configSamplingPlanTestingArray[i][3]!=null){fieldName = (String[]) configSamplingPlanTestingArray[i][3];}              
                         if (configSamplingPlanTestingArray[i][4]!=null){fieldValue = (Object[]) configSamplingPlanTestingArray[i][4];}                         
-                        try {
-                            dataSample = smpPlan.newSamplingPlanDetailRecord(schemaPrefix, userName, userRole, fieldName, fieldValue);
-                        } catch (IllegalArgumentException ex) {
-                            Logger.getLogger(_TestingConfigSamplingPlanStructure.class.getName()).log(Level.SEVERE, null, ex);
-                        }
+                        dataSample = smpPlan.newSamplingPlanDetailRecord(schemaPrefix, userName, userRole, fieldName, fieldValue);
                         break;
                     default:                
                         break;
@@ -134,7 +129,7 @@ out.println(Arrays.toString(configSamplingPlanTestingArray));
             out.println("</body>");
             out.println("</html>");
             Rdbms.closeRdbms();
-        }   catch (SQLException|IOException ex) {
+        }   catch (IOException ex) {
                 Logger.getLogger(_TestingConfigSamplingPlanStructure.class.getName()).log(Level.SEVERE, null, ex);                           
         }                                            
     }

@@ -8,8 +8,6 @@ package functionalJava.user;
 import LabPLANET.utilities.LPPlatform;
 import databases.Rdbms;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.naming.NamingException;
 
 /**
@@ -32,7 +30,7 @@ public class UserSecurity {
      * @param newEsign
      * @return
      */
-    public Object[] setUserEsig( String user, String pass, String newEsign){
+    public Object[] _setUserEsigWithLabtimus( String user, String pass, String newEsign){
         
         Object[] diagnoses = new Object[2];
         diagnoses[0] = false;

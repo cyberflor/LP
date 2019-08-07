@@ -29,5 +29,6 @@ public class TestingAssertSummary {
         public Integer getTotalTests(){return this.totalTests;}
         
         public void notifyResults(){
+           // Aun no implementado, debe notificar de los resultados por correo
         }
 }

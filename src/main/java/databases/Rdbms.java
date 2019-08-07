@@ -16,7 +16,6 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.SQLFeatureNotSupportedException;
 import java.sql.Savepoint;
 import java.sql.Statement;
 import java.util.Arrays;
@@ -138,15 +137,11 @@ public class Rdbms {
             //rdbms.timeout = to;
             setTimeout(to);
 
-                  Context ctx = new InitialContext();
-                  DataSource ds = (DataSource)ctx.lookup(datasrc);
+            Context ctx = new InitialContext();
+            DataSource ds = (DataSource)ctx.lookup(datasrc);
 
-                    try {                        
-                        ds.setLoginTimeout(Rdbms.timeout);
-                        setConnection(ds.getConnection(user, pass));
-                    } catch (SQLException ex) {
-                        Logger.getLogger(Rdbms.class.getName()).log(Level.SEVERE, null, ex);                        
-                    }
+            ds.setLoginTimeout(Rdbms.timeout);
+            setConnection(ds.getConnection(user, pass));
 
     //              String url = prop.getString("dburl");
     //              Properties props = new Properties();
@@ -163,7 +158,7 @@ public class Rdbms {
                 setIsStarted(Boolean.FALSE);
                 return Boolean.FALSE;
               } 
-        } catch (NamingException ex) {
+        } catch (NamingException|SQLException ex) {
             Logger.getLogger(Rdbms.class.getName()).log(Level.SEVERE, null, ex);
             return Boolean.FALSE;
         }
