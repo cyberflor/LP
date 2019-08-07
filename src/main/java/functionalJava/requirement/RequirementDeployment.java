@@ -38,7 +38,7 @@ public class RequirementDeployment {
      * @throws IOException
      */
     @SuppressWarnings("ConvertToTryWithResources")
-    public String procedureDeployment ( String procedure, Integer pVersion) throws SQLException, IOException {    
+    public String procedureDeployment ( String procedure, Integer pVersion)  {    
         
         String schemaNamePrefix = "jonadavid-dev";
         
@@ -330,7 +330,7 @@ public class RequirementDeployment {
      * @return
      * @throws SQLException
      */
-    public Integer _createNavav(String nodeName,  String privilegeId, Integer fatherNode, Boolean hasChildren, String procedure, Integer version, String code, String sopName, String sopSection) throws SQLException   {            
+    public Integer _createNavav(String nodeName,  String privilegeId, Integer fatherNode, Boolean hasChildren, String procedure, Integer version, String code, String sopName, String sopSection)    {            
         StackTraceElement[] elements = Thread.currentThread().getStackTrace();
         String methodName = elements[1].getMethodName();
         String schemaConfigName = LPPlatform.SCHEMA_CONFIG; 
@@ -382,7 +382,7 @@ public class RequirementDeployment {
         return created;
     }
 
-    private Integer _createNavTab(String subtabname,  Integer navId, String glypname, String procName, Integer procVersion, String procCode, String sopName, String sopSection) throws SQLException     {
+    private Integer _createNavTab(String subtabname,  Integer navId, String glypname, String procName, Integer procVersion, String procCode, String sopName, String sopSection) {
         StackTraceElement[] elements = Thread.currentThread().getStackTrace();
         String methodName = elements[1].getMethodName();
         
@@ -523,7 +523,7 @@ public class RequirementDeployment {
      * @param procVersion
      * @throws SQLException
      */
-    public void _addProcRolesAndPrivilegesges( String procName, Integer procVersion) throws SQLException{
+    public void _addProcRolesAndPrivilegesges( String procName, Integer procVersion){
         String schemaConfigName = LPPlatform.SCHEMA_CONFIG; 
     
         String methodName = "addProcRolesAndPrivileges";
@@ -601,7 +601,7 @@ public class RequirementDeployment {
         }
     }     
 
-    private void _addSop( String procName, Integer procVersion, String schemaName) throws SQLException{
+    private void _addSop( String procName, Integer procVersion, String schemaName){
         String methodName = "addSop";
         Sop sop = new Sop();        
         String sopList = "";

@@ -174,7 +174,7 @@ public class LPJson {
  * @return - String[] - Contains the data in a json structure way.
  * @throws SQLException -
  */   
-    public static String [] _getJsonArrayFields(String table, String[] fields,String fieldPrefix) throws SQLException {
+    public static String [] _getJsonArrayFields(String table, String[] fields,String fieldPrefix) {
         return table.split("\\.");
     }
 

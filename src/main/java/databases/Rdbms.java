@@ -37,8 +37,8 @@ import java.util.Properties;
  * @author Administrator
  */
 public class Rdbms {
+    
     String errorCode = "";
-
     private static Connection conn = null;
     private static Boolean isStarted = false;
     private static Integer timeout;
@@ -51,6 +51,14 @@ public class Rdbms {
     private static final String SQLSELECT = "SELECT";
     public static final String TBL_NO_KEY="TABLE WITH NO KEY";
     public static final String TBL_KEY_NOT_FIRST_TABLEFLD="PRIMARY KEY NOT FIRST FIELD IN TABLE";
+    
+    public static final String ERROR_TRAPPING_RDBMS_DT_SQL_EXCEPTION="Rdbms_dtSQLException";
+    public static final String ERROR_TRAPPING_RDBMS_NOT_FILTER_SPECIFIED="Rdbms_NotFilterSpecified";
+    public static final String ERROR_TRAPPING_RDBMS_RECORD_NOT_FOUND="Rbdms_existsRecord_RecordNotFound";    
+    
+    
+    
+    
     
     private Rdbms() {}                
    
@@ -257,7 +265,7 @@ public class Rdbms {
                 errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, schemaName);
                 return LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, rdbms.errorCode, errorDetailVariables);                
             }else{
-                rdbms.errorCode = "Rbdms_existsRecord_RecordNotFound";
+                rdbms.errorCode = ERROR_TRAPPING_RDBMS_RECORD_NOT_FOUND;
                 errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, keyFieldValue.toString());
                 errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, tableName);
                 errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, schemaName);
@@ -286,7 +294,7 @@ public class Rdbms {
         Object[] filteredValues = new Object[0];
         
         if (keyFieldNames.length==0){
-           rdbms.errorCode = "Rdbms_NotFilterSpecified";
+           rdbms.errorCode = ERROR_TRAPPING_RDBMS_NOT_FILTER_SPECIFIED;
            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, tableName);
            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, schemaName);          
            return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, rdbms.errorCode, errorDetailVariables);                         
@@ -345,7 +353,7 @@ public class Rdbms {
                 errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, schemaName);
                 return LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, rdbms.errorCode, errorDetailVariables);                
             }else{
-                rdbms.errorCode = "Rbdms_existsRecord_RecordNotFound";
+                rdbms.errorCode = ERROR_TRAPPING_RDBMS_RECORD_NOT_FOUND;
                 errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, Arrays.toString(filteredValues));
                 errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, tableName);
                 errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, schemaName);
@@ -354,7 +362,7 @@ public class Rdbms {
         }catch (SQLException er) {
             String ermessage=er.getLocalizedMessage()+er.getCause();
             Logger.getLogger(query).log(Level.SEVERE, null, er);     
-            rdbms.errorCode = "Rdbms_dtSQLException";
+            rdbms.errorCode = ERROR_TRAPPING_RDBMS_DT_SQL_EXCEPTION;
             errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, ermessage);
             errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, query);
             return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, rdbms.errorCode, errorDetailVariables);                         
@@ -380,7 +388,7 @@ public class Rdbms {
         schemaName = LPPlatform.buildSchemaName(schemaName, "");
         
         if (whereFieldNames.length==0){
-           rdbms.errorCode = "Rdbms_NotFilterSpecified";
+           rdbms.errorCode = ERROR_TRAPPING_RDBMS_NOT_FILTER_SPECIFIED;
            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, tableName);
            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, schemaName);          
            LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, rdbms.errorCode, errorDetailVariables);                         
@@ -449,7 +457,7 @@ public class Rdbms {
         }catch (SQLException er) {
             String ermessage=er.getLocalizedMessage()+er.getCause();
             Logger.getLogger(query).log(Level.SEVERE, null, er);     
-            rdbms.errorCode = "Rdbms_dtSQLException";
+            rdbms.errorCode = ERROR_TRAPPING_RDBMS_DT_SQL_EXCEPTION;
             errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, ermessage);
             errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, query);
             LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, rdbms.errorCode, errorDetailVariables);                         
@@ -481,7 +489,7 @@ public class Rdbms {
         schemaName = LPPlatform.buildSchemaName(schemaName, "");
         
         if ( (whereFieldNames==null) || (whereFieldNames.length==0) ){
-           Rdbms.rdbms.errorCode = "Rdbms_NotFilterSpecified";
+           Rdbms.rdbms.errorCode = ERROR_TRAPPING_RDBMS_NOT_FILTER_SPECIFIED;
            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, tableName);
            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, schemaName);          
            Object[] diagnosesError = LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, Rdbms.rdbms.errorCode, errorDetailVariables);                         
@@ -528,7 +536,7 @@ public class Rdbms {
         }catch (SQLException er) {
             String ermessage=er.getLocalizedMessage()+er.getCause();
             Logger.getLogger(query).log(Level.SEVERE, null, er);     
-            rdbms.errorCode = "Rdbms_dtSQLException";
+            rdbms.errorCode = ERROR_TRAPPING_RDBMS_DT_SQL_EXCEPTION;
             errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, ermessage);
             errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, query);
             Object[] diagnosesError = LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, rdbms.errorCode, errorDetailVariables);                         
@@ -549,7 +557,7 @@ public class Rdbms {
         String[] errorDetailVariables = new String[0];        
         
         if (whereFieldNames.length==0){
-           rdbms.errorCode = "Rdbms_NotFilterSpecified";
+           rdbms.errorCode = ERROR_TRAPPING_RDBMS_NOT_FILTER_SPECIFIED;
            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, tableName);
            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, schemaName);          
            Object[] diagnosesError = LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, rdbms.errorCode, errorDetailVariables);                         
@@ -599,7 +607,7 @@ public class Rdbms {
                 diagnoses2 = LPArray.decryptTableFieldArray(schemaName, tableName[0], fieldsToRetrieve, diagnoses2);
                 return diagnoses2;
             }else{
-                rdbms.errorCode = "Rbdms_existsRecord_RecordNotFound";
+                rdbms.errorCode = ERROR_TRAPPING_RDBMS_RECORD_NOT_FOUND;
                 errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, Arrays.toString(whereFieldValues));
                 errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, tableName);
                 errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, schemaName);
@@ -609,7 +617,7 @@ public class Rdbms {
         }catch (SQLException er) {
             String ermessage=er.getLocalizedMessage()+er.getCause();
             Logger.getLogger(query).log(Level.SEVERE, null, er);     
-            rdbms.errorCode = "Rdbms_dtSQLException";
+            rdbms.errorCode = ERROR_TRAPPING_RDBMS_DT_SQL_EXCEPTION;
             errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, ermessage);
             errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, query);
             Object[] diagnosesError = LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, rdbms.errorCode, errorDetailVariables);                         
@@ -634,7 +642,7 @@ public class Rdbms {
         String[] errorDetailVariables = new String[0];        
         
         if (whereFieldNames.length==0){
-           rdbms.errorCode = "Rdbms_NotFilterSpecified";
+           rdbms.errorCode = ERROR_TRAPPING_RDBMS_NOT_FILTER_SPECIFIED;
            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, tableName);
            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, schemaName);          
            Object[] diagnosesError = LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, rdbms.errorCode, errorDetailVariables);                         
@@ -679,7 +687,7 @@ public class Rdbms {
         }catch (SQLException er) {
             String ermessage=er.getLocalizedMessage()+er.getCause();
             Logger.getLogger(query).log(Level.SEVERE, null, er);     
-            rdbms.errorCode = "Rdbms_dtSQLException";
+            rdbms.errorCode = ERROR_TRAPPING_RDBMS_DT_SQL_EXCEPTION;
             errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, ermessage);
             errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, query);
             Object[] diagnosesError = LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, rdbms.errorCode, errorDetailVariables);                         
@@ -700,7 +708,7 @@ public class Rdbms {
         String[] errorDetailVariables = new String[0];        
 
         if (fieldNames.length==0){
-           rdbms.errorCode = "Rdbms_NotFilterSpecified";
+           rdbms.errorCode = ERROR_TRAPPING_RDBMS_NOT_FILTER_SPECIFIED;
            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, tableName);
            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, schemaName);          
            return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, rdbms.errorCode, errorDetailVariables);                         
@@ -733,7 +741,7 @@ public class Rdbms {
         } catch (SQLException er) {
             String ermessage=er.getLocalizedMessage()+er.getCause();
             Logger.getLogger(query).log(Level.SEVERE, null, er);     
-            rdbms.errorCode = "Rdbms_dtSQLException";
+            rdbms.errorCode = ERROR_TRAPPING_RDBMS_DT_SQL_EXCEPTION;
             errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, ermessage);
             errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, query);
             return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, rdbms.errorCode, errorDetailVariables);                         
@@ -755,7 +763,7 @@ public class Rdbms {
         String[] errorDetailVariables = new String[0];        
        
         if (whereFieldNames.length==0){
-           rdbms.errorCode = "Rdbms_NotFilterSpecified";
+           rdbms.errorCode = ERROR_TRAPPING_RDBMS_NOT_FILTER_SPECIFIED;
            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, tableName);
            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, schemaName);          
            return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, rdbms.errorCode, errorDetailVariables);                         
@@ -778,7 +786,7 @@ public class Rdbms {
             errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, schemaName);     
             return LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, rdbms.errorCode, errorDetailVariables);   
         }else if(numr==-999){
-            rdbms.errorCode = "Rdbms_dtSQLException";
+            rdbms.errorCode = ERROR_TRAPPING_RDBMS_DT_SQL_EXCEPTION;
             String ermessage="The database cannot perform this sql statement: Schema: "+schemaName+". Table: "+tableName+". Query: "+query+", By the values "+ Arrays.toString(keyFieldValueNew);
             errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, ermessage);
             errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, query);
@@ -797,60 +805,64 @@ public class Rdbms {
      * @param consultaconinterrogaciones
      * @param valoresinterrogaciones
      * @return
-     * @throws SQLException
      */
-    public  static CachedRowSetImpl prepRdQuery(String consultaconinterrogaciones, Object [] valoresinterrogaciones) throws SQLException, NullPointerException{
-        CachedRowSetImpl crs =new CachedRowSetImpl();
+    public  static CachedRowSetImpl prepRdQuery(String consultaconinterrogaciones, Object [] valoresinterrogaciones) {
         try{
-        Object[] filteredValoresConInterrogaciones = new Object[0];     
-        PreparedStatement prepareStatement = conn.prepareStatement(consultaconinterrogaciones);
-            prepareStatement.setQueryTimeout(rdbms.getTimeout());
-            if (valoresinterrogaciones!=null){
-                for (Object curVal: valoresinterrogaciones){
-                    Boolean addToFilter = true;
-                    if ( (curVal.toString().equalsIgnoreCase("IN()")) || (curVal.toString().equalsIgnoreCase("IS NULL")) || (curVal.toString().equalsIgnoreCase("IS NOT NULL")) ){
-                        addToFilter=false;}
-                    if (addToFilter){
-                        filteredValoresConInterrogaciones = LPArray.addValueToArray1D(filteredValoresConInterrogaciones, curVal);}                    
+            CachedRowSetImpl crs =new CachedRowSetImpl();
+            try{
+                Object[] filteredValoresConInterrogaciones = new Object[0];
+                PreparedStatement prepareStatement = conn.prepareStatement(consultaconinterrogaciones);
+                prepareStatement.setQueryTimeout(rdbms.getTimeout());
+                if (valoresinterrogaciones!=null){
+                    for (Object curVal: valoresinterrogaciones){
+                        Boolean addToFilter = true;
+                        if ( (curVal.toString().equalsIgnoreCase("IN()")) || (curVal.toString().equalsIgnoreCase("IS NULL")) || (curVal.toString().equalsIgnoreCase("IS NOT NULL")) ){
+                            addToFilter=false;}                    
+                        if (addToFilter){
+                            filteredValoresConInterrogaciones = LPArray.addValueToArray1D(filteredValoresConInterrogaciones, curVal);}
+                    }
                 }
-            }                
-            buildPreparedStatement(filteredValoresConInterrogaciones, prepareStatement, null); 
-            ResultSet res = prepareStatement.executeQuery();
-            crs.populate(res);
-            return crs;             
-        }catch(SQLException er){
-            return crs;
+                buildPreparedStatement(filteredValoresConInterrogaciones, prepareStatement, null);
+                ResultSet res = prepareStatement.executeQuery();
+                crs.populate(res);
+                return crs;
+            }catch(SQLException er){
+                return crs;
+            }//finally{crs.close();conn.close();}
+        }catch(SQLException ex){
+            Logger.getLogger(Rdbms.class.getName()).log(Level.SEVERE, null, ex);
         }//finally{crs.close();conn.close();}
+        return null;
     }
   
 
     public static Integer prepUpQuery(String consultaconinterrogaciones, Object [] valoresinterrogaciones) {
         Integer reg;    
-        try {
-            reg = prepUpQuery(consultaconinterrogaciones, valoresinterrogaciones, null);
-            return reg;
-        } catch (SQLException ex) {
-            Logger.getLogger(Rdbms.class.getName()).log(Level.SEVERE, null, ex);
-            return -1;
-        }        
+        reg = prepUpQuery(consultaconinterrogaciones, valoresinterrogaciones, null);
+        return reg;        
     }
     
-    private static Integer prepUpQuery(String consultaconinterrogaciones, Object [] valoresinterrogaciones, Integer [] fieldtypes) throws SQLException{
-        PreparedStatement prep=getConnection().prepareStatement(consultaconinterrogaciones);
-
-        setTimeout(rdbms.getTimeout());
-
+    private static Integer prepUpQuery(String consultaconinterrogaciones, Object [] valoresinterrogaciones, Integer [] fieldtypes) {
         try{
-            if (valoresinterrogaciones != null){
-                buildPreparedStatement(valoresinterrogaciones, prep, fieldtypes); 
-            }            
-            return prep.executeUpdate();
-        }catch (SQLException er){
-            return -999;
+            PreparedStatement prep=getConnection().prepareStatement(consultaconinterrogaciones);
+            
+            setTimeout(rdbms.getTimeout());
+            
+            try{
+                if (valoresinterrogaciones != null){
+                    buildPreparedStatement(valoresinterrogaciones, prep, fieldtypes);
+                }
+                return prep.executeUpdate();
+            }catch (SQLException er){
+                return -999;
+            }//finally{            prep.close();        }
+        }catch (SQLException ex){
+            Logger.getLogger(Rdbms.class.getName()).log(Level.SEVERE, null, ex);
         }//finally{            prep.close();        }
+        return -999;
     }
     
-    private static String prepUpQueryK(String consultaconinterrogaciones, Object [] valoresinterrogaciones, Integer indexposition) throws SQLException, SQLFeatureNotSupportedException{
+    private static String prepUpQueryK(String consultaconinterrogaciones, Object [] valoresinterrogaciones, Integer indexposition) throws SQLException{
         String pkValue = "";
         PreparedStatement prep=getConnection().prepareStatement(consultaconinterrogaciones, Statement.RETURN_GENERATED_KEYS);            
         setTimeout(rdbms.getTimeout());
@@ -941,11 +953,11 @@ public class Rdbms {
                 clase = split[1];
                 switch(clase.toUpperCase()){
                     case "INTEGER":
-                        clase = "class java.sql.Date";
+                        clase = "class java.lang.Integer";
                         prepsta.setNull(indexval, Types.INTEGER);
                         break;
                     case "BIGDECIMAL":
-                        clase = "class java.sql.Date";
+                        clase = "class java.math.BigDecimal";
                         prepsta.setNull(indexval, Types.NUMERIC);
                         break;                        
                     case "DATE":
@@ -953,15 +965,15 @@ public class Rdbms {
                         prepsta.setNull(indexval, Types.DATE);
                         break;
                     case "STRING":
-                        clase = "class java.sql.Date";
+                        clase = "class Ljava.lang.String";
                         prepsta.setNull(indexval, Types.VARCHAR);
                         break;
                     case "BOOLEAN":
-                        clase = "class java.sql.Date";
+                        clase = "class java.lang.Boolean";
                         prepsta.setNull(indexval, Types.BOOLEAN);
                         break;
                     case "FLOAT":
-                        clase = "class java.sql.Date";
+                        clase = "class java.lang.Float";
                         prepsta.setNull(indexval, Types.FLOAT);
                         break;                        
                     default:
@@ -1031,7 +1043,7 @@ public class Rdbms {
         //Date de = new java.sql.Date(System.currentTimeMillis());        
         return getLocalDate();}    
     
-    private static CachedRowSetImpl readQuery(String consulta) throws SQLException, NullPointerException{
+    private static CachedRowSetImpl readQuery(String consulta) throws SQLException{
         Statement sta=null;
         
         try (CachedRowSetImpl crs = new CachedRowSetImpl()){

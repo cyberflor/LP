@@ -67,7 +67,7 @@ public class Sop {
      * @return
      * @throws SQLException
      */
-    public Object[] dbInsertSopId( String schemaPrefix, String userInfoId) throws SQLException{
+    public Object[] dbInsertSopId( String schemaPrefix, String userInfoId) {
          String schemaConfigName = LPPlatform.SCHEMA_CONFIG;
          schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, schemaConfigName);
 //        schemaPrefix = "\""+schemaPrefix+"\"";

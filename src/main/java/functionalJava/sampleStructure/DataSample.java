@@ -937,7 +937,7 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
      * @throws IllegalArgumentException
      * @throws InvocationTargetException
      */
-    public Object[] sampleAnalysisResultEntry( String schemaPrefix, String userName, Integer resultId, Object resultValue, String userRole) throws IllegalArgumentException, InvocationTargetException{
+    public Object[] sampleAnalysisResultEntry( String schemaPrefix, String userName, Integer resultId, Object resultValue, String userRole) {
 
     tableName = "sample_analysis_result";  
     String actionName = "Insert";

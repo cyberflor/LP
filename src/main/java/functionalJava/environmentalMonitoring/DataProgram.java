@@ -47,7 +47,7 @@ public class DataProgram extends DataSample{
      * @throws InvocationTargetException
      * @throws SQLException
      */
-    public Object[] createProgramDev( String schemaPrefix, String sampleTemplate, Integer sampleTemplateVersion, String[] sampleFieldName, Object[] sampleFieldValue, String userName, String userRole) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException{
+    public Object[] createProgramDev( String schemaPrefix, String sampleTemplate, Integer sampleTemplateVersion, String[] sampleFieldName, Object[] sampleFieldValue, String userName, String userRole) throws IllegalAccessException, InvocationTargetException, SQLException{
         return DataProgram.this.createProgram(schemaPrefix, sampleTemplate, sampleTemplateVersion, sampleFieldName, sampleFieldValue, userName, userRole, true);
     }
 
@@ -66,11 +66,11 @@ public class DataProgram extends DataSample{
      * @throws InvocationTargetException
      * @throws SQLException
      */
-    public Object[] createProgram( String schemaPrefix, String template, Integer templateVersion, String[] fieldName, Object[] fieldValue, String userName, String userRole) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException{
+    public Object[] createProgram( String schemaPrefix, String template, Integer templateVersion, String[] fieldName, Object[] fieldValue, String userName, String userRole) throws IllegalAccessException, InvocationTargetException, SQLException{
         return DataProgram.this.createProgram(schemaPrefix, template, templateVersion, fieldName, fieldValue, userName, userRole, false);
     }
 
-Object[] createProgram( String schemaPrefix, String projectTemplate, Integer projectTemplateVersion, String[] sampleFieldName, Object[] sampleFieldValue, String userName, String userRole, Boolean devMode) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException{
+Object[] createProgram( String schemaPrefix, String projectTemplate, Integer projectTemplateVersion, String[] sampleFieldName, Object[] sampleFieldValue, String userName, String userRole, Boolean devMode) throws IllegalAccessException, InvocationTargetException{
     String classVersionProj = "0.1";
     String[] mandatoryFieldsProj = null;
     Object[] mandatoryFieldsValueProj = null;

@@ -181,7 +181,7 @@ public class DataProjectScheduleAdhoc {
      * @throws SQLException
      */
     @SuppressWarnings("empty-statement")
-    public Object[] importHolidaysCalendarSchedule( String schemaName, String calendarCode, String pName, Integer projSchedId) throws SQLException{        
+    public Object[] importHolidaysCalendarSchedule( String schemaName, String calendarCode, String pName, Integer projSchedId) {        
         //String tableName = "project_schedule";
         String conflictDetail = "This day was converted on holidays";
         Object[] diagn = new String[6];

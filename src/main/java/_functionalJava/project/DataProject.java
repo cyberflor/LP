@@ -53,7 +53,7 @@ public class DataProject extends DataSample{
      * @throws InvocationTargetException
      * @throws SQLException
      */
-    public Object[] createProjectDev( String schemaPrefix, String sampleTemplate, Integer sampleTemplateVersion, String[] sampleFieldName, Object[] sampleFieldValue, String userName, String userRole) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException{
+    public Object[] createProjectDev( String schemaPrefix, String sampleTemplate, Integer sampleTemplateVersion, String[] sampleFieldName, Object[] sampleFieldValue, String userName, String userRole) throws IllegalAccessException, InvocationTargetException, SQLException{
         return createProject(schemaPrefix, sampleTemplate, sampleTemplateVersion, sampleFieldName, sampleFieldValue, userName, userRole, true);
 }
 
@@ -72,11 +72,11 @@ public class DataProject extends DataSample{
      * @throws InvocationTargetException
      * @throws SQLException
      */
-    public Object[] createProject( String schemaPrefix, String sampleTemplate, Integer sampleTemplateVersion, String[] sampleFieldName, Object[] sampleFieldValue, String userName, String userRole) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException{
+    public Object[] createProject( String schemaPrefix, String sampleTemplate, Integer sampleTemplateVersion, String[] sampleFieldName, Object[] sampleFieldValue, String userName, String userRole) throws IllegalAccessException, InvocationTargetException, SQLException{
         return createProject(schemaPrefix, sampleTemplate, sampleTemplateVersion, sampleFieldName, sampleFieldValue, userName, userRole, false);
     }
 
-Object[] createProject( String schemaPrefix, String projectTemplate, Integer projectTemplateVersion, String[] sampleFieldName, Object[] sampleFieldValue, String userName, String userRole, Boolean devMode) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException{
+Object[] createProject( String schemaPrefix, String projectTemplate, Integer projectTemplateVersion, String[] sampleFieldName, Object[] sampleFieldValue, String userName, String userRole, Boolean devMode) throws IllegalAccessException, InvocationTargetException{
     String classVersionProj = "0.1";
     String[] mandatoryFieldsProj = null;
     Object[] mandatoryFieldsValueProj = null;

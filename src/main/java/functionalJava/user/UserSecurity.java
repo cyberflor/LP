@@ -34,50 +34,38 @@ public class UserSecurity {
      */
     public Object[] setUserEsig( String user, String pass, String newEsign){
         
-        try {
-            Object[] diagnoses = new Object[2];
-            diagnoses[0] = false;
-            
-            String schemaConfigName = LPPlatform.SCHEMA_CONFIG;
-            String tableName = "user_info";
-            
-            if (user==null || "null".equalsIgnoreCase(user)){diagnoses[1]="User Name cannot be set to null"; return diagnoses;}
-            if (pass==null || "null".equalsIgnoreCase(pass)){diagnoses[1]="password cannot be set to null, user has to be validated"; return diagnoses;}
-            if (newEsign==null || "null".equalsIgnoreCase(newEsign)){diagnoses[1]="new word for eSign cannot be set to null"; return diagnoses;}
-            
-            Object[] validUserPassword = isValidUserPassword(user, pass);
-            if (!(Boolean) validUserPassword[0]){
-                diagnoses[1] = "Invalid password for the user "+user;   
-            }
-
-            Object[] userExists = Rdbms.existsRecord(schemaConfigName, tableName, new String[]{"user_info_name"}, new String[]{user});
-            String diagn = userExists[0].toString();
-            if ("LABPLANET_FALSE".equalsIgnoreCase(diagn)){
-                diagnoses[1] = userExists[5];           
-                return diagnoses;
-            }
-            Object[] encrypted = LPPlatform.encryptString(newEsign);
-            if (!(Boolean) encrypted[0]){
-                diagnoses[1] = encrypted[1];           
-                return diagnoses;                
-            }
-            Object[] updateRecordFieldsByFilter = Rdbms.updateRecordFieldsByFilter(schemaConfigName, tableName, 
-                    new String[]{"esign_value"}, new Object[]{encrypted[1]}, 
-                    new String[]{"user_info_name"}, new String[]{user});
-            if ("LABPLANET_FALSE".equalsIgnoreCase(updateRecordFieldsByFilter[0].toString())){            
-                diagnoses[1] = updateRecordFieldsByFilter[5];           
-                return diagnoses;
-            }
-            diagnoses[0] = true;
-            diagnoses[1] = "new eSign set for the user "+user;
-            return diagnoses;                                                   
-        } catch (SQLException|IllegalAccessException|InstantiationException|NamingException ex) {
-            Logger.getLogger(UserSecurity.class.getName()).log(Level.SEVERE, null, ex);
-            Object[] diagnoses = new Object[2];
-            diagnoses[0] = false;
-            diagnoses[1] = ex.getMessage();
+        Object[] diagnoses = new Object[2];
+        diagnoses[0] = false;
+        String schemaConfigName = LPPlatform.SCHEMA_CONFIG;
+        String tableName = "user_info";
+        if (user==null || "null".equalsIgnoreCase(user)){diagnoses[1]="User Name cannot be set to null"; return diagnoses;}
+        if (pass==null || "null".equalsIgnoreCase(pass)){diagnoses[1]="password cannot be set to null, user has to be validated"; return diagnoses;}
+        if (newEsign==null || "null".equalsIgnoreCase(newEsign)){diagnoses[1]="new word for eSign cannot be set to null"; return diagnoses;}
+        Object[] validUserPassword = isValidUserPassword(user, pass);
+        if (!(Boolean) validUserPassword[0]){
+            diagnoses[1] = "Invalid password for the user "+user;
+        }
+        Object[] userExists = Rdbms.existsRecord(schemaConfigName, tableName, new String[]{"user_info_name"}, new String[]{user});
+        String diagn = userExists[0].toString();
+        if ("LABPLANET_FALSE".equalsIgnoreCase(diagn)){
+            diagnoses[1] = userExists[5];
             return diagnoses;
         }    
+        Object[] encrypted = LPPlatform.encryptString(newEsign);
+        if (!(Boolean) encrypted[0]){
+            diagnoses[1] = encrypted[1];
+            return diagnoses;
+        }
+        Object[] updateRecordFieldsByFilter = Rdbms.updateRecordFieldsByFilter(schemaConfigName, tableName,
+                new String[]{"esign_value"}, new Object[]{encrypted[1]},
+                new String[]{"user_info_name"}, new String[]{user});
+        if ("LABPLANET_FALSE".equalsIgnoreCase(updateRecordFieldsByFilter[0].toString())){
+            diagnoses[1] = updateRecordFieldsByFilter[5];
+            return diagnoses;
+        }
+        diagnoses[0] = true;
+        diagnoses[1] = "new eSign set for the user "+user;
+        return diagnoses;
     }
     
     /**
@@ -124,22 +112,13 @@ public class UserSecurity {
      * @return
      */
     public Object[] isValidESign( String user, String pass, String eSign){
-        try {
-            Object[] diagnoses = new Object[2];
-            diagnoses[0]=false;
-            Object[] validUserPassword = isValidUserPassword(user, pass);
-            if (!(Boolean) validUserPassword[0]){
-                diagnoses[1] = "Invalid password for the user "+user;   
-            }            
-            return isValidESign(user, eSign);
-            
-        } catch (IllegalAccessException|InstantiationException|SQLException|NamingException ex) {
-            Logger.getLogger(UserSecurity.class.getName()).log(Level.SEVERE, null, ex);
-            Object[] diagnoses = new Object[2];
-            diagnoses[0]=false;
-            diagnoses[1]= ex.getMessage();
-            return diagnoses;
-        }
+        Object[] diagnoses = new Object[2];
+        diagnoses[0]=false;
+        Object[] validUserPassword = isValidUserPassword(user, pass);
+        if (!(Boolean) validUserPassword[0]){
+            diagnoses[1] = "Invalid password for the user "+user;   
+        }            
+        return isValidESign(user, eSign);
     }
     
     /**
@@ -153,7 +132,7 @@ public class UserSecurity {
      * @throws SQLException
      * @throws NamingException
      */
-    public Object[] isValidUserPassword(String user, String pass) throws IllegalAccessException, InstantiationException, SQLException, NamingException {            
+    public Object[] isValidUserPassword(String user, String pass) {            
         //Object[][] recordFieldsByFilter = Rdbms.getRecordFieldsByFilter(, new String[]{"user_name"});
         return Rdbms.existsRecord("app", "users", new String[]{"user_name", "password"}, new Object[]{user, pass});
     }    

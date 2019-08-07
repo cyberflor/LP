@@ -170,7 +170,7 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
      * @return
      * @throws SQLException
      */
-    public String specialFieldCheckSpecLimitsVariationName(String schemaPrefix) throws SQLException{ //, String schemaPrefix, String analysisList){                        
+    public String specialFieldCheckSpecLimitsVariationName(String schemaPrefix){ //, String schemaPrefix, String analysisList){                        
                 
         String analysesMissing = "";
         String myDiagnoses = "";        
@@ -332,7 +332,7 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
      * @return
      * @throws SQLException
      */
-    public Object[] specUpdate( String schemaPrefix, String specCode, Integer specCodeVersion, String[] specFieldName, Object[] specFieldValue) throws SQLException{
+    public Object[] specUpdate( String schemaPrefix, String specCode, Integer specCodeVersion, String[] specFieldName, Object[] specFieldValue) {
         
         String schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, LPPlatform.SCHEMA_CONFIG);
         String errorCode = "DataSample_SpecialFunctionReturnedERROR";
@@ -404,12 +404,10 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
      * @param specFieldName
      * @param specFieldValue
      * @return
-     * @throws SQLException
      * @throws IllegalAccessException
-     * @throws IllegalArgumentException
      * @throws InvocationTargetException
      */
-    public Object[] specNew( String schemaPrefix, String[] specFieldName, Object[] specFieldValue ) throws SQLException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{                          
+    public Object[] specNew( String schemaPrefix, String[] specFieldName, Object[] specFieldValue ) throws IllegalAccessException, InvocationTargetException{                          
         String newCode = "";
         String errorCode = "";
         String[] errorDetailVariables = new String[0];
@@ -593,12 +591,11 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
      * @param specFieldName
      * @param specFieldValue
      * @return
-     * @throws SQLException
      * @throws IllegalAccessException
      * @throws IllegalArgumentException
      * @throws InvocationTargetException
      */
-    public Object[] specLimitNew( String schemaPrefix, String[] specFieldName, Object[] specFieldValue ) throws SQLException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
+    public Object[] specLimitNew( String schemaPrefix, String[] specFieldName, Object[] specFieldValue ) throws IllegalAccessException, InvocationTargetException{
                           
         String code = "";
         String schemaName = LPPlatform.SCHEMA_CONFIG;

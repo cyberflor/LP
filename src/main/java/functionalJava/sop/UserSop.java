@@ -47,7 +47,7 @@ public class UserSop {
      * @return
      * @throws SQLException
      */
-    public Object[] userSopCertifiedBySopName( String schemaPrefixName, String userInfoId, String sopName ) throws SQLException{    
+    public Object[] userSopCertifiedBySopName( String schemaPrefixName, String userInfoId, String sopName ) {    
         return userSopCertifiedBySopInternalLogic(schemaPrefixName, userInfoId, FIELDNAME_SOP_NAME, sopName);        
         }
 
@@ -59,7 +59,7 @@ public class UserSop {
      * @return
      * @throws SQLException
      */
-    public Object[] userSopCertifiedBySopId( String schemaPrefixName, String userInfoId, String sopId ) throws SQLException{
+    public Object[] userSopCertifiedBySopId( String schemaPrefixName, String userInfoId, String sopId ) {
         return userSopCertifiedBySopInternalLogic(schemaPrefixName, userInfoId, FIELDNAME_SOP_ID, sopId);        
     }
     
@@ -186,7 +186,7 @@ public class UserSop {
      * @return
      * @throws SQLException
      */
-    public Object[] _NotRequireduserSopCertifiedBySopName( String schemaPrefixName, String userInfoId, String sopName, String procedure, Integer procVersion ) throws SQLException{
+    public Object[] _NotRequireduserSopCertifiedBySopName( String schemaPrefixName, String userInfoId, String sopName, String procedure, Integer procVersion ) {
         return _NotRequireduserSopCertifiedBySopInternalLogic(schemaPrefixName, userInfoId, FIELDNAME_SOP_NAME, sopName, procedure, procVersion);        
     }
 
@@ -200,7 +200,7 @@ public class UserSop {
      * @return
      * @throws SQLException
      */
-    public Object[] _NotRequireduserSopCertifiedBySopId( String schemaPrefixName, String userInfoId, String sopId, String procedure, Integer procVersion ) throws SQLException{
+    public Object[] _NotRequireduserSopCertifiedBySopId( String schemaPrefixName, String userInfoId, String sopId, String procedure, Integer procVersion ) {
         return _NotRequireduserSopCertifiedBySopInternalLogic(schemaPrefixName, userInfoId, FIELDNAME_SOP_ID, sopId, procedure, procVersion);
     }    
     private Object[] _NotRequireduserSopCertifiedBySopInternalLogic( String schemaPrefixName, String userInfoId, String sopIdFieldName, String sopIdFieldValue, String procedure, Integer procVersion ) {

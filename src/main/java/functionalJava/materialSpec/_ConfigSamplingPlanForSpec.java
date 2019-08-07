@@ -41,7 +41,7 @@ public class _ConfigSamplingPlanForSpec {
      * @return
      * @throws SQLException
      */
-    public Object[] newSamplingPlanDetailRecord( String schemaPrefix, String userName, String userRole, String[] fieldsName, Object[] fieldsValue) throws SQLException{
+    public Object[] newSamplingPlanDetailRecord( String schemaPrefix, String userName, String userRole, String[] fieldsName, Object[] fieldsValue) {
         diagnoses = newSamplingPlanDetailRecordDev(schemaPrefix, userName, userRole, fieldsName, fieldsValue, false);
         return diagnoses;
     }
@@ -57,7 +57,7 @@ public class _ConfigSamplingPlanForSpec {
      * @return
      * @throws SQLException
      */
-    public Object[] newSamplingPlanDetailRecord( String schemaPrefix, String userName, String userRole, String[] fieldsName, Object[] fieldsValue, Boolean devMode) throws SQLException{
+    public Object[] newSamplingPlanDetailRecord( String schemaPrefix, String userName, String userRole, String[] fieldsName, Object[] fieldsValue, Boolean devMode) {
         diagnoses = newSamplingPlanDetailRecordDev(schemaPrefix, userName, userRole, fieldsName, fieldsValue, devMode);
         return diagnoses;
     }
@@ -73,7 +73,7 @@ public class _ConfigSamplingPlanForSpec {
      * @return
      * @throws SQLException
      */
-    public Object[] newSamplingPlanDetailRecordDev( String schemaPrefix, String userName, String userRole, String[] fieldsName, Object[] fieldsValue, Boolean devMode) throws SQLException{
+    public Object[] newSamplingPlanDetailRecordDev( String schemaPrefix, String userName, String userRole, String[] fieldsName, Object[] fieldsValue, Boolean devMode) {
     if (devMode==true){
         StackTraceElement[] elementsDev = Thread.currentThread().getStackTrace();
         javaDocLineName = "BEGIN";

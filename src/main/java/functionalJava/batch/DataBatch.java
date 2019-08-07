@@ -77,7 +77,7 @@ public class DataBatch {
      * @return
      * @throws SQLException
      */
-    public Integer dbUpdateBatchArray( String schemaName, String batchName, String fieldName, String fieldValue) throws SQLException{
+    public Integer dbUpdateBatchArray( String schemaName, String batchName, String fieldName, String fieldValue) {
         String tableName = "batch_java";
         Integer pk = 0;
        
