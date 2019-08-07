@@ -20,12 +20,7 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
 import org.json.simple.JSONObject;
-
-//import org.codehaus.jettison.json.JSONObject;
-//import org.codehaus.jettison.json.JSONException;
-//import org.json.simple.JSONObject;
 import databases.Rdbms;
-import databases.Token;
 
 /**
  * LPPlatform is a library for methods solving topics that are specifically part of the LabPLANET Paradigm.
@@ -42,18 +37,18 @@ public class LPPlatform {
     public static final String SCHEMA_CONFIG = "config";
     public static final String SCHEMA_DATA = "data";
     public static final String SCHEMA_DATA_AUDIT = "data-audit";
-    public static final String SCHEMA_REQUIREMENTS = LPPlatform.SCHEMA_REQUIREMENTS;
+    public static final String SCHEMA_REQUIREMENTS = "requirements";
     
     public static final String CONFIG_FILES_FOLDER = "LabPLANET";
     private static final String CONFIG_FILES_ERRORTRAPING = "errorTraping";
     public static final String CONFIG_FILES_API_ERRORTRAPING = "api-platform";
     
     public static final String API_ERRORTRAPING_PROPERTY_DATABASE_NOT_CONNECTED= "databaseConnectivityError";
-    public static final String API_ERRORTRAPING__MANDATORY_PARAMS_MISSING="missingManatoryParametersInRequest";
+    public static final String API_ERRORTRAPING_MANDATORY_PARAMS_MISSING="missingManatoryParametersInRequest";
     public static final String API_ERRORTRAPING_PROPERTY_ENDPOINT_NOT_FOUND = "endPointNotFound";
     public static final String API_ERRORTRAPING_INVALID_TOKEN = "invalidToken";
     public static final String API_ERRORTRAPING_INVALID_USER_VERIFICATION = "invalidUserVerification";
-    public static final String API_ERRORTRAPING_INVALID_ESIGN = "invalidEsign";
+    public static final String API_ERRORTRAPING_INVALID_ESIGN = "invalidEsign";        
 
     public static final String SERVLETS_REPONSE_SUCCESS_SERVLET_NAME="/responseSuccess";
     public static final String SERVLETS_REPONSE_SUCCESS_ATTRIBUTE_NAME="response";
@@ -70,7 +65,14 @@ public class LPPlatform {
     private static final String JAVADOC_METHOD_FLDNAME = "method";
     private static final String JAVADOC_LINE_FLDNAME = "line";
     
-    private static final String TOKEN_PARAM_PREFIX = "TOKEN_";
+    
+    private static final String JSON_TAG_ERROR_MSG_EVALUATION = "evaluation";
+    private static final String JSON_TAG_ERROR_MSG_CLASS = JAVADOC_CLASS_FLDNAME;
+    private static final String JSON_TAG_ERROR_MSG_CLASS_VERSION = "classVersion";
+    private static final String JSON_TAG_ERROR_MSG_CLASS_LINE = "line";
+    private static final String JSON_TAG_ERROR_MSG_CLASS_ERROR_CODE = "errorCode";
+    private static final String JSON_TAG_ERROR_MSG_CLASS_ERROR_CODE_TEXT = "errorCodeText";
+    private static final String JSON_TAG_ERROR_MSG_CLASS_ERROR_DETAIL = "errorDetail";
     
     /**
      *
@@ -221,23 +223,6 @@ public class LPPlatform {
             errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, actionName);
             return trapErrorMessage(LAB_TRUE, errorCode, errorDetailVariables);               
         }    
-    }    
-    /**
-     * The fieldName should include one prefix that is "TOKEN_" otherwise it will not be interpreted as a correct param.
-     * @param token
-     * @param fieldName
-     * @return
-     */
-    public static String[] getTokenFieldValue(String fieldName, String token){    
-        if (fieldName==null){return new String[]{LPPlatform.LAB_FALSE, ""};}
-        if (!fieldName.toUpperCase().contains(TOKEN_PARAM_PREFIX)){return new String[]{LPPlatform.LAB_FALSE, ""};}
-        Token tokenObj = new Token();
-        String tokenParamValue = tokenObj.getTokenParamValue(token, fieldName.replace(TOKEN_PARAM_PREFIX, ""));
-        if ( tokenParamValue!=null){
-            return new String[]{LPPlatform.LAB_TRUE, tokenParamValue};
-        }else{
-            return new String[]{LPPlatform.LAB_FALSE, ""};
-        }
     }    
     /**
      *
@@ -577,10 +562,8 @@ public class LPPlatform {
         String mandatoryFieldsByDependency = Parameter.getParameterBundle(schemaName.replace("\"", ""), propertyName);
         String[] mandatoryByDependency = mandatoryFieldsByDependency.split("\\|");
 
-        for (Integer inumLines=0;inumLines<fieldNames.length;inumLines++){
-            String currField = fieldNames[inumLines];
-            Boolean contains = mandatoryFieldsByDependency.contains(currField);            
-            if ( contains ){
+        for (String currField: fieldNames){
+            if ( mandatoryFieldsByDependency.contains(currField) ){
                 Integer fieldIndexSpecCode = Arrays.asList(mandatoryByDependency).indexOf(currField);
                 if (fieldIndexSpecCode!=-1){
                     String[] propertyEntryValue = mandatoryByDependency[fieldIndexSpecCode].split("\\*");
@@ -757,7 +740,6 @@ public class LPPlatform {
      * @return Object[]
  */
     public static Object[] trapErrorMessage(String evaluation, String errorCode, Object[] errorVariables) {
-                
         Object[] fldValue = new Object[7];
         String errorDetail = "";
         String className = Thread.currentThread().getStackTrace()[CLIENT_CODE_STACK_INDEX].getFileName(); 
@@ -794,7 +776,6 @@ public class LPPlatform {
         fldValue[4] = errorCode;
         fldValue[5] = errorCodeText;
         fldValue[6] = errorDetail;
-
          return fldValue;
   }
     
@@ -803,16 +784,15 @@ public class LPPlatform {
      * @param errorArray
      * @return
      */
-    public static JSONObject trapErrorMessageJSON(Object[] errorArray) {
-                
+    public static JSONObject trapErrorMessageJSON(Object[] errorArray) {               
         JSONObject errorJson = new JSONObject();
-            errorJson.put("evaluation", errorArray[0]);
-            errorJson.put(JAVADOC_CLASS_FLDNAME, errorArray[1]);
-            errorJson.put("classVersion", errorArray[2]);
-            errorJson.put("Code line", errorArray[3]);
-            errorJson.put("errorCode", errorArray[4]);
-            errorJson.put("errorCodeText", errorArray[5]);
-            errorJson.put("errorDetail", errorArray[6]);
+            errorJson.put(JSON_TAG_ERROR_MSG_EVALUATION, errorArray[0]);
+            errorJson.put(JSON_TAG_ERROR_MSG_CLASS, errorArray[1]);
+            errorJson.put(JSON_TAG_ERROR_MSG_CLASS_VERSION, errorArray[2]);
+            errorJson.put(JSON_TAG_ERROR_MSG_CLASS_LINE, errorArray[3]);
+            errorJson.put(JSON_TAG_ERROR_MSG_CLASS_ERROR_CODE, errorArray[4]);
+            errorJson.put(JSON_TAG_ERROR_MSG_CLASS_ERROR_CODE_TEXT, errorArray[5]);
+            errorJson.put(JSON_TAG_ERROR_MSG_CLASS_ERROR_DETAIL, errorArray[6]);
         return errorJson;
     }
     

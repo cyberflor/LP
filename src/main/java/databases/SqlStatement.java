@@ -29,6 +29,9 @@ public class SqlStatement {
      * @return
      */
     public HashMap<String, Object[]> buildSqlStatement(String operation, String schemaName, String tableName, String[] whereFieldNames, Object[] whereFieldValues, String[] fieldsToRetrieve, String[] setFieldNames, Object[] setFieldValues, String[] fieldsToOrder, String[] fieldsToGroup) {        
+       return buildSqlStatement(operation, schemaName, tableName, whereFieldNames, whereFieldValues, fieldsToRetrieve, setFieldNames, setFieldValues, fieldsToOrder, fieldsToGroup, false);      
+    }
+    public HashMap<String, Object[]> buildSqlStatement(String operation, String schemaName, String tableName, String[] whereFieldNames, Object[] whereFieldValues, String[] fieldsToRetrieve, String[] setFieldNames, Object[] setFieldValues, String[] fieldsToOrder, String[] fieldsToGroup, Boolean forceDistinct) {        
         HashMap<String, Object[]> hm = new HashMap();        
         
         String queryWhere = "";
@@ -37,35 +40,9 @@ public class SqlStatement {
         
         Object[] whereFieldValuesNew = new Object[0];
         if (whereFieldNames != null) {
-            //for (String fn : whereFieldNames) {
-            for (int iwhereFieldNames=0; iwhereFieldNames<whereFieldNames.length; iwhereFieldNames++){
-                String fn = whereFieldNames[iwhereFieldNames];
-                if (iwhereFieldNames > 0) {
-                    queryWhere = queryWhere + " and ";
-                }
-                if (fn.toUpperCase().contains("NULL")) {
-                    queryWhere = queryWhere + fn;
-                } else if (fn.toUpperCase().contains(" LIKE")) {
-                    queryWhere = queryWhere + fn + " ? ";
-                    whereFieldValuesNew = LPArray.addValueToArray1D(whereFieldValuesNew, whereFieldValues[iwhereFieldNames]);
-                } else if (fn.toUpperCase().contains(" IN")) {
-                    String separator = inSeparator(fn);
-                    String textSpecs = (String) whereFieldValues[iwhereFieldNames];
-                    String[] textSpecArray = textSpecs.split("\\" + separator);
-                    Integer posicINClause = fn.toUpperCase().indexOf("IN");
-                    queryWhere = queryWhere + fn.substring(0, posicINClause + 2) + " (";
-                    for (String f : textSpecArray) {
-                        queryWhere = queryWhere + "?,";
-                        whereFieldValuesNew = LPArray.addValueToArray1D(whereFieldValuesNew, f);
-                    }
-                    queryWhere = queryWhere.substring(0, queryWhere.length() - 1);
-                    queryWhere = queryWhere + ")";
-                    //whereFieldValues = whereFieldValuesNew;
-                } else {
-                    queryWhere = queryWhere + fn + "=? ";
-                    whereFieldValuesNew = LPArray.addValueToArray1D(whereFieldValuesNew, whereFieldValues[iwhereFieldNames]);
-                }
-            }
+            Object[] whereClauseContent = buildWhereClause(whereFieldNames, whereFieldValues);            
+            queryWhere=(String) whereClauseContent[0];
+            whereFieldValuesNew=(Object[]) whereClauseContent[1];
         }
         String fieldsToRetrieveStr = buildFieldsToRetrieve(fieldsToRetrieve);
         String fieldsToOrderStr = buildOrderBy(fieldsToOrder);
@@ -77,7 +54,9 @@ public class SqlStatement {
         String query = "";
         switch (operation.toUpperCase()) {
             case "SELECT":
-                query = "select " + fieldsToRetrieveStr + " from " + schemaName + "." + tableName + "   where " + queryWhere + " " + fieldsToGroupStr + " " + fieldsToOrderStr;
+                query = "select ";
+                if (forceDistinct){query=query+ " distinct ";}
+                query=query+ " " + fieldsToRetrieveStr + " from " + schemaName + "." + tableName + "   where " + queryWhere + " " + fieldsToGroupStr + " " + fieldsToOrderStr;
                 break;
             case "INSERT":
                 query = "insert into " + schemaName + "." + tableName + " (" + setFieldNamesStr + ") values ( " + setFieldNamesArgStr + ") ";
@@ -93,7 +72,38 @@ public class SqlStatement {
         hm.put(query, whereFieldValuesNew);
         return hm;
     }
-
+    private Object[] buildWhereClause(String[] whereFieldNames, Object[] whereFieldValues){
+        String queryWhere = "";
+        Object[] whereFieldValuesNew = new Object[0];
+        for (int iwhereFieldNames=0; iwhereFieldNames<whereFieldNames.length; iwhereFieldNames++){
+            String fn = whereFieldNames[iwhereFieldNames];
+            if (iwhereFieldNames > 0) {
+                queryWhere = queryWhere + " and ";
+            }
+            if (fn.toUpperCase().contains("NULL")) {
+				queryWhere = queryWhere + fn;
+            } else if (fn.toUpperCase().contains(" LIKE")) {
+                queryWhere = queryWhere + fn + " ? ";
+                whereFieldValuesNew = LPArray.addValueToArray1D(whereFieldValuesNew, whereFieldValues[iwhereFieldNames]);
+            } else if (fn.toUpperCase().contains(" IN")) {
+                String separator = inSeparator(fn);
+                String textSpecs = (String) whereFieldValues[iwhereFieldNames];
+                String[] textSpecArray = textSpecs.split("\\" + separator);
+                Integer posicINClause = fn.toUpperCase().indexOf("IN");
+                queryWhere = queryWhere + fn.substring(0, posicINClause + 2) + " (";
+                for (String f : textSpecArray) {
+                    queryWhere = queryWhere + "?,";
+                    whereFieldValuesNew = LPArray.addValueToArray1D(whereFieldValuesNew, f);
+                }
+                queryWhere = queryWhere.substring(0, queryWhere.length() - 1);
+                queryWhere = queryWhere + ")";
+            } else {
+                queryWhere = queryWhere + fn + "=? ";
+                whereFieldValuesNew = LPArray.addValueToArray1D(whereFieldValuesNew, whereFieldValues[iwhereFieldNames]);
+            }
+        }
+        return new Object[]{queryWhere, whereFieldValuesNew};
+    }
     private String  buildUpdateSetFields(String[] setFieldNames) {
         String updateSetSectionStr = "";
         for (String setFieldName : setFieldNames) {

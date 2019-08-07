@@ -12,7 +12,7 @@ import java.util.HashMap;
  * @author Administrator
  */
 public class LPHashMap {
-        
+        private LPHashMap(){    throw new IllegalStateException("Utility class");}    
     /**
      *
      * @param map

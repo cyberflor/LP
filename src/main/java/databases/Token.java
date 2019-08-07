@@ -14,6 +14,7 @@ import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import java.sql.Date;
 //import com.fasterxml.jackson.core.JsonProcessingException;
 //import static com.sun.xml.internal.ws.spi.db.BindingContextFactory.LOGGER;
 import java.util.HashMap;
@@ -23,26 +24,46 @@ import java.util.Map;
  *
  * @author Administrator
  */
-public class Token {
-    
-
-    
+public class Token {   
     String KEY = "mi clave";
     String ISSUER = "LabPLANETdestrangisInTheNight";
     
-    public static final String TOKEN_PARAM_USERDB="userDB";
-    public static final String TOKEN_PARAM_USERPW="userDBPassword";
-    public static final String TOKEN_PARAM_INTERNAL_USERID="internalUserID";
-    public static final String TOKEN_PARAM_USER_ROLE="userRole";
-    public static final String TOKEN_PARAM_APP_SESSION_ID="appSessionId";
-    public static final String TOKEN_PARAM_APP_SESSION_STARTED_DATE="appSessionStartedDate";
-    public static final String TOKEN_PARAM_USER_ESIGN="eSign";
+    private static final String TOKEN_PARAM_USERDB="userDB";
+    private static final String TOKEN_PARAM_USERPW="userDBPassword";
+    private static final String TOKEN_PARAM_INTERNAL_USERID="internalUserID";
+    private static final String TOKEN_PARAM_USER_ROLE="userRole";
+    private static final String TOKEN_PARAM_USER_ESIGN="eSign";
+    private static final String TOKEN_PARAM_APP_SESSION_ID="appSessionId";
+    private static final String TOKEN_PARAM_APP_SESSION_STARTED_DATE="appSessionStartedDate";
     
+    private static final String TOKEN_PARAM_PREFIX = "TOKEN_";
+    
+    private String userName="";
+    private String usrPw="";
+    private String personName="";
+    private String userRole="";
+    private String eSign="";
+    private String appSessionId="";
+    private Date appSessionStartedDate= null;
+    
+    //public Token(){}
+    public Token(String tokenString){
+        String[] tokenParams = tokenParamsList();
+        String[] tokenParamsValues = getTokenParamValue(tokenString, tokenParams);
+
+        this.userName = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, Token.TOKEN_PARAM_USERDB)];
+        this.usrPw = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, Token.TOKEN_PARAM_USERPW)];
+        this.personName = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, Token.TOKEN_PARAM_INTERNAL_USERID)];         
+        this.userRole = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, Token.TOKEN_PARAM_USER_ROLE)];                             
+        this.eSign = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, Token.TOKEN_PARAM_USER_ESIGN)];     
+        this.appSessionId = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, Token.TOKEN_PARAM_APP_SESSION_ID)];     
+    }
+
     /**
      *
      * @return
      */
-    public String[] tokenParamsList(){
+    private String[] tokenParamsList(){
         String[] diagnoses = new String[0];        
         diagnoses = LPArray.addValueToArray1D(diagnoses, TOKEN_PARAM_USERDB);
         diagnoses = LPArray.addValueToArray1D(diagnoses, TOKEN_PARAM_USERPW);
@@ -92,27 +113,12 @@ public class Token {
      * @param paramName
      * @return
      */
-    public String validateToken(String token, String paramName){       
-       Object[] tokenObj = isValidToken(token);
-        
-       if ((Boolean) tokenObj[0]==false) return LPPlatform.LAB_FALSE;
-
-       DecodedJWT jwt = (DecodedJWT) tokenObj[1];
-       Claim header1 = jwt.getHeaderClaim(paramName);            
-       return header1.asString();            
-    }    
-
-    /**
-     *
-     * @param token
-     * @param paramName
-     * @return
-     */
-    public String[] validateToken(String token, String[] paramName){
+    public String[] getTokenParamValue(String token, String[] paramName){
         String[] infoFromToken = new String[0];
+        String[] tokenParams = tokenParamsList();
         
         for (String pn: paramName){
-            String paramValue = validateToken(token, pn);
+            String paramValue = getTokenParamValue(token, pn);
             infoFromToken = LPArray.addValueToArray1D(infoFromToken, paramValue);
         }
         return infoFromToken;            
@@ -154,13 +160,12 @@ public class Token {
         myParams.put(TOKEN_PARAM_USER_ESIGN, eSign);
         
         try{
-            String token = JWT.create()
+            return JWT.create()
                     .withHeader(myParams)
                     .withIssuer(ISSUER)                    
                     .sign(algorithm);
-            return token;
        } catch (JWTCreationException exception){
-            throw new RuntimeException("You need to enable Algorithm.HMAC256");        
+            return "ERROR: You need to enable Algorithm.HMAC256";        
         }
         
         
@@ -189,4 +194,75 @@ public class Token {
        Claim header1 = jwt.getHeaderClaim(paramName);            
        return header1.asString();                    
     }
+    /**
+     * The fieldName should include one prefix that is "TOKEN_" otherwise it will not be interpreted as a correct param.
+     * @param token
+     * @param fieldName
+     * @return
+     */
+    public static String[] getTokenFieldValue(String fieldName, String token) {
+        if (fieldName == null) {
+            return new String[]{LPPlatform.LAB_FALSE, ""};
+        }
+        if (!fieldName.toUpperCase().contains(TOKEN_PARAM_PREFIX)) {
+            return new String[]{LPPlatform.LAB_FALSE, ""};
+        }
+        Token tokenObj = new Token(token);
+        String tokenParamValue = tokenObj.getTokenParamValue(token, fieldName.replace(TOKEN_PARAM_PREFIX, ""));
+        if (tokenParamValue != null) {
+            return new String[]{LPPlatform.LAB_TRUE, tokenParamValue};
+        } else {
+            return new String[]{LPPlatform.LAB_FALSE, ""};
+        }
+    }
+
+    /**
+     * @return the userName
+     */
+    public String getUserName() {
+        return userName;
+    }
+
+    /**
+     * @return the userDBPassword
+     */
+    public String getUsrPw() {
+        return usrPw;
+    }
+
+    /**
+     * @return the personName
+     */
+    public String getPersonName() {
+        return personName;
+    }
+
+    /**
+     * @return the userRole
+     */
+    public String getUserRole() {
+        return userRole;
+    }
+
+    /**
+     * @return the eSign
+     */
+    public String geteSign() {
+        return eSign;
+    }
+
+    /**
+     * @return the appSessionId
+     */
+    public String getAppSessionId() {
+        return appSessionId;
+    }
+
+    /**
+     * @return the appSessionStartedDate
+     */
+    public Date getAppSessionStartedDate() {
+        return appSessionStartedDate;
+    }
+    
 }

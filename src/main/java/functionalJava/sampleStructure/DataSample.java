@@ -118,9 +118,8 @@ public class DataSample {
      * @return
      */
     public Object[] logSampleDev( String schemaPrefix, String sampleTemplate, Integer sampleTemplateVersion, String[] sampleFieldName, Object[] sampleFieldValue, String userName, String userRole, Integer appSessionId) {
-        Object[] diag = logSample(schemaPrefix, sampleTemplate, sampleTemplateVersion, sampleFieldName, sampleFieldValue, userName, userRole, appSessionId, true, 1);
-    return diag;
-}
+        return logSample(schemaPrefix, sampleTemplate, sampleTemplateVersion, sampleFieldName, sampleFieldValue, userName, userRole, appSessionId, true, 1);
+    }
 
     /**
      *
@@ -135,8 +134,7 @@ public class DataSample {
      * @return
      */
     public Object[] logSample(String schemaPrefix, String sampleTemplate, Integer sampleTemplateVersion, String[] sampleFieldName, Object[] sampleFieldValue, String userName, String userRole, Integer appSessionId) {
-        Object[] diag = logSample(schemaPrefix, sampleTemplate, sampleTemplateVersion, sampleFieldName, sampleFieldValue, userName, userRole, appSessionId, false, 1);
-        return diag;
+        return logSample(schemaPrefix, sampleTemplate, sampleTemplateVersion, sampleFieldName, sampleFieldValue, userName, userRole, appSessionId, false, 1);
     }
 
     /**
@@ -153,8 +151,7 @@ public class DataSample {
      * @return
      */
     public Object[] logSample(String schemaPrefix, String sampleTemplate, Integer sampleTemplateVersion, String[] sampleFieldName, Object[] sampleFieldValue, String userName, String userRole, Integer appSessionId, Integer numSamplesToLog) {
-        Object[] diag = logSample(schemaPrefix, sampleTemplate, sampleTemplateVersion, sampleFieldName, sampleFieldValue, userName, userRole, appSessionId, false, numSamplesToLog);
-        return diag;
+        return logSample(schemaPrefix, sampleTemplate, sampleTemplateVersion, sampleFieldName, sampleFieldValue, userName, userRole, appSessionId, false, numSamplesToLog);
     }
 
 Object[] _logSample(String schemaPrefix, String sampleTemplate, Integer sampleTemplateVersion, String[] sampleFieldName, Object[] sampleFieldValue, String userName, String userRole, Integer appSessionId, Boolean devMode) {
@@ -243,11 +240,11 @@ Object[] _logSample(String schemaPrefix, String sampleTemplate, Integer sampleTe
                     }
                     Object specialFunctionReturn=null;      
                     try {
-                        specialFunctionReturn = method.invoke(this, null, schemaPrefix, sampleTemplate, sampleTemplateVersion);
+                        if (method!=null){specialFunctionReturn = method.invoke(this, null, schemaPrefix, sampleTemplate, sampleTemplateVersion);}
                     } catch (IllegalAccessException | NullPointerException | IllegalArgumentException | InvocationTargetException ex) {
                         Logger.getLogger(DataSample.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                    if (specialFunctionReturn.toString().contains("ERROR")){
+                    if ( (specialFunctionReturn==null) || (specialFunctionReturn!=null && specialFunctionReturn.toString().contains("ERROR")) ){
                         errorCode = "DataSample_SpecialFunctionReturnedERROR";
                         errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, currField);
                         errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, aMethod);
@@ -375,11 +372,11 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
                     }
                     Object specialFunctionReturn=null;      
                     try {
-                        specialFunctionReturn = method.invoke(this, null, schemaPrefix, sampleTemplate, sampleTemplateVersion);
+                        if (method!=null){ specialFunctionReturn = method.invoke(this, null, schemaPrefix, sampleTemplate, sampleTemplateVersion);}
                     } catch (IllegalAccessException | NullPointerException | IllegalArgumentException | InvocationTargetException ex) {
                         Logger.getLogger(DataSample.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                    if (specialFunctionReturn.toString().contains("ERROR")){
+                    if ( (specialFunctionReturn==null) || (specialFunctionReturn!=null && specialFunctionReturn.toString().contains("ERROR")) ){
                         errorCode = "DataSample_SpecialFunctionReturnedERROR";
                         errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, currField);
                         errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, aMethod);
@@ -1363,10 +1360,6 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
             
         String sampleAnalysisResultStatusCanceled = Parameter.getParameterBundle(schemaDataName.replace("\"", ""), CONFIG_SAMPLEANALYSISRESULT_STATUSCANCELED);
         String sampleAnalysisResultStatusReviewed = Parameter.getParameterBundle(schemaDataName.replace("\"", ""), CONFIG_SAMPLEANALYSISRESULT_STATUSREVIEWED);
-        String sampleAnalysisStatusCanceled = Parameter.getParameterBundle(schemaDataName.replace("\"", ""), CONFIG_SAMPLEANALYSIS_STATUSCANCELED);
-        String sampleAnalysisStatusReviewed = Parameter.getParameterBundle(schemaDataName.replace("\"", ""), CONFIG_SAMPLEANALYSIS_STATUSREVIEWED);
-        String sampleStatusCanceled = Parameter.getParameterBundle(schemaDataName.replace("\"", ""), "sample_statusCanceled");
-        String sampleStatusReviewed = Parameter.getParameterBundle(schemaDataName.replace("\"", ""), "sample_statusReviewed");
         
         Object[] samplesToReview = new Object[0];
         Object[] testsToReview = new Object[0];
@@ -1483,8 +1476,6 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
             
         String sampleAnalysisStatusCanceled = Parameter.getParameterBundle(schemaDataName.replace("\"", ""), CONFIG_SAMPLEANALYSIS_STATUSCANCELED);
         String sampleAnalysisStatusReviewed = Parameter.getParameterBundle(schemaDataName.replace("\"", ""), CONFIG_SAMPLEANALYSIS_STATUSREVIEWED);
-        String sampleStatusCanceled = Parameter.getParameterBundle(schemaDataName.replace("\"", ""), "sample_statusCanceled");
-        String sampleStatusReviewed = Parameter.getParameterBundle(schemaDataName.replace("\"", ""), "sample_statusReviewed");
         
         Object[][] objectInfo = Rdbms.getRecordFieldsByFilter(schemaDataName, tableName, 
                                                             new String[]{FIELDNAME_TEST_ID},
@@ -2552,11 +2543,11 @@ public Object[] logSampleSubAliquot( String schemaPrefix, Integer aliquotId, Str
                 }
                 Object specialFunctionReturn = null;
                 try {
-                    specialFunctionReturn = method.invoke(this, schemaPrefix);
+                    if (method!=null){ specialFunctionReturn = method.invoke(this, schemaPrefix);}
                 } catch (IllegalAccessException | NullPointerException | IllegalArgumentException | InvocationTargetException ex) {
                     Logger.getLogger(DataSample.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                if (specialFunctionReturn.toString().contains("ERROR")) {
+                if ( (specialFunctionReturn==null) || (specialFunctionReturn!=null && specialFunctionReturn.toString().contains("ERROR")) ){
                     this.errorCode = "DataSample_SpecialFunctionReturnedERROR";
                     this.errorDetailVariables = LPArray.addValueToArray1D(this.errorDetailVariables, currField);
                     this.errorDetailVariables = LPArray.addValueToArray1D(this.errorDetailVariables, aMethod);

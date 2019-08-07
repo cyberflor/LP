@@ -19,7 +19,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.core.Response;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONArray;
 import functionalJava.sop.UserSop;
@@ -30,6 +29,7 @@ import functionalJava.sop.UserSop;
  */
 public class AppProcedureListAPI extends HttpServlet {
 
+    public static final String MANDATORY_PARAMS_MAIN_SERVLET = "finalToken";
     
     public static final String LABEL_ARRAY_PROCEDURES="procedures";
     public static final String LABEL_ARRAY_PROC_EVENTS ="definition";
@@ -38,9 +38,14 @@ public class AppProcedureListAPI extends HttpServlet {
 
     public static final String LABEL_SOPS_PASSED="sops_passed";
     public static final String LABEL_SOP_TOTAL="sop_total";
+    public static final String LABEL_SOP_NAME="sop_name";
+    public static final String LABEL_SOP_CERTIFICATION="SopCertification";
+    public static final String LABEL_VALUE_SOP_CERTIFICATION_DISABLE="Disabled";
     public static final String LABEL_SOP_TOTAL_COMPLETED="sop_total_completed";
     public static final String LABEL_SOP_TOTAL_NOT_COMPLETED="sop_total_not_completed";
-    public static final String LABEL_SOP_TOTAL_NO_SOPS="NO_SOPS";
+    public static final String LABEL_ARRAY_SOP_LIST_INFO="sop_list_info";
+    public static final String LABEL_SOP_TOTAL_NO_SOPS="There are no SOPS for this form";
+    
     
     public static final String LABEL_PROC_SCHEMA="schemaPrefix";
     
@@ -64,34 +69,23 @@ public class AppProcedureListAPI extends HttpServlet {
         String language = LPFrontEnd.setLanguage(request); 
             
         try (PrintWriter out = response.getWriter()) {
-            String[] errObject = new String[]{"Servlet AppProcedureList at " + request.getServletPath()};                  
-            String finalToken = request.getParameter("finalToken");                      
-            if (finalToken==null) {                  
-                errObject = LPArray.addValueToArray1D(errObject, "API Error Message: finalToken is one mandatory param for this API");                    
-                Object[] errMsg = LPFrontEnd.responseError(errObject, language, null);
-                response.sendError((int) errMsg[0], errMsg[1].toString());    
-                Rdbms.closeRdbms(); 
-                return ;
-            }                    
-            Token token = new Token();
-            String[] tokenParams = token.tokenParamsList();
-            String[] tokenParamsValues = token.validateToken(finalToken, tokenParams);
-
-            String dbUserName = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, Token.TOKEN_PARAM_USERDB)];
-            String dbUserPassword = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, Token.TOKEN_PARAM_USERPW)];
-            String internalUserID = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, Token.TOKEN_PARAM_INTERNAL_USERID)];         
-            String userRole = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, Token.TOKEN_PARAM_USER_ROLE)];                     
+            Object[] areMandatoryParamsInResponse = LPHttp.areMandatoryParamsInApiRequest(request, MANDATORY_PARAMS_MAIN_SERVLET.split("\\|"));                       
+            if (LPPlatform.LAB_FALSE.equalsIgnoreCase(areMandatoryParamsInResponse[0].toString())){
+                 LPFrontEnd.servletReturnResponseError(request, response, 
+                         LPPlatform.API_ERRORTRAPING_MANDATORY_PARAMS_MISSING, new Object[]{areMandatoryParamsInResponse[1].toString()}, language);              
+                 return;          
+             }               
+            String finalToken = request.getParameter(globalAPIsParams.REQUEST_PARAM_FINAL_TOKEN);    
+                           
+            Token token = new Token(finalToken);
                         
            if (!LPFrontEnd.servletStablishDBConection(request, response)){return;}               
          
-            String rolName = userRole;
+            String rolName = token.getUserRole();
             UserProfile usProf = new UserProfile();
-            Object[] allUserProcedurePrefix = usProf.getAllUserProcedurePrefix(dbUserName);
+            Object[] allUserProcedurePrefix = usProf.getAllUserProcedurePrefix(token.getUserName());
             if (LPPlatform.LAB_FALSE.equalsIgnoreCase(allUserProcedurePrefix[0].toString())){
-                //Object[] errMsg = LPFrontEnd.responseError(allUserProcedurePrefix, language, null);
-                //response.sendError((int) errMsg[0], errMsg[1].toString());      
-                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "line 90. usProf.getAllUserProcedurePrefix");
-                Rdbms.closeRdbms(); 
+                LPFrontEnd.servletReturnResponseErrorLPFalseDiagnostic(request, response, allUserProcedurePrefix);
                 return;
             }
             String[] procFldNameArray = PROC_FLD_NAME.split("\\|");
@@ -105,12 +99,13 @@ public class AppProcedureListAPI extends HttpServlet {
                 if (!LPFrontEnd.servletStablishDBConection(request, response)){return;}           
 
                 Object[][] procInfo = Rdbms.getRecordFieldsByFilter(schemaName, "procedure_info", 
-                        new String[]{"name is not null"}, null, procFldNameArray);
+                        new String[]{"name is not null"}, null, PROC_FLD_NAME.split("\\|"));
                 if (!LPPlatform.LAB_FALSE.equalsIgnoreCase(procInfo[0][0].toString())){
                     procedure = LPJson.convertArrayRowToJSONObject(procFldNameArray, procInfo[0]);
                     procedure.put(LABEL_PROC_SCHEMA, curProc);
 
-                    if (!LPFrontEnd.servletStablishDBConection(request, response)){return;}           
+                    if (!LPFrontEnd.servletStablishDBConection(request, response)){return;}      
+                    
                     Object[][] procEvent = Rdbms.getRecordFieldsByFilter(curProc.toString()+"-config", "procedure_events", 
                             new String[]{"role_name"}, new String[]{rolName}, 
                             procEventFldNameArray, new String[]{"branch_level", "order_number"});
@@ -126,7 +121,7 @@ public class AppProcedureListAPI extends HttpServlet {
                             JSONObject procEventJson = new JSONObject();
                             procEventJson = LPJson.convertArrayRowToJSONObject(procEventFldNameArray, procEvent1);
 
-                            JSONObject procEventSopDetail = procEventSops(internalUserID, curProc.toString(), procedure, procEventJson, procEventFldNameArray, procEvent1);
+                            JSONObject procEventSopDetail = procEventSops(token.getPersonName(), curProc.toString(), procedure, procEventJson, procEventFldNameArray, procEvent1);
 
                             procEventJson.put(LABEL_ARRAY_SOPS, procEventSopDetail);
                             procEvents.add(procEventJson);
@@ -141,7 +136,6 @@ public class AppProcedureListAPI extends HttpServlet {
             JSONObject proceduresList = new JSONObject();
             proceduresList.put(LABEL_ARRAY_PROCEDURES, procedures);
             LPFrontEnd.servletReturnSuccess(request, response, proceduresList);
-            return;  
         }
     }
     
@@ -153,63 +147,53 @@ public class AppProcedureListAPI extends HttpServlet {
         Boolean userHasNotCompletedSOP = false;
 
         Boolean isProcedureSopEnable = userSop.isProcedureSopEnable((String) curProc);
-        if (!isProcedureSopEnable) procedure.put("SopCertification", "Disabled");                 
+        if (!isProcedureSopEnable) procedure.put(LABEL_SOP_CERTIFICATION, LABEL_VALUE_SOP_CERTIFICATION_DISABLE);                 
         if (isProcedureSopEnable){
             notCompletedUserSOP = userSop.getNotCompletedUserSOP(internalUserID, curProc, new String[]{"sop_name"});
             notCompletedUserSOP1D = LPArray.array2dTo1d(notCompletedUserSOP);
-            //procEventFldNameArray = LPArray.addValueToArray1D(procEventFldNameArray, FIELD_NAME_SOP);
         }        
-        
         JSONObject procEventSopDetail = new JSONObject();
         String procEventSops = null;
         Integer sopFieldposic = LPArray.valuePosicInArray(procEventFldNameArray, FIELD_NAME_SOP);
         if (sopFieldposic>-1){
             procEventSops = (String) procEvent1[sopFieldposic];}
         
-        if (procEventSops==null){
-            userHasNotCompletedSOP = false;
+        if ( (procEventSops==null) || ( (procEventSops!=null) && ("".equals(procEventSops)) ) ){
             procEventJson.put(LABEL_SOPS_PASSED, true);
-            procEventSopDetail.put(LABEL_ARRAY_SOP_LIST, LABEL_SOP_TOTAL_NO_SOPS);
+            userHasNotCompletedSOP = false;
+            if ( (procEventSops==null) ) {
+                userHasNotCompletedSOP = false;
+                procEventJson.put(LABEL_SOPS_PASSED, true);
+            }
+            procEventSopDetail.put(LABEL_ARRAY_SOP_LIST, new JSONArray());
+            procEventSopDetail.put(LABEL_ARRAY_SOP_LIST_INFO, LABEL_SOP_TOTAL_NO_SOPS);
             procEventSopDetail.put(LABEL_SOP_TOTAL, 0);
             procEventSopDetail.put(LABEL_SOP_TOTAL_COMPLETED, 0);
             procEventSopDetail.put(LABEL_SOP_TOTAL_NOT_COMPLETED, 0);
         }else{
-            if ("".equals(procEventSops)){
-                procEventJson.put(LABEL_SOPS_PASSED, true);
-                userHasNotCompletedSOP = false;
-                procEventSopDetail.put(LABEL_ARRAY_SOP_LIST, LABEL_SOP_TOTAL_NO_SOPS);
-                procEventSopDetail.put(LABEL_SOP_TOTAL, 0);
-                procEventSopDetail.put(LABEL_SOP_TOTAL_COMPLETED, 0);
-                procEventSopDetail.put(LABEL_SOP_TOTAL_NOT_COMPLETED, 0);
-            }else{
-                Object[] procEventSopsArr = procEventSops.split("\\|");
-                String sopListStr = "";
-                Integer sopTotalNotCompleted = 0;
-                Integer sopTotalCompleted = 0;
-                Integer sopTotal = 0;
-                JSONArray procEventSopSummary = new JSONArray();   
-                for (Object curProcEvSop: procEventSopsArr){
-                    JSONObject procEventSopDetailJson = new JSONObject();   
-                    sopTotal++;
-                    procEventSopDetailJson.put("sop_name", curProcEvSop);
-                    if (LPArray.valuePosicInArray(notCompletedUserSOP1D, curProcEvSop)==-1) {
-                        sopTotalNotCompleted++;
-                        sopListStr=sopListStr+curProcEvSop.toString()+"*NO, ";
-                        userHasNotCompletedSOP = true;
-                        procEventSopDetailJson.put("sop_completed", false);
-                    }else{
-                        sopTotalCompleted++;
-                        procEventSopDetailJson.put("sop_completed", true);
-                    }
-                    procEventSopSummary.add(procEventSopDetailJson);
-                    //procEventSopSummary.add(sopTotal, procEventSopDetailJson);
+            Object[] procEventSopsArr = procEventSops.split("\\|");
+            String sopListStr = "";
+            Integer sopTotalNotCompleted = 0;                Integer sopTotalCompleted = 0;                
+            JSONArray procEventSopSummary = new JSONArray();   
+            for (Object curProcEvSop: procEventSopsArr){
+                JSONObject procEventSopDetailJson = new JSONObject();   
+                procEventSopDetailJson.put(LABEL_SOP_NAME, curProcEvSop);
+                if (LPArray.valuePosicInArray(notCompletedUserSOP1D, curProcEvSop)==-1) {
+                    sopTotalNotCompleted++;
+                    sopListStr=sopListStr+curProcEvSop.toString()+"*NO, ";
+                    userHasNotCompletedSOP = true;
+                    procEventSopDetailJson.put(LABEL_SOP_TOTAL_COMPLETED, false);
+                }else{
+                    sopTotalCompleted++;
+                    procEventSopDetailJson.put(LABEL_SOP_TOTAL_COMPLETED, true);
                 }
-                procEventJson.put(LABEL_SOPS_PASSED, !userHasNotCompletedSOP);
-                procEventSopDetail.put(LABEL_SOP_TOTAL, sopTotal);
-                procEventSopDetail.put(LABEL_SOP_TOTAL_COMPLETED, sopTotalCompleted);
-                procEventSopDetail.put(LABEL_SOP_TOTAL_NOT_COMPLETED, sopTotalNotCompleted);
-                procEventSopDetail.put(LABEL_ARRAY_SOP_LIST, procEventSopSummary);
+                procEventSopSummary.add(procEventSopDetailJson);
             }
+            procEventJson.put(LABEL_SOPS_PASSED, !userHasNotCompletedSOP);
+            procEventSopDetail.put(LABEL_SOP_TOTAL, procEventSopsArr.length);
+            procEventSopDetail.put(LABEL_SOP_TOTAL_COMPLETED, sopTotalCompleted);
+            procEventSopDetail.put(LABEL_SOP_TOTAL_NOT_COMPLETED, sopTotalNotCompleted);
+            procEventSopDetail.put(LABEL_ARRAY_SOP_LIST, procEventSopSummary);
         }        
         return procEventSopDetail;
     }
@@ -220,13 +204,14 @@ public class AppProcedureListAPI extends HttpServlet {
      *
      * @param request servlet request
      * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)  {
+        try{
         processRequest(request, response);
+        }catch(ServletException|IOException e){
+            LPFrontEnd.servletReturnResponseError(request, response, e.getMessage(), new Object[]{}, null);
+        }
     }
 
     /**
@@ -234,13 +219,14 @@ public class AppProcedureListAPI extends HttpServlet {
      *
      * @param request servlet request
      * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)  {
+        try{
         processRequest(request, response);
+        }catch(ServletException|IOException e){
+            LPFrontEnd.servletReturnResponseError(request, response, e.getMessage(), new Object[]{}, null);
+        }
     }
 
     /**

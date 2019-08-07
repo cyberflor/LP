@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import LabPLANET.utilities.LPPlatform;
 import functionalJava.testingScripts.LPTestingOutFormat;
 import LabPLANET.utilities.LPArray;
+import LabPLANET.utilities.LPFrontEnd;
 import functionalJava.testingScripts.TestingAssert;
 import functionalJava.testingScripts.TestingAssertSummary;
 import java.util.HashMap;
@@ -59,8 +60,7 @@ public class TestingResultCheckSpecQuantitative extends HttpServlet {
             String table2Header = csvHeaderTags.get(LPTestingOutFormat.FILEHEADER_TABLE_NAME_TAG_NAME+"2").toString();            
             String fileContentTable2 = LPTestingOutFormat.createTableWithHeader(table2Header, numEvaluationArguments);
 
-            Integer iLines =numHeaderLines; 
-            for (iLines=iLines;iLines<csvFileContent.length;iLines++){
+            for (Integer iLines=numHeaderLines;iLines<csvFileContent.length;iLines++){
                 tstAssertSummary.increaseTotalTests();
                 TestingAssert tstAssert = new TestingAssert(csvFileContent[iLines], numEvaluationArguments);
                 String schemaName = "";
@@ -144,13 +144,14 @@ public class TestingResultCheckSpecQuantitative extends HttpServlet {
      *
      * @param request servlet request
      * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)  {
+        try{
         processRequest(request, response);
+        }catch(ServletException|IOException e){
+            LPFrontEnd.servletReturnResponseError(request, response, e.getMessage(), new Object[]{}, null);
+        }
     }
 
     /**
@@ -158,13 +159,14 @@ public class TestingResultCheckSpecQuantitative extends HttpServlet {
      *
      * @param request servlet request
      * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)  {
+        try{
         processRequest(request, response);
+        }catch(ServletException|IOException e){
+            LPFrontEnd.servletReturnResponseError(request, response, e.getMessage(), new Object[]{}, null);
+        }
     }
 
     /**

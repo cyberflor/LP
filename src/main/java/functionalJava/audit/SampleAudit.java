@@ -50,8 +50,7 @@ public class SampleAudit {
         String[] fieldNames = new String[0];
         Object[] fieldValues = new Object[0];
         
-        Requirement req = new Requirement();
-        Object[][] procedureInfo = req.getProcedureBySchemaPrefix(schemaPrefix);
+        Object[][] procedureInfo = Requirement.getProcedureBySchemaPrefix(schemaPrefix);
         if (!(procedureInfo[0][3].toString().equalsIgnoreCase(LPPlatform.LAB_FALSE))){
             fieldNames = LPArray.addValueToArray1D(fieldNames, "procedure");
             fieldValues = LPArray.addValueToArray1D(fieldValues, procedureInfo[0][0]);
@@ -121,8 +120,7 @@ public class SampleAudit {
         String[] fieldNames = new String[0];
         Object[] fieldValues = new Object[0];
         
-        Requirement req = new Requirement();
-        Object[][] procedureInfo = req.getProcedureBySchemaPrefix(schemaPrefix);
+        Object[][] procedureInfo = Requirement.getProcedureBySchemaPrefix(schemaPrefix);
         if (!(procedureInfo[0][3].toString().equalsIgnoreCase(LPPlatform.LAB_FALSE))){
             fieldNames = LPArray.addValueToArray1D(fieldNames, "procedure");
             fieldValues = LPArray.addValueToArray1D(fieldValues, procedureInfo[0][0]);
@@ -188,8 +186,7 @@ public class SampleAudit {
         String[] fieldNames = new String[0];
         Object[] fieldValues = new Object[0];
         
-        Requirement req = new Requirement();
-        Object[][] procedureInfo = req.getProcedureBySchemaPrefix(schemaPrefix);
+        Object[][] procedureInfo = Requirement.getProcedureBySchemaPrefix(schemaPrefix);
         if (!(procedureInfo[0][3].toString().equalsIgnoreCase(LPPlatform.LAB_FALSE))){
             fieldNames = LPArray.addValueToArray1D(fieldNames, "procedure");
             fieldValues = LPArray.addValueToArray1D(fieldValues, procedureInfo[0][0]);
@@ -260,8 +257,7 @@ public class SampleAudit {
         String[] fieldNames = new String[0];
         Object[] fieldValues = new Object[0];
         
-        Requirement req = new Requirement();
-        Object[][] procedureInfo = req.getProcedureBySchemaPrefix(schemaPrefix);
+        Object[][] procedureInfo = Requirement.getProcedureBySchemaPrefix(schemaPrefix);
         if (!(procedureInfo[0][3].toString().equalsIgnoreCase(LPPlatform.LAB_FALSE))){
             fieldNames = LPArray.addValueToArray1D(fieldNames, "procedure");
             fieldValues = LPArray.addValueToArray1D(fieldValues, procedureInfo[0][0]);
@@ -351,7 +347,7 @@ public class SampleAudit {
  * @param sampleId Integer - sampleId
  * @return 
  */    
-    public String sampleJsonString( String schemaPrefix, Integer sampleId) {
+    public String _sampleJsonString( String schemaPrefix, Integer sampleId) {
         String jsonStructure = null;
         String schemaName = "data";                
                
@@ -364,10 +360,7 @@ public class SampleAudit {
         FileWriter writer = null;
         try {
                 writer = new FileWriter("C:\\home\\judas\\logs\\sample.txt");
-            } catch (IOException e) {
-            // TODO Auto-generated catch block
-
-            }
+            } catch (IOException e) { return ""; }
         try (JsonGenerator gen = Json.createGenerator(writer)) {
 //            String query = " select " + sampleTblFlds + " from " + schemaName + ".sample where sample_id="+sampleId;            
 //            Object[][] recordFieldsByFilter = Rdbms.getRecordFieldsByFilter(schemaName, "sample", new String[]{"sample_id"}, new Object[]{sampleId}, sampleTblFldsArr);
@@ -428,14 +421,11 @@ object.element("def", array);
 /**
  * Under development!!!! Example on how to build a json structure using JsonGenerator.
  */    
-    public void jsonToFile(){
+    public void _jsonToFile(){
         FileWriter writer = null;
             try {
                 writer = new FileWriter("C:\\home\\judas\\logs\\sample.txt");
-            } catch (IOException e) {
-            // TODO Auto-generated catch block
-
-            }
+            } catch (IOException e) {     return;       }
         try (JsonGenerator gen = Json.createGenerator(writer)) {
             gen.writeStartObject("Sample").write("sample_id", "Sample Audit Info")
                     .writeStartArray("def");

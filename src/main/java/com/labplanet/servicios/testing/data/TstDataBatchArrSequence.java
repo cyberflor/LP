@@ -7,6 +7,7 @@ package com.labplanet.servicios.testing.data;
 
 import functionalJava.testingScripts.LPTestingOutFormat;
 import LabPLANET.utilities.LPArray;
+import LabPLANET.utilities.LPFrontEnd;
 import databases.Rdbms;
 import functionalJava.batch.BatchArray;
 import java.io.IOException;
@@ -145,10 +146,9 @@ public class TstDataBatchArrSequence extends HttpServlet {
                 
                 out.println("The Sample 4 was found in " + mb.searchStringContent("Sample 4").size() + " positions." + "<br>");
                 
-                for (Object al: mb.searchStringContent("Sample 4") )
-                {
+                mb.searchStringContent("Sample 4").forEach((al) -> {
                     System.out.println("    " + al + "<br>");
-                }
+                });
                 
                 out.println("The Sample 1 was found in " + mb.searchStringContent("Sample 1").size() + " positions." + "<br>");
                 
@@ -156,10 +156,9 @@ public class TstDataBatchArrSequence extends HttpServlet {
                 
                 out.println("The Sample 4 was found in " + mb.searchStringContent("Sample 4").size() + " positions." + "<br>");
                 
-                for (Object al: mb.searchStringContent("Sample 4") )
-                {
+                mb.searchStringContent("Sample 4").forEach((al) -> {
                     out.println("    " + al + "<br>");
-                }
+                });
                 batchContent = myBatchArray[0].getBatchContent();
                 
                 batchContent1d = LPArray.array2dTo1d(batchContent);
@@ -199,13 +198,14 @@ public class TstDataBatchArrSequence extends HttpServlet {
      *
      * @param request servlet request
      * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)  {
+        try{
         processRequest(request, response);
+        }catch(ServletException|IOException e){
+            LPFrontEnd.servletReturnResponseError(request, response, e.getMessage(), new Object[]{}, null);
+        }
     }
 
     /**
@@ -213,13 +213,14 @@ public class TstDataBatchArrSequence extends HttpServlet {
      *
      * @param request servlet request
      * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)  {
+        try{
         processRequest(request, response);
+        }catch(ServletException|IOException e){
+            LPFrontEnd.servletReturnResponseError(request, response, e.getMessage(), new Object[]{}, null);
+        }
     }
 
     /**

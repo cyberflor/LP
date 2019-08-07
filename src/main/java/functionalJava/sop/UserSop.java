@@ -164,9 +164,7 @@ public class UserSop {
             fieldsToReturn = LPArray.addValueToArray1D(fieldsToReturn, FIELDNAME_SOP_ID);
             fieldsToReturn = LPArray.addValueToArray1D(fieldsToReturn, FIELDNAME_SOP_NAME);
         }
-                
-        Object[][] getUserProfileFieldValues = getUserProfileFieldValues(filterFieldName, filterFieldValue, fieldsToReturn, (String[]) userSchemas);   
-        return getUserProfileFieldValues;
+        return getUserProfileFieldValues(filterFieldName, filterFieldValue, fieldsToReturn, (String[]) userSchemas);   
 /*
         Integer numLines=getUserProfileFieldValues.length;
 
@@ -401,7 +399,7 @@ public class UserSop {
      * @return
      */
     public Object[] addSopToUserByName( String schemaName, String userInfoId, String sopName){
-        return addSopToUserInternalLogic(schemaName, userInfoId, FIELDNAME_SOP_ID, sopName);
+        return addSopToUserInternalLogic(schemaName, userInfoId, FIELDNAME_SOP_NAME, sopName);
     }    
 
     /**
@@ -412,7 +410,7 @@ public class UserSop {
      * @param sopIdFieldValue
      * @return
      */
-    public Object[] addSopToUserInternalLogic( String schemaName, String userInfoId, String sopIdFieldName, Object sopIdFieldValue){
+    private Object[] addSopToUserInternalLogic( String schemaName, String userInfoId, String sopIdFieldName, Object sopIdFieldValue){
         
         String schemaDataName = "data";
         schemaName = LPPlatform.buildSchemaName(schemaName, schemaDataName);
@@ -449,8 +447,7 @@ public class UserSop {
      * @return
      */
     public String[] _notRequiredgetUserSopFilter(String userInfoId){
-        String[] theSops = null;        
-        return theSops;
+        return new String[0];        
     }
     
     public boolean isProcedureSopEnable(String procedureName){

@@ -162,10 +162,9 @@ public class Role {
      * @param dbUserName
      * @return
      */
-    public Object[][] getInternalUser( String dbUserName) {
-        Object[][] recordFieldsByFilter = Rdbms.getRecordFieldsByFilter("app", "users", new String[]{"user_name"}, new Object[]{dbUserName},
+    public static final Object[][] getInternalUser( String dbUserName) {
+        return Rdbms.getRecordFieldsByFilter("app", "users", new String[]{"user_name"}, new Object[]{dbUserName},
                 new String[]{"person_name"});        
-        return recordFieldsByFilter;
     }
     
     

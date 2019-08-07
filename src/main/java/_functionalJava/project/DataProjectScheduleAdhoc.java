@@ -145,9 +145,7 @@ public class DataProjectScheduleAdhoc {
         //Cursor cursor = this.db.query(TABLE_PROJECT, new String[] { "*"},
         //  condition + " ORDER BY pro_dateConfirm ASC" , null, null, null, null); 		
           //condition + "and (pro_finalTecnico = 'null' OR pro_finalTecnico = 'F') AND pro_dateConfirm <> 'null' ORDER BY pro_dateConfirm ASC" , null, null, null, null);
-        List<DataProjectSchedule>  proj = setProjectSchedulerFromDb(projectSchedInfo);
-          
-        return proj;    	    	
+        return setProjectSchedulerFromDb(projectSchedInfo);
     }   
     
     /**
@@ -183,9 +181,8 @@ public class DataProjectScheduleAdhoc {
      * @throws SQLException
      */
     @SuppressWarnings("empty-statement")
-    public Object[] importHolidaysCalendarSchedule( String schemaName, String calendarCode, String pName, Integer projSchedId) throws SQLException{
-        
-        String tableName = "project_schedule";
+    public Object[] importHolidaysCalendarSchedule( String schemaName, String calendarCode, String pName, Integer projSchedId) throws SQLException{        
+        //String tableName = "project_schedule";
         String conflictDetail = "This day was converted on holidays";
         Object[] diagn = new String[6];
         diagn[0] = ""; diagn[1] = ""; diagn[2] = ""; diagn[4] = ""; diagn[5] = "";
@@ -204,7 +201,7 @@ public class DataProjectScheduleAdhoc {
         existsRecord = Rdbms.existsRecord(schemaNameData, "project_schedule",  new String[]{"project", "id"}, new Object[]{pName, projSchedId});
         if (LPPlatform.LAB_FALSE.equalsIgnoreCase(existsRecord[0].toString())){ return existsRecord;}
 
-        Object[] newProjSchedRecursive=null;
+        Object[] newProjSchedRecursive=new Object[0];
         if (holidaysCalendarDates.length>0){
             newProjSchedRecursive = Rdbms.insertRecordInTable(schemaNameData, "project_schedule_recursive", 
                     new String[]{"project", "project_schedule_id", "rule", "is_holidays"},
@@ -220,7 +217,7 @@ public class DataProjectScheduleAdhoc {
             Date calDate = (Date) holidaysCalendarDate[1]; //String s = cal.getTime().toString();
             s = format1.format(calDate.getTime());            
             datesStr=datesStr+s+"|";
-            newProjSchedRecursive = Rdbms.insertRecordInTable(schemaNameData, "project_schedule_item", 
+            Rdbms.insertRecordInTable(schemaNameData, "project_schedule_item", 
                     new String[]{"project", "project_schedule_id", "project_sched_recursive_id", "date", "is_holidays"},
                     new Object[]{pName, projSchedId, projRecursiveId, calDate, true});
             Object[][] itemsSameDay = Rdbms.getRecordFieldsByFilter(schemaNameData, "project_schedule_item", 
@@ -272,7 +269,7 @@ public class DataProjectScheduleAdhoc {
         if (LPArray.valueInArray(fieldName, "end_date")){
             endDate = (Calendar) fieldValue[LPArray.valuePosicInArray(fieldName, "end_date")];
         }      
-        Object[][] projectInfo = null;
+        Object[][] projectInfo = new Object[0][0];
         if (startDate==null || endDate==null){
             projectInfo = Rdbms.getRecordFieldsByFilter(schemaName, tableName, new String[]{"project", "id"}, new Object[]{pName, projSchedId}, new String[]{"project", "start_date", "end_date", "end_date"});
             if (startDate==null){
@@ -334,9 +331,7 @@ public class DataProjectScheduleAdhoc {
                 fieldValues=LPArray.addValueToArray1D(fieldValues, true);
                 fieldValues=LPArray.addValueToArray1D(fieldValues, conflictDetail);
             }         
-            newProjSchedRecursive = Rdbms.insertRecordInTable(schemaName, "project_schedule_item", 
-                    fieldNames,    
-                    fieldValues);            
+            Rdbms.insertRecordInTable(schemaName, "project_schedule_item", fieldNames, fieldValues);            
 
         }
         diagn[3]="TRUE"; diagn[5]=datesStr;

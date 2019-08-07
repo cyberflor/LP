@@ -17,7 +17,6 @@ import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Arrays;
-import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -67,17 +66,7 @@ public class sampleAnalysisResultAPI extends HttpServlet {
         String actionName = request.getParameter("actionName");
         String finalToken = request.getParameter("finalToken");                   
         
-        Token token = new Token();
-        String[] tokenParams = token.tokenParamsList();
-        String[] tokenParamsValues = token.validateToken(finalToken, tokenParams);
-
-        String dbUserName = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, Token.TOKEN_PARAM_USERDB)];
-        String dbUserPassword = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, Token.TOKEN_PARAM_USERPW)];
-        String internalUserID = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, Token.TOKEN_PARAM_INTERNAL_USERID)];         
-        String userRole = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, Token.TOKEN_PARAM_USER_ROLE)];                     
-//        String appSessionIdStr = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, Token.TOKEN_PARAM_APP_SESSION_ID)];
-//        String appSessionStartedDate = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, Token.TOKEN_PARAM_APP_SESSION_STARTED_DATE)];       
-        String eSign = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, Token.TOKEN_PARAM_USER_ESIGN)];            
+        Token token = new Token(finalToken);
         
         Object[] procActionRequiresUserConfirmation = LPPlatform.procActionRequiresUserConfirmation(schemaPrefix, actionName);
         if (LPPlatform.LAB_TRUE.equalsIgnoreCase(procActionRequiresUserConfirmation[0].toString())){     
@@ -101,7 +90,7 @@ public class sampleAnalysisResultAPI extends HttpServlet {
         if (LPPlatform.LAB_TRUE.equalsIgnoreCase(procActionRequiresUserConfirmation[0].toString())){    
             String userToVerify = request.getParameter("userToVerify");                   
             String passwordToVerify = request.getParameter("passwordToVerify");    
-            if ( (!userToVerify.equalsIgnoreCase(dbUserName)) || (!passwordToVerify.equalsIgnoreCase(dbUserPassword)) ){
+            if ( (!userToVerify.equalsIgnoreCase(token.getUserName())) || (!passwordToVerify.equalsIgnoreCase(token.getUsrPw())) ){
                 errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
                 errObject = LPArray.addValueToArray1D(errObject, "API Error Message: User Verification returned error, the user or the password are not correct.");                    
                 Object[] errMsg = LPFrontEnd.responseError(errObject, language, "");
@@ -112,7 +101,7 @@ public class sampleAnalysisResultAPI extends HttpServlet {
         
         if (LPPlatform.LAB_TRUE.equalsIgnoreCase(procActionRequiresEsignConfirmation[0].toString())){                                                      
             String eSignToVerify = request.getParameter("eSignToVerify");                   
-            if (!eSignToVerify.equalsIgnoreCase(eSign)) {
+            if (!eSignToVerify.equalsIgnoreCase(token.geteSign())) {
                 errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
                 errObject = LPArray.addValueToArray1D(errObject, "API Error Message: eSign Verification returned error, the value is not correct.");                    
                 Object[] errMsg = LPFrontEnd.responseError(errObject, language, "");
@@ -132,8 +121,6 @@ public class sampleAnalysisResultAPI extends HttpServlet {
         //ResponseEntity<String121> responsew;        
         
         try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */                     
-
             Object[] actionEnabled = LPPlatform.procActionEnabled(schemaPrefix, actionName);
             if (LPPlatform.LAB_FALSE.equalsIgnoreCase(actionEnabled[0].toString())){
                 Object[] errMsg = LPFrontEnd.responseError(actionEnabled, language, schemaPrefix);
@@ -141,7 +128,7 @@ public class sampleAnalysisResultAPI extends HttpServlet {
                 Rdbms.closeRdbms(); 
                 return ;               
             }            
-            actionEnabled = LPPlatform.procUserRoleActionEnabled(schemaPrefix, userRole, actionName);
+            actionEnabled = LPPlatform.procUserRoleActionEnabled(schemaPrefix, token.getUserRole(), actionName);
             if (LPPlatform.LAB_FALSE.equalsIgnoreCase(actionEnabled[0].toString())){            
                 Object[] errMsg = LPFrontEnd.responseError(actionEnabled, language, schemaPrefix);
                 response.sendError((int) errMsg[0], (String) errMsg[1]);    
@@ -170,7 +157,7 @@ public class sampleAnalysisResultAPI extends HttpServlet {
                     String resultIdStr = request.getParameter("resultId");
                     resultId = Integer.parseInt(resultIdStr);       
                     rawValueResult = request.getParameter("rawValueResult");
-                    dataSample = smp.sampleAnalysisResultEntry(schemaPrefix, internalUserID, resultId, rawValueResult, userRole);
+                    dataSample = smp.sampleAnalysisResultEntry(schemaPrefix, token.getPersonName(), resultId, rawValueResult, token.getUserRole());
                     break;              
                 case "REVIEWRESULT":
                     mandatoryParamsAction = new String[]{"objectId"};
@@ -192,7 +179,7 @@ public class sampleAnalysisResultAPI extends HttpServlet {
                     if (objectLevel.equalsIgnoreCase("SAMPLE")){sampleId = objectId;}
                     if (objectLevel.equalsIgnoreCase("TEST")){testId = objectId;}
                     if (objectLevel.equalsIgnoreCase("RESULT")){resultId = objectId;}
-                    dataSample = smp.sampleResultReview(schemaPrefix, internalUserID, sampleId, testId, resultId, userRole);
+                    dataSample = smp.sampleResultReview(schemaPrefix, token.getPersonName(), sampleId, testId, resultId, token.getUserRole());
                     break;                       
                 case "CANCELRESULT":
                     mandatoryParamsAction = new String[]{"objectId"};
@@ -214,7 +201,7 @@ public class sampleAnalysisResultAPI extends HttpServlet {
                         if (objectLevel.equalsIgnoreCase("SAMPLE")){sampleId = objectId;}
                         if (objectLevel.equalsIgnoreCase("TEST")){testId = objectId;}
                         if (objectLevel.equalsIgnoreCase("RESULT")){resultId = objectId;}
-                        dataSample = smp.sampleAnalysisResultCancel(schemaPrefix, internalUserID, sampleId, testId, resultId, userRole);
+                        dataSample = smp.sampleAnalysisResultCancel(schemaPrefix, token.getPersonName(), sampleId, testId, resultId, token.getUserRole());
                     break;   
                 case "UNREVIEWRESULT":   // No break then will take the same logic than the next one  
                 case "UNCANCELRESULT":
@@ -237,7 +224,7 @@ public class sampleAnalysisResultAPI extends HttpServlet {
                         if (objectLevel.equalsIgnoreCase("SAMPLE")){sampleId = objectId;}
                         if (objectLevel.equalsIgnoreCase("TEST")){testId = objectId;}
                         if (objectLevel.equalsIgnoreCase("RESULT")){resultId = objectId;}
-                        dataSample = smp.sampleAnalysisResultUnCancel(schemaPrefix, internalUserID, sampleId, testId, resultId, userRole);
+                        dataSample = smp.sampleAnalysisResultUnCancel(schemaPrefix, token.getPersonName(), sampleId, testId, resultId, token.getUserRole());
                     break;       
                 case "RESULT_CHANGE_UOM":
                     mandatoryParamsAction = new String[]{"resultId"};
@@ -254,7 +241,7 @@ public class sampleAnalysisResultAPI extends HttpServlet {
                     resultIdStr = request.getParameter("resultId");
                     resultId = Integer.parseInt(resultIdStr);     
                     String newUOM = request.getParameter("newUOM");
-                    dataSample = smp.sarChangeUom(schemaPrefix, resultId, newUOM, internalUserID, userRole);
+                    dataSample = smp.sarChangeUom(schemaPrefix, resultId, newUOM, token.getPersonName(), token.getUserRole());
                     break;       
                 default:      
                     //errObject = frontEnd.APIHandler.actionNotRecognized(errObject, actionName, response);
@@ -298,13 +285,14 @@ public class sampleAnalysisResultAPI extends HttpServlet {
      *
      * @param request servlet request
      * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)  {
+        try{
         processRequest(request, response);
+        }catch(ServletException|IOException e){
+            LPFrontEnd.servletReturnResponseError(request, response, e.getMessage(), new Object[]{}, null);
+        }
     }
 
     /**
@@ -312,13 +300,14 @@ public class sampleAnalysisResultAPI extends HttpServlet {
      *
      * @param request servlet request
      * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)  {
+        try{
         processRequest(request, response);
+        }catch(ServletException|IOException e){
+            LPFrontEnd.servletReturnResponseError(request, response, e.getMessage(), new Object[]{}, null);
+        }
     }
 
     /**

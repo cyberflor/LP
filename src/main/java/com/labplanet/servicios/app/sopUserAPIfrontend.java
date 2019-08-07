@@ -12,7 +12,6 @@ import LabPLANET.utilities.LPHttp;
 import databases.Rdbms;
 import databases.Token;
 import functionalJava.sop.UserSop;
-import functionalJava.testingScripts.LPTestingOutFormat;
 import functionalJava.user.UserProfile;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -20,7 +19,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.core.Response;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -29,6 +27,7 @@ import org.json.simple.JSONObject;
  * @author Administrator
  */
 public class sopUserAPIfrontend extends HttpServlet {
+    public static final String MANDATORY_PARAMS_MAIN_SERVLET="finalToken";
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -47,36 +46,22 @@ public class sopUserAPIfrontend extends HttpServlet {
         UserSop userSop = new UserSop();        
         
         try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-
                 String[] errObject = new String[]{"Servlet sampleAPI at " + request.getServletPath()};     
 
-                String[] mandatoryParams = new String[]{"finalToken"};
-                mandatoryParams = LPArray.addValueToArray1D(mandatoryParams, "finalToken");
-                Object[] areMandatoryParamsInResponse = LPHttp.areMandatoryParamsInApiRequest(request, mandatoryParams);                        
+                String[] mandatoryParams = new String[]{""};
+                Object[] areMandatoryParamsInResponse = LPHttp.areMandatoryParamsInApiRequest(request, MANDATORY_PARAMS_MAIN_SERVLET.split("\\|"));                       
                 if (LPPlatform.LAB_FALSE.equalsIgnoreCase(areMandatoryParamsInResponse[0].toString())){
-                    errObject = LPArray.addValueToArray1D(errObject, "Error Status Code: "+HttpServletResponse.SC_BAD_REQUEST);
-                    errObject = LPArray.addValueToArray1D(errObject, "API Error Message: Mandatory fields missing");                    
-                    Object[] errMsg = LPFrontEnd.responseError(errObject, language, null);
-                    response.sendError((int) errMsg[0], (String) errMsg[1]);   
-                    Rdbms.closeRdbms(); 
-                    return ;  
-                }
-                String finalToken = request.getParameter("finalToken");                   
-
-                Token token = new Token();
-                String[] tokenParams = token.tokenParamsList();
-                String[] tokenParamsValues = token.validateToken(finalToken, tokenParams);
-
-                String dbUserName = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, Token.TOKEN_PARAM_USERDB)];
-                String dbUserPassword = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, Token.TOKEN_PARAM_USERPW)];
-                String internalUserID = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, Token.TOKEN_PARAM_INTERNAL_USERID)];         
-//                String userRole = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, Token.TOKEN_PARAM_USER_ROLE)];                     
+                    LPFrontEnd.servletReturnResponseError(request, response, 
+                        LPPlatform.API_ERRORTRAPING_MANDATORY_PARAMS_MISSING, new Object[]{areMandatoryParamsInResponse[1].toString()}, language);              
+                    return;          
+                }                   
+                String finalToken = request.getParameter(globalAPIsParams.REQUEST_PARAM_FINAL_TOKEN);                   
+                Token token = new Token(finalToken);
 
                 if (!LPFrontEnd.servletStablishDBConection(request, response)){return;}   
                
                 UserProfile usProf = new UserProfile();
-                String[] allUserProcedurePrefix = LPArray.convertObjectArrayToStringArray(usProf.getAllUserProcedurePrefix(dbUserName));
+                String[] allUserProcedurePrefix = LPArray.convertObjectArrayToStringArray(usProf.getAllUserProcedurePrefix(token.getUserName()));
                 if (LPPlatform.LAB_FALSE.equalsIgnoreCase(allUserProcedurePrefix[0])){
                     Object[] errMsg = LPFrontEnd.responseError(allUserProcedurePrefix, language, null);
                     response.sendError((int) errMsg[0], (String) errMsg[1]);   
@@ -86,11 +71,10 @@ public class sopUserAPIfrontend extends HttpServlet {
                 Integer numPendingSOPs = 0;
                 String[] fieldsToRetrieve = new String[]{"sop_id"};
                 for (String curProc: allUserProcedurePrefix){
-                    Object[][] userProcSops = userSop.getNotCompletedUserSOP(internalUserID, curProc, fieldsToRetrieve);       
-                    if (userProcSops.length>0){
-                        if (!LPPlatform.LAB_FALSE.equalsIgnoreCase(userProcSops[0][0].toString())){
-                            numPendingSOPs=numPendingSOPs+userProcSops.length;}                            
-                        }
+                    Object[][] userProcSops = userSop.getNotCompletedUserSOP(token.getPersonName(), curProc, fieldsToRetrieve);       
+                    if ( (userProcSops.length>0) &&
+                       (!LPPlatform.LAB_FALSE.equalsIgnoreCase(userProcSops[0][0].toString())) ){
+                            numPendingSOPs=numPendingSOPs+userProcSops.length;}                                                    
                 }
                    JSONArray sopOptions = new JSONArray(); 
                     
@@ -134,7 +118,6 @@ public class sopUserAPIfrontend extends HttpServlet {
                     sopElement.put("label_en", "SOPs");
                     sopElement.put("label_es", "P.N.T.");
                     sopElement.put("schemaPrefix", "process-us");
-                    //SopElement.add(sopOption);
                     
                     JSONArray arrFinal = new JSONArray();
                     arrFinal.add(sopElement);                    
@@ -148,13 +131,14 @@ public class sopUserAPIfrontend extends HttpServlet {
      *
      * @param request servlet request
      * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)  {
+        try{
         processRequest(request, response);
+        }catch(ServletException|IOException e){
+            LPFrontEnd.servletReturnResponseError(request, response, e.getMessage(), new Object[]{}, null);
+        }
     }
 
     /**
@@ -162,13 +146,14 @@ public class sopUserAPIfrontend extends HttpServlet {
      *
      * @param request servlet request
      * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)  {
+        try{
         processRequest(request, response);
+        }catch(ServletException|IOException e){
+            LPFrontEnd.servletReturnResponseError(request, response, e.getMessage(), new Object[]{}, null);
+        }
     }
 
     /**

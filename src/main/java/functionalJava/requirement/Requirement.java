@@ -19,7 +19,7 @@ public class Requirement {
      * @param schemaPrefix
      * @return
      */
-    public Object[][] getProcedureBySchemaPrefix( String schemaPrefix){
+    public static final Object[][] getProcedureBySchemaPrefix( String schemaPrefix){
                 
         String schemaName = "requirements";
         String tableName = "procedure";
@@ -27,8 +27,6 @@ public class Requirement {
         Object[] whereFldValue = new Object[]{schemaPrefix};
         String[] fieldsToRetrieve = new String[]{"name","version","name","version"};
         
-        Object[][] diagnoses = Rdbms.getRecordFieldsByFilter(schemaName, tableName, whereFldName, whereFldValue, fieldsToRetrieve);        
-        
-        return diagnoses;
+        return Rdbms.getRecordFieldsByFilter(schemaName, tableName, whereFldName, whereFldValue, fieldsToRetrieve);        
     }    
 }

@@ -5,6 +5,7 @@
  */
 package functionalJava.requirement;
 
+import LabPLANET.utilities.LPPlatform;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ResourceBundle;
@@ -14,6 +15,7 @@ import java.util.ResourceBundle;
  * @author Administrator
  */
 public class RequirementLogFile {
+    private RequirementLogFile(){    throw new IllegalStateException("Utility class");}    
     
     static final void requirementLogFileNew(String procedureName){
         String newLogFileName = "Requirements.txt";        
@@ -23,8 +25,8 @@ public class RequirementLogFile {
         String logFile = logDir + "/" + newLogFileName;
         logFile = logFile.replace("/", "\\");        
     }
-    static final void requirementsLogEntry(String logFile, String functionName, String entryValue, Integer numTabs) throws IOException{
-
+    public static final void requirementsLogEntry(String logFile, String functionName, String entryValue, Integer numTabs){ 
+        String methodName = LPPlatform.getClassMethodName();
         FileWriter fw = null;  
         try{
             fw = new FileWriter(logFile, true);                  
@@ -34,14 +36,13 @@ public class RequirementLogFile {
                     newEntry = newEntry + "     ";
                 }
             }
-            newEntry = newEntry + functionName + ": " + entryValue + "\n";            
+            newEntry = newEntry + methodName + ": " + entryValue + "\n";            
             fw.append(newEntry);
 
             fw.close();        
         }catch(IOException e){ 
             String errMessage = e.getMessage();
-            return;}
-//finally{fw.close();}
+        }
     }    
     
 }

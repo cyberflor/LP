@@ -360,9 +360,9 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
                 }
                 String[] parameters = new String[3];
                 parameters[0]=schemaConfigName;                parameters[1]=currFieldValue;                parameters[2]=specCode;
-                Object specialFunctionReturn = null;      
+                Object specialFunctionReturn = "ERROR";
                 try {                        
-                    specialFunctionReturn = method.invoke(this, (Object[]) parameters);
+                    if (method!=null){ specialFunctionReturn = method.invoke(this, (Object[]) parameters);}
                 } catch (IllegalAccessException | NullPointerException | IllegalArgumentException | InvocationTargetException ex) {
                     Logger.getLogger(ConfigSpecStructure.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -472,7 +472,8 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
                     parameters[0]=schemaConfigName;
                     parameters[1]=currFieldValue;
                     parameters[2]=newCode;
-                    Object specialFunctionReturn = method.invoke(this, (Object[]) parameters);      
+                    Object specialFunctionReturn = "ERROR";
+                    if (method!=null){ specialFunctionReturn = method.invoke(this, (Object[]) parameters); }     
                     if (specialFunctionReturn.toString().contains("ERROR")){
                         errorCode = "DataSample_SpecialFunctionReturnedERROR";
                         errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, currField);
@@ -660,8 +661,9 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
                 } catch (NoSuchMethodException | SecurityException ex) {
                     Logger.getLogger(ConfigSpecStructure.class.getName()).log(Level.SEVERE, null, ex);
                 }                        
-                try {
-                    Object specialFunctionReturn = method.invoke(this, schemaName);      
+                try {                    
+                    Object specialFunctionReturn = "ERROR";
+                    if (method!=null){ specialFunctionReturn = method.invoke(this, schemaName); }
                     if (specialFunctionReturn.toString().contains("ERROR")){
                         errorCode = "DataSample_SpecialFunctionReturnedERROR";
                         errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, currField);

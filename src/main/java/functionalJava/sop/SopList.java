@@ -135,10 +135,7 @@ public class SopList {
         fieldValues = LPArray.addValueToArray1D(fieldValues, userInfoId);
         
         //requires added_on        
-        Object[] diagnoses = Rdbms.insertRecordInTable(schemaConfigName, tableName, fieldNames, fieldValues);
-        
-        return diagnoses;
-        
+        return Rdbms.insertRecordInTable(schemaConfigName, tableName, fieldNames, fieldValues);
     }
     
     /**
@@ -214,9 +211,8 @@ public class SopList {
             newArray[arrayPosic++] = sopId;
             setSopListSopAssigned(newArray);
         }    
-        Object[] diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, "SopList_SopAssignedToSopList", 
+        return LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, "SopList_SopAssignedToSopList", 
                 new Object[]{sopId, Arrays.toString(currSopAssignedValue),""});
-        return diagnoses;
     }
      
 }

@@ -7,7 +7,7 @@ package com.labplanet.servicios.testing.config;;
 
 import LabPLANET.utilities.LPPlatform;
 import LabPLANET.utilities.LPArray;
-import functionalJava.materialSpec.ConfigSpecRule;
+import LabPLANET.utilities.LPFrontEnd;
 import functionalJava.materialSpec.DataSpec;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -41,13 +41,10 @@ public class TestingResultCheckSpecQualitative extends HttpServlet {
         DataSpec resChkSpec = new DataSpec();   
         TestingAssertSummary tstAssertSummary = new TestingAssertSummary();
 
-        String csvFileName = "noDBSchema_config_specQualitative_resultCheck.txt"; 
-                             
+        String csvFileName = "noDBSchema_config_specQualitative_resultCheck.txt";                              
+        Object[][] csvFileContent = LPTestingOutFormat.getCSVFileContent(csvFileName); 
         String csvPathName = LPTestingOutFormat.TESTING_FILES_PATH+csvFileName; 
-        String csvFileSeparator=LPTestingOutFormat.TESTING_FILES_FIELD_SEPARATOR;
         
-        Object[][] csvFileContent = LPArray.convertCSVinArray(csvPathName, csvFileSeparator); 
-                
         try (PrintWriter out = response.getWriter()) {
             String fileContent = LPTestingOutFormat.getHtmlStyleHeader(this.getClass().getSimpleName());
             HashMap<String, Object> csvHeaderTags = LPTestingOutFormat.getCSVHeader(LPArray.convertCSVinArray(csvPathName, "="));
@@ -55,16 +52,13 @@ public class TestingResultCheckSpecQualitative extends HttpServlet {
                 fileContent=fileContent+"There are missing tags in the file header: "+csvHeaderTags.get(LPPlatform.LAB_FALSE);                        
                 out.println(fileContent); 
                 return;
-            }            
-            
+            }                        
             Integer numEvaluationArguments = Integer.valueOf(csvHeaderTags.get(LPTestingOutFormat.FILEHEADER_NUM_EVALUATION_ARGUMENTS).toString());   
             Integer numHeaderLines = Integer.valueOf(csvHeaderTags.get(LPTestingOutFormat.FILEHEADER_NUM_HEADER_LINES_TAG_NAME).toString());   
-            //numEvaluationArguments=numEvaluationArguments+1;
             String table1Header = csvHeaderTags.get(LPTestingOutFormat.FILEHEADER_TABLE_NAME_TAG_NAME+"1").toString();               
             String fileContentTable1 = LPTestingOutFormat.createTableWithHeader(table1Header, numEvaluationArguments);
 
-            Integer iLines =numHeaderLines; 
-            for (iLines=iLines;iLines<csvFileContent.length;iLines++){
+            for (Integer iLines=numHeaderLines;iLines<csvFileContent.length;iLines++){
                 tstAssertSummary.increaseTotalTests();
                 TestingAssert tstAssert = new TestingAssert(csvFileContent[iLines], numEvaluationArguments);                
                 
@@ -118,13 +112,14 @@ public class TestingResultCheckSpecQualitative extends HttpServlet {
      *
      * @param request servlet request
      * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)  {
+        try{
         processRequest(request, response);
+        }catch(ServletException|IOException e){
+            LPFrontEnd.servletReturnResponseError(request, response, e.getMessage(), new Object[]{}, null);
+        }
     }
 
     /**
@@ -132,13 +127,14 @@ public class TestingResultCheckSpecQualitative extends HttpServlet {
      *
      * @param request servlet request
      * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)  {
+        try{
         processRequest(request, response);
+        }catch(ServletException|IOException e){
+            LPFrontEnd.servletReturnResponseError(request, response, e.getMessage(), new Object[]{}, null);
+        }
     }
 
     /**

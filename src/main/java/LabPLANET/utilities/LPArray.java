@@ -32,6 +32,9 @@ import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
@@ -47,7 +50,7 @@ import java.util.logging.Logger;
  */
 
 public class  LPArray {
-        
+    private LPArray(){    throw new IllegalStateException("Utility class");}    
     private static final String ENCRYPTION_KEY = "Bar12345Bar12345";
     private static final String ENCRYPTED_PREFIX = "encrypted_";
     private static final String ERRORTRAPPING_EXCEPTION= "LabPLANETPlatform_SpecialFunctionReturnedEXCEPTION";
@@ -73,11 +76,10 @@ public class  LPArray {
      * @param filename
      * @param fieldsSeparator
      * @return
-     * @throws IOException
      */
-    public static Object[] arrayToFile (String[] arrayHeader, String[] array, String filename, String fieldsSeparator) throws IOException{
-        Object[] diagnosis = new Object[0];
-        
+    public static Object[] _arrayToFile (String[] arrayHeader, String[] array, String filename, String fieldsSeparator){ 
+        return new Object[0];}
+/*        if ( (arrayHeader==null) || (filename==null) || (fieldsSeparator==null) ){return diagnosis;}
         BufferedWriter outputWriter = null;
         try{        
             if (arrayHeader!=null){
@@ -95,11 +97,16 @@ public class  LPArray {
             outputWriter.close();          
             return diagnosis;        
         }catch(IOException e){
-            outputWriter.close();
+            try {
+                if (outputWriter==null){return diagnosis;}
+                outputWriter.close();
+            } catch (IOException ex) {
+                Logger.getLogger(LPArray.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         return diagnosis;  
     }
-    
+*/    
     /**
      *
      * @param schemaName
@@ -127,15 +134,9 @@ public class  LPArray {
                     for (byte b: encrypted) {
                         sb.append((char)b);
                     }
-
                     // the encrypted String
                     String enc = sb.toString();
                     fieldValue[iFields] = enc;
-
-                    // decrypt the text
-    //                cipher.init(Cipher.DECRYPT_MODE, aesKey);
-    //                String decrypted = new String(cipher.doFinal(bb));
-    //                System.err.println("decrypted:" + decrypted);                
         }
                 catch(InvalidKeyException | NoSuchAlgorithmException | BadPaddingException | IllegalBlockSizeException | NoSuchPaddingException e){
                     String errorCode = ERRORTRAPPING_EXCEPTION;
@@ -159,40 +160,38 @@ public class  LPArray {
      */
     public static Object[][] decryptTableFieldArray(String schemaName, String tableName, String[] fieldName, Object[][] fieldValue){
         String key = ENCRYPTION_KEY; //"Bar12345Bar12345"; // 128 bit key
+        String keyStr="AES";
         String fieldsEncrypted = Parameter.getParameterBundle(schemaName.replace("\"", ""), ENCRYPTED_PREFIX+tableName);
         for (int iFields=0;iFields<fieldName.length;iFields++){
             if (fieldsEncrypted.contains(fieldName[iFields])){
-                try{                    
                     for (Object[] fieldValue1 : fieldValue) {
+                        fieldValue1[iFields] = "";  
                         String enc = fieldValue1[iFields].toString();
-                        if (enc==null){
-                            fieldValue1[iFields] = "";                            
-                        }else{
-                            // Create key and cipher
-                            Key aesKey = new SecretKeySpec(key.getBytes(), "AES");
-                            Cipher cipher = Cipher.getInstance("AES");
-                            // for decryption
-                            byte[] bb = new byte[enc.length()];
-                            for (int i=0; i<enc.length(); i++) {
-                                bb[i] = (byte) enc.charAt(i);
+                        if (enc!=null){
+                            try{                    
+                                // Create key and cipher for decryption
+                                Key aesKey = new SecretKeySpec(key.getBytes(), keyStr);
+                                Cipher cipher = Cipher.getInstance(keyStr);
+                                byte[] bb = new byte[enc.length()];
+                                for (int i=0; i<enc.length(); i++) {
+                                    bb[i] = (byte) enc.charAt(i);
+                                }
+                                // decrypt the text
+                                cipher.init(Cipher.DECRYPT_MODE, aesKey);
+                                String decrypted = new String(cipher.doFinal(bb));
+                                fieldValue1[iFields] = decrypted;
                             }
-                            // decrypt the text
-                            cipher.init(Cipher.DECRYPT_MODE, aesKey);
-                            String decrypted = new String(cipher.doFinal(bb));
-                            fieldValue1[iFields] = decrypted;
-                        }    
+                            catch(InvalidKeyException | NoSuchAlgorithmException | BadPaddingException | IllegalBlockSizeException | NoSuchPaddingException e){
+                                String errorCode = ERRORTRAPPING_EXCEPTION;
+                                Object[] errorDetailVariables = new Object[0];
+                                errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, e.getMessage());
+                                return LPArray.array1dTo2d(
+                                        trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables), errorDetailVariables.length);
+                            }    
                     }        
-        }
-                catch(InvalidKeyException | NoSuchAlgorithmException | BadPaddingException | IllegalBlockSizeException | NoSuchPaddingException e){
-                    String errorCode = ERRORTRAPPING_EXCEPTION;
-                    Object[] errorDetailVariables = new Object[0];
-                    errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, e.getMessage());
-                    return LPArray.array1dTo2d(
-                            trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables), errorDetailVariables.length);
                 }
             }
-        }
-        
+        }        
         return fieldValue;        
     }    
 
@@ -299,24 +298,19 @@ public class  LPArray {
         } catch (MalformedURLException ex) {
             Logger.getLogger(LPArray.class.getName()).log(Level.SEVERE, null, ex);
         }
-        final StringBuilder sb = new StringBuilder();
-
-        final char[] buf = new char[4096];
 
         final CharsetDecoder decoder = StandardCharsets.UTF_8.newDecoder()
                 .onMalformedInput(CodingErrorAction.REPORT);
         Integer columnsInCsv=0;
         String[] myArray1D = new String[0];
         try {
+            if (url==null){return new String[0][0];}
             final InputStream in = url.openStream();
             final InputStreamReader reader = new InputStreamReader(in, decoder);
             BufferedReader bufin = new BufferedReader(reader);
-            int nrChars;
             Integer numLines = 0;
             String line = null;
             String[][] myArray = new String[0][0];
-            
-            //while ((nrChars = reader.read(buf)) != -1){
             
             while((line = bufin.readLine()) != null) {            
                 numLines++;            
@@ -324,7 +318,6 @@ public class  LPArray {
                 String[] inArray = line.split(String.valueOf(csvSeparator));
                 if (inArray.length>columnsInCsv) {columnsInCsv = inArray.length;}                
             }
-                //sb.append(buf, 0, nrChars);
 
             myArray = new String[numLines][columnsInCsv];    
             for (Integer inumLines=0;inumLines<numLines;inumLines++){                
@@ -338,38 +331,6 @@ public class  LPArray {
             return array1dTo2d(myArray1D, 1);
         }
     }
-/*            
-        String[][] myArray = new String[0][0];
-        String[] myArray1D = new String[0];
-        Scanner scanIn = null;
-        Integer columnsInCsv=0;
-        String inputLine = ""; 
-        
-        try{
-            scanIn = new Scanner(new BufferedReader(new FileReader(xfileLocation)));
-            Integer numLines = 0;
-            while (scanIn.hasNextLine()){
-                inputLine = scanIn.nextLine();
-                numLines++;
-                myArray1D = addValueToArray1D(myArray1D, inputLine );                
-                String[] inArray = inputLine.split(String.valueOf(csvSeparator));
-                if (inArray.length>columnsInCsv) {columnsInCsv = inArray.length;}
-            }
-            scanIn.close();
-            myArray = new String[numLines][columnsInCsv];    
-            for (Integer inumLines=0;inumLines<numLines;inumLines++){                
-                String[] inArray = myArray1D[inumLines].split(String.valueOf(csvSeparator));
-                System.arraycopy(inArray, 0, myArray[inumLines], 0, inArray.length);
-            }            
-//            myArray = array1dTo2d(myArray1D, columnsInCsv);
-            return myArray;            
-        } catch (FileNotFoundException e){               
-            myArray1D = addValueToArray1D(myArray1D, e.getMessage());
-            return array1dTo2d(myArray1D, 1);
-            
-        }
-        
-    }*/
         
     public static String[][] convertCSVinArrayNetwork(String xfileLocation, String csvSeparator){
         String[][] myArray = new String[0][0];
@@ -394,7 +355,6 @@ public class  LPArray {
                 String[] inArray = myArray1D[inumLines].split(String.valueOf(csvSeparator));
                 System.arraycopy(inArray, 0, myArray[inumLines], 0, inArray.length);
             }            
-//            myArray = array1dTo2d(myArray1D, columnsInCsv);
             return myArray;            
         } catch (FileNotFoundException e){               
             myArray1D = addValueToArray1D(myArray1D, e.getMessage());
@@ -433,8 +393,7 @@ public class  LPArray {
             myArray = array1dTo2d(myArray1D, columnsInCsv);
             return myArray;
             
-        } catch (FileNotFoundException e){}        
-        return myArray;
+        } catch (FileNotFoundException e){ return myArray;}
     }
     
 /**
@@ -459,9 +418,6 @@ public class  LPArray {
  * @return Object[]
  */ 
     public static Object[] array2dTo1d(Object[][] array2d){
-        //Object[] array1d = new Object[1];
-        //Integer numLines = 
-        //String[][] my2Darr = .....(something)......
         List<Object> list;
         list = new ArrayList<>();
         for (Object[] array2d1 : array2d) {
@@ -541,6 +497,17 @@ public class  LPArray {
         Integer specialFieldIndex = Arrays.asList(array).indexOf(value);
         if (specialFieldIndex!=-1){return true;}
         return diagnoses;
+    }
+    public static HashMap<String, Object[]> evaluateValuesAreInArray(Object[] theArray, Object[] valuesToCheck){
+        HashMap<String, Object[]> hm = new HashMap();  
+        String evaluation="";
+        Object[] valuesNotIncluded = new Object[0];
+        for (Object currField: valuesToCheck){
+            if (!valueInArray(theArray, currField)){valuesNotIncluded=addValueToArray1D(valuesNotIncluded, currField);}
+        }    
+        if (valuesNotIncluded.length==0){evaluation=LPPlatform.LAB_TRUE;}else{evaluation=LPPlatform.LAB_FALSE;}
+        hm.put(evaluation, valuesNotIncluded);
+        return hm;        
     }
 
 /**
@@ -681,8 +648,6 @@ public class  LPArray {
  * @return Object[][]  
  */
     public static Object[][] setColumnValueToArray2D(Object[][] array, Integer col, Object newValue){
-        
-        //Object[][] newArray = new Object[array.length][array[0].length];
         for (Object[] array1 : array) {
             array1[col] = newValue;
         }
@@ -740,6 +705,12 @@ public class  LPArray {
             }
         return newArray;
     }
+     public static Object[][] joinTwo2DArrays (Object[][] arrayOne, Object[][] arrayTwo){
+         Object[] newArray = LPArray.array2dTo1d(arrayOne);
+         newArray = LPArray.addValueToArray1D(newArray, LPArray.array2dTo1d(arrayTwo));         
+         return LPArray.array1dTo2d(newArray, arrayOne[0].length);
+     }
+    
 
 /**
  * Verify whether two arrays having the same size
@@ -783,7 +754,7 @@ public class  LPArray {
            return LPPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);           
         }       
         for (Integer i=0;i<array.length;i++){
-            diagnoses=addValueToArray1D(diagnoses, array[colNum][i]);
+            diagnoses=addValueToArray1D(diagnoses, array[i][colNum]);
         }
         
         return diagnoses;
@@ -798,8 +769,7 @@ public class  LPArray {
  */    
     public static String[] getStringArray(Object obj) {
         Object [] arrobj = (Object [])obj;
-        String[] data = Arrays.copyOf(arrobj, arrobj.length, String[].class);
-        return data;
+        return Arrays.copyOf(arrobj, arrobj.length, String[].class);
     }    
 
 /**
@@ -815,7 +785,26 @@ public class  LPArray {
             strArray[i] = String.valueOf(objArray[i]);
         return strArray;
     }    
+    
+    public static String[] getUniquesArray(Object[] myArr){
+        return Arrays.stream(myArr).distinct().toArray(String[]::new);
+    }
 
+    public static String[] getUniquesArray(String[][] matrix) {
+        Map<String, Integer> map = new LinkedHashMap<>();
+
+        for (String[] row : matrix)
+            for (String col : row)
+                map.put(col, map.getOrDefault(col, 0) + 1);
+
+        List<String> unique = new ArrayList<>();
+
+        for (Map.Entry<String, Integer> entry : map.entrySet())
+            if (entry.getValue() == 1)
+                unique.add(entry.getKey());
+
+        return unique.toArray(new String[unique.size()]);
+    }    
 }
 
 

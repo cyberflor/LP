@@ -7,7 +7,6 @@ package functionalJava.user;
 
 import LabPLANET.utilities.LPPlatform;
 import databases.Rdbms;
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;

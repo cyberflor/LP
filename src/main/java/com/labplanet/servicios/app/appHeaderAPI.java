@@ -8,18 +8,15 @@ package com.labplanet.servicios.app;
 import LabPLANET.utilities.LPArray;
 import LabPLANET.utilities.LPHttp;
 import LabPLANET.utilities.LPFrontEnd;
+import LabPLANET.utilities.LPPlatform;
 import databases.Rdbms;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Arrays;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.core.Response;
 import databases.Token;
-import java.util.ResourceBundle;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
@@ -27,9 +24,10 @@ import org.json.simple.JSONObject;
  * @author Administrator
  */
 public class appHeaderAPI extends HttpServlet {
-    public static final String ERRORMSG_ERROR_STATUS_CODE="Error Status Code";
-    public static final String ERRORMSG_MANDATORY_PARAMS_MISSING="API Error Message: There are mandatory params for this API method not being passed";
-
+    public static final String MANDATORY_PARAMS_MAIN_SERVLET="actionName|finalToken";
+    
+    public static final String MANDATORY_PARAMS_FRONTEND_GETAPPHEADER_PERSONFIELDSNAME_DEFAULT_VALUE="first_name|last_name|photo";
+    
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      *
@@ -39,69 +37,52 @@ public class appHeaderAPI extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)            throws ServletException, IOException {
-        request=LPHttp.requestPreparation(request);
+        
         response=LPHttp.responsePreparation(response);
-
+        
+        request=LPHttp.requestPreparation(request);
         String language = LPFrontEnd.setLanguage(request); 
    
         try (PrintWriter out = response.getWriter()) {            
-            String[] errObject = new String[]{"Servlet sampleAPI at " + request.getServletPath()};            
-            
-            String actionName = request.getParameter("actionName");
-            String finalToken = request.getParameter("finalToken");
-            if (actionName==null && finalToken==null) {
-                errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
-                errObject = LPArray.addValueToArray1D(errObject, "API Error Message: actionName and finalToken are mandatory params for this API");                    
-                Object[] errMsg = LPFrontEnd.responseError(errObject, language, null);
-                response.sendError((int) errMsg[0], (String) errMsg[1]);   
-                Rdbms.closeRdbms(); 
-                return ;
-            }                     
+            String[] errObject = new String[]{"Servlet appHeaderAPI at " + request.getServletPath()};            
+
+            Object[] areMandatoryParamsInResponse = LPHttp.areMandatoryParamsInApiRequest(request, MANDATORY_PARAMS_MAIN_SERVLET.split("\\|"));                       
+            if (LPPlatform.LAB_FALSE.equalsIgnoreCase(areMandatoryParamsInResponse[0].toString())){
+                LPFrontEnd.servletReturnResponseError(request, response, 
+                    LPPlatform.API_ERRORTRAPING_MANDATORY_PARAMS_MISSING, new Object[]{areMandatoryParamsInResponse[1].toString()}, language);              
+                return;          
+            }                  
+            String actionName = request.getParameter(globalAPIsParams.REQUEST_PARAM_ACTION_NAME);
+            String finalToken = request.getParameter(globalAPIsParams.REQUEST_PARAM_FINAL_TOKEN);
+
+            JSONObject personInfoJsonObj = new JSONObject();
             switch (actionName.toUpperCase()){
                 case "GETAPPHEADER":          
-                    
-                    String personFieldsName = request.getParameter("personFieldsName");
-                    
-                    Token token = new Token();
-                    String[] tokenParams = token.tokenParamsList();
-                    String[] tokenParamsValues = token.validateToken(finalToken, tokenParams);
-
-                    String dbUserName = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, Token.TOKEN_PARAM_USERDB)];
-                    String dbUserPassword = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, Token.TOKEN_PARAM_USERPW)];
-                    String internalUserID = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, Token.TOKEN_PARAM_INTERNAL_USERID)];         
-                    String userRole = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, Token.TOKEN_PARAM_USER_ROLE)];                     
-                    
-/*                    JsonObject json = Json.createObjectBuilder()
-                            .add("DBUser", dbUserName)
-                            .add("userRole", userRole).build();
-*/
-                    JSONObject personInfoJsonObj = new JSONObject();
-
-                    if ( personFieldsName!=null){
-                        String[] personFieldsNameArr = personFieldsName.split("\\|");
-                        
-                        if (!LPFrontEnd.servletStablishDBConection(request, response)){return;}   
-        
-                        Object[][] personInfoArr = Rdbms.getRecordFieldsByFilter("config", "person", 
-                             new String[]{"person_id"}, new String[]{internalUserID}, personFieldsNameArr);             
-                        if ("LABPLANET_FALSE".equals(personInfoArr[0][0].toString())){                                                                                                                                                   
-                            Object[] errMsg = LPFrontEnd.responseError(LPArray.array2dTo1d(personInfoArr), language, null);
-                            response.sendError((int) errMsg[0], (String) errMsg[1]);   
-                            Rdbms.closeRdbms();    
-                            return;
-                        }
-                        for (int iFields=0; iFields<personFieldsNameArr.length; iFields++ ){
-                            personInfoJsonObj.put(personFieldsNameArr[iFields], personInfoArr[0][iFields]);
-                        }
-                    }             
+                    String personFieldsName = request.getParameter(globalAPIsParams.REQUEST_PARAM_PERSON_FIELDS_NAME);
+                    String[] personFieldsNameArr = new String[0];
+                    if ( personFieldsName==null || personFieldsName.length()==0){
+                        personFieldsNameArr = MANDATORY_PARAMS_FRONTEND_GETAPPHEADER_PERSONFIELDSNAME_DEFAULT_VALUE.split("\\|");                            
+                    }else{
+                        personFieldsNameArr = personFieldsName.split("\\|");
+                    }    
+                    if (!LPFrontEnd.servletStablishDBConection(request, response)){return;}   
+                    Token token = new Token(finalToken);
+                    Object[][] personInfoArr = Rdbms.getRecordFieldsByFilter("config", "person", 
+                         new String[]{"person_id"}, new String[]{token.getPersonName()}, personFieldsNameArr);             
+                    if ("LABPLANET_FALSE".equals(personInfoArr[0][0].toString())){                                                                                                                                                   
+                        Object[] errMsg = LPFrontEnd.responseError(LPArray.array2dTo1d(personInfoArr), language, null);
+                        response.sendError((int) errMsg[0], (String) errMsg[1]);   
+                        Rdbms.closeRdbms();    
+                        return;
+                    }
+                    for (int iFields=0; iFields<personFieldsNameArr.length; iFields++ ){
+                        personInfoJsonObj.put(personFieldsNameArr[iFields], personInfoArr[0][iFields]);
+                    }                                 
+                    token=null;
                     LPFrontEnd.servletReturnSuccess(request, response, personInfoJsonObj);
                     return;  
                 default:      
-                    errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
-                    errObject = LPArray.addValueToArray1D(errObject, "API Error Message: actionName "+actionName+ " not recognized as an action by this API");                                        
-                    Object[] errMsg = LPFrontEnd.responseError(errObject, language, null);
-                    response.sendError((int) errMsg[0], (String) errMsg[1]);                   
-                    Rdbms.closeRdbms();
+                    LPFrontEnd.servletReturnResponseError(request, response, LPPlatform.API_ERRORTRAPING_PROPERTY_ENDPOINT_NOT_FOUND, new Object[]{actionName, this.getServletName()}, language);                                                      
             }            
         }catch(Exception e){            
             String exceptionMessage = e.getMessage();           
@@ -117,13 +98,14 @@ public class appHeaderAPI extends HttpServlet {
      *
      * @param request servlet request
      * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)  {
+        try{
         processRequest(request, response);
+        }catch(ServletException|IOException e){
+            LPFrontEnd.servletReturnResponseError(request, response, e.getMessage(), new Object[]{}, null);
+        }
     }
 
     /**
@@ -131,13 +113,14 @@ public class appHeaderAPI extends HttpServlet {
      *
      * @param request servlet request
      * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)  {
+        try{
         processRequest(request, response);
+        }catch(ServletException|IOException e){
+            LPFrontEnd.servletReturnResponseError(request, response, e.getMessage(), new Object[]{}, null);
+        }
     }
 
     /**

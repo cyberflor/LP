@@ -38,8 +38,7 @@ public class Parameter {
             if (!prop.containsKey(parameterName)) {
                 return "";
             } else {
-                String paramValue = prop.getString(parameterName);
-                return paramValue;
+                return prop.getString(parameterName);
             }
         } catch (Exception e) {
             return "";
@@ -59,8 +58,7 @@ public class Parameter {
         if (!prop.containsKey(parameterName)) {
             return "";
         } else {
-            String paramValue = prop.getString(parameterName);
-            return paramValue;
+            return prop.getString(parameterName);
         }
     }
 
@@ -76,8 +74,7 @@ public class Parameter {
             if (!prop.containsKey(parameterName)) {
                 return "";
             } else {
-                String paramValue = prop.getString(parameterName);
-                return paramValue;
+                return prop.getString(parameterName);
             }
         } catch (Exception e) {
             return "";
@@ -135,10 +132,7 @@ public class Parameter {
 
             ResourceBundle prop = ResourceBundle.getBundle(translationPath);        
             try{    
-//                String existingEntryValue = prop.getString(entryName);                
-                String newLogEntry = " Exists the tag in " + f.getName() + " for the entry " + entryName + " and value " + entryValue;
-                return newLogEntry;
-                
+                return " Exists the tag in " + f.getName() + " for the entry " + entryName + " and value " + entryValue;
             }catch(MissingResourceException ex)
             {
                 String newLogEntry = " created tag in " + f.getName() + " for the entry " + entryName + " and value " + entryValue;
@@ -173,8 +167,7 @@ public class Parameter {
         translationsDir = translationsDir.replace("/", "\\");
 
         File dir = new File(translationsDir);
-        File [] files = dir.listFiles((File dir1, String name) -> name.contains(fileName));       
-        return files;
+        return dir.listFiles((File dir1, String name) -> name.contains(fileName));       
     }    
      
 }

@@ -152,6 +152,10 @@
         <servlet-name>sampleAPIParams</servlet-name>
         <servlet-class>com.labplanet.servicios.ModuleSample.sampleAPIParams</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>procedureDefinitionToInstance</servlet-name>
+        <servlet-class>com.labplanet.servicios.Requirements.procedureDefinitionToInstance</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>DBActions</servlet-name>
         <url-pattern>/testing/platform/DBActions</url-pattern>
@@ -294,6 +298,10 @@
     <servlet-mapping>
         <servlet-name>sampleAPIParams</servlet-name>
         <url-pattern>/sampleAPIParams</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>procedureDefinitionToInstance</servlet-name>
+        <url-pattern>/procedureDefinitionToInstance</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

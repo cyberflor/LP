@@ -21,6 +21,9 @@ public class ChangeOfCustody {
     String cocConfirmedChangeStatus = "CONFIRMED";
     String cocAbortedChangeStatus = "ABORTED";
     public static final String FIELDNAME_STATUS = "status";
+    public static final String FIELDNAME_CUSTODIAN_CANDIDATE = "custodian_candidate";
+    public static final String FIELDNAME_CUSTODIAN = "custodian";
+    
     
     public Object[] cocStartChange(String schemaPrefix, String objectTable, String objectFieldName, Object objectId, String currCustodian, String custodianCandidate, String userRole, Integer appSessionId) {
         
@@ -62,13 +65,13 @@ public class ChangeOfCustody {
                 return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);                  
         }
         Object[] updateRecordFieldsByFilter = Rdbms.updateRecordFieldsByFilter(schemaName, objectTable.toLowerCase(), 
-                new String[]{"coc_requested_on", "custodian_candidate"},                 
+                new String[]{"coc_requested_on", FIELDNAME_CUSTODIAN_CANDIDATE},                 
                 new Object[]{LPDate.getTimeStampLocalDate(), custodianCandidate}, 
                 new String[]{objectFieldName}, new Object[]{objectId});
         if (LPPlatform.LAB_FALSE.equalsIgnoreCase(updateRecordFieldsByFilter[0].toString())){
             return updateRecordFieldsByFilter;}
         
-        String[] sampleFieldName = new String[]{objectFieldName, "custodian", "custodian_candidate", "coc_started_on", FIELDNAME_STATUS};
+        String[] sampleFieldName = new String[]{objectFieldName, FIELDNAME_CUSTODIAN, FIELDNAME_CUSTODIAN_CANDIDATE, "coc_started_on", FIELDNAME_STATUS};
         Object[] sampleFieldValue = new Object[]{objectId, currCustodian, custodianCandidate, LPDate.getTimeStampLocalDate(), cocStartChangeStatus};
         
         Object[] insertRecordInTable = Rdbms.insertRecordInTable( schemaName, cocTableName, 
@@ -118,7 +121,7 @@ public class ChangeOfCustody {
         Object[][] startedProcessData = Rdbms.getRecordFieldsByFilter( schemaName, cocTableName, 
                 new String[]{objectFieldName, FIELDNAME_STATUS},
                 new Object[]{objectId, "STARTED"},
-                new String[]{"id", FIELDNAME_STATUS, "custodian_candidate"});
+                new String[]{"id", FIELDNAME_STATUS, FIELDNAME_CUSTODIAN_CANDIDATE});
         if (LPPlatform.LAB_FALSE.equalsIgnoreCase(startedProcessData[0][0].toString())){            
             String errorCode = "ChainOfCustody_noChangeInProgress";
             errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, objectId);
@@ -152,10 +155,10 @@ public class ChangeOfCustody {
         if (LPPlatform.LAB_FALSE.equalsIgnoreCase(updateRecordInTable[0].toString())){
             return updateRecordInTable;}        
         
-         String[] updSampleTblFlds=new String[]{"coc_confirmed_on", "custodian_candidate"}; // , "coc_requested_on"
+         String[] updSampleTblFlds=new String[]{"coc_confirmed_on", FIELDNAME_CUSTODIAN_CANDIDATE}; // , "coc_requested_on"
          Object[] updSampleTblVls=new Object[]{LPDate.getTimeStampLocalDate(), "null*String"}; // , "null*Date"
          if (actionName.equalsIgnoreCase(cocConfirmedChangeStatus)){
-            updSampleTblFlds = LPArray.addValueToArray1D(updSampleTblFlds, "custodian");
+            updSampleTblFlds = LPArray.addValueToArray1D(updSampleTblFlds, FIELDNAME_CUSTODIAN);
             updSampleTblVls = LPArray.addValueToArray1D(updSampleTblVls, userName);
          }
          Object[] updateRecordFieldsByFilter = Rdbms.updateRecordFieldsByFilter( schemaName, objectTable.toLowerCase(), 

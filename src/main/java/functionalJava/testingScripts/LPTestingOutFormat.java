@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author Administrator
  */
 public class LPTestingOutFormat {
+    private LPTestingOutFormat(){    throw new IllegalStateException("Utility class");}    
     
     public static final String TESTING_FILES_PATH = "http://51.75.202.142:8888/testingRepository/"; //\\\\FRANCLOUD\\fran\\LabPlanet\\testingRepository\\"; // "\\testingRepository\\";
     public static final String TESTING_FILES_FIELD_SEPARATOR=";";
@@ -30,6 +31,7 @@ public class LPTestingOutFormat {
     public static final String TESTING_PW="avecesllegaelmomento";
     public static final String MSG_DB_CON_ERROR="<th>Error connecting to the database</th>";       
 
+    public static final Integer FILEHEADER_MAX_NUM_HEADER_LINES=25;
     public static final String FILEHEADER_NUM_HEADER_LINES_TAG_NAME="NUMHEADERLINES";
     public static final String FILEHEADER_NUM_TABLES_TAG_NAME="NUMTABLES"; 
     public static final String FILEHEADER_TABLE_NAME_TAG_NAME="TABLE";
@@ -39,6 +41,10 @@ public class LPTestingOutFormat {
     public static final String FILEHEADER_EVALUATION_POSITION="EVALUATIONPOSITION";
     
     public static final String BUNDLE_FILE_NAME="parameter.config.labtimus";
+
+    public static final String TST_ICON_MATCH =ResourceBundle.getBundle(BUNDLE_FILE_NAME).getString("labPLANET_iconMatch");
+    public static final String TST_ICON_UNMATCH =ResourceBundle.getBundle(BUNDLE_FILE_NAME).getString("labPLANET_iconUnMatch");
+    public static final String TST_ICON_UNDEFINED=ResourceBundle.getBundle(BUNDLE_FILE_NAME).getString("labPLANET_iconUndefined");
 
     public static final String TST_BOOLEANMATCH =ResourceBundle.getBundle(BUNDLE_FILE_NAME).getString("labPLANET_booleanMatch");
     public static final String TST_BOOLEANUNMATCH =ResourceBundle.getBundle(BUNDLE_FILE_NAME).getString("labPLANET_booleanUnMatch");
@@ -79,6 +85,14 @@ public class LPTestingOutFormat {
         return content;
     }
     
+    public static String headerAddFields(Object[] fields){
+        String content="";
+        for (Object fld: fields){
+            content = content+"<th>"+LPNulls.replaceNull(fld).toString()+"</th>";           
+        }
+        return content;
+    }
+
     public static String headerAddFields(String[] fields){
         String content="";
         for (Object fld: fields){
@@ -152,8 +166,8 @@ public class LPTestingOutFormat {
         fileContent = fileContent + "</head>" + "";
         fileContent = fileContent + "<body>" + "\n";
         fileContent = fileContent + "<h1>Servlet TestingUnitConversion at " + servletName + "</h1>" + "";
-        fileContent = fileContent + "</body>" + "";
-        fileContent = fileContent + "</html>" + "";
+        //fileContent = fileContent + "</body>" + "";
+        //fileContent = fileContent + "</html>" + "";
         fileContent = fileContent + "<table id=\"scriptTable\">";
         return fileContent;
     }
@@ -163,11 +177,9 @@ public class LPTestingOutFormat {
         HashMap<String, Object> fieldsRequired = new HashMap();   
         fieldsRequired.put(FILEHEADER_NUM_HEADER_LINES_TAG_NAME, "");   fieldsRequired.put(FILEHEADER_NUM_TABLES_TAG_NAME, "");   
         fieldsRequired.put(FILEHEADER_NUM_EVALUATION_ARGUMENTS, "");   
-        //fieldsRequired.put(FILEHEADER_NUM_ARGUMENTS, "");  //fieldsRequired.put(FILEHEADER_EVALUATION_POSITION, "");           
-
         HashMap<String, Object> hm = new HashMap();   
         
-        Integer maxHeaderLines=25;
+        Integer maxHeaderLines=FILEHEADER_MAX_NUM_HEADER_LINES;
         if (csvContent.length<maxHeaderLines){maxHeaderLines=csvContent.length-1;}
         Integer iLineParsed = 0;
         Boolean continueParsing=true;        
@@ -175,14 +187,18 @@ public class LPTestingOutFormat {
             String getLineKey = LPNulls.replaceNull(csvContent[iLineParsed][0]).toUpperCase();
             String getLineValue = LPNulls.replaceNull(csvContent[iLineParsed][1]);
             if (fieldsRequired.containsKey(getLineKey)){
-                if (FILEHEADER_NUM_HEADER_LINES_TAG_NAME.equalsIgnoreCase(getLineKey)){
-                    maxHeaderLines=Integer.parseInt(getLineValue);
-                }
-                if (FILEHEADER_NUM_TABLES_TAG_NAME.equalsIgnoreCase(getLineKey)){
-                    Integer numTbls=Integer.parseInt(getLineValue);
-                    for (int iNumTbls=1; iNumTbls<=numTbls; iNumTbls++){
-                        fieldsRequired.put(FILEHEADER_TABLE_NAME_TAG_NAME+String.valueOf(iNumTbls), "");
-                    }
+                switch (getLineKey.toUpperCase()){
+                    case FILEHEADER_NUM_HEADER_LINES_TAG_NAME:
+                        maxHeaderLines=Integer.parseInt(getLineValue);
+                        break;
+                    case FILEHEADER_NUM_TABLES_TAG_NAME:
+                        Integer numTbls=Integer.parseInt(getLineValue);
+                        for (int iNumTbls=1; iNumTbls<=numTbls; iNumTbls++){
+                            fieldsRequired.put(FILEHEADER_TABLE_NAME_TAG_NAME+String.valueOf(iNumTbls), "");
+                        }
+                        break;
+                    default:
+                        break;                        
                 }
                 hm.put(getLineKey, getLineValue);
                 fieldsRequired.remove(getLineKey);
@@ -201,11 +217,9 @@ public class LPTestingOutFormat {
         HashMap<String, Object> fieldsRequired = new HashMap();   
         fieldsRequired.put(FILEHEADER_NUM_HEADER_LINES_TAG_NAME, "");   fieldsRequired.put(FILEHEADER_NUM_TABLES_TAG_NAME, "");   
         fieldsRequired.put(FILEHEADER_NUM_EVALUATION_ARGUMENTS, "");   
-        //fieldsRequired.put(FILEHEADER_NUM_ARGUMENTS, "");  //fieldsRequired.put(FILEHEADER_EVALUATION_POSITION, "");           
-
         HashMap<String, Object> hm = new HashMap();   
         
-        Integer maxHeaderLines=25;
+        Integer maxHeaderLines=FILEHEADER_MAX_NUM_HEADER_LINES;
         if (csvContent.length<maxHeaderLines){maxHeaderLines=csvContent.length-1;}
         Integer iLineParsed = 0;
         Boolean continueParsing=true;        
@@ -213,15 +227,19 @@ public class LPTestingOutFormat {
             String getLineKey = LPNulls.replaceNull(csvContent[iLineParsed][0]).toString().toUpperCase();
             String getLineValue = LPNulls.replaceNull((String) csvContent[iLineParsed][1]);
             if (fieldsRequired.containsKey(getLineKey)){
-                if (FILEHEADER_NUM_HEADER_LINES_TAG_NAME.equalsIgnoreCase(getLineKey)){
-                    maxHeaderLines=Integer.parseInt(getLineValue);
-                }
-                if (FILEHEADER_NUM_TABLES_TAG_NAME.equalsIgnoreCase(getLineKey)){
-                    Integer numTbls=Integer.parseInt(getLineValue);
-                    for (int iNumTbls=1; iNumTbls<=numTbls; iNumTbls++){
-                        fieldsRequired.put(FILEHEADER_TABLE_NAME_TAG_NAME+String.valueOf(iNumTbls), "");
-                    }
-                }
+                switch (getLineKey.toUpperCase()){
+                    case FILEHEADER_NUM_HEADER_LINES_TAG_NAME:
+                        maxHeaderLines=Integer.parseInt(getLineValue);
+                        break;
+                    case FILEHEADER_NUM_TABLES_TAG_NAME:
+                        Integer numTbls=Integer.parseInt(getLineValue);
+                        for (int iNumTbls=1; iNumTbls<=numTbls; iNumTbls++){
+                            fieldsRequired.put(FILEHEADER_TABLE_NAME_TAG_NAME+String.valueOf(iNumTbls), "");
+                        }
+                        break; 
+                    default:
+                        break;
+                }                
                 hm.put(getLineKey, getLineValue);
                 fieldsRequired.remove(getLineKey);
             }                
@@ -259,6 +277,16 @@ public class LPTestingOutFormat {
         return fileContentSummary;        
     }
     
+    public static String convertArrayInHtmlTable(Object[][] content){
+        String fileContentTable = LPTestingOutFormat.tableStart();    
+        fileContentTable=fileContentTable+headerAddFields(content[0])+headerEnd();
+        for (int iRows=1; iRows< content.length; iRows++){
+            fileContentTable=fileContentTable+rowStart()+rowAddFields(content[iRows])+rowEnd();
+        }
+        fileContentTable = fileContentTable + LPTestingOutFormat.tableEnd();    
+        return fileContentTable;
+    }
+    
     public static String createTableWithHeader(String table1Header, Integer numEvaluationArguments){
         String fileContentTable = LPTestingOutFormat.tableStart();            
         fileContentTable=fileContentTable+headerAddFields(addUATColumns(table1Header.split(TESTING_FILES_FIELD_SEPARATOR), numEvaluationArguments));
@@ -273,11 +301,11 @@ public class LPTestingOutFormat {
         }catch(Exception e){return null;}        
     }
     public static Boolean csvExtractFieldValueBoolean(Object value){        
-        if (value==null) return null;
-        if (value.toString().length()==0){return null;}
+        if (value==null) return false;
+        if (value.toString().length()==0){return false;}
         try{
             return Boolean.getBoolean(value.toString());        
-        }catch(Exception e){return null;}                    
+        }catch(Exception e){return false;}                    
     }
     public static String csvExtractFieldValueString(Object value){
         if (value==null) return null;
@@ -289,8 +317,7 @@ public class LPTestingOutFormat {
     public static String[] csvExtractFieldValueStringArr(Object value){
         if (value==null) return new String[0];
         try{
-            String[] fieldsToRetrieve = value.toString().split("\\|");
-            return fieldsToRetrieve;        
+            return value.toString().split("\\|");
         }catch(Exception e){return new String[0];}        
     }
     public static Float csvExtractFieldValueFloat(Object value){
@@ -310,6 +337,12 @@ public class LPTestingOutFormat {
         try{
             return Date.valueOf(value.toString());
         }catch(NumberFormatException e){return null;}        
-    }    
+    }
+    public static Object[][] getCSVFileContent(String csvFileName) {
+        String csvPathName = LPTestingOutFormat.TESTING_FILES_PATH+csvFileName; 
+        String csvFileSeparator=LPTestingOutFormat.TESTING_FILES_FIELD_SEPARATOR;        
+        return LPArray.convertCSVinArray(csvPathName, csvFileSeparator);         
+    } 
+            
     
 }

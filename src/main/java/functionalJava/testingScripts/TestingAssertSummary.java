@@ -29,6 +29,5 @@ public class TestingAssertSummary {
         public Integer getTotalTests(){return this.totalTests;}
         
         public void notifyResults(){
-            return;
         }
 }

@@ -31,7 +31,6 @@ import javax.sql.DataSource;
 import java.sql.Types;
 import java.util.HashMap;
 import java.util.Properties;
-import org.json.simple.JSONObject;
 
 /**
  *
@@ -60,7 +59,7 @@ public class Rdbms {
      * @return
      */
     
-    public synchronized static Rdbms getRdbms(){
+    public static synchronized Rdbms getRdbms(){
         if (rdbms==null){
             rdbms= new Rdbms();
         }
@@ -468,16 +467,20 @@ public class Rdbms {
      * @param fieldsToRetrieve
      * @return
      */
-    public static Object[][] getRecordFieldsByFilter(String schemaName, 
-            String tableName, 
-            String[] whereFieldNames, 
-            Object[] whereFieldValues, 
-            String[] fieldsToRetrieve){
+    public static Object[][] getRecordFieldsByFilter(String schemaName, String tableName, String[] whereFieldNames, Object[] whereFieldValues, String[] fieldsToRetrieve){
         
         String[] errorDetailVariables = new String[0];        
+        
+        if ( (schemaName==null) || (schemaName.length()==0) ){
+            Rdbms.rdbms.errorCode = "Rdbms_NotschemaNameSpecified";
+           errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, tableName);
+           errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, schemaName);          
+           Object[] diagnosesError = LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, Rdbms.rdbms.errorCode, errorDetailVariables);                         
+           return LPArray.array1dTo2d(diagnosesError, diagnosesError.length);
+        }          
         schemaName = LPPlatform.buildSchemaName(schemaName, "");
         
-        if (whereFieldNames.length==0){
+        if ( (whereFieldNames==null) || (whereFieldNames.length==0) ){
            Rdbms.rdbms.errorCode = "Rdbms_NotFilterSpecified";
            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, tableName);
            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, schemaName);          
@@ -625,6 +628,9 @@ public class Rdbms {
      * @return
      */
     public static Object[][] getRecordFieldsByFilter(String schemaName, String tableName, String[] whereFieldNames, Object[] whereFieldValues, String[] fieldsToRetrieve, String[] orderBy){
+            return getRecordFieldsByFilter(schemaName, tableName, whereFieldNames, whereFieldValues, fieldsToRetrieve, orderBy, false);
+    }
+    public static Object[][] getRecordFieldsByFilter(String schemaName, String tableName, String[] whereFieldNames, Object[] whereFieldValues, String[] fieldsToRetrieve, String[] orderBy, Boolean inforceDistinct){
         String[] errorDetailVariables = new String[0];        
         
         if (whereFieldNames.length==0){
@@ -637,35 +643,10 @@ public class Rdbms {
         SqlStatement sql = new SqlStatement(); 
         HashMap<String, Object[]> hmQuery = sql.buildSqlStatement(SQLSELECT, schemaName, tableName,
                 whereFieldNames, whereFieldValues,
-                fieldsToRetrieve,  null, null, orderBy, null);            
+                fieldsToRetrieve,  null, null, orderBy, null, inforceDistinct);            
         String query= hmQuery.keySet().iterator().next();   
         Object[] keyFieldValueNew = hmQuery.get(query);
-        
-/*        
-        String query = "";
-        String fieldsToRetrieveStr = "";
-        for (String fn: fieldsToRetrieve){fieldsToRetrieveStr = fieldsToRetrieveStr + fn + ", ";}
-        fieldsToRetrieveStr = fieldsToRetrieveStr.substring(0, fieldsToRetrieveStr.length()-2);
-        query = "select " + fieldsToRetrieveStr + " from " + schemaName + "." + tableName
-                + "   where " ;
-        Integer i=1;
-        for (String fn: whereFieldNames){
-                if (i>1){query = query + " and ";}
-                
-                if ( (fn.toUpperCase().contains("NULL")) || (fn.toUpperCase().contains("LIKE")) ){
-                    query = query + fn;
-                }else {query = query + fn + "=? ";}
-                
-                i++;
-        }    
-        i=1;
-        query = query + " order by ";
-        for (String sortFld: orderBy){
-                if (i>1){query = query + ", ";}                
-                query = query + sortFld;               
-                i++;
-        }       
-*/        
+   
         try{
             ResultSet res = Rdbms.prepRdQuery(query, keyFieldValueNew);
             res.last();
@@ -827,9 +808,8 @@ public class Rdbms {
             if (valoresinterrogaciones!=null){
                 for (Object curVal: valoresinterrogaciones){
                     Boolean addToFilter = true;
-                    if (curVal.toString().equalsIgnoreCase("IN()")){addToFilter=false;}
-                    if (curVal.toString().equalsIgnoreCase("IS NULL")){addToFilter=false;}
-                    if (curVal.toString().equalsIgnoreCase("IS NOT NULL")){addToFilter=false;}
+                    if ( (curVal.toString().equalsIgnoreCase("IN()")) || (curVal.toString().equalsIgnoreCase("IS NULL")) || (curVal.toString().equalsIgnoreCase("IS NOT NULL")) ){
+                        addToFilter=false;}
                     if (addToFilter){
                         filteredValoresConInterrogaciones = LPArray.addValueToArray1D(filteredValoresConInterrogaciones, curVal);}                    
                 }
@@ -864,8 +844,7 @@ public class Rdbms {
             if (valoresinterrogaciones != null){
                 buildPreparedStatement(valoresinterrogaciones, prep, fieldtypes); 
             }            
-            Integer res=prep.executeUpdate();
-            return res; 
+            return prep.executeUpdate();
         }catch (SQLException er){
             return -999;
         }//finally{            prep.close();        }
@@ -1041,9 +1020,8 @@ public class Rdbms {
      * @return
      */
     public static Date getLocalDate(){
-        Date de = new java.sql.Date(System.currentTimeMillis());        
-        return de;}
-
+        return new java.sql.Date(System.currentTimeMillis());        
+    }
     /**
      *
      * @return

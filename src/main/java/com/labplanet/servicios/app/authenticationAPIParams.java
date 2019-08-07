@@ -5,6 +5,7 @@
  */
 package com.labplanet.servicios.app;
 
+import LabPLANET.utilities.LPFrontEnd;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
@@ -30,12 +31,12 @@ public class authenticationAPIParams extends HttpServlet {
     public static final String RESPONSE_JSON_TAG_APP_SESSION_ID = "appSessionId";
     public static final String RESPONSE_JSON_TAG_APP_SESSION_DATE = "appSessionStartDate";
 
-    public static final String ERROR_PROPERTY_INVALID_USER_PASSWORD = "authenticationAPI_invalidUserPassword";
+    public static final String ERROR_PROPERTY_INVALID_USER_PSSWD = "authenticationAPI_invalidUserPsswd";
     public static final String ERROR_PROPERTY_SESSION_ID_NULL_NOT_ALLOWED = "authenticationAPI_sessionIdNullNotAllowed";
     public static final String ERROR_PROPERTY_ESIGN_INFO_NOT_AVAILABLE = "authenticationAPI_esignInfoNotAvailable";
     public static final String ERROR_PROPERTY_PERSON_NOT_FOUND = "authenticationAPI_personNotFound";
     public static final String ERROR_PROPERTY_SESSION_ID_NOT_GENERATED = "authenticationAPI_sessionIdNotGenerated";
-    public static final String ERROR_API_ERRORTRAPING_PROPERTY_USER_PASSWORD_TO_CHECK_INVALID = "authenticationAPI_userPasswordToCheckInvalid";
+    public static final String ERROR_API_ERRORTRAPING_PROPERTY_USER_PSSWD_TO_CHECK_INVALID = "authenticationAPI_userPsswdToCheckInvalid";
     public static final String ERROR_API_ERRORTRAPING_PROPERTY_ALL_USER_PROCEDURE_PREFIX = "allUserProcedurePrefixReturnedFalse";
     public static final String ERROR_API_ERRORTRAPING_PROPERTY_ESIGN_TO_CHECK_INVALID = "authenticationAPI_esignToCheckInvalid";
     
@@ -58,7 +59,6 @@ public class authenticationAPIParams extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
@@ -77,13 +77,14 @@ public class authenticationAPIParams extends HttpServlet {
      *
      * @param request servlet request
      * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)  {
+        try{
         processRequest(request, response);
+        }catch(ServletException|IOException e){
+            LPFrontEnd.servletReturnResponseError(request, response, e.getMessage(), new Object[]{}, null);
+        }
     }
 
     /**
@@ -91,13 +92,14 @@ public class authenticationAPIParams extends HttpServlet {
      *
      * @param request servlet request
      * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)  {
+        try{
         processRequest(request, response);
+        }catch(ServletException|IOException e){
+            LPFrontEnd.servletReturnResponseError(request, response, e.getMessage(), new Object[]{}, null);
+        }
     }
 
     /**

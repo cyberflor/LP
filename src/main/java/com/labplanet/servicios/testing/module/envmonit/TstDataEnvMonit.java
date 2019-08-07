@@ -9,6 +9,7 @@ import LabPLANET.utilities.LPArray;
 import LabPLANET.utilities.LPFrontEnd;
 import LabPLANET.utilities.LPHttp;
 import LabPLANET.utilities.LPPlatform;
+import com.labplanet.servicios.app.globalAPIsParams;
 import databases.Rdbms;
 import databases.Token;
 import functionalJava.environmentalMonitoring.DataProgramSample;
@@ -27,7 +28,8 @@ import javax.ws.rs.core.Response;
  * @author Administrator
  */
 public class TstDataEnvMonit extends HttpServlet {
-    
+    public static final String MANDATORY_PARAMS_MAIN_SERVLET="actionName|finalToken|schemaPrefix";
+
     public static final String PARAMETER_PROGRAM_SAMPLE_TEMPLATE="sampleTemplate";
     public static final String PARAMETER_PROGRAM_SAMPLE_TEMPLATE_VERSION="sampleTemplateVersion";       
     public static final String PARAMETER_NUM_SAMPLES_TO_LOG="numSamplesToLog";
@@ -48,35 +50,19 @@ public class TstDataEnvMonit extends HttpServlet {
         String language = "es";
         String[] errObject = new String[]{"Servlet programAPI at " + request.getServletPath()};   
 
-        String[] mandatoryParams = new String[]{"schemaPrefix"};
-        mandatoryParams = LPArray.addValueToArray1D(mandatoryParams, "actionName");
-        mandatoryParams = LPArray.addValueToArray1D(mandatoryParams, "finalToken");
-                
-        Object[] areMandatoryParamsInResponse = LPHttp.areMandatoryParamsInApiRequest(request, mandatoryParams);
+        String[] mandatoryParams = new String[]{""};
+        Object[] areMandatoryParamsInResponse = LPHttp.areMandatoryParamsInApiRequest(request, MANDATORY_PARAMS_MAIN_SERVLET.split("\\|"));                       
         if (LPPlatform.LAB_FALSE.equalsIgnoreCase(areMandatoryParamsInResponse[0].toString())){
-            errObject = LPArray.addValueToArray1D(errObject, "ERRORMSG_ERROR_STATUS_CODE"+": "+HttpServletResponse.SC_BAD_REQUEST);
-            errObject = LPArray.addValueToArray1D(errObject, "ERRORMSG_MANDATORY_PARAMS_MISSING"+": "+areMandatoryParamsInResponse[1].toString());                    
-            Object[] errMsg =  LPFrontEnd.responseError(errObject, language, areMandatoryParamsInResponse[1].toString());
-            response.sendError((int) errMsg[0], (String) errMsg[1]);                
-            return ;                
-        }            
-
-        String schemaPrefix = request.getParameter("schemaPrefix");            
-        String actionName = request.getParameter("actionName");
-        String finalToken = request.getParameter("finalToken");                   
+            LPFrontEnd.servletReturnResponseError(request, response, 
+                LPPlatform.API_ERRORTRAPING_MANDATORY_PARAMS_MISSING, new Object[]{areMandatoryParamsInResponse[1].toString()}, language);              
+            return;          
+        }             
+        String schemaPrefix = request.getParameter(globalAPIsParams.REQUEST_PARAM_SCHEMA_PREFIX);            
+        String actionName = request.getParameter(globalAPIsParams.REQUEST_PARAM_ACTION_NAME);
+        String finalToken = request.getParameter(globalAPIsParams.REQUEST_PARAM_FINAL_TOKEN);                   
         
-        Token token = new Token();
-        String[] tokenParams = token.tokenParamsList();
-        String[] tokenParamsValues = token.validateToken(finalToken, tokenParams);
-
-        String dbUserName = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, Token.TOKEN_PARAM_USERDB)];
-        String dbUserPassword = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, Token.TOKEN_PARAM_USERPW)];
-        String internalUserID = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, Token.TOKEN_PARAM_INTERNAL_USERID)];         
-        String userRole = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, Token.TOKEN_PARAM_USER_ROLE)];                     
-        String appSessionIdStr = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, Token.TOKEN_PARAM_APP_SESSION_ID)];
-//        String appSessionStartedDate = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, Token.TOKEN_PARAM_APP_SESSION_STARTED_DATE)];       
-        String eSign = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, Token.TOKEN_PARAM_USER_ESIGN)];            
-        if (LPPlatform.LAB_FALSE.equalsIgnoreCase(dbUserName)){
+        Token token = new Token(finalToken);
+        if (LPPlatform.LAB_FALSE.equalsIgnoreCase(token.getUserName())){
             errObject = LPArray.addValueToArray1D(errObject, "ERRORMSG_ERROR_STATUS_CODE"+": "+HttpServletResponse.SC_BAD_REQUEST);
 
                 errObject = LPArray.addValueToArray1D(errObject, "API Error Message: The token is not valid");                    
@@ -86,57 +72,19 @@ public class TstDataEnvMonit extends HttpServlet {
         }
         mandatoryParams = null;                        
 
-        Object[] procActionRequiresUserConfirmation = LPPlatform.procActionRequiresUserConfirmation(schemaPrefix, actionName);
+         Object[] procActionRequiresUserConfirmation = LPPlatform.procActionRequiresUserConfirmation(schemaPrefix, actionName);
         if (LPPlatform.LAB_TRUE.equalsIgnoreCase(procActionRequiresUserConfirmation[0].toString())){     
-            mandatoryParams = LPArray.addValueToArray1D(mandatoryParams, "userToVerify");    
-            mandatoryParams = LPArray.addValueToArray1D(mandatoryParams, "passwordToVerify");    
+            mandatoryParams = LPArray.addValueToArray1D(mandatoryParams, globalAPIsParams.REQUEST_PARAM_USER_TO_CHECK);    
+            mandatoryParams = LPArray.addValueToArray1D(mandatoryParams, globalAPIsParams.REQUEST_PARAM_PASSWORD_TO_CHECK);    
         }
-
         Object[] procActionRequiresEsignConfirmation = LPPlatform.procActionRequiresEsignConfirmation(schemaPrefix, actionName);
         if (LPPlatform.LAB_TRUE.equalsIgnoreCase(procActionRequiresEsignConfirmation[0].toString())){                                                      
-            mandatoryParams = LPArray.addValueToArray1D(mandatoryParams, "eSignToVerify");    
+            mandatoryParams = LPArray.addValueToArray1D(mandatoryParams, globalAPIsParams.REQUEST_PARAM_ESIGN_TO_CHECK);    
         }        
-        if (mandatoryParams!=null){
-            areMandatoryParamsInResponse = LPHttp.areMandatoryParamsInApiRequest(request, mandatoryParams);
-            if (LPPlatform.LAB_FALSE.equalsIgnoreCase(areMandatoryParamsInResponse[0].toString())){
-            errObject = LPArray.addValueToArray1D(errObject, "ERRORMSG_ERROR_STATUS_CODE"+": "+HttpServletResponse.SC_BAD_REQUEST);
-
-                errObject = LPArray.addValueToArray1D(errObject, "ERRORMSG_MANDATORY_PARAMS_MISSING"+": "+
-                        areMandatoryParamsInResponse[1].toString());                    
-                Object[] errMsg =  LPFrontEnd.responseError(errObject, language, areMandatoryParamsInResponse[1].toString());
-                response.sendError((int) errMsg[0], (String) errMsg[1]);                
-                return ;                
-            }     
-        }
-        
-        if (LPPlatform.LAB_TRUE.equalsIgnoreCase(procActionRequiresUserConfirmation[0].toString())){    
-            String userToVerify = request.getParameter("userToVerify");                   
-            String passwordToVerify = request.getParameter("passwordToVerify");    
-            if ( (!userToVerify.equalsIgnoreCase(dbUserName)) || (!passwordToVerify.equalsIgnoreCase(dbUserPassword)) ){
-            errObject = LPArray.addValueToArray1D(errObject, "ERRORMSG_ERROR_STATUS_CODE"+": "+HttpServletResponse.SC_BAD_REQUEST);
-
-                errObject = LPArray.addValueToArray1D(errObject, "API Error Message: User Verification returned error, the user or the password are not correct.");                    
-                Object[] errMsg = LPFrontEnd.responseError(errObject, language, "");
-                response.sendError((int) errMsg[0], (String) errMsg[1]);                
-                return ;                                
-            }
-        }
-        
-        if (LPPlatform.LAB_TRUE.equalsIgnoreCase(procActionRequiresEsignConfirmation[0].toString())){                                                      
-            String eSignToVerify = request.getParameter("eSignToVerify");                   
-            if (!eSignToVerify.equalsIgnoreCase(eSign)) {
-            errObject = LPArray.addValueToArray1D(errObject, "ERRORMSG_ERROR_STATUS_CODE"+": "+HttpServletResponse.SC_BAD_REQUEST);
-
-                errObject = LPArray.addValueToArray1D(errObject, "API Error Message: eSign Verification returned error, the value is not correct.");                    
-                Object[] errMsg = LPFrontEnd.responseError(errObject, language, "");
-                response.sendError((int) errMsg[0], (String) errMsg[1]);                
-                return ;                                                
-            }
-        }
-        
+                
         boolean isConnected = false;
         
-        isConnected = Rdbms.getRdbms().startRdbms(dbUserName, dbUserPassword);
+        isConnected = Rdbms.getRdbms().startRdbms(token.getUserName(), token.getUsrPw());
         if (!isConnected){
             errObject = LPArray.addValueToArray1D(errObject, "ERRORMSG_ERROR_STATUS_CODE"+": "+HttpServletResponse.SC_BAD_REQUEST);
 
@@ -164,22 +112,12 @@ public class TstDataEnvMonit extends HttpServlet {
         Rdbms.setTransactionId(schemaConfigName);
         //ResponseEntity<String121> responsew;        
         try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */                     
+        if ( (LPPlatform.LAB_TRUE.equalsIgnoreCase(procActionRequiresUserConfirmation[0].toString())) &&     
+             (!LPFrontEnd.servletUserToVerify(request, response, procActionRequiresUserConfirmation, token.getUserName(), token.getUsrPw())) ){return;}
 
-            Object[] actionEnabled = LPPlatform.procActionEnabled(schemaPrefix, actionName);
-            if (LPPlatform.LAB_FALSE.equalsIgnoreCase(actionEnabled[0].toString())){
-                Object[] errMsg = LPFrontEnd.responseError(actionEnabled, language, "");
-                response.sendError((int) errMsg[0], (String) errMsg[1]);    
-                Rdbms.closeRdbms(); 
-                return ;               
-            }            
-            actionEnabled = LPPlatform.procUserRoleActionEnabled(schemaPrefix, userRole, actionName);
-            if (LPPlatform.LAB_FALSE.equalsIgnoreCase(actionEnabled[0].toString())){            
-                Object[] errMsg = LPFrontEnd.responseError(actionEnabled, language, "");
-                response.sendError((int) errMsg[0], (String) errMsg[1]);    
-                Rdbms.closeRdbms(); 
-                return ;                           
-            }            
+        if ( (LPPlatform.LAB_TRUE.equalsIgnoreCase(procActionRequiresEsignConfirmation[0].toString())) &&    
+             (!LPFrontEnd.servletEsignToVerify(request, response, procActionRequiresUserConfirmation, token.geteSign())) ){return;}
+        if (!LPFrontEnd.servletStablishDBConection(request, response)){return;}     
             
             DataProgramSample prgSmp = new DataProgramSample("");            
             Object[] dataSample = null;
@@ -188,16 +126,12 @@ public class TstDataEnvMonit extends HttpServlet {
                 case "LOGPROGRAMSAMPLE":
                     String[] mandatoryParamsAction = new String[]{PARAMETER_PROGRAM_SAMPLE_TEMPLATE};
                     mandatoryParamsAction = LPArray.addValueToArray1D(mandatoryParams, PARAMETER_PROGRAM_SAMPLE_TEMPLATE_VERSION);                    
-                    areMandatoryParamsInResponse = LPHttp.areMandatoryParamsInApiRequest(request, mandatoryParamsAction);
+                    areMandatoryParamsInResponse = LPHttp.areMandatoryParamsInApiRequest(request, mandatoryParamsAction);                       
                     if (LPPlatform.LAB_FALSE.equalsIgnoreCase(areMandatoryParamsInResponse[0].toString())){
-            errObject = LPArray.addValueToArray1D(errObject, "ERRORMSG_ERROR_STATUS_CODE"+": "+HttpServletResponse.SC_BAD_REQUEST);
-
-                        errObject = LPArray.addValueToArray1D(errObject, "ERRORMSG_MANDATORY_PARAMS_MISSING"+": "+areMandatoryParamsInResponse[1].toString());                    
-                        Object[] errMsg = LPFrontEnd.responseError(errObject, language, areMandatoryParamsInResponse[1].toString());
-                        response.sendError((int) errMsg[0], (String) errMsg[1]);    
-                        Rdbms.closeRdbms(); 
-                        return ;                
-                    }                                
+                        LPFrontEnd.servletReturnResponseError(request, response, 
+                            LPPlatform.API_ERRORTRAPING_MANDATORY_PARAMS_MISSING, new Object[]{areMandatoryParamsInResponse[1].toString()}, language);              
+                        return;          
+                    }                               
                     String sampleTemplate=request.getParameter(PARAMETER_PROGRAM_SAMPLE_TEMPLATE);
                     String sampleTemplateVersionStr = request.getParameter(PARAMETER_PROGRAM_SAMPLE_TEMPLATE_VERSION);                                  
 
@@ -214,9 +148,9 @@ public class TstDataEnvMonit extends HttpServlet {
                     if (numSamplesToLogStr!=null){numSamplesToLog = Integer.parseInt(numSamplesToLogStr);}
 
                     if (numSamplesToLogStr==null){
-                        dataSample = prgSmp.logSample(schemaPrefix, sampleTemplate, sampleTemplateVersion, fieldNames, fieldValues, internalUserID, userRole, Integer.parseInt(appSessionIdStr));
+                        dataSample = prgSmp.logSample(schemaPrefix, sampleTemplate, sampleTemplateVersion, fieldNames, fieldValues, token.getPersonName(), token.getUserRole(), Integer.parseInt(token.getAppSessionId()));
                     }else{
-                        dataSample = prgSmp.logSample(schemaPrefix, sampleTemplate, sampleTemplateVersion, fieldNames, fieldValues, internalUserID, userRole, Integer.parseInt(appSessionIdStr), numSamplesToLog);
+                        dataSample = prgSmp.logSample(schemaPrefix, sampleTemplate, sampleTemplateVersion, fieldNames, fieldValues, token.getPersonName(), token.getUserRole(), Integer.parseInt(token.getAppSessionId()), numSamplesToLog);
                     }
                     break;
                 default:      
@@ -267,13 +201,14 @@ public class TstDataEnvMonit extends HttpServlet {
      *
      * @param request servlet request
      * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)  {
+        try{
         processRequest(request, response);
+        }catch(ServletException|IOException e){
+            LPFrontEnd.servletReturnResponseError(request, response, e.getMessage(), new Object[]{}, null);
+        }
     }
 
     /**
@@ -281,13 +216,14 @@ public class TstDataEnvMonit extends HttpServlet {
      *
      * @param request servlet request
      * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)  {
+        try{
         processRequest(request, response);
+        }catch(ServletException|IOException e){
+            LPFrontEnd.servletReturnResponseError(request, response, e.getMessage(), new Object[]{}, null);
+        }
     }
 
     /**

@@ -21,7 +21,6 @@ import javax.servlet.http.HttpServletResponse;
 import databases.Rdbms;
 import functionalJava.materialSpec._ConfigSamplingPlanForSpec;
 import functionalJava.testingScripts.LPTestingOutFormat;
-import functionalJava.testingScripts.TestingAssertSummary;
 
 /**
  *
@@ -49,7 +48,6 @@ public class _TestingConfigSamplingPlanStructure extends HttpServlet {
         out.println("Exists record? " + Arrays.toString(exRec));
         
         String csvFileName = "dbActions.txt"; 
-        TestingAssertSummary tstAssertSummary = new TestingAssertSummary();
 
         String csvPathName = LPTestingOutFormat.TESTING_FILES_PATH+csvFileName; 
         String csvFileSeparator=LPTestingOutFormat.TESTING_FILES_FIELD_SEPARATOR;
@@ -85,8 +83,6 @@ public class _TestingConfigSamplingPlanStructure extends HttpServlet {
                 configSamplingPlanTestingArray[inumTesting][5]=actionName;
                 inumTesting++;
             }
-            
-            /* TODO output your page here. You may use following sample code. */
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
@@ -130,7 +126,8 @@ out.println(Arrays.toString(configSamplingPlanTestingArray));
                     default:                
                         break;
                 }
-                out.println("<td>"+dataSample[0].toString()+". "+dataSample[1].toString()+". "+dataSample[2].toString()+". "+dataSample[3].toString()+". "+dataSample[4].toString()+". "+dataSample[5].toString()+"</td>");
+                if (dataSample!=null){
+                    out.println("<td>"+dataSample[0].toString()+". "+dataSample[1].toString()+". "+dataSample[2].toString()+". "+dataSample[3].toString()+". "+dataSample[4].toString()+". "+dataSample[5].toString()+"</td>");}
                 out.println("</tr>");
             }
             out.println("</table>");        
@@ -148,13 +145,14 @@ out.println(Arrays.toString(configSamplingPlanTestingArray));
      *
      * @param request servlet request
      * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)  {
+        try{
         processRequest(request, response);
+        }catch(ServletException|IOException e){
+            LPFrontEnd.servletReturnResponseError(request, response, e.getMessage(), new Object[]{}, null);
+        }
     }
 
     /**
@@ -162,13 +160,14 @@ out.println(Arrays.toString(configSamplingPlanTestingArray));
      *
      * @param request servlet request
      * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)  {
+        try{
         processRequest(request, response);
+        }catch(ServletException|IOException e){
+            LPFrontEnd.servletReturnResponseError(request, response, e.getMessage(), new Object[]{}, null);
+        }
     }
 
     /**

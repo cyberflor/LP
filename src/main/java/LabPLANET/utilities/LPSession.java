@@ -13,6 +13,7 @@ import java.util.Date;
  * @author Administrator
  */
 public class LPSession {
+    private LPSession(){    throw new IllegalStateException("Utility class");}    
     
     public static final String FIELDNAME_SESSION_ID = "session_id";
     
@@ -30,8 +31,6 @@ public class LPSession {
         fieldsName = LPArray.addValueToArray1D(fieldsName, "person");
         fieldsValue = LPArray.addValueToArray1D(fieldsValue, "1111");        
         return Rdbms.insertRecordInTable(schemaAppName, tableName, fieldsName, fieldsValue);            
-
-//return new Object[]{1};
     }
     
     /**

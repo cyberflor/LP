@@ -49,11 +49,8 @@ public class LPQualityAssurance {
      * @return
      */
     public Method[] getMethodsList() {
-    	//Guru99MethodMetaData  guru99ClassVar  = new Guru99MethodMetaData  ();
-                 
-    	Class  guru99ClassObjVar  = this.getClass();
-    	Method[] guru99Method1 = guru99ClassObjVar.getDeclaredMethods();
-    	return guru99Method1;
+        Class  guru99ClassObjVar  = this.getClass();
+        return guru99ClassObjVar.getDeclaredMethods();
     }
     
     /**
@@ -62,10 +59,7 @@ public class LPQualityAssurance {
      * @return
      */
     public static Method[] getMethodsList(Class className) {
-    	//Guru99MethodMetaData  guru99ClassVar  = new Guru99MethodMetaData  ();
-    	//Class  guru99ClassObjVar  = className.getClass();
-    	Method[] guru99Method1 =  className.getMethods();
-    	return guru99Method1;
+        return className.getMethods();
     }
     
     /**
@@ -97,8 +91,8 @@ public class LPQualityAssurance {
                              classes.add (jarEntry.getName().replaceAll("/", "\\."));
                          }                    
                 }
-            }catch( IOException e){jarFile.close();
-            }finally{jarFile.close();}
+            }catch( IOException e){if (jarFile!=null){jarFile.close();}
+            }finally{if (jarFile!=null){jarFile.close();}}
             
         return (List) classes;
     }
@@ -153,7 +147,7 @@ public class LPQualityAssurance {
         String schemaName = "requirements";
         String tableName = "java_class_doc"; //module_backend_content";
         String projectName = "LabPLANET";
-        String fieldName_lineName="line_name";
+        String fieldNameLineName="line_name";
 
         String[] totalDiagnostic = new String[0];
 
@@ -265,7 +259,7 @@ public class LPQualityAssurance {
                             break;
                         }
                         String[] fieldsToGet = new String[0];
-                        fieldsToGet = LPArray.addValueToArray1D(fieldsToGet, fieldName_lineName);      
+                        fieldsToGet = LPArray.addValueToArray1D(fieldsToGet, fieldNameLineName);      
                         fieldsToGet = LPArray.addValueToArray1D(fieldsToGet, "line");
                         Object[][] javaDocEntries = Rdbms.getRecordFieldsByFilter(schemaName, tableName, keyFieldNames, keyFieldValues, fieldsToGet, new String[] {"line"});
                         Object[] javaDocEntries1D = LPArray.array2dTo1d(javaDocEntries, 0);
@@ -274,8 +268,8 @@ public class LPQualityAssurance {
                         fieldsToGet = new String[0];
                         fieldsToGet = LPArray.addValueToArray1D(fieldsToGet, "id");
                         fieldsToGet = LPArray.addValueToArray1D(fieldsToGet, "note_brief");
-                        fieldsToGet = LPArray.addValueToArray1D(fieldsToGet, fieldName_lineName);
-                        fieldsToGet = LPArray.addValueToArray1D(fieldsToGet, fieldName_lineName);
+                        fieldsToGet = LPArray.addValueToArray1D(fieldsToGet, fieldNameLineName);
+                        fieldsToGet = LPArray.addValueToArray1D(fieldsToGet, fieldNameLineName);
                         String[] keyFieldNames2 = LPArray.addValueToArray1D(keyFieldNames, "covered");
                         Object[] keyFieldValues2 = LPArray.addValueToArray1D(keyFieldValues, false);
                         Object[][] javaDocEntriesNotCovered = Rdbms.getRecordFieldsByFilter(schemaName, tableName, keyFieldNames2, keyFieldValues2, fieldsToGet, new String[] {"line"});
@@ -334,8 +328,8 @@ public class LPQualityAssurance {
                 }
             }
         }
-        String[][] diagn = LPArray.array1dTo2d(totalDiagnostic, totalDiagnosticNumColumns);
-        return diagn;                
+        return LPArray.array1dTo2d(totalDiagnostic, totalDiagnosticNumColumns);
+         
 
         /*			Stream<Path> f = Files.list(Paths.get("."));
          List list =  myTestingJava.getClasseNamesInPackage

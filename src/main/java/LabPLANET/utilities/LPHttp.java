@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author Administrator
  */
 public class LPHttp {
-
+    private LPHttp(){    throw new IllegalStateException("Utility class");}    
     public static HttpServletRequest requestPreparation(HttpServletRequest request){
         try {
             request.setCharacterEncoding(LPPlatform.LAB_ENCODER_UTF8);                    
@@ -35,9 +35,12 @@ public class LPHttp {
         ResourceBundle prop = ResourceBundle.getBundle("parameter.config.config");
         String frontendUrl = prop.getString("frontend_url");
         response.setHeader("CORS_ORIGIN_ALLOW_ALL", "True");                
-        response.setHeader("CORS_ALLOW_CREDENTIALS", "False");                
-        response.setHeader("Access-Control-Allow-Origin", frontendUrl);
-        response.setHeader("Access-Control-Allow-Methods", "GET");                
+        response.setHeader("CORS_ALLOW_CREDENTIALS", "True");                 //False
+        //response.setHeader("Access-Control-Allow-Origin", fronendUrl);
+        response.setHeader("Access-Control-Allow-Methods", "GET");        
+        response.setHeader("Access-Control-Allow-Origin", "*");
+        //response.setHeader("Access-Control-Allow-Origin", "http://127.0.0.1:8081");
+        response.setHeader("Access-Control-Allow-Credentials", "true");        
         return response;
     }    
     

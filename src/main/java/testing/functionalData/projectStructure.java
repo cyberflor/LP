@@ -6,7 +6,6 @@
 package testing.functionalData;
 
 import databases.Rdbms;
-import functionalJava.analysis.UserMethod;
 import _functionalJava.project.DataProject;
 import LabPLANET.utilities.LPArray;
 import LabPLANET.utilities.LPFrontEnd;
@@ -48,7 +47,6 @@ public class projectStructure extends HttpServlet {
         try (PrintWriter out = response.getWriter()) {
             
             response.setContentType("text/html;charset=UTF-8");
-            UserMethod um = new UserMethod();
 
             if (!LPFrontEnd.servletStablishDBConection(request, response)){return;} 
             
@@ -155,7 +153,8 @@ public class projectStructure extends HttpServlet {
                     fileContent = fileContent + ". "+LPNulls.replaceNull((String) dataSample2D[0][3])+LPTestingOutFormat.fieldEnd();
 
                 }else{
-                    fileContent = fileContent + LPTestingOutFormat.fieldStart()+dataProject[0].toString()+". "+dataProject[1].toString()+". "+dataProject[2].toString()+". "+dataProject[3].toString()+". "+dataProject[4].toString()+". "+dataProject[5].toString()+LPTestingOutFormat.fieldEnd();
+                    if (dataProject!=null){
+                        fileContent = fileContent + LPTestingOutFormat.fieldStart()+dataProject[0].toString()+". "+dataProject[1].toString()+". "+dataProject[2].toString()+". "+dataProject[3].toString()+". "+dataProject[4].toString()+". "+dataProject[5].toString()+LPTestingOutFormat.fieldEnd();}
                 }    
                 fileContent = fileContent + LPTestingOutFormat.rowEnd();
             }
@@ -187,13 +186,14 @@ public class projectStructure extends HttpServlet {
      *
      * @param request servlet request
      * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)  {
+        try{
         processRequest(request, response);
+        }catch(ServletException|IOException e){
+            LPFrontEnd.servletReturnResponseError(request, response, e.getMessage(), new Object[]{}, null);
+        }
     }
 
     /**
@@ -201,13 +201,14 @@ public class projectStructure extends HttpServlet {
      *
      * @param request servlet request
      * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)  {
+        try{
         processRequest(request, response);
+        }catch(ServletException|IOException e){
+            LPFrontEnd.servletReturnResponseError(request, response, e.getMessage(), new Object[]{}, null);
+        }
     }
 
     /**

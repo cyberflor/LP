@@ -7,14 +7,13 @@ package LabPLANET.utilities;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 
 /**
  *
  * @author Administrator
  */
 public class LPDate {
-
+    private LPDate(){    throw new IllegalStateException("Utility class");}    
 /**
  * Add some days to this given date
  * @param date Date - The date to add the days
@@ -80,8 +79,6 @@ public class LPDate {
             case "SATURDAYS":dayOfWeekNum=6;break;
             default:
                 return new Object[0];
-                //dt = LPArray.addValueToArray1D(dt,"FALSE");
-                //dt = LPArray.addValueToArray1D(dt, "day of week "+dayOfWeek+" not recognized.");return dt;                
         }
         int startDateDayOfWeek = startDate.get(Calendar.DAY_OF_WEEK); 
         

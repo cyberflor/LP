@@ -5,7 +5,6 @@
  */
 package LabPLANET.utilities;
 
-import com.labplanet.servicios.app.authenticationAPIParams;
 import com.labplanet.servicios.app.globalAPIsParams;
 import databases.Rdbms;
 import functionalJava.parameter.Parameter;
@@ -25,12 +24,11 @@ import org.json.simple.JSONObject;
  * @author Administrator
  */
 public class LPFrontEnd {
+    private LPFrontEnd(){    throw new IllegalStateException("Utility class");}    
     public static final String PROPERTY_NAME = "error_code";
     public static final String PROPERTY_VALUE = "error_value";
     
     public static final String RESPONSE_JSON_TAG_DIAGNOSTIC= "diagnostic"; 
-    //public static final String RESPONSE_JSON_TAG_ERROR_MESSAGE= "error_value"; 
-    
 
     
     public static String setLanguage(HttpServletRequest request){
@@ -41,7 +39,7 @@ public class LPFrontEnd {
     
     public static final Boolean servletStablishDBConection(HttpServletRequest request, HttpServletResponse response){
         String dbUserName = request.getParameter(globalAPIsParams.REQUEST_PARAM_DB_USERNAME);                   
-        String dbUserPassword = request.getParameter(globalAPIsParams.REQUEST_PARAM_DB_PASSWORD);     
+        String dbUserPassword = request.getParameter(globalAPIsParams.REQUEST_PARAM_DB_PSSWD);     
 
         //isConnected = Rdbms.getRdbms().startRdbmsTomcat(dbUserName, dbUserPassword);
         boolean isConnected = false;                               
@@ -98,7 +96,7 @@ public class LPFrontEnd {
         errJsObj.put(PROPERTY_VALUE+"_en", lpTrueStructure[lpTrueStructure.length-1]);
         return errJsObj;
     }    
-    public static JSONObject responseJSONError(String errorPropertyName, Object[] errorPropertyValue, String language){
+    public static JSONObject responseJSONError(String errorPropertyName, Object[] errorPropertyValue){
         JSONObject errJsObj = new JSONObject();
         errJsObj.put(PROPERTY_NAME, errorPropertyName);
         String errorTextEn = Parameter.getParameterBundle(LPPlatform.CONFIG_FILES_FOLDER, LPPlatform.CONFIG_FILES_API_ERRORTRAPING, null, errorPropertyName, null);
@@ -168,7 +166,7 @@ public class LPFrontEnd {
         }
     }
     public static final void servletReturnResponseError(HttpServletRequest request, HttpServletResponse response, String errorCode, Object[] errorCodeVars, String language){  
-        JSONObject errJSONMsg = LPFrontEnd.responseJSONError(errorCode,errorCodeVars, language);
+        JSONObject errJSONMsg = LPFrontEnd.responseJSONError(errorCode,errorCodeVars);
         request.setAttribute(LPPlatform.SERVLETS_REPONSE_ERROR_ATTRIBUTE_NAME, errJSONMsg.toString());
         servetInvokeResponseErrorServlet(request, response);
     }
@@ -192,13 +190,13 @@ public class LPFrontEnd {
         servetInvokeResponseSuccessServlet(request, response);
     }  
     
-    public static final void servletReturnResponseErrorLPFalseDiagnostic(HttpServletRequest request, HttpServletResponse response, Object[] LPFalseObject){       
-        JSONObject errJSONMsg = LPFrontEnd.responseJSONDiagnosticLPFalse(LPFalseObject);
+    public static final void servletReturnResponseErrorLPFalseDiagnostic(HttpServletRequest request, HttpServletResponse response, Object[] lPFalseObject){       
+        JSONObject errJSONMsg = LPFrontEnd.responseJSONDiagnosticLPFalse(lPFalseObject);
         request.setAttribute(LPPlatform.SERVLETS_REPONSE_ERROR_ATTRIBUTE_NAME, errJSONMsg.toString());        
         servetInvokeResponseErrorServlet(request, response);
     }    
-    public static final void servletReturnResponseErrorLPTrueDiagnostic(HttpServletRequest request, HttpServletResponse response, Object[] LPTrueObject){       
-        JSONObject successJSONMsg = LPFrontEnd.responseJSONDiagnosticLPTrue(LPTrueObject);
+    public static final void servletReturnResponseErrorLPTrueDiagnostic(HttpServletRequest request, HttpServletResponse response, Object[] lPTrueObject){       
+        JSONObject successJSONMsg = LPFrontEnd.responseJSONDiagnosticLPTrue(lPTrueObject);
         request.setAttribute(LPPlatform.SERVLETS_REPONSE_ERROR_ATTRIBUTE_NAME, successJSONMsg.toString());        
         servetInvokeResponseErrorServlet(request, response);
     }      

@@ -25,14 +25,7 @@ public class DataProject extends DataSample{
 
     private Object[] diagnosesProj = new Object[7];
 
-    private String[] mandatoryFieldsProj = null;
-    private Object[] mandatoryFieldsValueProj = null;
 
-    private final String classVersionProj = "0.1";
-
-    private String[] javaDocFieldsProj = new String[0];
-    private Object[] javaDocValuesProj = new Object[0];
-    private String javaDocLineNameProj = "";
     
 //    private final String schemaDataNameProj = "data";
 //    private final String schemaConfigNameProj = LPPlatform.SCHEMA_CONFIG;
@@ -61,8 +54,7 @@ public class DataProject extends DataSample{
      * @throws SQLException
      */
     public Object[] createProjectDev( String schemaPrefix, String sampleTemplate, Integer sampleTemplateVersion, String[] sampleFieldName, Object[] sampleFieldValue, String userName, String userRole) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException{
-    Object[] diag = createProject(schemaPrefix, sampleTemplate, sampleTemplateVersion, sampleFieldName, sampleFieldValue, userName, userRole, true);
-    return diag;
+        return createProject(schemaPrefix, sampleTemplate, sampleTemplateVersion, sampleFieldName, sampleFieldValue, userName, userRole, true);
 }
 
     /**
@@ -81,11 +73,17 @@ public class DataProject extends DataSample{
      * @throws SQLException
      */
     public Object[] createProject( String schemaPrefix, String sampleTemplate, Integer sampleTemplateVersion, String[] sampleFieldName, Object[] sampleFieldValue, String userName, String userRole) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException{
-    Object[] diag = createProject(schemaPrefix, sampleTemplate, sampleTemplateVersion, sampleFieldName, sampleFieldValue, userName, userRole, false);
-    return diag;
-}
+        return createProject(schemaPrefix, sampleTemplate, sampleTemplateVersion, sampleFieldName, sampleFieldValue, userName, userRole, false);
+    }
 
 Object[] createProject( String schemaPrefix, String projectTemplate, Integer projectTemplateVersion, String[] sampleFieldName, Object[] sampleFieldValue, String userName, String userRole, Boolean devMode) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException{
+    String classVersionProj = "0.1";
+    String[] mandatoryFieldsProj = null;
+    Object[] mandatoryFieldsValueProj = null;
+    String[] javaDocFieldsProj = new String[0];
+    Object[] javaDocValuesProj = new Object[0];
+    String javaDocLineNameProj = "";
+
     DataDataIntegrity labIntChecker = new DataDataIntegrity();
 
     if (devMode==true){

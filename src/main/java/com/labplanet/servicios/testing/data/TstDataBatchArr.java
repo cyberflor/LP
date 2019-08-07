@@ -9,6 +9,7 @@ import LabPLANET.utilities.LPNulls;
 import LabPLANET.utilities.LPPlatform;
 import functionalJava.testingScripts.LPTestingOutFormat;
 import LabPLANET.utilities.LPArray;
+import LabPLANET.utilities.LPFrontEnd;
 import databases.Rdbms;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -77,13 +78,13 @@ public class TstDataBatchArr extends HttpServlet {
                 if (configSpecTestingArray[i][1]!=null){actionName = (String) configSpecTestingArray[i][1];}
                 if (configSpecTestingArray[i][2]!=null){schemaPrefix = (String) configSpecTestingArray[i][2];}
                 if (configSpecTestingArray[i][3]!=null){tableName = (String) configSpecTestingArray[i][3];}
-                if (configSpecTestingArray[i][4]!=null){fieldName = configSpecTestingArray[i][4].toString().split("\\|");}else{fieldName = new String[0];}              
-                if (configSpecTestingArray[i][5]!=null){fieldValue = configSpecTestingArray[i][5].toString().split("\\|");}else{fieldValue = new String[0];}
-                if (configSpecTestingArray[i][6]!=null){fieldsToRetrieve = configSpecTestingArray[i][6].toString().split("\\|");}else{fieldsToRetrieve = new String[0];}                  
-                if (configSpecTestingArray[i][7]!=null){setFieldName = configSpecTestingArray[i][7].toString().split("\\|");}else{setFieldName = new String[0];}              
-                if (configSpecTestingArray[i][8]!=null){setFieldValue = configSpecTestingArray[i][8].toString().split("\\|");}else{setFieldValue = new String[0];}
-                if (configSpecTestingArray[i][9]!=null){orderBy = configSpecTestingArray[i][9].toString().split("\\|");}else{orderBy = new String[0];}
-                if (configSpecTestingArray[i][10]!=null){groupBy = configSpecTestingArray[i][10].toString().split("\\|");}else{groupBy = new String[0];}
+                if (configSpecTestingArray[i][4]!=null){fieldName = configSpecTestingArray[i][4].split("\\|");}else{fieldName = new String[0];}              
+                if (configSpecTestingArray[i][5]!=null){fieldValue = configSpecTestingArray[i][5].split("\\|");}else{fieldValue = new String[0];}
+                if (configSpecTestingArray[i][6]!=null){fieldsToRetrieve = configSpecTestingArray[i][6].split("\\|");}else{fieldsToRetrieve = new String[0];}                  
+                if (configSpecTestingArray[i][7]!=null){setFieldName = configSpecTestingArray[i][7].split("\\|");}else{setFieldName = new String[0];}              
+                if (configSpecTestingArray[i][8]!=null){setFieldValue = configSpecTestingArray[i][8].split("\\|");}else{setFieldValue = new String[0];}
+                if (configSpecTestingArray[i][9]!=null){orderBy = configSpecTestingArray[i][9].split("\\|");}else{orderBy = new String[0];}
+                if (configSpecTestingArray[i][10]!=null){groupBy = configSpecTestingArray[i][10].split("\\|");}else{groupBy = new String[0];}
                 
 /*                String[] whereFieldsNameArr = new String[]{"status in|"};
                 Object[] whereFieldsValueArr = null;
@@ -178,13 +179,14 @@ public class TstDataBatchArr extends HttpServlet {
      *
      * @param request servlet request
      * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)  {
+        try{
         processRequest(request, response);
+        }catch(ServletException|IOException e){
+            LPFrontEnd.servletReturnResponseError(request, response, e.getMessage(), new Object[]{}, null);
+        }
     }
 
     /**
@@ -192,13 +194,14 @@ public class TstDataBatchArr extends HttpServlet {
      *
      * @param request servlet request
      * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)  {
+        try{
         processRequest(request, response);
+        }catch(ServletException|IOException e){
+            LPFrontEnd.servletReturnResponseError(request, response, e.getMessage(), new Object[]{}, null);
+        }
     }
 
     /**

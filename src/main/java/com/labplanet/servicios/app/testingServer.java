@@ -8,18 +8,24 @@ package com.labplanet.servicios.app;
 import LabPLANET.utilities.LPArray;
 import LabPLANET.utilities.LPFrontEnd;
 import LabPLANET.utilities.LPHttp;
+import LabPLANET.utilities.LPMath;
+import LabPLANET.utilities.LPPlatform;
 import static com.labplanet.servicios.app.sopUserAPI.ERRORMSG_ERROR_STATUS_CODE;
 import databases.Rdbms;
 import databases.Token;
+import functionalJava.requirement.RequirementLogFile;
+import functionalJava.sampleStructure.DataSampleUtilities;
 import functionalJava.testingScripts.LPTestingOutFormat;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.math.BigDecimal;
 import java.net.URL;
 import java.nio.charset.CharsetDecoder;
 import java.nio.charset.CodingErrorAction;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -48,7 +54,6 @@ public class testingServer extends HttpServlet {
         String language = LPFrontEnd.setLanguage(request);         
         
         try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
@@ -59,6 +64,13 @@ public class testingServer extends HttpServlet {
             out.println("</body>");
             out.println("</html>");
 
+            out.println("Extract portion, extraer 5 sobre una cantidad de 4: "+Arrays.toString(LPMath.extractPortion("process-us", 
+                    BigDecimal.valueOf(4), "MG",1, BigDecimal.valueOf(5), "MG", 2)));
+            out.println("Extract portion, extraer 4 sobre una cantidad de 4: "+Arrays.toString(LPMath.extractPortion("process-us", 
+                    BigDecimal.valueOf(4), "MG",1, BigDecimal.valueOf(4), "MG", 2)));
+            
+            out.println("Statuses en inglés: "+Arrays.toString(DataSampleUtilities.getSchemaSampleStatusList("process-us")));
+            out.println("Statuses en castellano: "+Arrays.toString(DataSampleUtilities.getSchemaSampleStatusList("process-us", "es")));
             String[] errObject = new String[]{"Servlet sampleAPI at " + request.getServletPath()};          
             boolean isConnected = false;
             //isConnected = Rdbms.getRdbms().startRdbms(dbUserName, dbUserPassword);
@@ -78,9 +90,11 @@ public class testingServer extends HttpServlet {
             }
             
             out.println("Before creating the token");
-            Token token = new Token();
+            Token token = new Token("");
             String myToken = token.createToken(LPTestingOutFormat.TESTING_USER, LPTestingOutFormat.TESTING_PW, "3", "Admin", "", "", "");
             out.println("Token created: "+myToken);
+            
+            //out.println(RequirementLogFile.requirementsLogEntry("This is a requirement log called from TestingServer", "methodName", LPPlatform.SCHEMA_APP,2);         
             
  //           response.sendError(Response.SC_OK, "SC_OK response");
  //           if (1==1){                return;            }
@@ -111,7 +125,16 @@ public class testingServer extends HttpServlet {
             }
 
             final String test = sb.toString();
-            out.println("Test content: "+test);
+            out.println("Test File Content: <br>"+test);
+            
+        String csvFileName = "noDBSchema_config_SpecQualitativeRuleGeneratorChecker.txt"; 
+                             
+        String csvPathName = LPTestingOutFormat.TESTING_FILES_PATH+csvFileName; 
+        String csvFileSeparator=LPTestingOutFormat.TESTING_FILES_FIELD_SEPARATOR;
+        
+        Object[][] csvFileContent = LPArray.convertCSVinArray(csvPathName, csvFileSeparator);
+        out.println("csv File Content: <br>"+LPTestingOutFormat.convertArrayInHtmlTable(csvFileContent));
+        
         }
     }
 
@@ -121,13 +144,14 @@ public class testingServer extends HttpServlet {
      *
      * @param request servlet request
      * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)  {
+        try{
         processRequest(request, response);
+        }catch(ServletException|IOException e){
+            LPFrontEnd.servletReturnResponseError(request, response, e.getMessage(), new Object[]{}, null);
+        }
     }
 
     /**
@@ -135,13 +159,14 @@ public class testingServer extends HttpServlet {
      *
      * @param request servlet request
      * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)  {
+        try{
         processRequest(request, response);
+        }catch(ServletException|IOException e){
+            LPFrontEnd.servletReturnResponseError(request, response, e.getMessage(), new Object[]{}, null);
+        }
     }
 
     /**

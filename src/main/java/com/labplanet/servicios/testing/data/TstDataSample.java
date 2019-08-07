@@ -8,6 +8,8 @@ package com.labplanet.servicios.testing.data;
 import LabPLANET.utilities.LPPlatform;
 import functionalJava.testingScripts.LPTestingOutFormat;
 import LabPLANET.utilities.LPArray;
+import LabPLANET.utilities.LPFrontEnd;
+import LabPLANET.utilities.LPNulls;
 import databases.Rdbms;
 import functionalJava.ChangeOfCustody.ChangeOfCustody;
 import functionalJava.sampleStructure.DataSample;
@@ -77,9 +79,8 @@ public class TstDataSample extends HttpServlet {
             //numEvaluationArguments=numEvaluationArguments+1;
             String table1Header = csvHeaderTags.get(LPTestingOutFormat.FILEHEADER_TABLE_NAME_TAG_NAME+"1").toString();               
             String fileContentTable1 = LPTestingOutFormat.createTableWithHeader(table1Header, numEvaluationArguments);
-
-            Integer iLines =numHeaderLines; 
-            for (iLines=iLines;iLines<csvFileContent.length;iLines++){
+            
+            for (Integer iLines=numHeaderLines;iLines<csvFileContent.length;iLines++){
                 tstAssertSummary.increaseTotalTests();
                 TestingAssert tstAssert = new TestingAssert(csvFileContent[iLines], numEvaluationArguments);
                 
@@ -118,7 +119,7 @@ public class TstDataSample extends HttpServlet {
                         case "LOGSAMPLE":                            
                             String sampleTemplate=null;
                             Integer sampleTemplateVersion=null;
-                            String[] sampleTemplateInfo = null;
+                            String[] sampleTemplateInfo = new String[0];
                             if (lineNumCols>=numEvaluationArguments+4)                
                                 sampleTemplateInfo = LPTestingOutFormat.csvExtractFieldValueStringArr(csvFileContent[iLines][numEvaluationArguments+4]);
                             sampleTemplate = sampleTemplateInfo[0];
@@ -140,7 +141,7 @@ public class TstDataSample extends HttpServlet {
                                 sampleId = LPTestingOutFormat.csvExtractFieldValueInteger(csvFileContent[iLines][numEvaluationArguments+4]);
                             fileContentTable1=fileContentTable1+LPTestingOutFormat.rowAddFields(
                                 new Object[]{"sampleId, receiver", 
-                                    sampleId.toString()+", "+userName});                              
+                                    LPNulls.replaceNull(sampleId).toString()+", "+userName});                              
                             dataSample = smp.sampleReception(schemaPrefix, userName, sampleId, userRole, null);
                             break;       
                         case "CHANGESAMPLINGDATE":
@@ -149,10 +150,10 @@ public class TstDataSample extends HttpServlet {
                                 sampleId = LPTestingOutFormat.csvExtractFieldValueInteger(csvFileContent[iLines][numEvaluationArguments+4]);
                             Date newDate = null;
                             if (lineNumCols>=numEvaluationArguments+5)                
-                                newDate = LPTestingOutFormat.csvExtractFieldValueDate(csvFileContent[iLines][numEvaluationArguments+5]);
+                                newDate = LPTestingOutFormat.csvExtractFieldValueDate(csvFileContent[iLines][numEvaluationArguments+5]);                            
                             fileContentTable1=fileContentTable1+LPTestingOutFormat.rowAddFields(
                                 new Object[]{"sampleId, userName, newDate", 
-                                    sampleId.toString()+", "+userName+", "+newDate.toString()});                              
+                                    LPNulls.replaceNull(sampleId).toString()+", "+userName+", "+LPNulls.replaceNull(newDate).toString()});                              
                             dataSample = smp.changeSamplingDate(schemaPrefix, userName, sampleId, newDate, userRole);
                             break;       
                         case "SAMPLINGCOMMENTADD":
@@ -164,7 +165,7 @@ public class TstDataSample extends HttpServlet {
                                 comment = LPTestingOutFormat.csvExtractFieldValueString(csvFileContent[iLines][numEvaluationArguments+5]);
                             fileContentTable1=fileContentTable1+LPTestingOutFormat.rowAddFields(
                                 new Object[]{"sampleId, userName, comment", 
-                                    sampleId.toString()+", "+userName+", "+comment});                              
+                                    LPNulls.replaceNull(sampleId).toString()+", "+userName+", "+comment});                              
                             dataSample = smp.sampleReceptionCommentAdd(schemaPrefix, userName, sampleId, comment, userRole);
                             break;       
                         case "SAMPLINGCOMMENTREMOVE":
@@ -176,7 +177,7 @@ public class TstDataSample extends HttpServlet {
                                 comment = LPTestingOutFormat.csvExtractFieldValueString(csvFileContent[iLines][numEvaluationArguments+5]);
                             fileContentTable1=fileContentTable1+LPTestingOutFormat.rowAddFields(
                                 new Object[]{"sampleId, userName, comment", 
-                                    sampleId.toString()+", "+userName+", "+comment});                              
+                                    LPNulls.replaceNull(sampleId).toString()+", "+userName+", "+comment});                              
                             dataSample = smp.sampleReceptionCommentRemove(schemaPrefix, userName, sampleId, comment, userRole);
                             break;       
                         case "INCUBATIONSTART":
@@ -185,7 +186,7 @@ public class TstDataSample extends HttpServlet {
                                 sampleId = LPTestingOutFormat.csvExtractFieldValueInteger(csvFileContent[iLines][numEvaluationArguments+4]);
                             fileContentTable1=fileContentTable1+LPTestingOutFormat.rowAddFields(
                                 new Object[]{"sampleId, userName", 
-                                    sampleId.toString()+", "+userName});                              
+                                    LPNulls.replaceNull(sampleId).toString()+", "+userName});                              
                             dataSample = smp.setSampleStartIncubationDateTime(schemaPrefix, userName, sampleId, userRole);
                             break;       
                         case "INCUBATIONEND":
@@ -194,7 +195,7 @@ public class TstDataSample extends HttpServlet {
                                 sampleId = LPTestingOutFormat.csvExtractFieldValueInteger(csvFileContent[iLines][numEvaluationArguments+4]);
                             fileContentTable1=fileContentTable1+LPTestingOutFormat.rowAddFields(
                                 new Object[]{"sampleId, userName", 
-                                    sampleId.toString()+", "+userName});                              
+                                    LPNulls.replaceNull(sampleId).toString()+", "+userName});                              
                             dataSample = smp.setSampleEndIncubationDateTime(schemaPrefix, userName, sampleId, userRole);
                             break;       
                         case "SAMPLEANALYSISADD":
@@ -210,7 +211,7 @@ public class TstDataSample extends HttpServlet {
                             Object[] fieldValueObjArr=LPArray.convertStringWithDataTypeToObjectArray(fieldValueStrArr);
                             fileContentTable1=fileContentTable1+LPTestingOutFormat.rowAddFields(
                                 new Object[]{"sampleId, userName, fieldNames, fieldValues", 
-                                    sampleId.toString()+", "+userName+", "+Arrays.toString(fieldName)+", "+Arrays.toString(fieldValueObjArr)});                              
+                                    LPNulls.replaceNull(sampleId).toString()+", "+userName+", "+Arrays.toString(fieldName)+", "+Arrays.toString(fieldValueObjArr)});                              
                             dataSample = smp.sampleAnalysisAddtoSample(schemaPrefix, userName, sampleId, fieldName, fieldValueObjArr, userRole);
                             break;              
                         case "ENTERRESULT":
@@ -229,7 +230,7 @@ public class TstDataSample extends HttpServlet {
                             Integer objectId = 0;
                             if (lineNumCols>=numEvaluationArguments+4)                
                                 objectId=LPTestingOutFormat.csvExtractFieldValueInteger(csvFileContent[iLines][numEvaluationArguments+4]);
-                            String objectLevel=null;
+                            String objectLevel="";
                             if (lineNumCols>=numEvaluationArguments+5)                
                                 objectLevel=LPTestingOutFormat.csvExtractFieldValueString(csvFileContent[iLines][numEvaluationArguments+5]);
                             fileContentTable1=fileContentTable1+LPTestingOutFormat.rowAddFields(
@@ -245,7 +246,7 @@ public class TstDataSample extends HttpServlet {
                             objectId = 0;
                             if (lineNumCols>=numEvaluationArguments+4)                
                                 objectId=LPTestingOutFormat.csvExtractFieldValueInteger(csvFileContent[iLines][numEvaluationArguments+4]);
-                            objectLevel=null;
+                            objectLevel="";
                             if (lineNumCols>=numEvaluationArguments+5)                
                                 objectLevel=LPTestingOutFormat.csvExtractFieldValueString(csvFileContent[iLines][numEvaluationArguments+5]);
                             fileContentTable1=fileContentTable1+LPTestingOutFormat.rowAddFields(
@@ -261,7 +262,7 @@ public class TstDataSample extends HttpServlet {
                             objectId = 0;
                             if (lineNumCols>=numEvaluationArguments+4)                
                                 objectId=LPTestingOutFormat.csvExtractFieldValueInteger(csvFileContent[iLines][numEvaluationArguments+4]);
-                            objectLevel=null;
+                            objectLevel="";
                             if (lineNumCols>=numEvaluationArguments+5)                
                                 objectLevel=LPTestingOutFormat.csvExtractFieldValueString(csvFileContent[iLines][numEvaluationArguments+5]);
                             fileContentTable1=fileContentTable1+LPTestingOutFormat.rowAddFields(
@@ -482,16 +483,13 @@ public class TstDataSample extends HttpServlet {
      *
      * @param request servlet request
      * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        try {
-            processRequest(request, response);
-        } catch (IllegalArgumentException ex) {
-            Logger.getLogger(TstDataSample.class.getName()).log(Level.SEVERE, null, ex);
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)  {
+        try{
+        processRequest(request, response);
+        }catch(ServletException|IOException e){
+            LPFrontEnd.servletReturnResponseError(request, response, e.getMessage(), new Object[]{}, null);
         }
     }
 
@@ -500,13 +498,14 @@ public class TstDataSample extends HttpServlet {
      *
      * @param request servlet request
      * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)  {
+        try{
         processRequest(request, response);
+        }catch(ServletException|IOException e){
+            LPFrontEnd.servletReturnResponseError(request, response, e.getMessage(), new Object[]{}, null);
+        }
     }
 
     /**

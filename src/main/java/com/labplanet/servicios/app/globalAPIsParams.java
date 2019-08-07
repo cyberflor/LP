@@ -5,6 +5,7 @@
  */
 package com.labplanet.servicios.app;
 
+import LabPLANET.utilities.LPFrontEnd;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
@@ -17,6 +18,9 @@ import javax.servlet.http.HttpServletResponse;
  * @author Administrator
  */
 public class globalAPIsParams extends HttpServlet {
+    
+    public static final String ENDPOINT_URLS_SAMPLEAPI = "/moduleSample/sampleAPI";
+    
 
     // Por favor, agregar ordenado alfabeticamente para evitar duplicados
     public static final String REQUEST_PARAM_ACTION_NAME = "actionName";
@@ -24,15 +28,12 @@ public class globalAPIsParams extends HttpServlet {
     public static final String REQUEST_PARAM_ADD_SAMPLE_ANALYSIS_FIELD_TO_RETRIEVE = "addSampleAnalysisFieldToRetrieve";
     public static final String REQUEST_PARAM_ADD_SAMPLE_ANALYSIS_RESULT = "addSampleAnalysisResult";
     public static final String REQUEST_PARAM_ADD_SAMPLE_ANALYSIS_RESULT_FIELD_TO_RETRIEVE = "addSampleAnalysisResultFieldToRetrieve";    
-    
     public static final String REQUEST_PARAM_ALIQUOT_ID = "aliquotId";
     public static final String REQUEST_PARAM_CANCEL_CHANGE_COMMENT = "cancelChangeComment"; 
     public static final String REQUEST_PARAM_CONFIRM_CHANGE_COMMENT = "confirmChangeComment"; 
-    
     public static final String REQUEST_PARAM_CUSTODIAN_CANDIDATE = "custodianCandidate";
-    
     public static final String REQUEST_PARAM_DB_USERNAME = "dbUserName";
-    public static final String REQUEST_PARAM_DB_PASSWORD = "dbUserPassword";    
+    public static final String REQUEST_PARAM_DB_PSSWD = "dbUserPassword";    
     public static final String REQUEST_PARAM_ESIGN_TO_CHECK = "esignPhraseToCheck"; 
     public static final String REQUEST_PARAM_FIELD_TO_RETRIEVE = "fieldToRetrieve"; 
     public static final String REQUEST_PARAM_FINAL_TOKEN = "finalToken";    
@@ -46,6 +47,7 @@ public class globalAPIsParams extends HttpServlet {
     public static final String REQUEST_PARAM_OBJECT_LEVEL_SAMPLE = "SAMPLE";
     public static final String REQUEST_PARAM_OBJECT_LEVEL_TEST = "TEST";
     public static final String REQUEST_PARAM_PASSWORD_TO_CHECK = "passwordToCheck";
+    public static final String REQUEST_PARAM_PERSON_FIELDS_NAME = "passwordToCheck";
     public static final String REQUEST_PARAM_RAW_VALUE_RESULT = "rawValueResult";
     public static final String REQUEST_PARAM_RESULT_ID = "resultId";
     public static final String REQUEST_PARAM_SAMPLE_COMMENT = "sampleComment";
@@ -58,8 +60,8 @@ public class globalAPIsParams extends HttpServlet {
     public static final String REQUEST_PARAM_SAMPLE_TEMPLATE_VERSION = "sampleTemplateVersion";
     public static final String REQUEST_PARAM_SAMPLE_ANALYSIS_FIELD_TO_RETRIEVE = "sampleAnalysisFieldToRetrieve";
     public static final String REQUEST_PARAM_SAMPLE_ANALYSIS_RESULT_FIELD_TO_RETRIEVE = "sampleAnalysisResultFieldToRetrieve";
+    public static final String REQUEST_PARAM_SOP_FIELDS_TO_RETRIEVE = "sopFieldsToRetrieve";
     public static final String REQUEST_PARAM_SORT_FIELDS_NAME = "sortFieldsName";
-    
     public static final String REQUEST_PARAM_SCHEMA_PREFIX = "schemaPrefix";    
     public static final String REQUEST_PARAM_TEST_ID = "testId";
     public static final String REQUEST_PARAM_TEST_FIELD_TO_RETRIEVE = "testFieldToRetrieve";
@@ -80,7 +82,6 @@ public class globalAPIsParams extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
@@ -99,13 +100,14 @@ public class globalAPIsParams extends HttpServlet {
      *
      * @param request servlet request
      * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)  {
+        try{
         processRequest(request, response);
+        }catch(ServletException|IOException e){
+            LPFrontEnd.servletReturnResponseError(request, response, e.getMessage(), new Object[]{}, null);
+        }
     }
 
     /**
@@ -113,13 +115,14 @@ public class globalAPIsParams extends HttpServlet {
      *
      * @param request servlet request
      * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)  {
+        try{
         processRequest(request, response);
+        }catch(ServletException|IOException e){
+            LPFrontEnd.servletReturnResponseError(request, response, e.getMessage(), new Object[]{}, null);
+        }
     }
 
     /**

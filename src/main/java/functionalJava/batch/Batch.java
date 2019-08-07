@@ -160,9 +160,8 @@ public class Batch {
      * @return
      */
     public String batchCommentAddOthers(String oper, String mode){ // Improve!!
-    String comment = "";
-    return comment;
-}
+        return "";
+    }
 
     /**
      *

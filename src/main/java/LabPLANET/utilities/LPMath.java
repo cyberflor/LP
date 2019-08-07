@@ -14,7 +14,7 @@ import java.math.BigDecimal;
  * @version 0.1
  */
 public class LPMath {
-    
+    private LPMath(){    throw new IllegalStateException("Utility class");}    
 /**
  * 
  * Calc the nth root. Common application on sampling plans.
@@ -39,18 +39,24 @@ public class LPMath {
     }  
     
     public static Object[] extractPortion(String schemaPrefix, BigDecimal volume, String volumeUOM, Integer volumeObjectId, BigDecimal portion, String portionUOM, Integer portionObjectId){
-        
+        volumeUOM = volumeUOM == null ? "" : volumeUOM;
         String errorCode="";
         Object[] errorDetailVariables = new Object[0];
         
-        if (volume!=null){
-            UnitsOfMeasurement uom = new UnitsOfMeasurement();
-            if (portionUOM == null ? volumeUOM != null : !portionUOM.equals(volumeUOM)){
-                Object[] valueConverted = uom.convertValue(schemaPrefix, portion, portionUOM, volumeUOM);
-                portion = (BigDecimal) valueConverted[valueConverted.length-2];
-            }
+        if (volume==null){
+            errorCode = "DataSample_sampleAliquoting_volumeCannotBeNegativeorZero";
+            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, "");
+            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, "");
+            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, schemaPrefix);
+            return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);                 
         }
-        if ( portion.compareTo(BigDecimal.ZERO)==-1) {
+        UnitsOfMeasurement uom = new UnitsOfMeasurement();
+        if (portionUOM == null ? volumeUOM != null : !portionUOM.equals(volumeUOM)){
+            Object[] valueConverted = uom.convertValue(schemaPrefix, portion, portionUOM, volumeUOM);
+            portion = (BigDecimal) valueConverted[valueConverted.length-2];
+        }
+        
+        if ( portion.compareTo(BigDecimal.ZERO)<1) {
             errorCode = "DataSample_sampleAliquoting_volumeCannotBeNegativeorZero";
             errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, portion.toString());
             errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, portionObjectId.toString());
@@ -58,17 +64,8 @@ public class LPMath {
             return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);                 
         }        
        volume = volume.add(portion.negate());        
-       if ( volume.compareTo(BigDecimal.ZERO)==-1) {
+       if ( volume.compareTo(BigDecimal.ZERO)<0) {
             errorCode = "DataSample_sampleAliquoting_notEnoughVolumeToAliquoting";
-            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, "aliquot  "+volumeObjectId.toString());
-            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, volume.toString());
-            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, "subaliquoting");
-            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, portion.toString());
-            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, schemaPrefix);
-            return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);                          
-        }        
-       if (!(volume.compareTo(portion)==1) ) {
-            errorCode = "DataSample_sampleAliquoting_notEnoughVolumeForExtraction";
             errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, "aliquot  "+volumeObjectId.toString());
             errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, volume.toString());
             errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, "subaliquoting");

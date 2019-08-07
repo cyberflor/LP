@@ -61,13 +61,11 @@ public class DataBatch {
         for (String[] array :batchArray.batchPosic) {         
               singleDArray.addAll(Arrays.asList(array));
         }       
-        Object[] insertRecordInTable = Rdbms.insertRecordInTable(schemaName, tableName, 
+        return Rdbms.insertRecordInTable(schemaName, tableName, 
                                                 new String[]{"name, template, template_version, array_num_rows,"
                                                     + "array_num_cols, array_total_positions, array_total_objects"},
                                                 new Object [] {batchArray.getBatchName(), batchArray.getBatchTemplate(), batchArray.getBatchTemplateVersion(), batchArray.numRows,
-                                                    + batchArray.numCols, batchArray.numTotalPositions, batchArray.numTotalObjects});
-        //functionResult = "Added to the database";
-        return insertRecordInTable;        
+                                                    + batchArray.numCols, batchArray.numTotalPositions, batchArray.numTotalObjects});    
     }
     
     /**

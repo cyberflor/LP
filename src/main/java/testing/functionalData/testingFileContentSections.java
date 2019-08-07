@@ -5,8 +5,6 @@
  */
 package testing.functionalData;
 
-import java.util.ResourceBundle;
-
 /**
  *
  * @author Administrator

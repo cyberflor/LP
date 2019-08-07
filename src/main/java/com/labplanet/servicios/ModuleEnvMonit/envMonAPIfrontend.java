@@ -9,6 +9,7 @@ import LabPLANET.utilities.LPArray;
 import LabPLANET.utilities.LPFrontEnd;
 import LabPLANET.utilities.LPHttp;
 import LabPLANET.utilities.LPPlatform;
+import com.labplanet.servicios.app.globalAPIsParams;
 import databases.Rdbms;
 import databases.Token;
 import functionalJava.sampleStructure.DataSampleUtilities;
@@ -29,9 +30,8 @@ import org.json.simple.JSONObject;
  * @author Administrator
  */
 public class envMonAPIfrontend extends HttpServlet {
-    public static final String ERRORMSG_ERROR_STATUS_CODE="Error Status Code";
-    public static final String ERRORMSG_MANDATORY_PARAMS_MISSING="API Error Message: There are mandatory params for this API method not being passed";
-
+    public static final String MANDATORY_PARAMS_MAIN_SERVLET="actionName|finalToken";
+    
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      *
@@ -49,37 +49,22 @@ public class envMonAPIfrontend extends HttpServlet {
         try (PrintWriter out = response.getWriter()) {
             String[] errObject = new String[]{"Servlet sampleAPI at " + request.getServletPath()};            
             
-            String[] mandatoryParams = new String[]{"schemaPrefix"};
-            mandatoryParams = LPArray.addValueToArray1D(mandatoryParams, "actionName");
-            mandatoryParams = LPArray.addValueToArray1D(mandatoryParams, "finalToken");
-
-            Object[] areMandatoryParamsInResponse = LPHttp.areMandatoryParamsInApiRequest(request, mandatoryParams);
-            if (LPPlatform.LAB_FALSE.equalsIgnoreCase(areMandatoryParamsInResponse[0].toString())){
-                errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
-                errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_MANDATORY_PARAMS_MISSING+": "+areMandatoryParamsInResponse[1].toString());                    
-                Object[] errMsg =  LPFrontEnd.responseError(errObject, language, areMandatoryParamsInResponse[1].toString());
-                response.sendError((int) errMsg[0], (String) errMsg[1]);                
-                return ;                
-            }            
-
-            String schemaPrefix = request.getParameter("schemaPrefix");            
-            String actionName = request.getParameter("actionName");
-            String finalToken = request.getParameter("finalToken");                           
+        String[] mandatoryParams = new String[]{""};
+        Object[] areMandatoryParamsInResponse = LPHttp.areMandatoryParamsInApiRequest(request, MANDATORY_PARAMS_MAIN_SERVLET.split("\\|"));                       
+        if (LPPlatform.LAB_FALSE.equalsIgnoreCase(areMandatoryParamsInResponse[0].toString())){
+            LPFrontEnd.servletReturnResponseError(request, response, 
+                LPPlatform.API_ERRORTRAPING_MANDATORY_PARAMS_MISSING, new Object[]{areMandatoryParamsInResponse[1].toString()}, language);              
+            return;          
+        }             
+        String schemaPrefix = request.getParameter(globalAPIsParams.REQUEST_PARAM_SCHEMA_PREFIX);            
+        String actionName = request.getParameter(globalAPIsParams.REQUEST_PARAM_ACTION_NAME);
+        String finalToken = request.getParameter(globalAPIsParams.REQUEST_PARAM_FINAL_TOKEN);                   
             
-            Token token = new Token();
-            String[] tokenParams = token.tokenParamsList();
-            String[] tokenParamsValues = token.validateToken(finalToken, tokenParams);
-            
-            String dbUserName = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, Token.TOKEN_PARAM_USERDB)];
-            String dbUserPassword = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, Token.TOKEN_PARAM_USERPW)];
-//            String internalUserID = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, Token.TOKEN_PARAM_INTERNAL_USERID)];         
-//            String userRole = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, Token.TOKEN_PARAM_USER_ROLE)];                     
+            Token token = new Token(finalToken);
 
             if (!LPFrontEnd.servletStablishDBConection(request, response)){return;}
         
             switch (actionName.toUpperCase()){
-                case "xxx":
-                    break;
                 case "PROGRAMS_LIST":
                     String schemaName=LPPlatform.buildSchemaName(schemaPrefix, LPPlatform.SCHEMA_DATA);
                     String programTableName = "program";
@@ -150,7 +135,6 @@ public class envMonAPIfrontend extends HttpServlet {
                                 new String[]{"program_name", }, new String[]{currProgram}, programSampleSummaryFldNameArray, programSampleSummaryFldSortArray);
 
                         for (int yProc=0; yProc<programInfo[0].length; yProc++){              
-                            //procArray = LPArray.addValueToArray1D(procArray, procInfo[0][yProc]);
                             programJsonObj.put(programFldNameArray[yProc], curProc[yProc]);
                         }
                         programJsonObj.put("type", "tree-list"); 
@@ -174,10 +158,8 @@ public class envMonAPIfrontend extends HttpServlet {
 
                                 JSONObject programLocationJsonObj = new JSONObject();     
                                 for (int yProcEv = 0; yProcEv<programLocations[0].length; yProcEv++) {
-                                    //procArray = LPArray.addValueToArray1D(procArray, procEvent[xProcEv][yProcEv]);
                                     programLocationJsonObj.put(programLocationFldNameArray[yProcEv], programLocations1[yProcEv]);
                                 }
-//                                JSONObject programLocationsJsonObj = new JSONObject(); 
                             
                             // Program Location Card Info subStructure. Begin
                                 Object[][] programLocationCardInfo = Rdbms.getRecordFieldsByFilter(schemaName, "program_location", 
@@ -298,13 +280,14 @@ public class envMonAPIfrontend extends HttpServlet {
      *
      * @param request servlet request
      * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)  {
+        try{
         processRequest(request, response);
+        }catch(ServletException|IOException e){
+            LPFrontEnd.servletReturnResponseError(request, response, e.getMessage(), new Object[]{}, null);
+        }
     }
 
     /**
@@ -312,13 +295,14 @@ public class envMonAPIfrontend extends HttpServlet {
      *
      * @param request servlet request
      * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)  {
+        try{
         processRequest(request, response);
+        }catch(ServletException|IOException e){
+            LPFrontEnd.servletReturnResponseError(request, response, e.getMessage(), new Object[]{}, null);
+        }
     }
 
     /**

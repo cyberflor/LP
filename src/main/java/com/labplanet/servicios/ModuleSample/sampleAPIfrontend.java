@@ -42,10 +42,16 @@ public class sampleAPIfrontend extends HttpServlet {
     public static final String API_ENDPOINT_GET_SAMPLE_ANALYSIS_RESULT_SPEC="GET_SAMPLE_ANALYSIS_RESULT_SPEC";
     public static final String API_ENDPOINT_SAMPLE_ENTIRE_STRUCTURE="SAMPLE_ENTIRE_STRUCTURE";
     
-    public static final String ERRORMSG_ERROR_STATUS_CODE="Error Status Code";
-    public static final String ERRORMSG_MANDATORY_PARAMS_MISSING="API Error Message: There are mandatory params for this API method not being passed";
-
-    public static final String MANDATORY_PARAMS_MAIN_SERVLET="actionName|finalToken|schemaPrefix";   
+    public static final String MANDATORY_PARAMS_MAIN_SERVLET="actionName|finalToken|schemaPrefix";       
+    
+    public static final String TABLE_NAME_USERS="users";
+    public static final String TABLE_NAME_SAMPLE="sample";
+    public static final String TABLE_NAME_SAMPLE_ANALYSIS="sample_analysis";
+    public static final String TABLE_NAME_SAMPLE_ANALYSIS_RESULT="sample_analysis_result";
+    
+    public static final String VIEW_NAME_ANALYSIS_METHOD="analysis_methods_view";
+    public static final String VIEW_NAME_SAMPLE_COC_NAMES="sample_coc_names";
+    
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      *
@@ -62,12 +68,11 @@ public class sampleAPIfrontend extends HttpServlet {
         String language = LPFrontEnd.setLanguage(request); 
 
         try (PrintWriter out = response.getWriter()) {
-            String[] errObject = new String[]{"Servlet sampleAPI at " + request.getServletPath()};            
 
             Object[] areMandatoryParamsInResponse = LPHttp.areMandatoryParamsInApiRequest(request, MANDATORY_PARAMS_MAIN_SERVLET.split("\\|"));                       
             if (LPPlatform.LAB_FALSE.equalsIgnoreCase(areMandatoryParamsInResponse[0].toString())){
                 LPFrontEnd.servletReturnResponseError(request, response, 
-                    LPPlatform.API_ERRORTRAPING__MANDATORY_PARAMS_MISSING, new Object[]{areMandatoryParamsInResponse[1].toString()}, language);              
+                    LPPlatform.API_ERRORTRAPING_MANDATORY_PARAMS_MISSING, new Object[]{areMandatoryParamsInResponse[1].toString()}, language);              
                 return;          
             }             
             String schemaPrefix = request.getParameter(globalAPIsParams.REQUEST_PARAM_SCHEMA_PREFIX);            
@@ -77,13 +82,7 @@ public class sampleAPIfrontend extends HttpServlet {
             String schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, LPPlatform.SCHEMA_DATA);    
             String schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, LPPlatform.SCHEMA_CONFIG);  
         
-            Token token = new Token();
-            String[] tokenParams = token.tokenParamsList();
-            String[] tokenParamsValues = token.validateToken(finalToken, tokenParams);            
-            String dbUserName = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, Token.TOKEN_PARAM_USERDB)];
-            String dbUserPassword = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, Token.TOKEN_PARAM_USERPW)];
-//            String internalUserID = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, Token.TOKEN_PARAM_INTERNAL_USERID)];         
-//            String userRole = tokenParamsValues[LPArray.valuePosicInArray(tokenParams, Token.TOKEN_PARAM_USER_ROLE)];                     
+            Token token = new Token(finalToken);
 
             if (!LPFrontEnd.servletStablishDBConection(request, response)){return;}   
         
@@ -97,7 +96,7 @@ public class sampleAPIfrontend extends HttpServlet {
                 if ("process-us".equalsIgnoreCase(schemaPrefix)){
                     filterFieldValue = LPArray.addValueToArray1D(filterFieldValue, "specSamples");
                 }else{filterFieldValue = LPArray.addValueToArray1D(filterFieldValue, "sampleTemplate");}    */
-                Object[][] datas = Rdbms.getRecordFieldsByFilter(schemaConfigName, "sample", 
+                Object[][] datas = Rdbms.getRecordFieldsByFilter(schemaConfigName,TABLE_NAME_SAMPLE, 
                         filterFieldName, filterFieldValue, new String[] { "json_definition"});
                 Rdbms.closeRdbms();
                 JSONObject proceduresList = new JSONObject();
@@ -115,7 +114,7 @@ public class sampleAPIfrontend extends HttpServlet {
                 areMandatoryParamsInResponse = LPHttp.areMandatoryParamsInApiRequest(request, sampleAPIParams.MANDATORY_PARAMS_FRONTEND_UNRECEIVESAMPLES_LIST.split("\\|"));
                 if (LPPlatform.LAB_FALSE.equalsIgnoreCase(areMandatoryParamsInResponse[0].toString())){
                     LPFrontEnd.servletReturnResponseError(request, response, 
-                            LPPlatform.API_ERRORTRAPING__MANDATORY_PARAMS_MISSING, new Object[]{areMandatoryParamsInResponse[1].toString()}, language);              
+                            LPPlatform.API_ERRORTRAPING_MANDATORY_PARAMS_MISSING, new Object[]{areMandatoryParamsInResponse[1].toString()}, language);              
                     return;                  
                 }                                  
                 String[] sortFieldsNameArr = null;
@@ -154,7 +153,7 @@ public class sampleAPIfrontend extends HttpServlet {
                                 whereFieldsValueArr[iFields]=newWhereFieldValues;
                             }
                         }
-                        String[] tokenFieldValue = LPPlatform.getTokenFieldValue(whereFieldsValueArr[iFields].toString(), finalToken);
+                        String[] tokenFieldValue = Token.getTokenFieldValue(whereFieldsValueArr[iFields].toString(), finalToken);
                         if (LPPlatform.LAB_TRUE.equalsIgnoreCase(tokenFieldValue[0])) 
                             whereFieldsValueArr[iFields]=tokenFieldValue[1];                                                    
                     } 
@@ -162,7 +161,7 @@ public class sampleAPIfrontend extends HttpServlet {
                     whereFieldsValueArr = LPArray.addValueToArray1D(whereFieldsValueArr, "");
                 }  
                 
-                String myData = Rdbms.getRecordFieldsByFilterJSON(schemaDataName, "sample",
+                String myData = Rdbms.getRecordFieldsByFilterJSON(schemaDataName, TABLE_NAME_SAMPLE,
                         whereFieldsNameArr, whereFieldsValueArr,
                         sampleFieldToRetrieveArr, sortFieldsNameArr);
                 Rdbms.closeRdbms();
@@ -184,7 +183,7 @@ public class sampleAPIfrontend extends HttpServlet {
                 String addSampleAnalysis = request.getParameter(globalAPIsParams.REQUEST_PARAM_ADD_SAMPLE_ANALYSIS); 
                 if (addSampleAnalysis==null){addSampleAnalysis="false";}
                 String addSampleAnalysisFieldToRetrieve = request.getParameter(globalAPIsParams.REQUEST_PARAM_ADD_SAMPLE_ANALYSIS_FIELD_TO_RETRIEVE); 
-                String[] addSampleAnalysisFieldToRetrieveArr = new String[]{"test_id", "status", "analysis", "method_name", "method_version"};
+                String[] addSampleAnalysisFieldToRetrieveArr = sampleAPIParams.MANDATORY_PARAMS_FRONTEND_SAMPLES_INPROGRESS_LIST_SAMPLE_ANALYSIS_FIELD_RETRIEVE_DEFAULT_VALUE.split("\\|");
                 if ( (addSampleAnalysisFieldToRetrieve!=null) && (addSampleAnalysisFieldToRetrieve.length()>0) ) {
                     addSampleAnalysisFieldToRetrieveArr=LPArray.addValueToArray1D(addSampleAnalysisFieldToRetrieveArr, addSampleAnalysisFieldToRetrieve.split("\\|"));
                 }                                
@@ -192,7 +191,7 @@ public class sampleAPIfrontend extends HttpServlet {
                 String addSampleAnalysisResult = request.getParameter(globalAPIsParams.REQUEST_PARAM_ADD_SAMPLE_ANALYSIS_RESULT); 
                 if (addSampleAnalysisResult==null){addSampleAnalysisResult="false";}
                 String addSampleAnalysisResultFieldToRetrieve = request.getParameter(globalAPIsParams.REQUEST_PARAM_ADD_SAMPLE_ANALYSIS_RESULT_FIELD_TO_RETRIEVE); 
-                String[] addSampleAnalysisResultFieldToRetrieveArr = new String[]{"result_id", "status", "param_name", "raw_value", "pretty_value"};
+                String[] addSampleAnalysisResultFieldToRetrieveArr = sampleAPIParams.MANDATORY_PARAMS_FRONTEND_SAMPLES_INPROGRESS_LIST_SAMPLE_ANALYSIS_RESULT_FIELD_RETRIEVE_DEFAULT_VALUE.split("\\|");
                 if ( (addSampleAnalysisResultFieldToRetrieve!=null) && (addSampleAnalysisResultFieldToRetrieve.length()>0) ) {
                     addSampleAnalysisResultFieldToRetrieveArr=LPArray.addValueToArray1D(addSampleAnalysisResultFieldToRetrieveArr, addSampleAnalysisResultFieldToRetrieve.split("\\|"));
                 }                                
@@ -229,7 +228,7 @@ public class sampleAPIfrontend extends HttpServlet {
                                 whereFieldsValueArr[iFields]=newWhereFieldValues;
                             }
                         }
-                        String[] tokenFieldValue = LPPlatform.getTokenFieldValue(whereFieldsValueArr[iFields].toString(), finalToken);
+                        String[] tokenFieldValue = Token.getTokenFieldValue(whereFieldsValueArr[iFields].toString(), finalToken);
                         if (LPPlatform.LAB_TRUE.equalsIgnoreCase(tokenFieldValue[0])) 
                             whereFieldsValueArr[iFields]=tokenFieldValue[1];                                                    
                     }                                    
@@ -264,7 +263,7 @@ public class sampleAPIfrontend extends HttpServlet {
                 }else{   sortFieldsNameArr=null;}  
                 
                 if ("SAMPLE".equals(sampleLastLevel)){
-                    Object[][] mySamples = Rdbms.getRecordFieldsByFilter(schemaDataName, "sample",
+                    Object[][] mySamples = Rdbms.getRecordFieldsByFilter(schemaDataName, TABLE_NAME_SAMPLE,
                         whereFieldsNameArr, whereFieldsValueArr, sampleFieldToRetrieveArr, sortFieldsNameArr);
                     if (mySamples==null){
                         LPFrontEnd.servletReturnSuccess(request, response);       
@@ -284,7 +283,7 @@ public class sampleAPIfrontend extends HttpServlet {
                                 String[] testWhereFieldsNameArr = new String[]{"sample_id"};
                                 Integer sampleIdPosicInArray = LPArray.valuePosicInArray(sampleFieldToRetrieveArr, "sample_id");
                                 Object[] testWhereFieldsValueArr = new Object[]{Integer.parseInt(mySample[sampleIdPosicInArray].toString())};
-                                Object[][] mySampleAnalysis = Rdbms.getRecordFieldsByFilter(schemaDataName, "sample_analysis",
+                                Object[][] mySampleAnalysis = Rdbms.getRecordFieldsByFilter(schemaDataName, TABLE_NAME_SAMPLE_ANALYSIS,
                                         testWhereFieldsNameArr, testWhereFieldsValueArr, addSampleAnalysisFieldToRetrieveArr);          
                                 JSONArray mySamplesAnaJSArr = new JSONArray();
                                 if ( LPPlatform.LAB_FALSE.equalsIgnoreCase(mySampleAnalysis[0][0].toString()) ){
@@ -297,7 +296,7 @@ public class sampleAPIfrontend extends HttpServlet {
                                             String[] sarWhereFieldsNameArr = new String[]{"test_id"};
                                             Integer testIdPosicInArray = LPArray.valuePosicInArray(addSampleAnalysisFieldToRetrieveArr, "test_id");
                                             Object[] sarWhereFieldsValueArr = new Object[]{Integer.parseInt(mySampleAnalysi[testIdPosicInArray].toString())};
-                                            Object[][] mySampleAnalysisResults = Rdbms.getRecordFieldsByFilter(schemaDataName, "sample_analysis_result",
+                                            Object[][] mySampleAnalysisResults = Rdbms.getRecordFieldsByFilter(schemaDataName, TABLE_NAME_SAMPLE_ANALYSIS_RESULT,
                                                     sarWhereFieldsNameArr, sarWhereFieldsValueArr, addSampleAnalysisResultFieldToRetrieveArr);          
                                             JSONArray mySamplesAnaResJSArr = new JSONArray();
                                             if ( LPPlatform.LAB_FALSE.equalsIgnoreCase(mySampleAnalysisResults[0][0].toString()) ){
@@ -327,7 +326,7 @@ public class sampleAPIfrontend extends HttpServlet {
                     whereFieldsValueArr = LPArray.addValueToArray1D(whereFieldsValueArr, "");
                     JSONArray samplesArray = new JSONArray();    
                     JSONArray sampleArray = new JSONArray();    
-                    Object[][] mySamples = Rdbms.getRecordFieldsByFilter(schemaDataName, "sample",
+                    Object[][] mySamples = Rdbms.getRecordFieldsByFilter(schemaDataName, TABLE_NAME_SAMPLE,
                             whereFieldsNameArr, whereFieldsValueArr, sampleFieldToRetrieveArr);
                     if ( LPPlatform.LAB_FALSE.equalsIgnoreCase(mySamples[0][0].toString()) ){
                         Rdbms.closeRdbms(); 
@@ -347,7 +346,7 @@ public class sampleAPIfrontend extends HttpServlet {
                         if ( ("TEST".equals(sampleLastLevel)) || ("RESULT".equals(sampleLastLevel)) ) {
                             String[] testWhereFieldsNameArr = new String[]{"sample_id"};
                             Object[] testWhereFieldsValueArr = new Object[]{sampleId};
-                            Object[][] mySampleAnalysis = Rdbms.getRecordFieldsByFilter(schemaDataName, "sample_analysis",
+                            Object[][] mySampleAnalysis = Rdbms.getRecordFieldsByFilter(schemaDataName, TABLE_NAME_SAMPLE_ANALYSIS,
                                     testWhereFieldsNameArr, testWhereFieldsValueArr, testFieldToRetrieveArr);          
                             for (Object[] mySampleAnalysi : mySampleAnalysis) {
                                 JSONObject testObj = new JSONObject();
@@ -390,7 +389,7 @@ public class sampleAPIfrontend extends HttpServlet {
                         sortFieldsNameArr = sortFieldsName.split("\\|");                                    
                     }else{   sortFieldsNameArr=null;}  
 
-                    myData = Rdbms.getRecordFieldsByFilterJSON(schemaConfigName, "analysis_methods_view",
+                    myData = Rdbms.getRecordFieldsByFilterJSON(schemaConfigName, VIEW_NAME_ANALYSIS_METHOD,
                             new String[]{"code is not null"},new Object[]{true}, fieldToRetrieveArr, sortFieldsNameArr);
                     Rdbms.closeRdbms();
                     if (myData.contains(LPPlatform.LAB_FALSE)){  
@@ -404,7 +403,7 @@ public class sampleAPIfrontend extends HttpServlet {
                     areMandatoryParamsInResponse = LPHttp.areMandatoryParamsInApiRequest(request, sampleAPIParams.MANDATORY_PARAMS_FRONTEND_GET_SAMPLE_ANALYSIS_LIST.split("\\|"));
                     if (LPPlatform.LAB_FALSE.equalsIgnoreCase(areMandatoryParamsInResponse[0].toString())){
                         LPFrontEnd.servletReturnResponseError(request, response, 
-                                LPPlatform.API_ERRORTRAPING__MANDATORY_PARAMS_MISSING, new Object[]{areMandatoryParamsInResponse[1].toString()}, language);              
+                                LPPlatform.API_ERRORTRAPING_MANDATORY_PARAMS_MISSING, new Object[]{areMandatoryParamsInResponse[1].toString()}, language);              
                         return;                  
                     }                      
                     String[] sampleAnalysisFixFieldToRetrieveArr = sampleAPIParams.MANDATORY_FIELDS_FRONTEND_TO_RETRIEVE_GET_SAMPLE_ANALYSIS_LIST.split("\\|");                                        
@@ -425,7 +424,7 @@ public class sampleAPIfrontend extends HttpServlet {
                     }else{   
                         sortFieldsNameArr = sampleAPIParams.MANDATORY_FIELDS_FRONTEND_WHEN_SORT_NULL_GET_SAMPLE_ANALYSIS_LIST.split("\\|");                     
                     }  
-                    myData = Rdbms.getRecordFieldsByFilterJSON(schemaDataName, "sample_analysis",
+                    myData = Rdbms.getRecordFieldsByFilterJSON(schemaDataName, TABLE_NAME_SAMPLE_ANALYSIS,
                             new String[]{"sample_id"},new Object[]{sampleId}, sampleAnalysisFieldToRetrieveArr, sortFieldsNameArr);
                     Rdbms.closeRdbms();
                     if (myData.contains(LPPlatform.LAB_FALSE)){  
@@ -440,7 +439,7 @@ public class sampleAPIfrontend extends HttpServlet {
                     areMandatoryParamsInResponse = LPHttp.areMandatoryParamsInApiRequest(request, sampleAPIParams.MANDATORY_PARAMS_FRONTEND_GET_SAMPLE_ANALYSIS_RESULT_LIST.split("\\|"));
                     if (LPPlatform.LAB_FALSE.equalsIgnoreCase(areMandatoryParamsInResponse[0].toString())){
                         LPFrontEnd.servletReturnResponseError(request, response, 
-                                LPPlatform.API_ERRORTRAPING__MANDATORY_PARAMS_MISSING, new Object[]{areMandatoryParamsInResponse[1].toString()}, language);              
+                                LPPlatform.API_ERRORTRAPING_MANDATORY_PARAMS_MISSING, new Object[]{areMandatoryParamsInResponse[1].toString()}, language);              
                         return;                  
                     }                      
                     sampleIdStr = request.getParameter(globalAPIsParams.REQUEST_PARAM_SAMPLE_ID);                                                      
@@ -457,7 +456,7 @@ public class sampleAPIfrontend extends HttpServlet {
                     }else{   
                         sortFieldsNameArr = sampleAPIParams.MANDATORY_FIELDS_FRONTEND_WHEN_SORT_NULL_GET_SAMPLE_ANALYSIS_RESULT_LIST.split("\\|");     
                     }  
-                    myData = Rdbms.getRecordFieldsByFilterJSON(schemaDataName, "sample_analysis_result",
+                    myData = Rdbms.getRecordFieldsByFilterJSON(schemaDataName, TABLE_NAME_SAMPLE_ANALYSIS_RESULT,
                             new String[]{"sample_id"},new Object[]{sampleId}, resultFieldToRetrieveArr, sortFieldsNameArr);
                     Rdbms.closeRdbms();
                     if (myData.contains(LPPlatform.LAB_FALSE)){  
@@ -471,7 +470,7 @@ public class sampleAPIfrontend extends HttpServlet {
                     areMandatoryParamsInResponse = LPHttp.areMandatoryParamsInApiRequest(request, sampleAPIParams.MANDATORY_PARAMS_FRONTEND_CHANGEOFCUSTODY_SAMPLE_HISTORY.split("\\|"));
                     if (LPPlatform.LAB_FALSE.equalsIgnoreCase(areMandatoryParamsInResponse[0].toString())){
                         LPFrontEnd.servletReturnResponseError(request, response, 
-                                LPPlatform.API_ERRORTRAPING__MANDATORY_PARAMS_MISSING, new Object[]{areMandatoryParamsInResponse[1].toString()}, language);              
+                                LPPlatform.API_ERRORTRAPING_MANDATORY_PARAMS_MISSING, new Object[]{areMandatoryParamsInResponse[1].toString()}, language);              
                         return;                  
                     }                      
                     sampleIdStr = request.getParameter(globalAPIsParams.REQUEST_PARAM_SAMPLE_ID);                                                         
@@ -481,8 +480,7 @@ public class sampleAPIfrontend extends HttpServlet {
                     sortFieldsName = request.getParameter(globalAPIsParams.REQUEST_PARAM_SORT_FIELDS_NAME);
                     
                     fieldToRetrieveArr = new String[0];
-                    if ( (fieldToRetrieve==null) || (fieldToRetrieve.length()==0) ){                      
-                    }else{
+                    if (!( (fieldToRetrieve==null) || (fieldToRetrieve.length()==0) )){                      
                         fieldToRetrieveArr=LPArray.addValueToArray1D(fieldToRetrieveArr, fieldToRetrieve.split("\\|"));
                     }  
                     fieldToRetrieveArr = LPArray.addValueToArray1D(fieldToRetrieveArr, sampleAPIParams.MANDATORY_FIELDS_FRONTEND_TO_RETRIEVE_CHANGEOFCUSTODY_SAMPLE_HISTORY.split("\\|"));
@@ -494,7 +492,7 @@ public class sampleAPIfrontend extends HttpServlet {
                     }else{   
                         sortFieldsNameArr = sampleAPIParams.MANDATORY_FIELDS_FRONTEND_WHEN_SORT_NULL_CHANGEOFCUSTODY_SAMPLE_HISTORY.split("\\|");                    
                     }                      
-                    myData = Rdbms.getRecordFieldsByFilterJSON(schemaDataName, "sample_coc_names",
+                    myData = Rdbms.getRecordFieldsByFilterJSON(schemaDataName, VIEW_NAME_SAMPLE_COC_NAMES,
                             new String[]{"sample_id"},new Object[]{sampleId}, fieldToRetrieveArr, sortFieldsNameArr);
                     Rdbms.closeRdbms();
                     if (myData.contains(LPPlatform.LAB_FALSE)){  
@@ -510,8 +508,7 @@ public class sampleAPIfrontend extends HttpServlet {
                     sortFieldsName = request.getParameter(globalAPIsParams.REQUEST_PARAM_SORT_FIELDS_NAME);
                     
                     fieldToRetrieveArr = new String[0];
-                    if ( (fieldToRetrieve==null) || (fieldToRetrieve.length()==0) ){
-                    }else{
+                    if (!( (fieldToRetrieve==null) || (fieldToRetrieve.length()==0) )){
                         fieldToRetrieveArr=LPArray.addValueToArray1D(fieldToRetrieveArr, fieldToRetrieve.split("\\|"));                
                     }   
                     fieldToRetrieveArr=LPArray.addValueToArray1D(fieldToRetrieveArr, sampleAPIParams.MANDATORY_FIELDS_FRONTEND_TO_RETRIEVE_CHANGEOFCUSTODY_USERS_LIST.split("\\|"));
@@ -523,7 +520,7 @@ public class sampleAPIfrontend extends HttpServlet {
                         sortFieldsNameArr=sampleAPIParams.MANDATORY_FIELDS_FRONTEND_WHEN_SORT_NULL_CHANGEOFCUSTODY_USERS_LIST.split("\\|"); 
                     }  
                     
-                    myData = Rdbms.getRecordFieldsByFilterJSON(LPPlatform.SCHEMA_APP, "users",
+                    myData = Rdbms.getRecordFieldsByFilterJSON(LPPlatform.SCHEMA_APP, TABLE_NAME_USERS,
                             new String[]{"user_name NOT IN|"},new Object[]{"0"}, fieldToRetrieveArr, sortFieldsNameArr);
                     Rdbms.closeRdbms();
                     if (myData.contains(LPPlatform.LAB_FALSE)){  
@@ -538,7 +535,7 @@ public class sampleAPIfrontend extends HttpServlet {
                     areMandatoryParamsInResponse = LPHttp.areMandatoryParamsInApiRequest(request, sampleAPIParams.MANDATORY_PARAMS_FRONTEND_GET_SAMPLE_ANALYSIS_RESULT_SPEC.split("\\|"));
                     if (LPPlatform.LAB_FALSE.equalsIgnoreCase(areMandatoryParamsInResponse[0].toString())){
                         LPFrontEnd.servletReturnResponseError(request, response, 
-                                LPPlatform.API_ERRORTRAPING__MANDATORY_PARAMS_MISSING, new Object[]{areMandatoryParamsInResponse[1].toString()}, language);              
+                                LPPlatform.API_ERRORTRAPING_MANDATORY_PARAMS_MISSING, new Object[]{areMandatoryParamsInResponse[1].toString()}, language);              
                         return;                  
                     }                      
                     String resultIdStr = request.getParameter(globalAPIsParams.REQUEST_PARAM_RESULT_ID);
@@ -591,13 +588,14 @@ public class sampleAPIfrontend extends HttpServlet {
      *
      * @param request servlet request
      * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)  {
+        try{
         processRequest(request, response);
+        }catch(ServletException|IOException e){
+            LPFrontEnd.servletReturnResponseError(request, response, e.getMessage(), new Object[]{}, null);
+        }
     }
 
     /**
@@ -605,13 +603,14 @@ public class sampleAPIfrontend extends HttpServlet {
      *
      * @param request servlet request
      * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)  {
+        try{
         processRequest(request, response);
+        }catch(ServletException|IOException e){
+            LPFrontEnd.servletReturnResponseError(request, response, e.getMessage(), new Object[]{}, null);
+        }
     }
 
     /**

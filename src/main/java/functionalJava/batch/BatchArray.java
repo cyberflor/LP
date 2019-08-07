@@ -211,8 +211,7 @@ public final class BatchArray extends Batch{
             //throw new RuntimeException("Empty position");
             return "Empty";
         }                
-        String posicContent = batchPosic[row-1][col-1];
-        return posicContent;                
+        return batchPosic[row-1][col-1];
     }        
     
     /**
@@ -244,15 +243,13 @@ public final class BatchArray extends Batch{
         }       
         schemaName = LPPlatform.buildSchemaName(schemaName, "data");
         
-        Object[] insertRecordInTable = Rdbms.insertRecordInTable(schemaName, tableName, 
+        return Rdbms.insertRecordInTable(schemaName, tableName, 
                                                 new String[]{"name", "template", "template_version", "array_num_rows",
                                                      "array_num_cols", "array_total_positions", "array_total_objects",
                                                     "array_lines_name", "array_columns_name"},
                                                 new Object [] {this.getBatchName(), this.getBatchTemplate(), this.getBatchTemplateVersion(), this.numRows,
                                                     this.numCols, this.numTotalPositions, this.numTotalObjects,
                                                     this.linesName, this.columnsName});
-        //functionResult = "Added to the database";
-        return insertRecordInTable;        
     }   
     public static BatchArray dbGetBatchArray(String schemaName, String batchName){
         schemaName = LPPlatform.buildSchemaName(schemaName, "data");
@@ -270,7 +267,7 @@ public final class BatchArray extends Batch{
                 SerialArray colNames = (SerialArray) recordFieldsByFilter[0][8];
                 Object[] colNamesArr = (Object[]) colNames.getArray();                
                 
-                BatchArray bArray = new BatchArray(
+                return new BatchArray(
                         LPNulls.replaceNull(recordFieldsByFilter[0][1].toString()),
                         (Integer) recordFieldsByFilter[0][2],  batchName,
                         "",
@@ -280,8 +277,6 @@ public final class BatchArray extends Batch{
                         (Integer) recordFieldsByFilter[0][5],
                         (Object[]) rowNamesArr,
                         (Object[]) colNamesArr );
-                
-                return bArray;
             } catch (SerialException ex) {
                 Logger.getLogger(BatchArray.class.getName()).log(Level.SEVERE, null, ex);
             }

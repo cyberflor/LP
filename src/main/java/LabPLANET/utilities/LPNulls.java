@@ -10,6 +10,7 @@ package LabPLANET.utilities;
  * @author Fran Gomez
  */
 public class LPNulls {
+    private LPNulls(){    throw new IllegalStateException("Utility class");}    
 /**
  * Ensure it is a value or a blank value instead of a null value.
  * @param input String

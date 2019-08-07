@@ -15,7 +15,8 @@ import databases.Rdbms;
  */
 public class UserProfile {
     //String schemaDataName = "data";
-    String schemaAppName = LPPlatform.SCHEMA_APP;
+    String SCHEMANAMEAPP = LPPlatform.SCHEMA_APP;
+    String FIELDVALUE_ACTIVE="active";
     /**
      *
      * @param userInfoId
@@ -31,11 +32,11 @@ public class UserProfile {
             fieldsToReturn[0] = "proc_name";
             filterFieldName[0]="user_name";
             filterFieldValue[0]=userInfoId;
-            filterFieldName[1]="active";
+            filterFieldName[1]=FIELDVALUE_ACTIVE;
             filterFieldValue[1]=true;
             filterFieldName[2]="proc_name is not null";            
             
-            Object[][] userProc =  Rdbms.getRecordFieldsByFilter(schemaAppName, tableName, filterFieldName, filterFieldValue, fieldsToReturn);
+            Object[][] userProc =  Rdbms.getRecordFieldsByFilter(SCHEMANAMEAPP, tableName, filterFieldName, filterFieldValue, fieldsToReturn);
             return LPArray.array2dTo1d(userProc);                         
     }
     
@@ -52,12 +53,12 @@ public class UserProfile {
             fieldsToReturn[0] = "proc_name";
             filterFieldName[0]="user_name";
             filterFieldValue[0]=userInfoId;
-            filterFieldName[1]="active";
+            filterFieldName[1]=FIELDVALUE_ACTIVE;
             filterFieldValue[1]=true;
             filterFieldName[2]="proc_name is not null";          
             String tableName = "user_profile";                                  
             
-            Object[][] userProc =  Rdbms.getRecordFieldsByFilter(schemaAppName, tableName, filterFieldName, filterFieldValue, fieldsToReturn);
+            Object[][] userProc =  Rdbms.getRecordFieldsByFilter(SCHEMANAMEAPP, tableName, filterFieldName, filterFieldValue, fieldsToReturn);
             return LPArray.array2dTo1d(userProc);                         
         }
         
@@ -75,7 +76,7 @@ public class UserProfile {
             fieldsToReturn[0] = "role_name";
             filterFieldName[0]="person_name";
             filterFieldValue[0]=userInfoId;
-            filterFieldName[1]="active";
+            filterFieldName[1]=FIELDVALUE_ACTIVE;
             filterFieldValue[1]=true;
             filterFieldName[2]="role_name is not null";          
              
