@@ -286,17 +286,13 @@ Object[] _logSample(String schemaPrefix, String sampleTemplate, Integer sampleTe
 }
 
 Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTemplateVersion, String[] sampleFieldName, Object[] sampleFieldValue, String userName, String userRole, Integer appSessionId, Boolean devMode, Integer numSamplesToLog) {
-    String tableName = TABLENAME_DATA_SAMPLE; 
     Object[] diagnoses = new Object[7];
-        tableName = TABLENAME_DATA_SAMPLE;
+        String tableName = TABLENAME_DATA_SAMPLE; 
         String actionName = "Insert";
         String auditActionName = "LOG_SAMPLE";
         
-        String schemaDataName = "data";
-        String schemaConfigName = LPPlatform.SCHEMA_CONFIG;
-
-        schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, schemaDataName);    
-        schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, schemaConfigName); 
+        String schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, LPPlatform.SCHEMA_DATA);    
+        String schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, LPPlatform.SCHEMA_CONFIG); 
         
         String sampleLevel = tableName;
 //        if (this.getSampleGrouper()!=null){sampleLevel=this.getSampleGrouper()+"_"+sampleLevel;}
@@ -388,17 +384,19 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
                         return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);                            
                     } 
             }
-        }
+        }        
         sampleFieldName = LPArray.addValueToArray1D(sampleFieldName, FIELDNAME_SAMPLE_CONFIG_CODE);    
         sampleFieldValue = LPArray.addValueToArray1D(sampleFieldValue, sampleTemplate);
         sampleFieldName = LPArray.addValueToArray1D(sampleFieldName, FIELDNAME_SAMPLE_CONFIG_CODE_VERSION);    
         sampleFieldValue = LPArray.addValueToArray1D(sampleFieldValue, sampleTemplateVersion); 
         
-        ChangeOfCustody coc = new ChangeOfCustody();
-        Object[] changeOfCustodyEnable = coc.isChangeOfCustodyEnable(schemaDataName, tableName);
-        if (LPPlatform.LAB_TRUE.equalsIgnoreCase(changeOfCustodyEnable[0].toString())){
-            sampleFieldName = LPArray.addValueToArray1D(sampleFieldName, "custodian");    
-            sampleFieldValue = LPArray.addValueToArray1D(sampleFieldValue, userName);             
+        if (LPArray.valuePosicInArray(sampleFieldName, "custodian")==-1){
+            ChangeOfCustody coc = new ChangeOfCustody();
+            Object[] changeOfCustodyEnable = coc.isChangeOfCustodyEnable(schemaDataName, tableName);
+            if (LPPlatform.LAB_TRUE.equalsIgnoreCase(changeOfCustodyEnable[0].toString())){
+                sampleFieldName = LPArray.addValueToArray1D(sampleFieldName, "custodian");    
+                sampleFieldValue = LPArray.addValueToArray1D(sampleFieldValue, userName);             
+            }
         }
         
         

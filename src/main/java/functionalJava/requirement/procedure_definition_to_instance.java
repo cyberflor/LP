@@ -250,9 +250,11 @@ public class procedure_definition_to_instance {
             
             configSchemaName = LPPlatform.buildSchemaName(configSchemaName, fn);
             String configSchemaScript = "CREATE SCHEMA "+configSchemaName+"  AUTHORIZATION "+SCHEMA_AUTHORIZATION_ROLE+";";     
-            Integer prepUpQuery = Rdbms.prepUpQuery(configSchemaScript, null);
-            String diagnosesForLog = (prepUpQuery==-1) ? LABEL_FOR_NO : LABEL_FOR_YES;
-            jsonObj.put("Schema Created?", diagnosesForLog);
+            
+            // La idea es no permitir ejecutar prepUpQuery directamente, por eso es privada y no publica.            
+                //Integer prepUpQuery = Rdbms.prepUpQuery(configSchemaScript, new Object[0]);
+                //String diagnosesForLog = (prepUpQuery==-1) ? LABEL_FOR_NO : LABEL_FOR_YES;
+                //jsonObj.put("Schema Created?", diagnosesForLog);
             
             jsonObj.put(configSchemaName, jsSchemaArr);
         }

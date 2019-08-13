@@ -25,7 +25,8 @@ import javax.servlet.http.HttpServletResponse;
 public class LPTestingOutFormat {
     private LPTestingOutFormat(){    throw new IllegalStateException("Utility class");}    
     
-    public static final String TESTING_FILES_PATH = "http://51.75.202.142:8888/testingRepository/"; //\\\\FRANCLOUD\\fran\\LabPlanet\\testingRepository\\"; // "\\testingRepository\\";
+    public static final String TESTING_FILES_PATH_SERVER = "http://51.75.202.142:8888/testingRepository/"; //\\\\FRANCLOUD\\fran\\LabPlanet\\testingRepository\\"; // "\\testingRepository\\";
+    public static final String TESTING_FILES_PATH = "\\\\FRANCLOUD\\fran\\LabPlanet\\testingRepository\\"; // "\\testingRepository\\";
     public static final String TESTING_FILES_FIELD_SEPARATOR=";";
     public static final String TESTING_USER="labplanet";
     public static final String TESTING_PW="avecesllegaelmomento";

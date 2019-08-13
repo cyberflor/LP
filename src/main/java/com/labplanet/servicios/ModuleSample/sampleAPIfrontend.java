@@ -14,6 +14,7 @@ import com.labplanet.servicios.app.globalAPIsParams;
 import com.sun.rowset.CachedRowSetImpl;
 import databases.Rdbms;
 import databases.Token;
+import functionalJava.sampleStructure.DataSample;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Timestamp;
@@ -45,10 +46,6 @@ public class sampleAPIfrontend extends HttpServlet {
     public static final String MANDATORY_PARAMS_MAIN_SERVLET="actionName|finalToken|schemaPrefix";       
     
     public static final String TABLE_NAME_USERS="users";
-    public static final String TABLE_NAME_SAMPLE="sample";
-    public static final String TABLE_NAME_SAMPLE_ANALYSIS="sample_analysis";
-    public static final String TABLE_NAME_SAMPLE_ANALYSIS_RESULT="sample_analysis_result";
-    
     public static final String VIEW_NAME_ANALYSIS_METHOD="analysis_methods_view";
     public static final String VIEW_NAME_SAMPLE_COC_NAMES="sample_coc_names";
     
@@ -96,7 +93,7 @@ public class sampleAPIfrontend extends HttpServlet {
                 if ("process-us".equalsIgnoreCase(schemaPrefix)){
                     filterFieldValue = LPArray.addValueToArray1D(filterFieldValue, "specSamples");
                 }else{filterFieldValue = LPArray.addValueToArray1D(filterFieldValue, "sampleTemplate");}    */
-                Object[][] datas = Rdbms.getRecordFieldsByFilter(schemaConfigName,TABLE_NAME_SAMPLE, 
+                Object[][] datas = Rdbms.getRecordFieldsByFilter(schemaConfigName,DataSample.TABLENAME_DATA_SAMPLE, 
                         filterFieldName, filterFieldValue, new String[] { "json_definition"});
                 Rdbms.closeRdbms();
                 JSONObject proceduresList = new JSONObject();
@@ -145,7 +142,7 @@ public class sampleAPIfrontend extends HttpServlet {
                     whereFieldsNameArr=LPArray.addValueToArray1D(whereFieldsNameArr, whereFieldsName.split("\\|"));
                     whereFieldsValueArr = LPArray.addValueToArray1D(whereFieldsValueArr, LPArray.convertStringWithDataTypeToObjectArray(whereFieldsValue.split("\\|")));                                          
                     for (int iFields=0; iFields<whereFieldsNameArr.length; iFields++){
-                        if (LPPlatform.isEncryptedField(schemaDataName, "sample", whereFieldsNameArr[iFields])){                
+                        if (LPPlatform.isEncryptedField(schemaDataName, DataSample.TABLENAME_DATA_SAMPLE, whereFieldsNameArr[iFields])){                
                             HashMap<String, String> hm = LPPlatform.encryptEncryptableFieldsAddBoth(whereFieldsNameArr[iFields], whereFieldsNameArr[iFields]);
                             whereFieldsNameArr[iFields]= hm.keySet().iterator().next();    
                             if ( hm.get(whereFieldsNameArr[iFields]).length()!=whereFieldsNameArr[iFields].length()){
@@ -161,7 +158,7 @@ public class sampleAPIfrontend extends HttpServlet {
                     whereFieldsValueArr = LPArray.addValueToArray1D(whereFieldsValueArr, "");
                 }  
                 
-                String myData = Rdbms.getRecordFieldsByFilterJSON(schemaDataName, TABLE_NAME_SAMPLE,
+                String myData = Rdbms.getRecordFieldsByFilterJSON(schemaDataName, DataSample.TABLENAME_DATA_SAMPLE,
                         whereFieldsNameArr, whereFieldsValueArr,
                         sampleFieldToRetrieveArr, sortFieldsNameArr);
                 Rdbms.closeRdbms();
@@ -197,13 +194,13 @@ public class sampleAPIfrontend extends HttpServlet {
                 }                                
                 
                 if (sampleLastLevel==null){
-                    sampleLastLevel="SAMPLE";
+                    sampleLastLevel=DataSample.TABLENAME_DATA_SAMPLE;
                 }                                
-                sampleFieldToRetrieveArr = new String[]{"sample_id"};
+                sampleFieldToRetrieveArr = new String[]{DataSample.FIELDNAME_SAMPLE_ID};
                 if (sampleFieldToRetrieve!=null){
                     sampleFieldToRetrieveArr=LPArray.addValueToArray1D(sampleFieldToRetrieveArr, sampleFieldToRetrieve.split("\\|"));
-                }
-                String[] testFieldToRetrieveArr = new String[]{"test_id"};
+                }  
+                String[] testFieldToRetrieveArr = new String[]{DataSample.FIELDNAME_TEST_ID};
                 if (testFieldToRetrieve!=null){
                     testFieldToRetrieveArr=LPArray.addValueToArray1D(testFieldToRetrieveArr, testFieldToRetrieve.split("\\|"));
                 }                
@@ -220,7 +217,7 @@ public class sampleAPIfrontend extends HttpServlet {
                     whereFieldsNameArr=LPArray.addValueToArray1D(whereFieldsNameArr, whereFieldsName.split("\\|"));
                     whereFieldsValueArr = LPArray.addValueToArray1D(whereFieldsValueArr, LPArray.convertStringWithDataTypeToObjectArray(whereFieldsValue.split("\\|")));                                          
                     for (int iFields=0; iFields<whereFieldsNameArr.length; iFields++){
-                        if (LPPlatform.isEncryptedField(schemaDataName, "sample", whereFieldsNameArr[iFields])){                
+                        if (LPPlatform.isEncryptedField(schemaDataName, DataSample.TABLENAME_DATA_SAMPLE, whereFieldsNameArr[iFields])){                
                             HashMap<String, String> hm = LPPlatform.encryptEncryptableFieldsAddBoth(whereFieldsNameArr[iFields], whereFieldsNameArr[iFields]);
                             whereFieldsNameArr[iFields]= hm.keySet().iterator().next();    
                             if ( hm.get(whereFieldsNameArr[iFields]).length()!=whereFieldsNameArr[iFields].length()){
@@ -262,8 +259,8 @@ public class sampleAPIfrontend extends HttpServlet {
                     sortFieldsNameArr = sortFieldsName.split("\\|");                                    
                 }else{   sortFieldsNameArr=null;}  
                 
-                if ("SAMPLE".equals(sampleLastLevel)){
-                    Object[][] mySamples = Rdbms.getRecordFieldsByFilter(schemaDataName, TABLE_NAME_SAMPLE,
+                if (DataSample.TABLENAME_DATA_SAMPLE.equals(sampleLastLevel)){
+                    Object[][] mySamples = Rdbms.getRecordFieldsByFilter(schemaDataName, DataSample.TABLENAME_DATA_SAMPLE,
                         whereFieldsNameArr, whereFieldsValueArr, sampleFieldToRetrieveArr, sortFieldsNameArr);
                     if (mySamples==null){
                         LPFrontEnd.servletReturnSuccess(request, response);       
@@ -280,40 +277,40 @@ public class sampleAPIfrontend extends HttpServlet {
                             iLines++;
                             JSONObject mySampleJSObj = LPJson.convertArrayRowToJSONObject(sampleFieldToRetrieveArr, mySample);                
                             if ("TRUE".equalsIgnoreCase(addSampleAnalysis)){
-                                String[] testWhereFieldsNameArr = new String[]{"sample_id"};
-                                Integer sampleIdPosicInArray = LPArray.valuePosicInArray(sampleFieldToRetrieveArr, "sample_id");
+                                String[] testWhereFieldsNameArr = new String[]{DataSample.FIELDNAME_SAMPLE_ID};
+                                Integer sampleIdPosicInArray = LPArray.valuePosicInArray(sampleFieldToRetrieveArr, DataSample.FIELDNAME_SAMPLE_ID);
                                 Object[] testWhereFieldsValueArr = new Object[]{Integer.parseInt(mySample[sampleIdPosicInArray].toString())};
-                                Object[][] mySampleAnalysis = Rdbms.getRecordFieldsByFilter(schemaDataName, TABLE_NAME_SAMPLE_ANALYSIS,
+                                Object[][] mySampleAnalysis = Rdbms.getRecordFieldsByFilter(schemaDataName, DataSample.TABLENAME_DATA_SAMPLE_ANALYSIS,
                                         testWhereFieldsNameArr, testWhereFieldsValueArr, addSampleAnalysisFieldToRetrieveArr);          
                                 JSONArray mySamplesAnaJSArr = new JSONArray();
                                 if ( LPPlatform.LAB_FALSE.equalsIgnoreCase(mySampleAnalysis[0][0].toString()) ){
-                                    mySampleJSObj.put("sample_analysis", mySamplesAnaJSArr);
+                                    mySampleJSObj.put(DataSample.TABLENAME_DATA_SAMPLE_ANALYSIS, mySamplesAnaJSArr);
                                 }else{                                    
                                     for (Object[] mySampleAnalysi : mySampleAnalysis) {
                                         JSONObject mySampleAnaJSObj = LPJson.convertArrayRowToJSONObject(addSampleAnalysisFieldToRetrieveArr, mySampleAnalysi);
 
                                         if ("TRUE".equalsIgnoreCase(addSampleAnalysisResult)){
-                                            String[] sarWhereFieldsNameArr = new String[]{"test_id"};
-                                            Integer testIdPosicInArray = LPArray.valuePosicInArray(addSampleAnalysisFieldToRetrieveArr, "test_id");
+                                            String[] sarWhereFieldsNameArr = new String[]{DataSample.FIELDNAME_TEST_ID};
+                                            Integer testIdPosicInArray = LPArray.valuePosicInArray(addSampleAnalysisFieldToRetrieveArr, DataSample.FIELDNAME_TEST_ID);
                                             Object[] sarWhereFieldsValueArr = new Object[]{Integer.parseInt(mySampleAnalysi[testIdPosicInArray].toString())};
-                                            Object[][] mySampleAnalysisResults = Rdbms.getRecordFieldsByFilter(schemaDataName, TABLE_NAME_SAMPLE_ANALYSIS_RESULT,
+                                            Object[][] mySampleAnalysisResults = Rdbms.getRecordFieldsByFilter(schemaDataName, DataSample.TABLENAME_DATA_SAMPLE_ANALYSIS_RESULT,
                                                     sarWhereFieldsNameArr, sarWhereFieldsValueArr, addSampleAnalysisResultFieldToRetrieveArr);          
                                             JSONArray mySamplesAnaResJSArr = new JSONArray();
                                             if ( LPPlatform.LAB_FALSE.equalsIgnoreCase(mySampleAnalysisResults[0][0].toString()) ){
-                                                mySampleAnaJSObj.put("sample_analysis_result", mySamplesAnaResJSArr);                                        
+                                                mySampleAnaJSObj.put(DataSample.TABLENAME_DATA_SAMPLE_ANALYSIS_RESULT, mySamplesAnaResJSArr);                                        
                                             }
                                             JSONObject mySampleAnaResJSObj = new JSONObject();
                                             for (Object[] mySampleAnalysisResult : mySampleAnalysisResults) {
                                                 mySampleAnaResJSObj = LPJson.convertArrayRowToJSONObject(addSampleAnalysisResultFieldToRetrieveArr, mySampleAnalysisResult);
                                                 mySamplesAnaResJSArr.add(mySampleAnaResJSObj);
                                             }
-                                            mySampleAnaJSObj.put("sample_analysis_result", mySamplesAnaResJSArr);  
+                                            mySampleAnaJSObj.put(DataSample.TABLENAME_DATA_SAMPLE_ANALYSIS_RESULT, mySamplesAnaResJSArr);  
                                             //mySamplesAnaResJSArr.add(mySampleAnaResJSObj);
                                         }
 
                                         mySamplesAnaJSArr.add(mySampleAnaJSObj);
                                     }        
-                                    mySampleJSObj.put("sample_analysis", mySamplesAnaJSArr);
+                                    mySampleJSObj.put(DataSample.TABLENAME_DATA_SAMPLE_ANALYSIS, mySamplesAnaJSArr);
                                 }
                             }                            
                             mySamplesJSArr.add(mySampleJSObj);
@@ -326,7 +323,7 @@ public class sampleAPIfrontend extends HttpServlet {
                     whereFieldsValueArr = LPArray.addValueToArray1D(whereFieldsValueArr, "");
                     JSONArray samplesArray = new JSONArray();    
                     JSONArray sampleArray = new JSONArray();    
-                    Object[][] mySamples = Rdbms.getRecordFieldsByFilter(schemaDataName, TABLE_NAME_SAMPLE,
+                    Object[][] mySamples = Rdbms.getRecordFieldsByFilter(schemaDataName, DataSample.TABLENAME_DATA_SAMPLE,
                             whereFieldsNameArr, whereFieldsValueArr, sampleFieldToRetrieveArr);
                     if ( LPPlatform.LAB_FALSE.equalsIgnoreCase(mySamples[0][0].toString()) ){
                         Rdbms.closeRdbms(); 
@@ -344,9 +341,9 @@ public class sampleAPIfrontend extends HttpServlet {
                             sampleObj.put(sampleFieldToRetrieveArr[yProc], mySamples[xProc][yProc]);
                         }
                         if ( ("TEST".equals(sampleLastLevel)) || ("RESULT".equals(sampleLastLevel)) ) {
-                            String[] testWhereFieldsNameArr = new String[]{"sample_id"};
+                            String[] testWhereFieldsNameArr = new String[]{DataSample.FIELDNAME_SAMPLE_ID};
                             Object[] testWhereFieldsValueArr = new Object[]{sampleId};
-                            Object[][] mySampleAnalysis = Rdbms.getRecordFieldsByFilter(schemaDataName, TABLE_NAME_SAMPLE_ANALYSIS,
+                            Object[][] mySampleAnalysis = Rdbms.getRecordFieldsByFilter(schemaDataName, DataSample.TABLENAME_DATA_SAMPLE_ANALYSIS,
                                     testWhereFieldsNameArr, testWhereFieldsValueArr, testFieldToRetrieveArr);          
                             for (Object[] mySampleAnalysi : mySampleAnalysis) {
                                 JSONObject testObj = new JSONObject();
@@ -359,7 +356,7 @@ public class sampleAPIfrontend extends HttpServlet {
                                 }      
                                 sampleArray.add(testObj);
                             }
-                            sampleObj.put("sample_analysis", sampleArray);
+                            sampleObj.put(DataSample.TABLENAME_DATA_SAMPLE_ANALYSIS, sampleArray);
                         }
                         sampleArray.add(sampleObj);                        
                     }
@@ -424,8 +421,8 @@ public class sampleAPIfrontend extends HttpServlet {
                     }else{   
                         sortFieldsNameArr = sampleAPIParams.MANDATORY_FIELDS_FRONTEND_WHEN_SORT_NULL_GET_SAMPLE_ANALYSIS_LIST.split("\\|");                     
                     }  
-                    myData = Rdbms.getRecordFieldsByFilterJSON(schemaDataName, TABLE_NAME_SAMPLE_ANALYSIS,
-                            new String[]{"sample_id"},new Object[]{sampleId}, sampleAnalysisFieldToRetrieveArr, sortFieldsNameArr);
+                    myData = Rdbms.getRecordFieldsByFilterJSON(schemaDataName, DataSample.TABLENAME_DATA_SAMPLE_ANALYSIS,
+                            new String[]{DataSample.FIELDNAME_SAMPLE_ID},new Object[]{sampleId}, sampleAnalysisFieldToRetrieveArr, sortFieldsNameArr);
                     Rdbms.closeRdbms();
                     if (myData.contains(LPPlatform.LAB_FALSE)){  
 //                        LPFrontEnd.servletReturnResponseErrorLPFalseDiagnostic(request, response, myData);
@@ -456,8 +453,8 @@ public class sampleAPIfrontend extends HttpServlet {
                     }else{   
                         sortFieldsNameArr = sampleAPIParams.MANDATORY_FIELDS_FRONTEND_WHEN_SORT_NULL_GET_SAMPLE_ANALYSIS_RESULT_LIST.split("\\|");     
                     }  
-                    myData = Rdbms.getRecordFieldsByFilterJSON(schemaDataName, TABLE_NAME_SAMPLE_ANALYSIS_RESULT,
-                            new String[]{"sample_id"},new Object[]{sampleId}, resultFieldToRetrieveArr, sortFieldsNameArr);
+                    myData = Rdbms.getRecordFieldsByFilterJSON(schemaDataName, DataSample.TABLENAME_DATA_SAMPLE_ANALYSIS_RESULT,
+                            new String[]{DataSample.FIELDNAME_SAMPLE_ID},new Object[]{sampleId}, resultFieldToRetrieveArr, sortFieldsNameArr);
                     Rdbms.closeRdbms();
                     if (myData.contains(LPPlatform.LAB_FALSE)){  
                         Object[] errMsg = LPFrontEnd.responseError(new String[] {myData}, language, null);
@@ -493,7 +490,7 @@ public class sampleAPIfrontend extends HttpServlet {
                         sortFieldsNameArr = sampleAPIParams.MANDATORY_FIELDS_FRONTEND_WHEN_SORT_NULL_CHANGEOFCUSTODY_SAMPLE_HISTORY.split("\\|");                    
                     }                      
                     myData = Rdbms.getRecordFieldsByFilterJSON(schemaDataName, VIEW_NAME_SAMPLE_COC_NAMES,
-                            new String[]{"sample_id"},new Object[]{sampleId}, fieldToRetrieveArr, sortFieldsNameArr);
+                            new String[]{DataSample.FIELDNAME_SAMPLE_ID},new Object[]{sampleId}, fieldToRetrieveArr, sortFieldsNameArr);
                     Rdbms.closeRdbms();
                     if (myData.contains(LPPlatform.LAB_FALSE)){  
                         Object[] errMsg = LPFrontEnd.responseError(new String[] {myData}, language, null);

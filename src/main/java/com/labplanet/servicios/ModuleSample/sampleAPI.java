@@ -67,7 +67,7 @@ public class sampleAPI extends HttpServlet {
         }
         mandatoryParams = null;                        
 
-        Object[] procActionRequiresUserConfirmation = LPPlatform.procActionRequiresUserConfirmation(schemaPrefix, actionName);
+         Object[] procActionRequiresUserConfirmation = LPPlatform.procActionRequiresUserConfirmation(schemaPrefix, actionName);
         if (LPPlatform.LAB_TRUE.equalsIgnoreCase(procActionRequiresUserConfirmation[0].toString())){     
             mandatoryParams = LPArray.addValueToArray1D(mandatoryParams, globalAPIsParams.REQUEST_PARAM_USER_TO_CHECK);    
             mandatoryParams = LPArray.addValueToArray1D(mandatoryParams, globalAPIsParams.REQUEST_PARAM_PASSWORD_TO_CHECK);    
@@ -460,6 +460,7 @@ public class sampleAPI extends HttpServlet {
                 LPFrontEnd.servletReturnResponseErrorLPTrueDiagnostic(request, response, dataSample);
             }            
         }catch(Exception e){   
+            LPFrontEnd.servletReturnResponseError(request, response, LPPlatform.API_ERRORTRAPING_EXCEPTION_RAISED, new Object[]{e.getMessage(), this.getServletName()}, language);                   
  /*           try {
                 con.rollback();
                 con.setAutoCommit(true);
@@ -467,9 +468,6 @@ public class sampleAPI extends HttpServlet {
                 Logger.getLogger(sampleAPI.class.getName()).log(Level.SEVERE, null, ex);
             }
 */            
-            errObject = new String[]{e.getMessage()};
-            Object[] errMsg = LPFrontEnd.responseError(errObject, language, null);
-            response.sendError((int) errMsg[0], (String) errMsg[1]);           
         }
     }
 

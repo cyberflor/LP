@@ -216,10 +216,6 @@
         <url-pattern>/fronEnd/AppProcedureList</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>sopUser</servlet-name>
-        <url-pattern>/frontEnd/sopUser</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
         <servlet-name>sopUserAPIfrontend</servlet-name>
         <url-pattern>/frontEnd/sopUserAPIfrontend</url-pattern>
     </servlet-mapping>
@@ -302,6 +298,10 @@
     <servlet-mapping>
         <servlet-name>procedureDefinitionToInstance</servlet-name>
         <url-pattern>/procedureDefinitionToInstance</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>sopUser</servlet-name>
+        <url-pattern>/app/sopUserAPI</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

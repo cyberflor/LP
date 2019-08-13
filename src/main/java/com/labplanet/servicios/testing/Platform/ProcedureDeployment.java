@@ -45,10 +45,10 @@ public class ProcedureDeployment extends HttpServlet {
         
         private static final Boolean PROC_CHECKER_INSTANCE_REQ_SOPS_IN_SOP_TABLE=true;
         
-        private static final Boolean PROC_DEPLOYMENT_DB_CREATE_SCHEMAS=true;
+        private static final Boolean PROC_DEPLOYMENT_DB_CREATE_SCHEMAS=false;
         
         private static final Boolean PROC_DEPLOYMENT_ENTIRE_PROCEDURE=false;
-        private static final Boolean PROC_DEPLOYMENT_CREATE_MISSING_PROC_EVENT_SOPS=false;
+        private static final Boolean PROC_DEPLOYMENT_CREATE_MISSING_PROC_EVENT_SOPS=true;
         private static final Boolean PROC_DEPLOYMENT_ASSIGN_USER_SOPS=false;
         
         
@@ -62,7 +62,7 @@ public class ProcedureDeployment extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)  throws ServletException, IOException {
                 
-        String procName = "process-us"; Integer procVersion = 1; String schemaPrefix="pr-latam";
+        String procName = "process-us"; Integer procVersion = 1; String schemaPrefix="process-us";
         //String basicRolName = "coordinator";
         
         String procInstanceSchemaConfigName=LPPlatform.buildSchemaName(procName, LPPlatform.SCHEMA_CONFIG);
@@ -96,9 +96,19 @@ public class ProcedureDeployment extends HttpServlet {
             Object[][] procEvent = Rdbms.getRecordFieldsByFilter(procInstanceSchemaConfigName, "procedure_events",
                     new String[]{"role_name is not null"}, new String[]{""}, PROC_DISPLAY_PROC_INSTANCE_REQUIREMENTS_FLD_NAME.split("\\|"),
                     PROC_DISPLAY_PROC_INSTANCE_REQUIREMENTS_SORT.split("\\|"), true );
+            Object[][] procEventSOPStemp = Rdbms.getRecordFieldsByFilter(procInstanceSchemaConfigName, "procedure_events",
+                    new String[]{"sop is not null"}, new String[]{""}, new String[]{"sop"},
+                    new String[]{"sop"} );
             Object[] procEventSOPS = new Object[0];
-            procEventSOPS=LPArray.addValueToArray1D(procEventSOPS, "LOG SAMPLE");
-            procEventSOPS=LPArray.addValueToArray1D(procEventSOPS, "SOOOOP TESTEO");
+            for (Object[] prSop: procEventSOPStemp){
+                if (prSop!=null){
+                    String[] prSops = prSop[0].toString().split("\\|");
+                    for (String sop: prSops){
+                        if (LPArray.valuePosicInArray(procEventSOPS, sop) == -1){
+                            procEventSOPS=LPArray.addValueToArray1D(procEventSOPS, sop);}
+                    }
+                }
+            }
             if (PROC_DISPLAY_PROC_INSTANCE_REQUIREMENTS){
                 procEvent = LPArray.joinTwo2DArrays(
                         LPArray.array1dTo2d(PROC_DISPLAY_PROC_INSTANCE_REQUIREMENTS_FLD_NAME.split("\\|"),
@@ -153,8 +163,8 @@ public class ProcedureDeployment extends HttpServlet {
             }
             fileContent = fileContent + LPTestingOutFormat.convertArrayInHtmlTable(dataIntegrityInstanceTable);
             if (PROC_DEPLOYMENT_DB_CREATE_SCHEMAS){procedure_definition_to_instance.createDBSchemas(schemaPrefix);}
-            if (PROC_DEPLOYMENT_ENTIRE_PROCEDURE){reqDep.procedureDeployment(procName, procVersion);}
-            if (PROC_DEPLOYMENT_ASSIGN_USER_SOPS){reqDep.procedureDeployment(procName, procVersion);}
+            //if (PROC_DEPLOYMENT_ENTIRE_PROCEDURE){reqDep.procedureDeployment(procName, procVersion);}
+            //if (PROC_DEPLOYMENT_ASSIGN_USER_SOPS){reqDep.procedureDeployment(procName, procVersion);}
             fileContent=fileContent+LPTestingOutFormat.bodyEnd()+LPTestingOutFormat.htmlEnd();
             out.println(fileContent);
             //LPTestingOutFormat.createLogFile(csvPathName, fileContent);

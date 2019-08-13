@@ -21,7 +21,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import functionalJava.user.Role;
+import functionalJava.user.UserAndRolesViews;
 import functionalJava.user.UserProfile;
 import functionalJava.user.UserSecurity;
 import java.util.Date;
@@ -73,8 +73,8 @@ public class authenticationAPI extends HttpServlet {
                     
                     if (!LPFrontEnd.servletStablishDBConection(request, response)){return;}
                                        
-                    Object[][] internalUser = Role.getInternalUser(dbUserName);
-                    if (LPPlatform.LAB_FALSE.equalsIgnoreCase(internalUser[0][0].toString())){               
+                    String personName = UserAndRolesViews.getUserByPerson(dbUserName);
+                    if (LPPlatform.LAB_FALSE.equalsIgnoreCase(personName)){               
                         LPFrontEnd.servletReturnResponseError(request, response, authenticationAPIParams.ERROR_PROPERTY_PERSON_NOT_FOUND, null, language);              
                         return;                                                          
                     }                    
@@ -88,12 +88,11 @@ public class authenticationAPI extends HttpServlet {
                             return;                               
                         }
                     }                                                          
-                    Token token = new Token("");
-                    String internalUserStr = internalUser[0][0].toString();
-                    String myToken = token.createToken(dbUserName, dbUserPassword, internalUserStr, "Admin", "", "", "");                    
+                    Token token = new Token("");                    
+                    String myToken = token.createToken(dbUserName, dbUserPassword, personName, "Admin", "", "", "");                    
 
                     JSONObject jsonObj = new JSONObject();
-                    jsonObj.put(authenticationAPIParams.RESPONSE_JSON_TAG_USER_INFO_ID, internalUserStr);
+                    jsonObj.put(authenticationAPIParams.RESPONSE_JSON_TAG_USER_INFO_ID, personName);
                     jsonObj.put(authenticationAPIParams.RESPONSE_JSON_TAG_MY_TOKEN, myToken);
                     LPFrontEnd.servletReturnSuccess(request, response, jsonObj);
                     return;
@@ -130,7 +129,7 @@ public class authenticationAPI extends HttpServlet {
                     if (1==1) return;
                     
                     Object[][] recordFieldsByFilter = Rdbms.getRecordFieldsByFilter(LPPlatform.SCHEMA_CONFIG, "user_profile", 
-                                new String[]{"user_info_id"}, new Object[]{internalUserStr}, new String[]{"role_id"});
+                                new String[]{"user_info_id"}, new Object[]{personName}, new String[]{"role_id"});
                         //Object[] recordFieldsByFilter1D =  LPArray.array2dTo1d(recordFieldsByFilter);
                     if (LPPlatform.LAB_FALSE.equalsIgnoreCase(recordFieldsByFilter[0][0].toString())){
                         LPFrontEnd.servletReturnResponseErrorLPFalseDiagnostic(request, response, LPArray.array2dTo1d(recordFieldsByFilter));
@@ -171,7 +170,7 @@ if (1==1){
     sessionIdStr = "12";
 }else{                    
                     String[] fieldsName = new String[]{"person", "role_name"};
-                    Object[] fieldsValue = new Object[]{internalUserStr, userRole};
+                    Object[] fieldsValue = new Object[]{personName, userRole};
                     Object[] newAppSession = LPSession.newAppSession(fieldsName, fieldsValue);
                     
                     if (LPPlatform.LAB_FALSE.equalsIgnoreCase(newAppSession[0].toString())){   

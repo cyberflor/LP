@@ -9,6 +9,7 @@ import LabPLANET.utilities.LPNulls;
 import com.sun.rowset.CachedRowSetImpl;
 import LabPLANET.utilities.LPArray;
 import LabPLANET.utilities.LPPlatform;
+import com.labplanet.servicios.app.globalAPIsParams;
 import functionalJava.testingScripts.LPTestingOutFormat;
 import java.sql.Array;
 import java.sql.Connection;
@@ -41,10 +42,11 @@ public class Rdbms {
     private static Connection conn = null;
     private static Boolean isStarted = false;
     private static Integer timeout;
-    private String lastError = "";
+    private final String lastError = "";
     Integer transactionId = 0;
     String savepointName;
-    Savepoint savepoint=null;    
+    Savepoint savepoint=null;  
+    
     
     private static Rdbms rdbms;
     private static final String SQLSELECT = "SELECT";
@@ -73,6 +75,15 @@ public class Rdbms {
         return rdbms;
     }
     
+    public static final Boolean stablishDBConection(){
+        
+        String dbUserName = globalAPIsParams.REQUEST_PARAM_DB_USERNAME;                   
+        String dbUserPassword = globalAPIsParams.REQUEST_PARAM_DB_PSSWD;     
+
+        boolean isConnected = false;                               
+        isConnected = Rdbms.getRdbms().startRdbms(LPTestingOutFormat.TESTING_USER, LPTestingOutFormat.TESTING_PW);      
+        return isConnected;
+    }    
     public Boolean startRdbms(){
         return startRdbmsTomcat(LPTestingOutFormat.TESTING_USER, LPTestingOutFormat.TESTING_PW);
     }
@@ -114,7 +125,7 @@ public class Rdbms {
                   setIsStarted(Boolean.FALSE);
                   return Boolean.FALSE;
                 }                                 
-            } catch (Exception e){
+            } catch (SQLException | NamingException e){
                 String errMsg = e.getMessage();
                 return false;
             }
@@ -205,14 +216,6 @@ public class Rdbms {
 
     /**
      *
-     * @param timeout
-     */
-    //public static void setTimeout(Integer timeout) { this.timeout = timeout;}
-
-    private void setLastError(String txterror){ lastError = txterror;}
-    
-    /**
-     *
      * @return
      */
     public String getLastError(){return lastError;}
@@ -251,6 +254,7 @@ public class Rdbms {
         try{
             ResultSet res;
             res = Rdbms.prepRdQuery(query, keyFieldValueNew);
+
             res.last();
 
             if (res.getRow()>0){
@@ -266,7 +270,7 @@ public class Rdbms {
                 errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, schemaName);
                 return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, rdbms.errorCode, errorDetailVariables);                
             }
-        }catch (SQLException er) {
+        }catch (SQLException|NullPointerException er) {
             String ermessage=er.getLocalizedMessage()+er.getCause();
             Logger.getLogger(query).log(Level.SEVERE, null, er);     
             rdbms.errorCode = "Rdbms_dtSQLException";
@@ -722,16 +726,21 @@ public class Rdbms {
         //Object[] keyFieldValueNew = hmQuery.get(query);        
         try {                        
             fieldValues = LPArray.encryptTableFieldArray(schemaName, tableName, fieldNames, fieldValues); 
-            String keyValueNewRecord = Rdbms.prepUpQueryK(query, fieldValues, 1);
+            String[] insertRecordDiagnosis = Rdbms.prepUpQueryK(query, fieldValues, 1);
             fieldValues = LPArray.decryptTableFieldArray(schemaName, tableName, fieldNames, (Object[]) fieldValues); 
-            
+            Object[] diagnosis = new Object[0];
             rdbms.errorCode = "Rdbms_RecordCreated";
-            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, String.valueOf(keyValueNewRecord));
+            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, String.valueOf(insertRecordDiagnosis[1]));
             errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, query);
             errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, Arrays.toString(fieldValues));            
             errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, schemaName);                
-            Object[] diagnosis =  LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, rdbms.errorCode, errorDetailVariables);                         
-            diagnosis = LPArray.addValueToArray1D(diagnosis, keyValueNewRecord);
+            if (LPPlatform.LAB_TRUE.equalsIgnoreCase(insertRecordDiagnosis[0])){
+                diagnosis =  LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, rdbms.errorCode, errorDetailVariables);                         
+                diagnosis = LPArray.addValueToArray1D(diagnosis, insertRecordDiagnosis[1]);                
+            }else{
+                 diagnosis =  LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, rdbms.errorCode, errorDetailVariables);     
+                 diagnosis = LPArray.addValueToArray1D(diagnosis, insertRecordDiagnosis[1]);   
+            }
             return diagnosis;
         } catch (SQLException er) {
             String ermessage=er.getLocalizedMessage()+er.getCause();
@@ -817,7 +826,7 @@ public class Rdbms {
                             filteredValoresConInterrogaciones = LPArray.addValueToArray1D(filteredValoresConInterrogaciones, curVal);}
                     }
                 }
-                buildPreparedStatement(filteredValoresConInterrogaciones, prepareStatement, null);
+                buildPreparedStatement(filteredValoresConInterrogaciones, prepareStatement);
                 ResultSet res = prepareStatement.executeQuery();
                 crs.populate(res);
                 return crs;
@@ -831,13 +840,13 @@ public class Rdbms {
     }
   
 
-    public static Integer prepUpQuery(String consultaconinterrogaciones, Object [] valoresinterrogaciones) {
+/*    public static Integer prepUpQuery(String consultaconinterrogaciones, Object [] valoresinterrogaciones) {
         Integer reg;    
-        reg = prepUpQuery(consultaconinterrogaciones, valoresinterrogaciones, null);
+        reg = prepUpQuery(consultaconinterrogaciones, valoresinterrogaciones);
         return reg;        
     }
-    
-    private static Integer prepUpQuery(String consultaconinterrogaciones, Object [] valoresinterrogaciones, Integer [] fieldtypes) {
+*/    
+    private static Integer prepUpQuery(String consultaconinterrogaciones, Object [] valoresinterrogaciones) {
         try{
             PreparedStatement prep=getConnection().prepareStatement(consultaconinterrogaciones);
             
@@ -845,7 +854,7 @@ public class Rdbms {
             
             try{
                 if (valoresinterrogaciones != null){
-                    buildPreparedStatement(valoresinterrogaciones, prep, fieldtypes);
+                    buildPreparedStatement(valoresinterrogaciones, prep);
                 }
                 return prep.executeUpdate();
             }catch (SQLException er){
@@ -857,11 +866,11 @@ public class Rdbms {
         return -999;
     }
     
-    private static String prepUpQueryK(String consultaconinterrogaciones, Object [] valoresinterrogaciones, Integer indexposition) throws SQLException{
+    private static String[] prepUpQueryK(String consultaconinterrogaciones, Object [] valoresinterrogaciones, Integer indexposition) throws SQLException{
         String pkValue = "";
         PreparedStatement prep=getConnection().prepareStatement(consultaconinterrogaciones, Statement.RETURN_GENERATED_KEYS);            
         setTimeout(rdbms.getTimeout());
-        buildPreparedStatement(valoresinterrogaciones, prep, null);         
+        buildPreparedStatement(valoresinterrogaciones, prep);         
         try{
 //            PreparedStatement prep=getConnection().prepareStatement(consultaconinterrogaciones);            
             prep.executeUpdate();        
@@ -871,15 +880,15 @@ public class Rdbms {
             if (rs.next()) {
               int newId = rs.getInt(indexposition);
               if (newId==0){
-                  return TBL_KEY_NOT_FIRST_TABLEFLD; //"PRIMARY KEY NOT FIRST FIELD IN TABLE";
+                  return new String[]{LPPlatform.LAB_TRUE, TBL_KEY_NOT_FIRST_TABLEFLD}; //"PRIMARY KEY NOT FIRST FIELD IN TABLE";
               }else{
-                  return String.valueOf(newId);              
+                  return new String[]{LPPlatform.LAB_TRUE, String.valueOf(newId)};              
               }
             }
         }catch (SQLException er){
-            return TBL_NO_KEY; //"TABLE WITH NO KEY";
+            return new String[]{LPPlatform.LAB_FALSE, er.getMessage()}; //"TABLE WITH NO KEY";
         }//finally{rs.close();}
-        return pkValue;
+        return new String[]{LPPlatform.LAB_TRUE, pkValue};
     }
     
     /**
@@ -932,7 +941,7 @@ public class Rdbms {
         }                
     }
         
-    private static void buildPreparedStatement(Object [] valoStrings, PreparedStatement prepsta, Integer [] fieldtypes) throws SQLException{
+    private static void buildPreparedStatement(Object [] valoStrings, PreparedStatement prepsta) throws SQLException{
         Integer indexval = 1;
         for(Integer numi=0;numi<valoStrings.length;numi++){
             Object obj = valoStrings[numi];
@@ -1037,22 +1046,7 @@ public class Rdbms {
         //By now this method returns the same value than the getLocalDate one.
         //Date de = new java.sql.Date(System.currentTimeMillis());        
         return getLocalDate();}    
-    
-    private static CachedRowSetImpl readQuery(String consulta) throws SQLException{
-        Statement sta=null;
-        
-        try (CachedRowSetImpl crs = new CachedRowSetImpl()){
-            sta=getConnection().createStatement();
-            sta.setQueryTimeout(rdbms.getTimeout());    
-            ResultSet res=null;            
-            if(!"".equals(consulta)){
-                res = sta.executeQuery(consulta);    
-            }
-        crs.populate(res);    
-        return crs;    
-        }//finally{            sta.close();        }        
-    }
-    
+
     public Connection createTransaction(){
         try {
             conn.setAutoCommit(false);

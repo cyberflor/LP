@@ -43,6 +43,7 @@ public class LPPlatform {
     private static final String CONFIG_FILES_ERRORTRAPING = "errorTraping";
     public static final String CONFIG_FILES_API_ERRORTRAPING = "api-platform";
     
+    public static final String API_ERRORTRAPING_EXCEPTION_RAISED= "exceptionRaised";
     public static final String API_ERRORTRAPING_PROPERTY_DATABASE_NOT_CONNECTED= "databaseConnectivityError";
     public static final String API_ERRORTRAPING_MANDATORY_PARAMS_MISSING="missingManatoryParametersInRequest";
     public static final String API_ERRORTRAPING_PROPERTY_ENDPOINT_NOT_FOUND = "endPointNotFound";
@@ -59,7 +60,7 @@ public class LPPlatform {
     public static final String REQUEST_PARAM_LANGUAGE_DEFAULT_VALUE = "ALL";    
     
 
-    private static final String CONFIG_PROC_FILE_NAME = "-procedure";
+    public static final String CONFIG_PROC_FILE_NAME = "-procedure";
     private static final String ENCRYPTION_KEY = "Bar12345Bar12345";
     public static final String JAVADOC_CLASS_FLDNAME = "class";
     private static final String JAVADOC_METHOD_FLDNAME = "method";
@@ -763,9 +764,13 @@ public class LPPlatform {
         }else{
             errorDetail = Parameter.getParameterBundle(CONFIG_FILES_FOLDER, CONFIG_FILES_ERRORTRAPING, null, className+"_"+errorCode+"_detail", null);
             if (errorDetail.length()==0){errorDetail = Parameter.getParameterBundle(CONFIG_FILES_FOLDER, CONFIG_FILES_ERRORTRAPING, null, errorCode+"_detail", null);}
-            if (errorVariables!=null){
-                for (int iVarValue=1; iVarValue<=errorVariables.length; iVarValue++){
-                    errorDetail = errorDetail.replace("<*"+iVarValue+"*>", errorVariables[iVarValue-1].toString());
+            if (errorDetail==null || (errorDetail!=null && errorDetail.length()==0) ){
+                if (errorVariables!=null){errorDetail =errorVariables[0].toString();}else{errorDetail="";}
+            }else{
+                if (errorVariables!=null){
+                    for (int iVarValue=1; iVarValue<=errorVariables.length; iVarValue++){
+                        errorDetail = errorDetail.replace("<*"+iVarValue+"*>", errorVariables[iVarValue-1].toString());
+                    }
                 }
             }
         }

@@ -23,9 +23,9 @@ import org.json.simple.JSONObject;
  */
 public class procedureDefinitionToInstance extends HttpServlet {
 
-    private static final Boolean  PROC_DEPLOY_PROCEDURE_INFO=true;
-    private static final Boolean  PROC_DEPLOY_PROCEDURE_USER_ROLES=true;
-    private static final Boolean  PROC_DEPLOY_PROCEDURE_SOP_META_DATA=true;
+    private static final Boolean  PROC_DEPLOY_PROCEDURE_INFO=false;
+    private static final Boolean  PROC_DEPLOY_PROCEDURE_USER_ROLES=false;
+    private static final Boolean  PROC_DEPLOY_PROCEDURE_SOP_META_DATA=false;
     private static final Boolean  PROC_DEPLOY_ASSIGN_PROCEDURE_SOPS_TO_USERS=true;
     
     /**
@@ -40,7 +40,7 @@ public class procedureDefinitionToInstance extends HttpServlet {
         response=LPTestingOutFormat.responsePreparation(response);
         String fileContent = LPTestingOutFormat.getHtmlStyleHeader(this.getClass().getSimpleName());
         if (!LPFrontEnd.servletStablishDBConection(request, response)){return;}   
-        String procName = "pr-eu"; Integer procVersion = 1; String schemaPrefix = "process-eu";
+        String procName = "process-us"; Integer procVersion = 1; String schemaPrefix = "process-us";
         
         Integer numEvaluationArguments = 1;
         String[][] businessVariablesHeader = new String[][]{{"Business Rule", "Value"}                 

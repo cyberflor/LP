@@ -8,10 +8,8 @@ package LabPLANET.utilities;
 import static LabPLANET.utilities.LPPlatform.trapErrorMessage;
 import functionalJava.parameter.Parameter;
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -69,44 +67,7 @@ public class  LPArray {
       return false;
     }    
     
-    /**
-     *
-     * @param arrayHeader
-     * @param array
-     * @param filename
-     * @param fieldsSeparator
-     * @return
-     */
-    public static Object[] _arrayToFile (String[] arrayHeader, String[] array, String filename, String fieldsSeparator){ 
-        return new Object[0];}
-/*        if ( (arrayHeader==null) || (filename==null) || (fieldsSeparator==null) ){return diagnosis;}
-        BufferedWriter outputWriter = null;
-        try{        
-            if (arrayHeader!=null){
-                for (String arrayHeader1 : arrayHeader) {
-                    outputWriter.write(arrayHeader1 + fieldsSeparator);
-                    outputWriter.newLine();
-                }
-            }
-            outputWriter = new BufferedWriter(new FileWriter(filename));
-            for (String array1 : array) {
-                outputWriter.write(array1);
-                outputWriter.newLine();
-            }
-            outputWriter.flush();  
-            outputWriter.close();          
-            return diagnosis;        
-        }catch(IOException e){
-            try {
-                if (outputWriter==null){return diagnosis;}
-                outputWriter.close();
-            } catch (IOException ex) {
-                Logger.getLogger(LPArray.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-        return diagnosis;  
-    }
-*/    
+    
     /**
      *
      * @param schemaName
@@ -284,13 +245,19 @@ public class  LPArray {
         
     }
 
+    public static String[][] convertCSVinArray(String xfileLocation, String csvSeparator){
+        
+        if (xfileLocation.startsWith("\\\\")){return convertCSVinArrayNetwork(xfileLocation, csvSeparator);}
+        
+        return convertCSVinArrayUrl(xfileLocation, csvSeparator);
+    }
     /**
      *
      * @param xfileLocation
      * @param csvSeparator
      * @return
      */
-    public static String[][] convertCSVinArray(String xfileLocation, String csvSeparator){
+    public static String[][] convertCSVinArrayUrl(String xfileLocation, String csvSeparator){
         
         URL url = null;
         try {

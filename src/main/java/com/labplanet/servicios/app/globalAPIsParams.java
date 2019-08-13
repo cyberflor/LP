@@ -62,6 +62,7 @@ public class globalAPIsParams extends HttpServlet {
     public static final String REQUEST_PARAM_SAMPLE_ANALYSIS_RESULT_FIELD_TO_RETRIEVE = "sampleAnalysisResultFieldToRetrieve";
     public static final String REQUEST_PARAM_SOP_FIELDS_TO_RETRIEVE = "sopFieldsToRetrieve";
     public static final String REQUEST_PARAM_SORT_FIELDS_NAME = "sortFieldsName";
+    public static final String REQUEST_PARAM_SOP_NAME = "sopName";
     public static final String REQUEST_PARAM_SCHEMA_PREFIX = "schemaPrefix";    
     public static final String REQUEST_PARAM_TEST_ID = "testId";
     public static final String REQUEST_PARAM_TEST_FIELD_TO_RETRIEVE = "testFieldToRetrieve";

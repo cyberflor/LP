@@ -298,14 +298,20 @@ public class TstDataSample extends HttpServlet {
                             dataSample2D = Rdbms.getRecordFieldsByFilter(schemaDataName, "sample", new String[]{"sample_id"}, new Object[]{sampleId}, fieldsToGet);
                             break;
                         case "ENTERRESULT_LOD":
+                             Integer firstParameter=null;
+                            if (lineNumCols>=numEvaluationArguments+4)                
+                                firstParameter=LPTestingOutFormat.csvExtractFieldValueInteger(csvFileContent[iLines][numEvaluationArguments+4]);
+                            Integer secondParameter = null;
+                            if (lineNumCols>=numEvaluationArguments+5)                
+                                secondParameter=LPTestingOutFormat.csvExtractFieldValueInteger(csvFileContent[iLines][numEvaluationArguments+5]);                            
                             ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
                             try {
-                                engine.eval(new FileReader("C:\\home\\judas\\myResult.js"));
+                                engine.eval(new FileReader("C:\\home\\myResult.js"));
                                 Invocable invocable = (Invocable) engine;
                                 Object result;
-                                result = invocable.invokeFunction("lossOnDrying", 10, 7);
-                                System.out.println(result);
-                                System.out.println(result.getClass());
+                                result = invocable.invokeFunction("lossOnDrying", firstParameter, secondParameter);
+                                dataSample=LPArray.addValueToArray1D(dataSample, result);
+
                             } catch (FileNotFoundException | NoSuchMethodException | ScriptException e) {
                                 return;
                             }

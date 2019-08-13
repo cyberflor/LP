@@ -8,7 +8,6 @@ package functionalJava.sop;
 import databases.Rdbms;
 import LabPLANET.utilities.LPArray;
 import LabPLANET.utilities.LPPlatform;
-import java.sql.SQLException;
 
 /**
  *
@@ -20,6 +19,9 @@ public class Sop {
     public static final String FIELDNAME_SOP_NAME="sop_name";
     public static final String FIELDNAME_SOP_VERSION="sop_version";
     public static final String FIELDNAME_SOP_REVISION="sop_revision";
+    
+    public static final String ERROR_TRAPING_SOP_META_DATA_NOT_FOUND="Sop_SopMetaData_recordNotUpdated";
+    
     
     
     Integer sopId = null;
@@ -65,7 +67,6 @@ public class Sop {
      * @param schemaPrefix
      * @param userInfoId
      * @return
-     * @throws SQLException
      */
     public Object[] dbInsertSopId( String schemaPrefix, String userInfoId) {
          String schemaConfigName = LPPlatform.SCHEMA_CONFIG;
@@ -99,7 +100,6 @@ public class Sop {
      * @param schemaPrefix
      * @param sopId
      * @return
-     * @throws SQLException
      */
     public Integer dbGetSopIdById( String schemaPrefix, Integer sopId) {     
         String schemaConfigName = LPPlatform.SCHEMA_CONFIG;
@@ -114,9 +114,8 @@ public class Sop {
      * @param schemaPrefix
      * @param sopName
      * @return
-     * @throws SQLException
      */
-    public Integer dbGetSopIdByName( String schemaPrefix, String sopName) {
+    public static final Integer dbGetSopIdByName( String schemaPrefix, String sopName) {
         String schemaConfigName = LPPlatform.SCHEMA_CONFIG;
         schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, schemaConfigName);
         Object[][] sopInfo = Rdbms.getRecordFieldsByFilter(schemaConfigName, TABLE_NAME_SOP_META_DATA, 
@@ -124,6 +123,20 @@ public class Sop {
         return (Integer) sopInfo[0][0];
     }    
 
+    /**
+     *
+     * @param schemaPrefix
+     * @param sopId
+     * @return
+     */
+    public static final Integer dbGetSopNameById( String schemaPrefix, Object sopId) {
+        String schemaConfigName = LPPlatform.SCHEMA_CONFIG;
+        schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, schemaConfigName);
+        Object[][] sopName = Rdbms.getRecordFieldsByFilter(schemaConfigName, TABLE_NAME_SOP_META_DATA, 
+                                                                new String[]{FIELDNAME_SOP_ID}, new Object[]{sopId}, new String[]{FIELDNAME_SOP_NAME});
+        return (Integer) sopName[0][0];
+    }    
+    
     /**
      *
      * @param schemaPrefix
@@ -163,21 +176,17 @@ public class Sop {
         
     /**
      *
-     * @param schemaName
      * @param schemaPrefix
      * @param fieldName
      * @param fieldValue
-     * @param fieldType
      * @return
-     * @throws SQLException
      */
-    public Object[] updateSop( String schemaName, String schemaPrefix, String fieldName, String fieldValue, String fieldType){
-        String schemaConfigName = LPPlatform.SCHEMA_CONFIG;
-        schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, schemaConfigName);
+    public Object[] updateSop(String schemaPrefix, String fieldName, String fieldValue){        
+        String schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, LPPlatform.SCHEMA_CONFIG);
         Object[] diagnoses = Rdbms.updateRecordFieldsByFilter(schemaConfigName, TABLE_NAME_SOP_META_DATA, 
                                         new String[]{fieldName}, new Object[]{fieldValue}, new String[]{FIELDNAME_SOP_NAME}, new Object[]{sopName});
         if (LPPlatform.LAB_FALSE.equalsIgnoreCase(diagnoses[0].toString())){
-            String errorCode = "Sop_SopMetaData_recordNotUpdated";
+            String errorCode = ERROR_TRAPING_SOP_META_DATA_NOT_FOUND;
             LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, new Object[]{fieldName, fieldValue, sopName, schemaConfigName} );
             return diagnoses;            
         }else{

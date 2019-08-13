@@ -37,7 +37,7 @@ public class LPJson {
         JSONObject jObj = new JSONObject();    
         if (header.length==0){return jObj;}
         for (int iField=0; iField<header.length; iField++){     
-            if (!"sampling_date".equalsIgnoreCase(header[iField])){                            
+            //if (!"sampling_date".equalsIgnoreCase(header[iField])){                            
                 if (row[iField]==null){
                     jObj.put(header[iField], "");
                 }else{
@@ -48,7 +48,7 @@ public class LPJson {
                         jObj.put(header[iField], row[iField]);
                     }
                 }
-            }
+            //}
         }                    
         return jObj;
     }

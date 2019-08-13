@@ -21,5 +21,14 @@ public class UserAndRolesViews {
         if (LPPlatform.LAB_FALSE.equalsIgnoreCase(userByPerson[0][0].toString())){return LPPlatform.LAB_FALSE;}
         return userByPerson[0][0].toString();
     }
+
+    public static final String getPersonByUser(String userName){
+        Object[][] personByUser = Rdbms.getRecordFieldsByFilter(LPPlatform.SCHEMA_APP, "users", 
+                new String[]{"user_name"}, new String[]{userName}, new String[]{"person_name"}, new String[]{"person_name"});
+        if (LPPlatform.LAB_FALSE.equalsIgnoreCase(personByUser[0][0].toString())){return LPPlatform.LAB_FALSE;}
+        return personByUser[0][0].toString();
+    }
+    
+    
     
 }

@@ -9,11 +9,8 @@ import LabPLANET.utilities.LPArray;
 import LabPLANET.utilities.LPFrontEnd;
 import LabPLANET.utilities.LPHttp;
 import LabPLANET.utilities.LPMath;
-import LabPLANET.utilities.LPPlatform;
-import static com.labplanet.servicios.app.sopUserAPI.ERRORMSG_ERROR_STATUS_CODE;
 import databases.Rdbms;
 import databases.Token;
-import functionalJava.requirement.RequirementLogFile;
 import functionalJava.sampleStructure.DataSampleUtilities;
 import functionalJava.testingScripts.LPTestingOutFormat;
 import java.io.IOException;
@@ -30,7 +27,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.eclipse.jetty.server.Response;
 
 /**
  *
@@ -63,7 +59,9 @@ public class testingServer extends HttpServlet {
             out.println("<h1>Servlet testingServer at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
-
+            
+            out.println("Testing Files Path: "+LPTestingOutFormat.TESTING_FILES_PATH);
+            out.println("Adios");
             out.println("Extract portion, extraer 5 sobre una cantidad de 4: "+Arrays.toString(LPMath.extractPortion("process-us", 
                     BigDecimal.valueOf(4), "MG",1, BigDecimal.valueOf(5), "MG", 2)));
             out.println("Extract portion, extraer 4 sobre una cantidad de 4: "+Arrays.toString(LPMath.extractPortion("process-us", 
@@ -76,7 +74,7 @@ public class testingServer extends HttpServlet {
             //isConnected = Rdbms.getRdbms().startRdbms(dbUserName, dbUserPassword);
             isConnected = Rdbms.getRdbms().startRdbms(LPTestingOutFormat.TESTING_USER, LPTestingOutFormat.TESTING_PW);      
             if (!isConnected){
-                errObject = LPArray.addValueToArray1D(errObject, ERRORMSG_ERROR_STATUS_CODE+": "+HttpServletResponse.SC_BAD_REQUEST);
+                errObject = LPArray.addValueToArray1D(errObject, HttpServletResponse.SC_UNAUTHORIZED+": "+HttpServletResponse.SC_BAD_REQUEST);
                 errObject = LPArray.addValueToArray1D(errObject, "API Error Message: db User Name and Password not correct, connection to the database is not possible");                    
                 Object[] errMsg = LPFrontEnd.responseError(errObject, language, null);
                 response.sendError((int) errMsg[0], (String) errMsg[1]);  
