@@ -36,6 +36,10 @@ public class DBActions extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
+        public static final String ENDPOINTS_BEING_TESTED_EXISTSRECORD="EXISTSRECORD";
+        public static final String ENDPOINTS_BEING_TESTED_INSERT="INSERT";
+        public static final String ENDPOINTS_BEING_TESTED_GETRECORDFIELDSBYFILTER="GETRECORDFIELDSBYFILTER";
+        public static final String ENDPOINTS_BEING_TESTED_UPDATE="UPDATE";
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)            throws ServletException, IOException {
         request=LPHttp.requestPreparation(request);
         response=LPHttp.responsePreparation(response);
@@ -131,23 +135,23 @@ public class DBActions extends HttpServlet {
                         +LPTestingOutFormat.rowAddField(Arrays.toString(orderBy))+LPTestingOutFormat.rowAddField(Arrays.toString(groupBy));
 
                 Object[] allFunctionsBeingTested = new Object[0];                
-                allFunctionsBeingTested = LPArray.addValueToArray1D(allFunctionsBeingTested, "EXISTSRECORD");
-                allFunctionsBeingTested = LPArray.addValueToArray1D(allFunctionsBeingTested, "INSERT");
-                allFunctionsBeingTested = LPArray.addValueToArray1D(allFunctionsBeingTested, "GETRECORDFIELDSBYFILTER");
-                allFunctionsBeingTested = LPArray.addValueToArray1D(allFunctionsBeingTested, "UPDATE");
+                allFunctionsBeingTested = LPArray.addValueToArray1D(allFunctionsBeingTested, ENDPOINTS_BEING_TESTED_EXISTSRECORD);
+                allFunctionsBeingTested = LPArray.addValueToArray1D(allFunctionsBeingTested, ENDPOINTS_BEING_TESTED_INSERT);
+                allFunctionsBeingTested = LPArray.addValueToArray1D(allFunctionsBeingTested, ENDPOINTS_BEING_TESTED_GETRECORDFIELDSBYFILTER);
+                allFunctionsBeingTested = LPArray.addValueToArray1D(allFunctionsBeingTested, ENDPOINTS_BEING_TESTED_UPDATE);
 
 //                fileContentTable1=fileContentTable1+LPTestingOutFormat.rowAddFields(
 //                        new Object[]{iLines, result, ruleType, values, separator, listName});
                 switch (actionName.toUpperCase()){
-                    case "EXISTSRECORD":   
+                    case ENDPOINTS_BEING_TESTED_EXISTSRECORD:   
                         Object[] exRec =  Rdbms.existsRecord(schemaPrefix, tableName, fieldName, fieldValues);
                         dataSample2D = LPArray.array1dTo2d(exRec, exRec.length);
                         break;
-                    case "INSERT":                    
+                    case ENDPOINTS_BEING_TESTED_INSERT:                    
                         Object[] insRec = Rdbms.insertRecordInTable(schemaPrefix, tableName, fieldName, fieldValues);  
                         dataSample2D = LPArray.array1dTo2d(insRec, insRec.length);
                         break;
-                    case "GETRECORDFIELDSBYFILTER":              
+                    case ENDPOINTS_BEING_TESTED_GETRECORDFIELDSBYFILTER:              
                         if (orderBy!=null && orderBy.length>0){
                             dataSample2D = Rdbms.getRecordFieldsByFilter(schemaPrefix, tableName, fieldName, fieldValues, fieldsToRetrieve, orderBy);
                         }else{
@@ -157,7 +161,7 @@ public class DBActions extends HttpServlet {
                             dataSample2Din1D =  LPArray.array2dTo1d(dataSample2D);
                         }    
                         break;
-                    case "UPDATE":                    
+                    case ENDPOINTS_BEING_TESTED_UPDATE:                    
                         Object[] updRec = Rdbms.updateRecordFieldsByFilter(schemaPrefix, tableName, setFieldName, setFieldValues, fieldName, fieldValues);  
                         dataSample2D = LPArray.array1dTo2d(updRec, updRec.length);
                         break;                        
@@ -175,7 +179,7 @@ public class DBActions extends HttpServlet {
                 if (dataSample2D[0].length==0){
                     fileContentTable1 = fileContentTable1 +LPTestingOutFormat.rowAddField("No content in the array dataSample2D returned for function");                     
                 }else{
-                    if ( ("GETRECORDFIELDSBYFILTER".equalsIgnoreCase(actionName)) && (!LPPlatform.LAB_FALSE.equalsIgnoreCase(dataSample2D[0][0].toString())) ){
+                    if ( (ENDPOINTS_BEING_TESTED_GETRECORDFIELDSBYFILTER.equalsIgnoreCase(actionName)) && (!LPPlatform.LAB_FALSE.equalsIgnoreCase(dataSample2D[0][0].toString())) ){
                         if (numEvaluationArguments==0){                    
                             fileContentTable1=fileContentTable1+LPTestingOutFormat.rowAddField(Arrays.toString(dataSample2Din1D));                     
                         }
@@ -185,7 +189,7 @@ public class DBActions extends HttpServlet {
                         }
                         //fileContent = fileContent +LPTestingOutFormat.rowAddField(Arrays.toString(dataSample2Din1D));
                     }
-                    if ( (!"GETRECORDFIELDSBYFILTER".equalsIgnoreCase(actionName)) && (!LPPlatform.LAB_FALSE.equalsIgnoreCase(dataSample2D[0][0].toString())) ){                        
+                    if ( (!ENDPOINTS_BEING_TESTED_GETRECORDFIELDSBYFILTER.equalsIgnoreCase(actionName)) && (!LPPlatform.LAB_FALSE.equalsIgnoreCase(dataSample2D[0][0].toString())) ){                        
                         String dataSampleFldOut = "";
                         for (int iFields=0; iFields<dataSample2D[0].length;iFields++){
                             dataSampleFldOut=dataSampleFldOut+LPNulls.replaceNull((String) dataSample2D[0][iFields])+ ". ";

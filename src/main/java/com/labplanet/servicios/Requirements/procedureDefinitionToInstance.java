@@ -40,7 +40,9 @@ public class procedureDefinitionToInstance extends HttpServlet {
         response=LPTestingOutFormat.responsePreparation(response);
         String fileContent = LPTestingOutFormat.getHtmlStyleHeader(this.getClass().getSimpleName());
         if (!LPFrontEnd.servletStablishDBConection(request, response)){return;}   
-        String procName = "process-us"; Integer procVersion = 1; String schemaPrefix = "process-us";
+        String procName = "process-us"; 
+        Integer procVersion = 1; 
+        String schemaPrefix = "process-us";
         
         Integer numEvaluationArguments = 1;
         String[][] businessVariablesHeader = new String[][]{{"Business Rule", "Value"}                 

@@ -22,6 +22,7 @@ import functionalJava.user.UserProfile;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import functionalJava.sop.UserSop;
+import java.util.logging.Logger;
 /**
  *
  * @author Administrator
@@ -33,6 +34,23 @@ public class sopUserAPIfrontend extends HttpServlet {
 
     public static final String FIELDNAME_SOP_ID="sop_id";
     public static final String FIELDNAME_SOP_NAME="sop_name";
+    
+    public static final String JSON_TAG_NAME="name";
+    public static final String JSON_TAG_LABEL_EN="label_en";
+    public static final String JSON_TAG_LABEL_ES="label_es";
+    public static final String JSON_TAG_WINDOWS_URL="window_url";
+    public static final String JSON_TAG_MODE="mode";
+    public static final String JSON_TAG_BRANCH_LEVEL="branch_level";
+    public static final String JSON_TAG_TYPE="type";
+    public static final String JSON_TAG_BADGE="badge";
+    public static final String JSON_TAG_DEFINITION="definition";
+    public static final String JSON_TAG_VERSION="version";
+    public static final String JSON_TAG_SCHEMA_PREFIX="schemaPrefix";
+    public static final String JSON_TAG_VALUE_TYPE_TREE_LIST="tree-list";
+    public static final String JSON_TAG_VALUE_BRANCH_LEVEL_LEVEL_1="level1";
+    public static final String JSON_TAG_VALUE_WINDOWS_URL_HOME="Modulo1/home.js";
+     
+                           
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -85,7 +103,7 @@ public class sopUserAPIfrontend extends HttpServlet {
                 
                 UserSop userSop = new UserSop();                               
                 
-                Object[][] userSops = userSop.getUserProfileFieldValues( 
+                Object[][] userSops = UserSop.getUserProfileFieldValues( 
                         new String[]{"user_id"}, new Object[]{token.getPersonName()}, fieldsToRetrieve, allUserProcedurePrefix);
                 if (LPPlatform.LAB_FALSE.equalsIgnoreCase(allUserProcedurePrefix[0])){
                     Object[] errMsg = LPFrontEnd.responseError(allUserProcedurePrefix, language, null);
@@ -229,7 +247,7 @@ public class sopUserAPIfrontend extends HttpServlet {
                     return;
                 }     
                 Integer numPendingSOPs = 0;
-                fieldsToRetrieve = new String[]{"sop_id"};
+                fieldsToRetrieve = new String[]{FIELDNAME_SOP_ID};
                 for (String curProc: allUserProcedurePrefix){
                     userSop = new UserSop();  
                     Object[][] userProcSops = userSop.getNotCompletedUserSOP(token.getPersonName(), curProc, fieldsToRetrieve);       
@@ -242,43 +260,43 @@ public class sopUserAPIfrontend extends HttpServlet {
                     //JSONObject sopElement = new JSONObject();
                     
                     JSONObject sopOption = new JSONObject();
-                    sopOption.put("name", "AllMySOPs");
-                    sopOption.put("label_en", "All my SOPs");
-                    sopOption.put("label_es", "Todos Mis PNTs");
-                    sopOption.put("window_url", "Modulo1/home.js");
-                    sopOption.put("mode", "edit");
-                    sopOption.put("branch_level", "level1");
-                    sopOption.put("type", "tree-list");
+                    sopOption.put(JSON_TAG_NAME, "AllMySOPs");
+                    sopOption.put(JSON_TAG_LABEL_EN, "All my SOPs");
+                    sopOption.put(JSON_TAG_LABEL_ES, "Todos Mis PNTs");
+                    sopOption.put(JSON_TAG_WINDOWS_URL, JSON_TAG_VALUE_WINDOWS_URL_HOME);
+                    sopOption.put(JSON_TAG_MODE, "edit");
+                    sopOption.put(JSON_TAG_BRANCH_LEVEL, JSON_TAG_VALUE_BRANCH_LEVEL_LEVEL_1); 
+                    sopOption.put(JSON_TAG_TYPE, JSON_TAG_VALUE_TYPE_TREE_LIST);
+                    sopOptions.add(sopOption);
+                   
+                    sopOption = new JSONObject();
+                    sopOption.put(JSON_TAG_NAME, "MyPendingSOPs");
+                    sopOption.put(JSON_TAG_LABEL_EN, "My Pending SOPs");
+                    sopOption.put(JSON_TAG_LABEL_ES, "Mis PNT Pendientes");
+                    sopOption.put(JSON_TAG_WINDOWS_URL, JSON_TAG_VALUE_WINDOWS_URL_HOME);
+                    sopOption.put(JSON_TAG_MODE, "edit");
+                    sopOption.put(JSON_TAG_BRANCH_LEVEL, JSON_TAG_VALUE_BRANCH_LEVEL_LEVEL_1);
+                    sopOption.put(JSON_TAG_BADGE, numPendingSOPs);
+                    sopOption.put(JSON_TAG_TYPE, JSON_TAG_VALUE_TYPE_TREE_LIST);
                     sopOptions.add(sopOption);
                     
                     sopOption = new JSONObject();
-                    sopOption.put("name", "MyPendingSOPs");
-                    sopOption.put("label_en", "My Pending SOPs");
-                    sopOption.put("label_es", "Mis PNT Pendientes");
-                    sopOption.put("window_url", "Modulo1/home.js");
-                    sopOption.put("mode", "edit");
-                    sopOption.put("branch_level", "level1");
-                    sopOption.put("badge", numPendingSOPs);
-                    sopOption.put("type", "tree-list");
-                    sopOptions.add(sopOption);
-                    
-                    sopOption = new JSONObject();
-                    sopOption.put("name", "ProcSOPs");
-                    sopOption.put("label_en", "Procedure SOPs");
-                    sopOption.put("label_es", "PNTs del proceso");
-                    sopOption.put("window_url", "Modulo1/home.js");
-                    sopOption.put("mode", "edit");
-                    sopOption.put("branch_level", "level1");
-                    sopOption.put("type", "tree-list");
+                    sopOption.put(JSON_TAG_NAME, "ProcSOPs");
+                    sopOption.put(JSON_TAG_LABEL_EN, "Procedure SOPs");
+                    sopOption.put(JSON_TAG_LABEL_ES, "PNTs del proceso");
+                    sopOption.put(JSON_TAG_WINDOWS_URL, JSON_TAG_VALUE_WINDOWS_URL_HOME);
+                    sopOption.put(JSON_TAG_MODE, "edit");
+                    sopOption.put(JSON_TAG_BRANCH_LEVEL, JSON_TAG_VALUE_BRANCH_LEVEL_LEVEL_1);
+                    sopOption.put(JSON_TAG_TYPE, JSON_TAG_VALUE_TYPE_TREE_LIST);
                     sopOptions.add(sopOption);
                     
                     JSONObject sopElement = new JSONObject();
-                    sopElement.put("definition", sopOptions);
-                    sopElement.put("name", "SOP");
-                    sopElement.put("version", "1");
-                    sopElement.put("label_en", "SOPs");
-                    sopElement.put("label_es", "P.N.T.");
-                    sopElement.put("schemaPrefix", "process-us");
+                    sopElement.put(JSON_TAG_DEFINITION, sopOptions);
+                    sopElement.put(JSON_TAG_NAME, "SOP");
+                    sopElement.put(JSON_TAG_VERSION, "1");
+                    sopElement.put(JSON_TAG_LABEL_EN, "SOPs");
+                    sopElement.put(JSON_TAG_LABEL_ES, "P.N.T.");
+                    sopElement.put(JSON_TAG_SCHEMA_PREFIX, "process-us");
                     
                     JSONArray arrFinal = new JSONArray();
                     arrFinal.add(sopElement);                    
@@ -286,7 +304,6 @@ public class sopUserAPIfrontend extends HttpServlet {
                     return;
             default:                
                     LPFrontEnd.servletReturnResponseError(request, response, LPPlatform.API_ERRORTRAPING_PROPERTY_ENDPOINT_NOT_FOUND, new Object[]{actionName, this.getServletName()}, language);              
-                    return;                                         
             }
         }catch(Exception e){
             String errMessage = e.getMessage();
@@ -305,14 +322,12 @@ public class sopUserAPIfrontend extends HttpServlet {
      *
      * @param request servlet request
      * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response){
          try {
         processRequest(request, response);
-         }catch(ServletException|IOException e){}
+         }catch(ServletException|IOException e){Logger.getLogger(e.getMessage());}
     }
 
 

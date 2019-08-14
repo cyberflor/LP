@@ -85,14 +85,6 @@
         <servlet-name>batchAPI</servlet-name>
         <servlet-class>com.labplanet.servicios.ModuleBatch.batchAPI</servlet-class>
     </servlet>
-    <servlet>
-        <servlet-name>sampleAnalysisAPI</servlet-name>
-        <servlet-class>com.labplanet.servicios.ModuleSample.sampleAnalysisAPI</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>sampleAnalysisResultAPI</servlet-name>
-        <servlet-class>com.labplanet.servicios.ModuleSample.sampleAnalysisResultAPI</servlet-class>
-    </servlet>
     <!--// testing for the Platform. End  
     
 // testing for the Config. Begin -->
@@ -230,14 +222,6 @@
     <servlet-mapping>
         <servlet-name>batchAPI</servlet-name>
         <url-pattern>/moduleBatch/batchAPI</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>sampleAnalysisAPI</servlet-name>
-        <url-pattern>/moduleSample/sampleAnalysisAPI</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>sampleAnalysisResultAPI</servlet-name>
-        <url-pattern>/moduleSample/sampleAnalysisResultAPI</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>TestingConfig_specQuantitative_ruleFormat</servlet-name>

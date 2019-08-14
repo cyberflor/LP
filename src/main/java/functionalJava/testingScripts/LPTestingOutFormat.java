@@ -9,6 +9,7 @@ import LabPLANET.utilities.LPHashMap;
 import LabPLANET.utilities.LPNulls;
 import LabPLANET.utilities.LPPlatform;
 import LabPLANET.utilities.LPArray;
+import functionalJava.parameter.Parameter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -57,7 +58,7 @@ public class LPTestingOutFormat {
     public static HttpServletResponse responsePreparation(HttpServletResponse response){
         response.setCharacterEncoding(LPPlatform.LAB_ENCODER_UTF8);
 
-        ResourceBundle prop = ResourceBundle.getBundle("parameter.config.config");
+        ResourceBundle prop = ResourceBundle.getBundle(Parameter.BUNDLE_TAG_PARAMETER_CONFIG_CONF);
         String frontendUrl = prop.getString("frontend_url");
 
         response.setHeader("Access-Control-Allow-Origin", frontendUrl);
@@ -82,14 +83,14 @@ public class LPTestingOutFormat {
 
     public static String headerAddField(String field){
         String content="";
-        content = content+"<th>"+LPNulls.replaceNull((String) field)+"</th>";           
+        content = content+headerStart()+LPNulls.replaceNull((String) field)+headerEnd();           
         return content;
     }
     
     public static String headerAddFields(Object[] fields){
         String content="";
         for (Object fld: fields){
-            content = content+"<th>"+LPNulls.replaceNull(fld).toString()+"</th>";           
+            content = content+headerStart()+LPNulls.replaceNull(fld).toString()+headerEnd();           
         }
         return content;
     }
@@ -97,7 +98,7 @@ public class LPTestingOutFormat {
     public static String headerAddFields(String[] fields){
         String content="";
         for (Object fld: fields){
-            content = content+"<th>"+LPNulls.replaceNull(fld)+"</th>";           
+            content = content+headerStart()+LPNulls.replaceNull(fld)+headerEnd();           
         }
         return content;
     }

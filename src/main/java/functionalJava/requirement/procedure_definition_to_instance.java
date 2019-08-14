@@ -21,8 +21,12 @@ import org.json.simple.JSONObject;
 public class procedure_definition_to_instance {
     private procedure_definition_to_instance(){    throw new IllegalStateException("Utility class");}
     
-    public static final String LABEL_FOR_NO = "No";
-    public static final String LABEL_FOR_YES = "Yes";
+    public static final String JSON_LABEL_FOR_NO = "No";
+    public static final String JSON_LABEL_FOR_YES = "Yes";
+    public static final String JSON_LABEL_FOR_ERROR = "Error";
+    public static final String JSON_LABEL_FOR_NUM_RECORDS_IN_DEFINITION = "Num Records in definition";
+    
+    
 
     public static final String TABLE_NAME_APP_USERS = "users";
         public static final String FLD_NAME_APP_USERS_USER_NAME="user_name";
@@ -72,9 +76,9 @@ public class procedure_definition_to_instance {
                 new String[]{FLD_NAME_PROCEDURE_NAME, FLD_NAME_PROCEDURE_VERSION,FLD_NAME_PROCEDURE_SCHEMA_PREFIX}, new Object[]{procedure, procVersion, schemaPrefix}, 
                 FIELDS_TO_RETRIEVE_PROCEDURE_INFO_SOURCE.split("\\|"), null);
         if (LPPlatform.LAB_FALSE.equalsIgnoreCase(procInfoRecordsSource[0][0].toString())){
-          jsonObj.put("Error", LPJson.convertToJSON(procInfoRecordsSource));
+          jsonObj.put(JSON_LABEL_FOR_ERROR, LPJson.convertToJSON(procInfoRecordsSource));
         }else{
-            jsonObj.put("Num Records in definition", procInfoRecordsSource.length);
+            jsonObj.put(JSON_LABEL_FOR_NUM_RECORDS_IN_DEFINITION, procInfoRecordsSource.length);
             for (Object[] curRow: procInfoRecordsSource){
                 Object[][] procInfoRecordsDestination = Rdbms.getRecordFieldsByFilter(schemaNameDestination, TABLE_NAME_PROCEDURE, 
                        new String[]{FLD_NAME_PROCEDURE_NAME, FLD_NAME_PROCEDURE_VERSION}, new Object[]{procedure, procVersion}, 
@@ -98,7 +102,7 @@ public class procedure_definition_to_instance {
                 new String[]{FLD_NAME_PROCEDURE_NAME, FLD_NAME_PROCEDURE_VERSION,FLD_NAME_PROCEDURE_SCHEMA_PREFIX}, new Object[]{procedure, procVersion, schemaPrefix}, 
                 FIELDS_TO_RETRIEVE_PROCEDURE_INFO_SOURCE.split("\\|"), null);
         if (LPPlatform.LAB_FALSE.equalsIgnoreCase(procInfoRecordsSource[0][0].toString())){
-          jsonObj.put("Error", LPJson.convertToJSON(procInfoRecordsSource));
+          jsonObj.put(JSON_LABEL_FOR_ERROR, LPJson.convertToJSON(procInfoRecordsSource));
         }else{
             
         }    */            
@@ -110,19 +114,20 @@ public class procedure_definition_to_instance {
                 new String[]{FLD_NAME_PROCEDURE_USER_ROLE_NAME, FLD_NAME_PROCEDURE_USER_ROLE_VERSION,FLD_NAME_PROCEDURE_USER_ROLE_SCHEMA_PREFIX}, new Object[]{procedure, procVersion, schemaPrefix}, 
                 FIELDS_TO_RETRIEVE_PROCEDURE_USER_ROLE_SOURCE.split("\\|"), FIELDS_TO_RETRIEVE_PROCEDURE_USER_ROLE_SORT.split("\\|"));
         if (LPPlatform.LAB_FALSE.equalsIgnoreCase(procUserRolesRecordsSource[0][0].toString())){
-          jsonObj.put("Error", LPJson.convertToJSON(procUserRolesRecordsSource));
+          jsonObj.put(JSON_LABEL_FOR_ERROR, LPJson.convertToJSON(procUserRolesRecordsSource));
           return jsonObj;
         }
-        jsonObj.put("Num Records in definition", procUserRolesRecordsSource.length);    
+        jsonObj.put(JSON_LABEL_FOR_NUM_RECORDS_IN_DEFINITION, procUserRolesRecordsSource.length);    
         for (Object[] curRow: procUserRolesRecordsSource){
             Object curUserName = curRow[LPArray.valuePosicInArray(FIELDS_TO_RETRIEVE_PROCEDURE_USER_ROLE_SOURCE.split("\\|"), FLD_NAME_PROCEDURE_USER_ROLE_USER_NAME)];
             Object curRoleName = curRow[LPArray.valuePosicInArray(FIELDS_TO_RETRIEVE_PROCEDURE_USER_ROLE_SOURCE.split("\\|"), FLD_NAME_PROCEDURE_USER_ROLE_ROLE_NAME)];
-            JSONArray jsArr = new JSONArray(); JSONObject jsUserRoleObj = new JSONObject();
+            JSONArray jsArr = new JSONArray(); 
+            JSONObject jsUserRoleObj = new JSONObject();
             jsUserRoleObj.put("User", curUserName); jsUserRoleObj.put("Role", curRoleName);
 
             Object[][] existsAppUser = Rdbms.getRecordFieldsByFilter(LPPlatform.SCHEMA_APP, TABLE_NAME_APP_USERS, 
                     new String[]{FLD_NAME_APP_USERS_USER_NAME}, new Object[]{curUserName.toString()}, new String[]{FLD_NAME_APP_USERS_PERSON_NAME}, null);
-            String diagnosesForLog = (LPPlatform.LAB_FALSE.equalsIgnoreCase(existsAppUser[0][0].toString())) ? LABEL_FOR_NO : LABEL_FOR_YES;
+            String diagnosesForLog = (LPPlatform.LAB_FALSE.equalsIgnoreCase(existsAppUser[0][0].toString())) ? JSON_LABEL_FOR_NO : JSON_LABEL_FOR_YES;
             jsUserRoleObj.put("User exists in the app?", diagnosesForLog); 
             if (LPPlatform.LAB_FALSE.equalsIgnoreCase(existsAppUser[0][0].toString())){
                 // Place to create the user
@@ -159,24 +164,25 @@ public class procedure_definition_to_instance {
                 //new String[]{"*"}, new String[]{"sop_id"});
         
         if (LPPlatform.LAB_FALSE.equalsIgnoreCase(procSopMetaDataRecordsSource[0][0].toString())){
-          jsonObj.put("Error", LPJson.convertToJSON(procSopMetaDataRecordsSource));
+          jsonObj.put(JSON_LABEL_FOR_ERROR, LPJson.convertToJSON(procSopMetaDataRecordsSource));
           return jsonObj;
         }
-        jsonObj.put("Num Records in definition", procSopMetaDataRecordsSource.length);        
+        jsonObj.put(JSON_LABEL_FOR_NUM_RECORDS_IN_DEFINITION, procSopMetaDataRecordsSource.length);        
         for (Object[] curSopMetaData: procSopMetaDataRecordsSource){
             Object curSopId = curSopMetaData[LPArray.valuePosicInArray(FIELDS_TO_RETRIEVE_PROCEDURE_SOP_META_DATA_SOURCE.split("\\|"), FLD_NAME_PROCEDURE_SOP_META_DATA_SOP_ID)];
             Object curSopName = curSopMetaData[LPArray.valuePosicInArray(FIELDS_TO_RETRIEVE_PROCEDURE_SOP_META_DATA_SOURCE.split("\\|"), FLD_NAME_PROCEDURE_SOP_META_DATA_SOP_NAME)];
-            JSONArray jsArr = new JSONArray(); JSONObject jsUserRoleObj = new JSONObject();
+            JSONArray jsArr = new JSONArray(); 
+            JSONObject jsUserRoleObj = new JSONObject();
             jsUserRoleObj.put("SOP Id", curSopId); jsUserRoleObj.put("SOP Name", curSopName);
 
             Object[][] existsAppUser = Rdbms.getRecordFieldsByFilter(schemaNameDestination, TABLE_NAME_SOP_META_DATA_DESTINATION, 
                     new String[]{FLD_NAME_PROCEDURE_SOP_META_DATA_SOP_NAME}, new Object[]{curSopName.toString()}, new String[]{FLD_NAME_PROCEDURE_SOP_META_DATA_SOP_NAME}, null);
-            String diagnosesForLog = (LPPlatform.LAB_FALSE.equalsIgnoreCase(existsAppUser[0][0].toString())) ? LABEL_FOR_NO : LABEL_FOR_YES;
+            String diagnosesForLog = (LPPlatform.LAB_FALSE.equalsIgnoreCase(existsAppUser[0][0].toString())) ? JSON_LABEL_FOR_NO : JSON_LABEL_FOR_YES;
             jsUserRoleObj.put("SOP exists in the procedure?", diagnosesForLog); 
             if (LPPlatform.LAB_FALSE.equalsIgnoreCase(existsAppUser[0][0].toString())){
                 Object[] insertRecordInTable = Rdbms.insertRecordInTable(schemaNameDestination, TABLE_NAME_SOP_META_DATA_DESTINATION, 
                         FIELDS_TO_RETRIEVE_PROCEDURE_SOP_META_DATA_SOURCE.split("\\|"), curSopMetaData);
-                diagnosesForLog = (LPPlatform.LAB_FALSE.equalsIgnoreCase(insertRecordInTable[0].toString())) ? LABEL_FOR_NO : LABEL_FOR_YES;
+                diagnosesForLog = (LPPlatform.LAB_FALSE.equalsIgnoreCase(insertRecordInTable[0].toString())) ? JSON_LABEL_FOR_NO : JSON_LABEL_FOR_YES;
                 jsonObj.put("SOP inserted in the instance?", diagnosesForLog);
                 //if (!LPPlatform.LAB_FALSE.equalsIgnoreCase(insertRecordInTable[0].toString())){}
             }                         
@@ -192,17 +198,18 @@ public class procedure_definition_to_instance {
                 new String[]{FLD_NAME_PROC_EVENT_SOP_NAME+" is not null"}, new Object[]{""}, 
                 FIELDS_TO_RETRIEVE_PROC_EVENT_DESTINATION.split("\\|"), new String[]{"sop"});
         if (LPPlatform.LAB_FALSE.equalsIgnoreCase(procEventSopsRecordsSource[0][0].toString())){
-          jsonObj.put("Error", LPJson.convertToJSON(procEventSopsRecordsSource));
+          jsonObj.put(JSON_LABEL_FOR_ERROR, LPJson.convertToJSON(procEventSopsRecordsSource));
           return jsonObj;
         }
-        jsonObj.put("Num Records in definition", procEventSopsRecordsSource.length);  
+        jsonObj.put(JSON_LABEL_FOR_NUM_RECORDS_IN_DEFINITION, procEventSopsRecordsSource.length);  
         
         String[] existingSopRole = new String[0];
         for (Object[] curProcEventSops: procEventSopsRecordsSource){
             Object curProcEventName = curProcEventSops[LPArray.valuePosicInArray(FIELDS_TO_RETRIEVE_PROC_EVENT_DESTINATION.split("\\|"), FLD_NAME_PROC_EVENT_NAME)];
             Object curSops = curProcEventSops[LPArray.valuePosicInArray(FIELDS_TO_RETRIEVE_PROC_EVENT_DESTINATION.split("\\|"), FLD_NAME_PROC_EVENT_SOP_NAME)];
             Object curRoleName = curProcEventSops[LPArray.valuePosicInArray(FIELDS_TO_RETRIEVE_PROC_EVENT_DESTINATION.split("\\|"), FLD_NAME_PROC_EVENT_ROLE_NAME)];
-            JSONArray jsArr = new JSONArray(); JSONObject jsUserRoleObj = new JSONObject();
+            JSONArray jsArr = new JSONArray(); 
+            JSONObject jsUserRoleObj = new JSONObject();
             jsUserRoleObj.put("Procedure Event", curProcEventName); jsUserRoleObj.put("SOP Name", curSops); jsUserRoleObj.put("Role Name", curRoleName);
             
             String[] curSopsArr = curSops.toString().split("\\|"); 
@@ -216,7 +223,7 @@ public class procedure_definition_to_instance {
                     
                     String sopRoleValue=sopFromArr+"*"+roleFromArr;
                     Integer sopRolePosic = LPArray.valuePosicInArray(existingSopRole, sopRoleValue);
-                    String diagnosesForLog = (sopRolePosic==-1) ? LABEL_FOR_NO : LABEL_FOR_YES;
+                    String diagnosesForLog = (sopRolePosic==-1) ? JSON_LABEL_FOR_NO : JSON_LABEL_FOR_YES;
                     jsSopRoleObj.put("SOP "+sopFromArr+" exists for role "+roleFromArr+" ?", diagnosesForLog);
                     if (sopRolePosic==-1){
                         ProcedureDefinitionToInstanceUtility.procedureAddSopToUsersByRole(procedure, procVersion, schemaPrefix, 
@@ -241,7 +248,7 @@ public class procedure_definition_to_instance {
         String methodName = "createDataBaseSchemas";       
         String newEntry = "";
         String[] schemaNames = new String[]{LPPlatform.SCHEMA_CONFIG, LPPlatform.SCHEMA_DATA, LPPlatform.SCHEMA_DATA_AUDIT};
-         jsonObj.put("Num Records in definition", schemaNames.length);     
+         jsonObj.put(JSON_LABEL_FOR_NUM_RECORDS_IN_DEFINITION, schemaNames.length);     
         for (String fn:schemaNames){
             JSONArray jsSchemaArr = new JSONArray();
             String configSchemaName = schemaNamePrefix+"-"+fn;
@@ -253,7 +260,7 @@ public class procedure_definition_to_instance {
             
             // La idea es no permitir ejecutar prepUpQuery directamente, por eso es privada y no publica.            
                 //Integer prepUpQuery = Rdbms.prepUpQuery(configSchemaScript, new Object[0]);
-                //String diagnosesForLog = (prepUpQuery==-1) ? LABEL_FOR_NO : LABEL_FOR_YES;
+                //String diagnosesForLog = (prepUpQuery==-1) ? JSON_LABEL_FOR_NO : JSON_LABEL_FOR_YES;
                 //jsonObj.put("Schema Created?", diagnosesForLog);
             
             jsonObj.put(configSchemaName, jsSchemaArr);

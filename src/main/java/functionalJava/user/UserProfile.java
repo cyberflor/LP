@@ -15,7 +15,7 @@ import databases.Rdbms;
  */
 public class UserProfile {
     //String schemaDataName = "data";
-    private static final String SCHEMANAMEAPP = LPPlatform.SCHEMA_APP;
+    //private static final String SCHEMANAMEAPP = LPPlatform.SCHEMA_APP;
     private static final String FIELDVALUE_ACTIVE="active";
     /**
      *
@@ -36,7 +36,7 @@ public class UserProfile {
             filterFieldValue[1]=true;
             filterFieldName[2]="proc_name is not null";            
             if (!Rdbms.stablishDBConection()){return new Object[0];}   
-            Object[][] userProc =  Rdbms.getRecordFieldsByFilter(SCHEMANAMEAPP, tableName, filterFieldName, filterFieldValue, fieldsToReturn);            
+            Object[][] userProc =  Rdbms.getRecordFieldsByFilter(LPPlatform.SCHEMA_APP, tableName, filterFieldName, filterFieldValue, fieldsToReturn);            
             return LPArray.array2dTo1d(userProc);                         
     }
     
@@ -58,7 +58,7 @@ public class UserProfile {
             filterFieldName[2]="proc_name is not null";          
             String tableName = "user_profile";                                  
             
-            Object[][] userProc =  Rdbms.getRecordFieldsByFilter(SCHEMANAMEAPP, tableName, filterFieldName, filterFieldValue, fieldsToReturn);
+            Object[][] userProc =  Rdbms.getRecordFieldsByFilter(LPPlatform.SCHEMA_APP, tableName, filterFieldName, filterFieldValue, fieldsToReturn);
             return LPArray.array2dTo1d(userProc);                         
         }
         

@@ -62,7 +62,9 @@ public class ProcedureDeployment extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)  throws ServletException, IOException {
                 
-        String procName = "process-us"; Integer procVersion = 1; String schemaPrefix="process-us";
+        String procName = "process-us"; 
+        Integer procVersion = 1; 
+        String schemaPrefix="process-us";
         //String basicRolName = "coordinator";
         
         String procInstanceSchemaConfigName=LPPlatform.buildSchemaName(procName, LPPlatform.SCHEMA_CONFIG);

@@ -23,7 +23,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import functionalJava.user.UserAndRolesViews;
 import functionalJava.user.UserProfile;
-import functionalJava.user.UserSecurity;
 import java.util.Date;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -78,11 +77,10 @@ public class authenticationAPI extends HttpServlet {
                         LPFrontEnd.servletReturnResponseError(request, response, authenticationAPIParams.ERROR_PROPERTY_PERSON_NOT_FOUND, null, language);              
                         return;                                                          
                     }                    
-                    UserSecurity usSec = new UserSecurity();
-                    Object[] validUserPassword = usSec.isValidUserPassword(dbUserName, dbUserPassword);
+                    Object[] validUserPassword = UserAndRolesViews.isValidUserPassword(dbUserName, dbUserPassword);
                     if (LPPlatform.LAB_FALSE.equalsIgnoreCase(validUserPassword[0].toString())){
                         if (!LPFrontEnd.servletStablishDBConection(request, response)){return;}
-                        validUserPassword = usSec.isValidUserPassword(dbUserName, dbUserPassword);
+                        validUserPassword = UserAndRolesViews.isValidUserPassword(dbUserName, dbUserPassword);
                         if (LPPlatform.LAB_FALSE.equalsIgnoreCase(validUserPassword[0].toString())){     
                             LPFrontEnd.servletReturnResponseError(request, response, authenticationAPIParams.ERROR_PROPERTY_INVALID_USER_PSSWD, null, language);              
                             return;                               

@@ -38,7 +38,8 @@ public class QualityAssurance_requirements_doc extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         
-        String csvFileName = "QualityAssurance_requirements_doc_checker.txt"; String csvFileSeparator=";";
+        String csvFileName = "QualityAssurance_requirements_doc_checker.txt"; 
+        String csvFileSeparator=";";
         String csvPathName = "\\\\FRANCLOUD\\fran\\LabPlanet\\testingRepository\\"+csvFileName; 
         
         try (PrintWriter out = response.getWriter()) {

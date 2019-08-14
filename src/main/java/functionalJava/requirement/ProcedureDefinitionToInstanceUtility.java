@@ -5,7 +5,6 @@
  */
 package functionalJava.requirement;
 
-import LabPLANET.utilities.LPArray;
 import LabPLANET.utilities.LPPlatform;
 import databases.Rdbms;
 import static functionalJava.requirement.RequirementLogFile.requirementsLogEntry;
@@ -34,12 +33,12 @@ public class ProcedureDefinitionToInstanceUtility {
         /*usSop.addSopToUserInternalLogic();
         Object[][] existsAppUser = Rdbms.getRecordFieldsByFilter(schemaNameDestination, TABLE_NAME_SOP_META_DATA_DESTINATION,
         new String[]{FLD_NAME_PROCEDURE_SOP_META_DATA_SOP_NAME}, new Object[]{SopName}, new String[]{FLD_NAME_PROCEDURE_SOP_META_DATA_SOP_NAME}, null);
-        String diagnosesForLog = (LPPlatform.LAB_FALSE.equalsIgnoreCase(existsAppUser[0][0].toString())) ? LABEL_FOR_NO : LABEL_FOR_YES;
+        String diagnosesForLog = (LPPlatform.LAB_FALSE.equalsIgnoreCase(existsAppUser[0][0].toString())) ? JSON_LABEL_FOR_NO : JSON_LABEL_FOR_YES;
         //jsUserRoleObj.put("SOP exists in the procedure?", diagnosesForLog); 
         if (LPPlatform.LAB_FALSE.equalsIgnoreCase(existsAppUser[0][0].toString())){
         Object[] insertRecordInTable = Rdbms.insertRecordInTable(schemaNameDestination, TABLE_NAME_SOP_META_DATA_DESTINATION,
         FIELDS_TO_RETRIEVE_PROCEDURE_SOP_META_DATA_SOURCE.split("\\|"), curSopMetaData);
-        diagnosesForLog = (LPPlatform.LAB_FALSE.equalsIgnoreCase(insertRecordInTable[0].toString())) ? LABEL_FOR_NO : LABEL_FOR_YES;
+        diagnosesForLog = (LPPlatform.LAB_FALSE.equalsIgnoreCase(insertRecordInTable[0].toString())) ? JSON_LABEL_FOR_NO : JSON_LABEL_FOR_YES;
         jsonObj.put("SOP inserted in the instance?", diagnosesForLog);
         //if (!LPPlatform.LAB_FALSE.equalsIgnoreCase(insertRecordInTable[0].toString())){}
         }
@@ -84,7 +83,7 @@ public class ProcedureDefinitionToInstanceUtility {
                             Object[][] userProfileInfo = Rdbms.getRecordFieldsByFilter(schemaName, tableName, 
                                             new String[]{"role_id"}, 
                                             new Object[]{procName+"_"+r}, 
-                                            new String[]{"user_info_id", "user_info_id", "user_info_id", "user_info_id"});
+                                            new String[]{"user_info_id"});
 
                             Integer contUser = userProfileInfo.length;     
 

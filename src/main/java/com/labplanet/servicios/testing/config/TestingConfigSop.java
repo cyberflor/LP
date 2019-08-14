@@ -99,7 +99,7 @@ public class TestingConfigSop extends HttpServlet {
             filterFieldValue[1]="1";
             filterFieldName[2]="understood is null";            
 
-            Object[][] userSOP = usSop.getUserProfileFieldValues(filterFieldName, filterFieldValue, fieldsToReturn, schemaPrefix);
+            Object[][] userSOP = UserSop.getUserProfileFieldValues(filterFieldName, filterFieldValue, fieldsToReturn, schemaPrefix);
             fileContent = fileContent + LPTestingOutFormat.rowStart()+LPTestingOutFormat.fieldStart()+"getUserProfileFieldValues"+LPTestingOutFormat.fieldEnd();          
             fileContent = fileContent + LPTestingOutFormat.fieldStart()+"filterFieldName: "+Arrays.toString(filterFieldName)+LPTestingOutFormat.fieldEnd();                                   
             fileContent = fileContent + LPTestingOutFormat.fieldStart()+"filterFieldValue: "+Arrays.toString(filterFieldValue)+LPTestingOutFormat.fieldEnd();                                   

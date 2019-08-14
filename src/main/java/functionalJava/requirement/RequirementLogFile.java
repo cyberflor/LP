@@ -6,6 +6,7 @@
 package functionalJava.requirement;
 
 import LabPLANET.utilities.LPPlatform;
+import functionalJava.parameter.Parameter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ResourceBundle;
@@ -19,7 +20,7 @@ public class RequirementLogFile {
     
     static final void requirementLogFileNew(String procedureName){
         String newLogFileName = "Requirements.txt";        
-        ResourceBundle prop = ResourceBundle.getBundle("parameter.config.config");        
+        ResourceBundle prop = ResourceBundle.getBundle(Parameter.BUNDLE_TAG_PARAMETER_CONFIG_CONF);        
         String logDir = prop.getString("logDirPath");
 
         String logFile = logDir + "/" + newLogFileName;

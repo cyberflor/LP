@@ -68,9 +68,12 @@ public class TstDataBatchArr extends HttpServlet {
 //                String userName=null;                
                 String schemaPrefix=null;
                 String tableName=null;
-                String[] fieldName=null;                    String[] fieldValue=null;
-                String[] setFieldName=null;                    String[] setFieldValue=null;
-                String[] orderBy=null;                    String[] groupBy=null;
+                String[] fieldName=null;                    
+                String[] fieldValue=null;
+                String[] setFieldName=null;                    
+                String[] setFieldValue=null;
+                String[] orderBy=null;                    
+                String[] groupBy=null;
                 String[] fieldsToRetrieve=null;   
                 String actionName="";                     
                 Object[] dataSample2Din1D = new Object[0];

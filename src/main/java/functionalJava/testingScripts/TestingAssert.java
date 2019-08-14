@@ -34,7 +34,8 @@ public class TestingAssert {
     }
     
     public Object[] evaluate(Integer numEvaluationArguments, TestingAssertSummary tstAssertSummary, Object[] diagnoses){
-        String sintaxisIcon = ""; String codeIcon = "";
+        String sintaxisIcon = ""; 
+        String codeIcon = "";
         if (numEvaluationArguments>=1){
             if ( (this.evalBoolean==null) || (this.evalBoolean.length()==0) ||("".equals(this.evalBoolean)) ){
                 tstAssertSummary.increasetotalLabPlanetBooleanUndefined();sintaxisIcon=LPTestingOutFormat.TST_BOOLEANUNDEFINED;

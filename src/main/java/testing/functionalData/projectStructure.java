@@ -49,7 +49,8 @@ public class projectStructure extends HttpServlet {
 
             if (!LPFrontEnd.servletStablishDBConection(request, response)){return;} 
             
-            String csvFileName = "dataProjectStructure.txt"; String csvFileSeparator=";";
+            String csvFileName = "dataProjectStructure.txt"; 
+            String csvFileSeparator=";";
             String csvPathName = "\\\\FRANCLOUD\\fran\\LabPlanet\\testingRepository\\"+csvFileName; 
  
             Object[][] dataSample2D = new Object[0][0];

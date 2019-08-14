@@ -143,8 +143,7 @@ public class AppProcedureListAPI extends HttpServlet {
         Object[][] notCompletedUserSOP = null;
         Object[] notCompletedUserSOP1D = null;
                     
-        UserSop userSop = new UserSop();
-        Boolean userHasNotCompletedSOP = false;
+        UserSop userSop = new UserSop();        
 
         Boolean isProcedureSopEnable = userSop.isProcedureSopEnable((String) curProc);
         if (!isProcedureSopEnable) procedure.put(LABEL_SOP_CERTIFICATION, LABEL_VALUE_SOP_CERTIFICATION_DISABLE);                 
@@ -158,6 +157,7 @@ public class AppProcedureListAPI extends HttpServlet {
         if (sopFieldposic>-1){
             procEventSops = (String) procEvent1[sopFieldposic];}
         
+        Boolean userHasNotCompletedSOP = false;
         if ( (procEventSops==null) || ( (procEventSops!=null) && ("".equals(procEventSops)) ) ){
             procEventJson.put(LABEL_SOPS_PASSED, true);
             userHasNotCompletedSOP = false;
@@ -173,7 +173,8 @@ public class AppProcedureListAPI extends HttpServlet {
         }else{
             Object[] procEventSopsArr = procEventSops.split("\\|");
             String sopListStr = "";
-            Integer sopTotalNotCompleted = 0;                Integer sopTotalCompleted = 0;                
+            Integer sopTotalNotCompleted = 0;                
+            Integer sopTotalCompleted = 0;                
             JSONArray procEventSopSummary = new JSONArray();   
             for (Object curProcEvSop: procEventSopsArr){
                 JSONObject procEventSopDetailJson = new JSONObject();   

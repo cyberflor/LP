@@ -62,13 +62,14 @@ public class testingServer extends HttpServlet {
             
             out.println("Testing Files Path: "+LPTestingOutFormat.TESTING_FILES_PATH);
             out.println("Adios");
-            out.println("Extract portion, extraer 5 sobre una cantidad de 4: "+Arrays.toString(LPMath.extractPortion("process-us", 
+            String procName="process-us";
+            out.println("Extract portion, extraer 5 sobre una cantidad de 4: "+Arrays.toString(LPMath.extractPortion(procName, 
                     BigDecimal.valueOf(4), "MG",1, BigDecimal.valueOf(5), "MG", 2)));
-            out.println("Extract portion, extraer 4 sobre una cantidad de 4: "+Arrays.toString(LPMath.extractPortion("process-us", 
+            out.println("Extract portion, extraer 4 sobre una cantidad de 4: "+Arrays.toString(LPMath.extractPortion(procName, 
                     BigDecimal.valueOf(4), "MG",1, BigDecimal.valueOf(4), "MG", 2)));
             
-            out.println("Statuses en inglés: "+Arrays.toString(DataSampleUtilities.getSchemaSampleStatusList("process-us")));
-            out.println("Statuses en castellano: "+Arrays.toString(DataSampleUtilities.getSchemaSampleStatusList("process-us", "es")));
+            out.println("Statuses en inglés: "+Arrays.toString(DataSampleUtilities.getSchemaSampleStatusList(procName)));
+            out.println("Statuses en castellano: "+Arrays.toString(DataSampleUtilities.getSchemaSampleStatusList(procName, "es")));
             String[] errObject = new String[]{"Servlet sampleAPI at " + request.getServletPath()};          
             boolean isConnected = false;
             //isConnected = Rdbms.getRdbms().startRdbms(dbUserName, dbUserPassword);

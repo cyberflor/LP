@@ -16,6 +16,9 @@ import java.util.ResourceBundle;
  * @author Administrator
  */
 public class Parameter {
+    public static final String BUNDLE_TAG_PARAMETER_CONFIG_CONF="parameter.config.conf";
+    public static final String BUNDLE_TAG_TRANSLATION_DIR_PATH="translationDirPath";
+    
 
     /**
      *
@@ -85,8 +88,8 @@ public class Parameter {
          
         String newEntry = "";
         
-        ResourceBundle prop = ResourceBundle.getBundle("parameter.config.conf");        
-        String translationsDir = prop.getString("translationDirPath");
+        ResourceBundle prop = ResourceBundle.getBundle(BUNDLE_TAG_PARAMETER_CONFIG_CONF);        
+        String translationsDir = prop.getString(BUNDLE_TAG_TRANSLATION_DIR_PATH);
         translationsDir = translationsDir.replace("/", "\\");
           
         String fileidt = translationsDir + "\\" + fileName + "_es_CO.properties";        
@@ -120,8 +123,8 @@ public class Parameter {
         //FileWriter fw = null;
         String newEntry = "";
 
-        ResourceBundle propConfig = ResourceBundle.getBundle("parameter.config.conf");        
-        String translationsDir = propConfig.getString("translationDirPath");
+        ResourceBundle propConfig = ResourceBundle.getBundle(BUNDLE_TAG_PARAMETER_CONFIG_CONF);        
+        String translationsDir = propConfig.getString(BUNDLE_TAG_TRANSLATION_DIR_PATH);
         translationsDir = translationsDir.replace("/", "\\");
 
         File[] transFiles = propertiesFiles(fileName);
@@ -162,8 +165,8 @@ public class Parameter {
      */
     public File[] propertiesFiles(String fileName){
 
-        ResourceBundle propConfig = ResourceBundle.getBundle("parameter.config.conf");        
-        String translationsDir = propConfig.getString("translationDirPath");
+        ResourceBundle propConfig = ResourceBundle.getBundle(BUNDLE_TAG_PARAMETER_CONFIG_CONF);        
+        String translationsDir = propConfig.getString(BUNDLE_TAG_TRANSLATION_DIR_PATH);
         translationsDir = translationsDir.replace("/", "\\");
 
         File dir = new File(translationsDir);

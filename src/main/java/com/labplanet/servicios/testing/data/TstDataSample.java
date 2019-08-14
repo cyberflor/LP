@@ -37,6 +37,10 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class TstDataSample extends HttpServlet {
 
+        public static final String OBJECT_LEVEL_SAMPLE="SAMPLE";
+        public static final String OBJECT_LEVEL_TEST="TEST";
+        public static final String OBJECT_LEVEL_RESULT="RESULT";
+
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      *
@@ -234,9 +238,9 @@ public class TstDataSample extends HttpServlet {
                                 new Object[]{"userName, fieldNames, objectLevel, ObjectId", 
                                     userName+", "+objectLevel+", "+objectId.toString()});                              
                             sampleId = null; Integer testId = null; resultId = null;
-                            if (objectLevel.equalsIgnoreCase("SAMPLE")){sampleId=objectId;}
-                            if (objectLevel.equalsIgnoreCase("TEST")){testId=objectId;}
-                            if (objectLevel.equalsIgnoreCase("RESULT")){resultId=objectId;}
+                            if (objectLevel.equalsIgnoreCase(OBJECT_LEVEL_SAMPLE)){sampleId=objectId;}
+                            if (objectLevel.equalsIgnoreCase(OBJECT_LEVEL_TEST)){testId=objectId;}
+                            if (objectLevel.equalsIgnoreCase(OBJECT_LEVEL_RESULT)){resultId=objectId;}
                             dataSample = smp.sampleResultReview(schemaPrefix, userName, sampleId, testId, resultId, userRole);
                             break;                                     
                         case "CANCELRESULT":
@@ -250,9 +254,9 @@ public class TstDataSample extends HttpServlet {
                                 new Object[]{"userName, fieldNames, objectLevel, ObjectId", 
                                     userName+", "+objectLevel+", "+objectId.toString()});                              
                             sampleId = null; testId = null; resultId = null;
-                            if (objectLevel.equalsIgnoreCase("SAMPLE")){sampleId = objectId;}
-                            if (objectLevel.equalsIgnoreCase("TEST")){testId = objectId;}
-                            if (objectLevel.equalsIgnoreCase("RESULT")){resultId = objectId;}
+                            if (objectLevel.equalsIgnoreCase(OBJECT_LEVEL_SAMPLE)){sampleId = objectId;}
+                            if (objectLevel.equalsIgnoreCase(OBJECT_LEVEL_TEST)){testId = objectId;}
+                            if (objectLevel.equalsIgnoreCase(OBJECT_LEVEL_RESULT)){resultId = objectId;}
                             dataSample = smp.sampleAnalysisResultCancel(schemaPrefix, userName, sampleId, testId, resultId, userRole);
                             break;                            
                         case "UNCANCELRESULT": 
@@ -267,9 +271,9 @@ public class TstDataSample extends HttpServlet {
                                     userName+", "+objectLevel+", "+objectId.toString()});                              
                             sampleId = null; testId = null; resultId = null;
 
-                            if (objectLevel.equalsIgnoreCase("SAMPLE")){sampleId = objectId;}
-                            if (objectLevel.equalsIgnoreCase("TEST")){testId = objectId;}
-                            if (objectLevel.equalsIgnoreCase("RESULT")){resultId = objectId;}
+                            if (objectLevel.equalsIgnoreCase(OBJECT_LEVEL_SAMPLE)){sampleId = objectId;}
+                            if (objectLevel.equalsIgnoreCase(OBJECT_LEVEL_TEST)){testId = objectId;}
+                            if (objectLevel.equalsIgnoreCase(OBJECT_LEVEL_RESULT)){resultId = objectId;}
                             dataSample = smp.sampleAnalysisResultUnCancel(schemaPrefix, userName, sampleId, testId, resultId, userRole);
                             break;       
                         case "TESTASSIGNMENT": 
@@ -295,7 +299,7 @@ public class TstDataSample extends HttpServlet {
                                 fieldsToGet=LPTestingOutFormat.csvExtractFieldValueStringArr(csvFileContent[iLines][numEvaluationArguments+5]);
                             fileContentTable1=fileContentTable1+LPTestingOutFormat.rowAddField(Arrays.toString(fieldsToGet));
                             fileContentTable1=fileContentTable1+LPTestingOutFormat.rowAddField(sampleId.toString());
-                            dataSample2D = Rdbms.getRecordFieldsByFilter(schemaDataName, "sample", new String[]{"sample_id"}, new Object[]{sampleId}, fieldsToGet);
+                            dataSample2D = Rdbms.getRecordFieldsByFilter(schemaDataName, DataSample.TABLENAME_DATA_SAMPLE, new String[]{DataSample.FIELDNAME_SAMPLE_ID}, new Object[]{sampleId}, fieldsToGet);
                             break;
                         case "ENTERRESULT_LOD":
                              Integer firstParameter=null;
@@ -328,7 +332,7 @@ public class TstDataSample extends HttpServlet {
                                 new Object[]{"sampleId, custodianCandidate", 
                                     sampleId.toString()+", "+custodianCandidate});                              
                             ChangeOfCustody coc =  new ChangeOfCustody();
-                            dataSample = coc.cocStartChange(schemaPrefix, "sample", "sample_id", sampleId, userName, 
+                            dataSample = coc.cocStartChange(schemaPrefix, DataSample.TABLENAME_DATA_SAMPLE, DataSample.FIELDNAME_SAMPLE_ID, sampleId, userName, 
                                     custodianCandidate, userRole, null);
                             break;
                         case "COC_CONFIRMCHANGE":
@@ -342,7 +346,7 @@ public class TstDataSample extends HttpServlet {
                                 new Object[]{"sampleId, comment", 
                                     sampleId.toString()+", "+comment});                                                          
                             coc =  new ChangeOfCustody();
-                            dataSample = coc.cocConfirmedChange(schemaPrefix, "sample", "sample_id", sampleId, userName, 
+                            dataSample = coc.cocConfirmedChange(schemaPrefix, DataSample.TABLENAME_DATA_SAMPLE, DataSample.FIELDNAME_SAMPLE_ID, sampleId, userName, 
                                     comment, userRole, null);
                             break;
                         case "COC_ABORTCHANGE":
@@ -356,7 +360,7 @@ public class TstDataSample extends HttpServlet {
                                 new Object[]{"sampleId, comment", 
                                     sampleId.toString()+", "+comment});                                                          
                             coc =  new ChangeOfCustody();
-                            dataSample = coc.cocAbortedChange(schemaPrefix, "sample", "sample_id", sampleId, userName, 
+                            dataSample = coc.cocAbortedChange(schemaPrefix, DataSample.TABLENAME_DATA_SAMPLE, DataSample.FIELDNAME_SAMPLE_ID, sampleId, userName, 
                                     comment, userRole, null);
                             break;
                         case "RESULT_CHANGE_UOM":

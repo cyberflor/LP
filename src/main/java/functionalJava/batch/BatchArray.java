@@ -226,7 +226,8 @@ public final class BatchArray extends Batch{
         for(int i = 0; i < this.numRows; i++){
           for(int j = 0; j < this.numCols; j++){              
             if ((batchPosic[i][j] != null) && (batchPosic[i][j] == null ? searchPattern == null : batchPosic[i][j].equals(searchPattern)) ){
-                int posicI = i + 1; int posicJ = j + 1;
+                int posicI = i + 1; 
+                int posicJ = j + 1;
                 foundPosic.add(posicI + ", " + posicJ);}                   
           }
         }

@@ -17,7 +17,7 @@ public class DataSampleUtilities {
     private DataSampleUtilities(){    throw new IllegalStateException("Utility class");}    
     
     public static Object[] getSchemaSampleStatusList(String schemaPrefix){      
-        String stList = "LOGGED|RECEIVED|INCOMPLETE|COMPLETE|CANCELED";
+//        String stList = "LOGGED|RECEIVED|INCOMPLETE|COMPLETE|CANCELED";
         return getSchemaSampleStatusList(schemaPrefix, "en");
         //return new String[0];
     }

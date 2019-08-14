@@ -10,6 +10,7 @@ import com.sun.rowset.CachedRowSetImpl;
 import LabPLANET.utilities.LPArray;
 import LabPLANET.utilities.LPPlatform;
 import com.labplanet.servicios.app.globalAPIsParams;
+import functionalJava.parameter.Parameter;
 import functionalJava.testingScripts.LPTestingOutFormat;
 import java.sql.Array;
 import java.sql.Connection;
@@ -57,16 +58,13 @@ public class Rdbms {
     public static final String ERROR_TRAPPING_RDBMS_NOT_FILTER_SPECIFIED="Rdbms_NotFilterSpecified";
     public static final String ERROR_TRAPPING_RDBMS_RECORD_NOT_FOUND="Rbdms_existsRecord_RecordNotFound";    
     
-    
-    
-    
+    //public static final String BUNDLE_FILE_NAME_CONFIG="parameter.config.config";
+        public static final String BUNDLE_PARAMETER_DBURL="dburl";
+        public static final String BUNDLE_PARAMETER_DBDRIVER="dbDriver";
+        public static final String BUNDLE_PARAMETER_DBTIMEOUT="dbtimeout";
+        public static final String BUNDLE_PARAMETER_DATASOURCE="datasource";
     
     private Rdbms() {}                
-   
-    /**
-     *
-     * @return
-     */
     
     public static synchronized Rdbms getRdbms(){
         if (rdbms==null){
@@ -76,10 +74,6 @@ public class Rdbms {
     }
     
     public static final Boolean stablishDBConection(){
-        
-        String dbUserName = globalAPIsParams.REQUEST_PARAM_DB_USERNAME;                   
-        String dbUserPassword = globalAPIsParams.REQUEST_PARAM_DB_PSSWD;     
-
         boolean isConnected = false;                               
         isConnected = Rdbms.getRdbms().startRdbms(LPTestingOutFormat.TESTING_USER, LPTestingOutFormat.TESTING_PW);      
         return isConnected;
@@ -94,18 +88,13 @@ public class Rdbms {
     }    
     
     public Boolean startRdbmsTomcat(String user, String pass) {        
-            ResourceBundle prop = ResourceBundle.getBundle("parameter.config.config");
-            String url = prop.getString("dburl");
-            String dbDriver = prop.getString("dbDriver");
-            Integer conTimeOut = Integer.valueOf(prop.getString("dbtimeout"));
-            
-            String datasrc = prop.getString("datasource");
-            
+            ResourceBundle prop = ResourceBundle.getBundle(Parameter.BUNDLE_TAG_PARAMETER_CONFIG_CONF);
+            String url = prop.getString(BUNDLE_PARAMETER_DBURL);
+            String dbDriver = prop.getString(BUNDLE_PARAMETER_DBDRIVER);
+            Integer conTimeOut = Integer.valueOf(prop.getString(BUNDLE_PARAMETER_DBTIMEOUT));            
+            String datasrc = prop.getString(BUNDLE_PARAMETER_DATASOURCE);            
             try{
                 Context ctx = new InitialContext();
-                  //DataSource ds = (DataSource)ctx.lookup(datasrc);
-
-                //Class.forName(dbDriver);
                 Properties dbProps = new Properties();
                 dbProps.setProperty("user", user);
                 dbProps.setProperty("password", pass);
@@ -126,8 +115,7 @@ public class Rdbms {
                   return Boolean.FALSE;
                 }                                 
             } catch (SQLException | NamingException e){
-                String errMsg = e.getMessage();
-                return false;
+                return Boolean.FALSE;
             }
             
     }
@@ -141,9 +129,9 @@ public class Rdbms {
         
         try {        
             //Rdbms rdbms = new Rdbms();
-            ResourceBundle prop = ResourceBundle.getBundle("parameter.config.config");
-            String datasrc = prop.getString("datasource");
-            Integer to = Integer.valueOf(prop.getString("dbtimeout"));
+            ResourceBundle prop = ResourceBundle.getBundle(Parameter.BUNDLE_TAG_PARAMETER_CONFIG_CONF);
+            String datasrc = prop.getString(BUNDLE_PARAMETER_DATASOURCE);
+            Integer to = Integer.valueOf(prop.getString(BUNDLE_PARAMETER_DBTIMEOUT));
             
             //rdbms.timeout = to;
             setTimeout(to);
@@ -154,7 +142,7 @@ public class Rdbms {
             ds.setLoginTimeout(Rdbms.timeout);
             setConnection(ds.getConnection(user, pass));
 
-    //              String url = prop.getString("dburl");
+    //              String url = prop.getString(BUNDLE_PARAMETER_DBURL);
     //              Properties props = new Properties();
     //              
     //                props.setProperty("user",user);
@@ -273,7 +261,7 @@ public class Rdbms {
         }catch (SQLException|NullPointerException er) {
             String ermessage=er.getLocalizedMessage()+er.getCause();
             Logger.getLogger(query).log(Level.SEVERE, null, er);     
-            rdbms.errorCode = "Rdbms_dtSQLException";
+            rdbms.errorCode = ERROR_TRAPPING_RDBMS_DT_SQL_EXCEPTION;
             errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, ermessage);
             errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, query);
             return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, rdbms.errorCode, errorDetailVariables);                                       
@@ -445,7 +433,7 @@ public class Rdbms {
 */            
             }else{
                 
-                rdbms.errorCode = "Rdbms_NoRecordsFound";
+                rdbms.errorCode = ERROR_TRAPPING_RDBMS_RECORD_NOT_FOUND;
                 errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, tableName);
                 errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, Arrays.toString(whereFieldValues) );
                 errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, schemaName);
@@ -525,7 +513,7 @@ public class Rdbms {
 //                diagnoses2 = LPArray.decryptTableFieldArray(schemaName, tableName, fieldsToRetrieve, diagnoses2);
                 return diagnoses2;
             }else{
-                rdbms.errorCode = "Rdbms_NoRecordsFound";
+                rdbms.errorCode = ERROR_TRAPPING_RDBMS_RECORD_NOT_FOUND;
                 errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, query);
                 errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, Arrays.toString(whereFieldValues) );
                 errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, schemaName);
@@ -553,16 +541,11 @@ public class Rdbms {
      * @return
      */
     public static Object[][] getRecordFieldsByFilter(String schemaName, String[] tableName, String[] whereFieldNames, Object[] whereFieldValues, String[] fieldsToRetrieve){
-        String[] errorDetailVariables = new String[0];        
-        
         if (whereFieldNames.length==0){
-           rdbms.errorCode = ERROR_TRAPPING_RDBMS_NOT_FILTER_SPECIFIED;
-           errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, tableName);
-           errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, schemaName);          
-           Object[] diagnosesError = LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, rdbms.errorCode, errorDetailVariables);                         
+           String[] errorDetailVariables = new String[]{Arrays.toString(tableName), schemaName};
+           Object[] diagnosesError = LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, ERROR_TRAPPING_RDBMS_NOT_FILTER_SPECIFIED, errorDetailVariables);                         
            return LPArray.array1dTo2d(diagnosesError, diagnosesError.length);               
-        }
-        
+        }        
         String query = "";
         String fieldsToRetrieveStr = "";
         for (String fn: fieldsToRetrieve){fieldsToRetrieveStr = fieldsToRetrieveStr + fn + ", ";}
@@ -606,20 +589,15 @@ public class Rdbms {
                 diagnoses2 = LPArray.decryptTableFieldArray(schemaName, tableName[0], fieldsToRetrieve, diagnoses2);
                 return diagnoses2;
             }else{
-                rdbms.errorCode = ERROR_TRAPPING_RDBMS_RECORD_NOT_FOUND;
-                errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, Arrays.toString(whereFieldValues));
-                errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, tableName);
-                errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, schemaName);
-                Object[] diagnosesError = LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, rdbms.errorCode, errorDetailVariables);                         
+                String[] errorDetailVariables = new String[]{Arrays.toString(whereFieldValues), Arrays.toString(tableName), schemaName};
+                Object[] diagnosesError = LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, ERROR_TRAPPING_RDBMS_RECORD_NOT_FOUND, errorDetailVariables);                         
                 return LPArray.array1dTo2d(diagnosesError, diagnosesError.length);               
             }
         }catch (SQLException er) {
             String ermessage=er.getLocalizedMessage()+er.getCause();
-            Logger.getLogger(query).log(Level.SEVERE, null, er);     
-            rdbms.errorCode = ERROR_TRAPPING_RDBMS_DT_SQL_EXCEPTION;
-            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, ermessage);
-            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, query);
-            Object[] diagnosesError = LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, rdbms.errorCode, errorDetailVariables);                         
+            Logger.getLogger(query).log(Level.SEVERE, null, er);                 
+            String[] errorDetailVariables = new String[]{ermessage, query};
+            Object[] diagnosesError = LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, ERROR_TRAPPING_RDBMS_DT_SQL_EXCEPTION, errorDetailVariables);                         
             return LPArray.array1dTo2d(diagnosesError, diagnosesError.length);               
         }                    
     }
@@ -675,7 +653,7 @@ public class Rdbms {
                 diagnoses2 = LPArray.decryptTableFieldArray(schemaName, tableName, fieldsToRetrieve, diagnoses2);
                 return diagnoses2;
             }else{
-                rdbms.errorCode = "Rdbms_NoRecordsFound";
+                rdbms.errorCode = ERROR_TRAPPING_RDBMS_RECORD_NOT_FOUND;
                 errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, query);
                 errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, Arrays.toString(whereFieldValues) );
                 errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, schemaName);                
@@ -796,7 +774,7 @@ public class Rdbms {
             errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, query);
             return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, rdbms.errorCode, errorDetailVariables);   
         }else{   
-            rdbms.errorCode = "Rdbms_NoRecordsFound";
+            rdbms.errorCode = ERROR_TRAPPING_RDBMS_RECORD_NOT_FOUND;
             errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, tableName);
             errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, Arrays.toString(whereFieldValues) );
             errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, schemaName);

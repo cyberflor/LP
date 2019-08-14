@@ -36,27 +36,25 @@ public class UserSop {
         public static final String FIELDNAME_SOP_USER_NAME="user_name";  
         
     
-    private static final String SOP_ENABLE_CODE="SOP_ENABLE";
-    private static final String SOP_ENABLE_CODE_ICON="xf272@FontAwesome";
-    private static final String SOP_DISABLE_CODE="SOP_DISABLE";
-    private static final String SOP_DISABLE_CODE_ICON="xf133@FontAwesome";
-    private static final String SOP_CERTIF_EXPIRED_CODE="SOP_CERTIF_EXPIRED";
-    private static final String SOP_CERTIF_EXPIRED_CODE_ICON="xf06a@FontAwesome";
-    private static final String SOP_PASS_CODE="PASS";
-    private static final String SOP_PASS_CODE_ICON="xf046@FontAwesome";
-    private static final String SOP_PASS_LIGHT_CODE="GREEN";
-    private static final String SOP_NOTPASS_CODE="NOTPASS";
-    private static final String SOP_NOTPASS_CODE_ICON="xf05e@FontAwesome";
-    private static final String SOP_NOT_PASS_LIGHT_CODE="RED";
-    
+        public static final String SOP_ENABLE_CODE="SOP_ENABLE";
+        public static final String SOP_ENABLE_CODE_ICON="xf272@FontAwesome";
+        public static final String SOP_DISABLE_CODE="SOP_DISABLE";
+        public static final String SOP_DISABLE_CODE_ICON="xf133@FontAwesome";
+        public static final String SOP_CERTIF_EXPIRED_CODE="SOP_CERTIF_EXPIRED";
+        public static final String SOP_CERTIF_EXPIRED_CODE_ICON="xf06a@FontAwesome";
+        public static final String SOP_PASS_CODE="PASS";
+        public static final String SOP_PASS_CODE_ICON="xf046@FontAwesome";
+        public static final String SOP_PASS_LIGHT_CODE="GREEN";
+        public static final String SOP_NOTPASS_CODE="NOTPASS";
+        public static final String SOP_NOTPASS_CODE_ICON="xf05e@FontAwesome";
+        public static final String SOP_NOT_PASS_LIGHT_CODE="RED";
+
     private static final String ERROR_TRAPING_SOP_MARKEDASCOMPLETED_NOT_PENDING="sopMarkedAsCompletedNotPending";
      private static final String ERROR_TRAPING_SOP_NOT_ASSIGNED_TO_THIS_USER="UserSop_SopNotAssignedToThisUser";
 
     private static final String DIAGNOSES_ERROR_CODE="ERROR";
     
     public static final Object[][] getUserSop(String schemaPrefix, String userName, String sopName ){
-        String schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, LPPlatform.SCHEMA_CONFIG);
-
         UserProfile usProf = new UserProfile();
         Object[] userSchemas = (Object[]) usProf.getAllUserProcedurePrefix(userName);
         if (LPPlatform.LAB_FALSE.equalsIgnoreCase(userSchemas[0].toString())){
@@ -100,7 +98,7 @@ public class UserSop {
     private Object[] userSopCertifiedBySopInternalLogic( String schemaPrefixName, String userInfoId, String sopIdFieldName, String sopIdFieldValue ) {
                         
         String schemaConfigName = LPPlatform.buildSchemaName(schemaPrefixName, LPPlatform.SCHEMA_CONFIG);
-        String actionEnabledUserSopCertification = Parameter.getParameterBundle(LPPlatform.SCHEMA_CONFIG, "actionEnabledUserSopCertification"); 
+//        String actionEnabledUserSopCertification = Parameter.getParameterBundle(LPPlatform.SCHEMA_CONFIG, "actionEnabledUserSopCertification"); 
         
         UserProfile usProf = new UserProfile();
         Object[] userSchemas = (Object[]) usProf.getAllUserProcedurePrefix(userInfoId);
@@ -208,98 +206,7 @@ public class UserSop {
         return UserSchemas;           
 */        
     }
-    
-    /**
-     *
-     * @param schemaPrefixName
-     * @param userInfoId
-     * @param sopName
-     * @param procedure
-     * @param procVersion
-     * @return
-     */
-    public Object[] _NotRequireduserSopCertifiedBySopName( String schemaPrefixName, String userInfoId, String sopName, String procedure, Integer procVersion ) {
-        return _NotRequireduserSopCertifiedBySopInternalLogic(schemaPrefixName, userInfoId, FIELDNAME_SOP_NAME, sopName, procedure, procVersion);        
-    }
-
-    /**
-     *
-     * @param schemaPrefixName
-     * @param userInfoId
-     * @param sopId
-     * @param procedure
-     * @param procVersion
-     * @return
-     */
-    public Object[] _NotRequireduserSopCertifiedBySopId( String schemaPrefixName, String userInfoId, String sopId, String procedure, Integer procVersion ) {
-        return _NotRequireduserSopCertifiedBySopInternalLogic(schemaPrefixName, userInfoId, FIELDNAME_SOP_ID, sopId, procedure, procVersion);
-    }    
-    private Object[] _NotRequireduserSopCertifiedBySopInternalLogic( String schemaPrefixName, String userInfoId, String sopIdFieldName, String sopIdFieldValue, String procedure, Integer procVersion ) {
-        
-        Object[] diagnoses = new Object[0];
-        String sopMode = "";
-        Boolean certifyManagement = false;
-        Boolean enableRecertification = false;
-        
-        Object[][] procBusinessRule = Rdbms.getRecordFieldsByFilter("requirements", "procedure_business_rule", 
-                                                        new String[]{"procedure", "version"}, new Object[]{procedure, procVersion}, 
-                                                        new String[]{"sop_mode", "certify_management", "enable_recertification", "procedure"});        
-        if (LPPlatform.LAB_FALSE.equalsIgnoreCase(procBusinessRule[0][0].toString())){return diagnoses;}
-        
-        sopMode = (String) procBusinessRule[0][0];
-        certifyManagement = (Boolean) procBusinessRule[0][1];
-        enableRecertification = (Boolean) procBusinessRule[0][2];
-
-        if (!sopMode.equalsIgnoreCase("ALL")){
-            diagnoses[0]=SOP_DISABLE_CODE;            diagnoses[1]="SOP disabled.";
-            diagnoses[2]=SOP_DISABLE_CODE_ICON;  diagnoses[3]="SOPs disabled";
-            return diagnoses;
-        }        
-        if (!certifyManagement){
-            diagnoses[0]=SOP_ENABLE_CODE;            diagnoses[1]="SOP enable but Certifications disabled, SOP merely info";
-            diagnoses[2]=SOP_ENABLE_CODE_ICON;  diagnoses[3]="SOP enable but Certifications disabled, SOP merely info";
-            return diagnoses;
-        }       
-        UserProfile usProf = new UserProfile();
-        String[] userSchemas = (String[]) usProf.getAllUserProcedurePrefix(userInfoId);
-        Boolean schemaIsCorrect = false;
-        for (String us: userSchemas){
-            if (us.equalsIgnoreCase(schemaPrefixName)){schemaIsCorrect=true;break;}            
-        }
-        if (!schemaIsCorrect){
-            diagnoses[0]=DIAGNOSES_ERROR_CODE;  diagnoses[1]="The user "+userInfoId+" has no roles assigned for working on schema"+schemaPrefixName;
-            diagnoses[2]="";            diagnoses[3]="";
-            return diagnoses;
-        }
-        Object[][] getUserProfileFieldValues = getUserProfileFieldValues(
-                new String[]{FIELDNAME_SOP_USER_ID, sopIdFieldName}, new Object[]{userInfoId, sopIdFieldValue}, 
-                new String[]{FIELDNAME_SOP_LIGHT, "expiration_date"}, new String[]{schemaPrefixName});   
-        if (getUserProfileFieldValues.length<=0){
-            diagnoses[0]=DIAGNOSES_ERROR_CODE;
-            diagnoses[1]="The user "+userInfoId+" has no the sop "+sopIdFieldValue+ " assigned to.";
-            return diagnoses;
-        }
-        String usrProfLight=getUserProfileFieldValues[0][0].toString();
-        Date usrProfExpDate=(Date) getUserProfileFieldValues[0][1];    
-        
-        if (!usrProfLight.contains(SOP_PASS_LIGHT_CODE)){            
-            diagnoses[0]=SOP_NOTPASS_CODE;              diagnoses[1]="The user "; //+userInfoId+" has the sop "+replaceNull(getUserProfileFieldValues[0][1].toString())+ " assigned to which current status is "+replaceNull(getUserProfileFieldValues[0][2].toString())+" and the light is "+replaceNull(getUserProfileFieldValues[0][3].toString());
-            diagnoses[2]=SOP_NOTPASS_CODE_ICON;    diagnoses[3]="The user "+userInfoId+" is currently NOT certified for the sop "+sopIdFieldValue;
-            return diagnoses;
-        }else{
-            Date now = new Date();
-            if ( (certifyManagement && usrProfExpDate!=null) && (now.after(usrProfExpDate)) ){                
-                diagnoses[0]=SOP_CERTIF_EXPIRED_CODE;              diagnoses[1]="The user "+userInfoId+" was certified for the sop "+sopIdFieldValue+" but it expired on "+usrProfExpDate.toString();
-                diagnoses[2]=SOP_CERTIF_EXPIRED_CODE_ICON;    diagnoses[3]="The user "+userInfoId+" was certified for the sop "+sopIdFieldValue+" but it expired on "+usrProfExpDate.toString();
-                return diagnoses;
-            }
-            diagnoses[0]=SOP_PASS_CODE;              diagnoses[1]="";  
-            diagnoses[2]=SOP_PASS_CODE_ICON;    diagnoses[3]="The user "+userInfoId+" is currently certified for the sop "+sopIdFieldValue;
-            //xf24e --> Certification near expire
-            return diagnoses;
-        }               
-    }
-       
+  
     // This function cannot be replaced by a single query through the rdbm because it run the query through the many procedures
     //      the user is involved on if so ....
 
@@ -316,7 +223,7 @@ public class UserSop {
         String tableName = "user_and_meta_data_sop_vw"; //user_sop";
         
         if (fieldsToReturn.length<=0){
-            Object[] diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, "Rdbms_NotFilterSpecified", new Object[]{tableName, schemaPrefix});
+//            Object[] diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, "Rdbms_NotFilterSpecified", new Object[]{tableName, schemaPrefix});
             String[][] getUserProfileNEW = new String[1][2];
             getUserProfileNEW[0][0]=DIAGNOSES_ERROR_CODE;
             getUserProfileNEW[0][1]="No fields specified for fieldsToReturn";

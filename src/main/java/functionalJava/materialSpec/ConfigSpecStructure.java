@@ -10,9 +10,9 @@ import databases.Rdbms;
 import LabPLANET.utilities.LPArray;
 import LabPLANET.utilities.LPPlatform;
 import static LabPLANET.utilities.LPPlatform.trapErrorMessage;
+import databases.dbObjectsConfigTables;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -31,6 +31,8 @@ public class ConfigSpecStructure {
     String mandatoryFieldsMissing = "";
     private static final String DIAGNOSES_SUCCESS = "SUCCESS";
     private static final String DIAGNOSES_ERROR = "ERROR";
+    
+    private static final String ERROR_TRAPING_DATA_SAMPLE_SPECIAL_FUNCTION_RETURN_ERROR="DataSample_SpecialFunctionReturnedERROR";
     
 
     private String[] getSpecialFields(){
@@ -58,23 +60,21 @@ public class ConfigSpecStructure {
     }
 
     private String[] getSpecMandatoryFields(){
-        String[] myMandatoryFields = new String[2];
-        myMandatoryFields[0] = "code";
-        myMandatoryFields[1] = "config_version";
-        return myMandatoryFields;
+        return new String[]{dbObjectsConfigTables.FLD_CONFIG_SPEC_CODE, 
+                                      dbObjectsConfigTables.FLD_CONFIG_SPEC_CONFIG_VERSION};
     }
     
     private String[] getSpecLimitsMandatoryFields(){
         String[] myMandatoryFields = new String[9];
-        myMandatoryFields[0] = "variation_name";
-        myMandatoryFields[1] = "analysis";
-        myMandatoryFields[2] = "method_name";
-        myMandatoryFields[3] = "method_version";
-        myMandatoryFields[4] = "parameter";
-        myMandatoryFields[5] = "rule_type";
-        myMandatoryFields[6] = "rule_variables";
-        myMandatoryFields[7] = "code";
-        myMandatoryFields[8] = "config_version";
+        myMandatoryFields[0] = dbObjectsConfigTables.FLD_CONFIG_SPEC_LIMITS_VARIATION_NAME;
+        myMandatoryFields[1] = dbObjectsConfigTables.FLD_CONFIG_SPEC_LIMITS_ANALYSIS;
+        myMandatoryFields[2] = dbObjectsConfigTables.FLD_CONFIG_SPEC_LIMITS_METHOD_NAME;
+        myMandatoryFields[3] = dbObjectsConfigTables.FLD_CONFIG_SPEC_LIMITS_METHOD_VERSION;
+        myMandatoryFields[4] = dbObjectsConfigTables.FLD_CONFIG_SPEC_LIMITS_PARAMETER;
+        myMandatoryFields[5] = dbObjectsConfigTables.FLD_CONFIG_SPEC_LIMITS_RULE_TYPE;
+        myMandatoryFields[6] = dbObjectsConfigTables.FLD_CONFIG_SPEC_LIMITS_RULE_VARIABLES;
+        myMandatoryFields[7] = dbObjectsConfigTables.FLD_CONFIG_SPEC_LIMITS_CODE;
+        myMandatoryFields[8] = dbObjectsConfigTables.FLD_CONFIG_SPEC_LIMITS_CONFIG_VERSION;
         return myMandatoryFields;
     }
     
@@ -89,9 +89,7 @@ public class ConfigSpecStructure {
         String schemaPrefix = parameters[0];
         String variationNames = parameters[1];
         
-        String schemaName = LPPlatform.SCHEMA_CONFIG;
-        
-        schemaName = LPPlatform.buildSchemaName(schemaPrefix, schemaName);
+        String schemaName = LPPlatform.buildSchemaName(schemaPrefix, LPPlatform.SCHEMA_CONFIG);
 
         Integer specialFieldIndex = Arrays.asList(mandatoryFields).indexOf("code");        
         String specCode = (String) mandatoryFieldValue[specialFieldIndex];
@@ -103,8 +101,8 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
         //String[] variationNameArray = variationNames.split("\\|", -1);
         
         Object[] variationNameDiagnosticArray = specVariationGetNamesList(schemaPrefix, specCode);
-        if (!variationNameDiagnosticArray[3].toString().equalsIgnoreCase("TRUE")){
-            myDiagnoses = DIAGNOSES_SUCCESS;
+        if (!LPPlatform.LAB_TRUE.equalsIgnoreCase(variationNameDiagnosticArray[0].toString())){
+            return DIAGNOSES_SUCCESS;
         }
         else{
             String[] currVariationNameArray = variationNameDiagnosticArray[4].toString().split("\\|", -1);
@@ -116,12 +114,11 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
             }                
         }
         if (variationNameExist.length()>0){
-            myDiagnoses = "ERROR: Those variations (" +variationNameExist+") are part of the spec "+specCode+ " and cannot be removed from the variations name by this method";
+            return "ERROR: Those variations (" +variationNameExist+") are part of the spec "+specCode+ " and cannot be removed from the variations name by this method";
         }else{    
-            myDiagnoses = DIAGNOSES_SUCCESS;
+            return DIAGNOSES_SUCCESS;
         }        
         
-        return myDiagnoses;
     }
             
     /**
@@ -145,8 +142,8 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
         //String[] variationNameArray = variationNames.split("\\|", -1);
         
         Object[] variationNameDiagnosticArray = specVariationGetNamesList(schemaPrefix, specCode);
-        if (!variationNameDiagnosticArray[3].toString().equalsIgnoreCase("TRUE")){
-            myDiagnoses = DIAGNOSES_SUCCESS;
+        if (!LPPlatform.LAB_TRUE.equalsIgnoreCase(variationNameDiagnosticArray[0].toString())){
+            return DIAGNOSES_SUCCESS;
         }
         else{
             String[] currVariationNameArray = variationNameDiagnosticArray[4].toString().split("\\|", -1);
@@ -158,12 +155,10 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
             }                
         }
         if (variationNameExist.length()>0){
-            myDiagnoses = "ERROR: Those variations (" +variationNameExist+") are part of the spec "+specCode+ " and cannot be removed from the variations name by this method";
+            return "ERROR: Those variations (" +variationNameExist+") are part of the spec "+specCode+ " and cannot be removed from the variations name by this method";
         }else{    
-            myDiagnoses = DIAGNOSES_SUCCESS;
+            return DIAGNOSES_SUCCESS;
         }        
-        
-        return myDiagnoses;
     }
 
     /**
@@ -182,18 +177,20 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
 
         schemaName = LPPlatform.buildSchemaName(schemaPrefix, schemaName);
 
-        Integer specialFieldIndex = Arrays.asList(mandatoryFields).indexOf("variation_name");
+        Integer specialFieldIndex = Arrays.asList(mandatoryFields).indexOf(dbObjectsConfigTables.FLD_CONFIG_SPEC_VARIATION_NAME);
         String varationName = (String) mandatoryFieldValue[specialFieldIndex];
 
-        specialFieldIndex = Arrays.asList(mandatoryFields).indexOf("code");
+        specialFieldIndex = Arrays.asList(mandatoryFields).indexOf(dbObjectsConfigTables.FLD_CONFIG_SPEC_CODE);
         String specCode = (String) mandatoryFieldValue[specialFieldIndex];
 
-        specialFieldIndex = Arrays.asList(mandatoryFields).indexOf("config_version");
+        specialFieldIndex = Arrays.asList(mandatoryFields).indexOf(dbObjectsConfigTables.FLD_CONFIG_SPEC_CONFIG_VERSION);
         Integer specCodeVersion = (Integer) mandatoryFieldValue[specialFieldIndex];
 
-        Object[][] recordFieldsByFilter = Rdbms.getRecordFieldsByFilter(schemaName, "spec", new String[]{"code","config_version"}, new Object[]{specCode, specCodeVersion}, 
-                new String[]{"variation_names","code","config_version","code"});
-        if ("FALSE".equalsIgnoreCase(recordFieldsByFilter[0][3].toString())){
+        Object[][] recordFieldsByFilter = Rdbms.getRecordFieldsByFilter(schemaName, dbObjectsConfigTables.TABLE_CONFIG_SPEC, 
+                new String[]{dbObjectsConfigTables.FLD_CONFIG_SPEC_CODE, dbObjectsConfigTables.FLD_CONFIG_SPEC_CONFIG_VERSION}, 
+                new Object[]{specCode, specCodeVersion}, 
+                new String[]{"variation_names",dbObjectsConfigTables.FLD_CONFIG_SPEC_CODE,dbObjectsConfigTables.FLD_CONFIG_SPEC_CONFIG_VERSION,dbObjectsConfigTables.FLD_CONFIG_SPEC_CODE});
+        if (LPPlatform.LAB_FALSE.equalsIgnoreCase(recordFieldsByFilter[0][0].toString())){
             myDiagnoses = "ERROR: "+ recordFieldsByFilter[0][3]; return myDiagnoses;
         }              
         
@@ -244,18 +241,17 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
         
         Object[] diagnosis = Rdbms.existsRecord(schemaName, "analysis_method", fieldNames, fieldValues);        
         if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnosis[0].toString())){
-            myDiagnoses = DIAGNOSES_SUCCESS;        }
+            return DIAGNOSES_SUCCESS;        }
         else{    
             diagnosis = Rdbms.existsRecord(schemaName, "analysis", 
                     new String[]{"code"}, new Object[]{analysis});
             if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){
-                myDiagnoses = "ERROR: The analysis " + analysis + " exists but the method " + methodName +" with version "+ methodVersion+ " was not found in the schema "+schemaPrefix;            
+                return "ERROR: The analysis " + analysis + " exists but the method " + methodName +" with version "+ methodVersion+ " was not found in the schema "+schemaPrefix;            
             }
             else{
-                myDiagnoses = "ERROR: The analysis " + analysis + " is not found in the schema "+schemaPrefix;            
+                return "ERROR: The analysis " + analysis + " is not found in the schema "+schemaPrefix;            
             }
         }        
-        return myDiagnoses;
     }
     
     /**
@@ -335,10 +331,11 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
     public Object[] specUpdate( String schemaPrefix, String specCode, Integer specCodeVersion, String[] specFieldName, Object[] specFieldValue) {
         
         String schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, LPPlatform.SCHEMA_CONFIG);
-        String errorCode = "DataSample_SpecialFunctionReturnedERROR";
+        String errorCode = ERROR_TRAPING_DATA_SAMPLE_SPECIAL_FUNCTION_RETURN_ERROR;
         Object[] errorDetailVariables = new Object[0];
             
-        diagnoses = Rdbms.existsRecord(schemaConfigName, "spec", new String[]{"code", "config_version"}, new Object[] {specCode, specCodeVersion});        
+        diagnoses = Rdbms.existsRecord(schemaConfigName, dbObjectsConfigTables.TABLE_CONFIG_SPEC, 
+                new String[]{dbObjectsConfigTables.FLD_CONFIG_SPEC_CODE, dbObjectsConfigTables.FLD_CONFIG_SPEC_CONFIG_VERSION}, new Object[] {specCode, specCodeVersion});        
         if (LPPlatform.LAB_FALSE.equalsIgnoreCase(diagnoses[0].toString())){return diagnoses;}
         
         String[] specialFields = getSpecialFields();
@@ -367,7 +364,7 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
                     Logger.getLogger(ConfigSpecStructure.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 if ( (specialFunctionReturn.toString().contains(DIAGNOSES_ERROR)) ){
-                    errorCode = "DataSample_SpecialFunctionReturnedERROR";
+                    errorCode = ERROR_TRAPING_DATA_SAMPLE_SPECIAL_FUNCTION_RETURN_ERROR;
                     errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, currField);
                     errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, aMethod);
                     errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, LPNulls.replaceNull(specialFunctionReturn));
@@ -376,16 +373,17 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
             }
         }      
         try{
-            String[] whereFieldNames = new String[0];
-            whereFieldNames = LPArray.addValueToArray1D(whereFieldNames, "code");
-            whereFieldNames = LPArray.addValueToArray1D(whereFieldNames, "config_version");
+            String[] whereFieldNames = new String[]{dbObjectsConfigTables.FLD_CONFIG_SPEC_CODE, dbObjectsConfigTables.FLD_CONFIG_SPEC_CONFIG_VERSION};
             Object[] whereFieldValues = new Object[0];
             whereFieldValues = LPArray.addValueToArray1D(whereFieldValues, specCode);
             whereFieldValues = LPArray.addValueToArray1D(whereFieldValues, specCodeVersion);            
-            diagnoses = Rdbms.updateRecordFieldsByFilter(schemaConfigName, "spec", specFieldName, specFieldValue, whereFieldNames, whereFieldValues);
+            diagnoses = Rdbms.updateRecordFieldsByFilter(schemaConfigName, dbObjectsConfigTables.TABLE_CONFIG_SPEC, specFieldName, specFieldValue, whereFieldNames, whereFieldValues);
 
            if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){
-               diagnoses = Rdbms.insertRecordInTable(schemaConfigName, "spec_rules", new String[]{"code", "config_version", "allow_other_analysis", "allow_multi_spec"}, new Object[] {specCode, 1, false, false});
+               diagnoses = Rdbms.insertRecordInTable(schemaConfigName, dbObjectsConfigTables.TABLE_CONFIG_SPEC_RULES, 
+                       new String[]{dbObjectsConfigTables.FLD_CONFIG_SPEC_RULES_CODE, dbObjectsConfigTables.FLD_CONFIG_SPEC_RULES_CONFIG_VERSION, 
+                           dbObjectsConfigTables.FLD_CONFIG_SPEC_RULES_ALLOW_OTHER_ANALYSIS, dbObjectsConfigTables.FLD_CONFIG_SPEC_RULES_ALLOW_MULTI_SPEC}, 
+                       new Object[] {specCode, 1, false, false});
            }
            return diagnoses;
        } catch (IllegalArgumentException ex) {
@@ -445,9 +443,9 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
            return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);                
         }
 
-        Integer fieldIndex = Arrays.asList(specFieldName).indexOf("code");
+        Integer fieldIndex = Arrays.asList(specFieldName).indexOf(dbObjectsConfigTables.FLD_CONFIG_SPEC_CODE);
         newCode = specFieldValue[fieldIndex].toString();
-        fieldIndex = Arrays.asList(specFieldName).indexOf("config_version");
+        fieldIndex = Arrays.asList(specFieldName).indexOf(dbObjectsConfigTables.FLD_CONFIG_SPEC_CONFIG_VERSION);
         Integer newCodeVersion = (Integer) specFieldValue[fieldIndex];
 
         String[] specialFields = getSpecialFields();
@@ -473,7 +471,7 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
                     Object specialFunctionReturn = DIAGNOSES_ERROR;
                     if (method!=null){ specialFunctionReturn = method.invoke(this, (Object[]) parameters); }     
                     if (specialFunctionReturn.toString().contains(DIAGNOSES_ERROR)){
-                        errorCode = "DataSample_SpecialFunctionReturnedERROR";
+                        errorCode = ERROR_TRAPING_DATA_SAMPLE_SPECIAL_FUNCTION_RETURN_ERROR;
                         errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, currField);
                         errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, aMethod);
                         errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, specialFunctionReturn.toString());
@@ -482,7 +480,9 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
                     //String specialFunctionReturnStatus = String.valueOf(specialFunctionReturn);
             }
         }
-        diagnoses = Rdbms.existsRecord(schemaConfigName, "spec", new String[]{"code", "config_version"}, new Object[] {newCode, newCodeVersion});        
+        diagnoses = Rdbms.existsRecord(schemaConfigName, dbObjectsConfigTables.TABLE_CONFIG_SPEC, 
+                new String[]{dbObjectsConfigTables.FLD_CONFIG_SPEC_CODE, dbObjectsConfigTables.FLD_CONFIG_SPEC_CONFIG_VERSION}, 
+                new Object[] {newCode, newCodeVersion});        
         if (LPPlatform.LAB_FALSE.equalsIgnoreCase(diagnoses[0].toString())){
             errorCode = "specRecord_AlreadyExists";
             errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, newCode);
@@ -491,10 +491,10 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
             return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);           
         }
         try{
-            diagnoses = Rdbms.insertRecordInTable(schemaConfigName, "spec", specFieldName, specFieldValue);            
+            diagnoses = Rdbms.insertRecordInTable(schemaConfigName, dbObjectsConfigTables.TABLE_CONFIG_SPEC, specFieldName, specFieldValue);            
             
-            diagnoses = Rdbms.insertRecordInTable(schemaConfigName, "spec_rules", 
-                    new String[]{"code", "config_version", "allow_other_analysis", "allow_multi_spec"}, 
+            diagnoses = Rdbms.insertRecordInTable(schemaConfigName, dbObjectsConfigTables.TABLE_CONFIG_SPEC_RULES, 
+                    new String[]{dbObjectsConfigTables.FLD_CONFIG_SPEC_RULES_CODE, dbObjectsConfigTables.FLD_CONFIG_SPEC_RULES_CONFIG_VERSION, dbObjectsConfigTables.FLD_CONFIG_SPEC_RULES_ALLOW_OTHER_ANALYSIS, dbObjectsConfigTables.FLD_CONFIG_SPEC_RULES_ALLOW_MULTI_SPEC}, 
                     new Object[]{newCode, newCodeVersion, false, false});       
             if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){
                 errorCode = "specRecord_createdSuccessfully";
@@ -524,7 +524,9 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
         
         schemaName = LPPlatform.buildSchemaName(schemaPrefix, schemaName);
         
-        Object[][] variationListArray = Rdbms.getRecordFieldsByFilter(schemaName, "spec_limits", new String[]{"code"}, new Object[]{specCode}, new String[]{"name"});
+        Object[][] variationListArray = Rdbms.getRecordFieldsByFilter(schemaName, dbObjectsConfigTables.TABLE_CONFIG_SPEC_LIMITS, 
+                new String[]{dbObjectsConfigTables.FLD_CONFIG_SPEC_LIMITS_CODE}, new Object[]{specCode}, 
+                new String[]{dbObjectsConfigTables.FLD_CONFIG_SPEC_LIMITS_NAME});
         if (LPPlatform.LAB_FALSE.equalsIgnoreCase(variationListArray[0][0].toString())){            
             return LPArray.array2dTo1d(variationListArray);
         }else{
@@ -554,7 +556,7 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
                 diagnosis[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
                 diagnosis[1]= classVersion;
                 diagnosis[2]= "Code Line " + String.valueOf(elements[1].getLineNumber());   
-                diagnosis[3]="TRUE";
+                diagnosis[3]=LPPlatform.LAB_TRUE;
                 diagnosis[4]=variationList;
                 diagnosis[5]=String.valueOf(res.getRow())+" records found, Query: "+query;
                 return diagnosis;  
@@ -598,11 +600,10 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
     public Object[] specLimitNew( String schemaPrefix, String[] specFieldName, Object[] specFieldValue ) throws IllegalAccessException, InvocationTargetException{
                           
         String code = "";
-        String schemaName = LPPlatform.SCHEMA_CONFIG;
         String errorCode="";
         Object[]  errorDetailVariables= new Object[0];
 
-        schemaName = LPPlatform.buildSchemaName(schemaPrefix, schemaName);
+        String schemaName = LPPlatform.buildSchemaName(schemaPrefix, LPPlatform.SCHEMA_CONFIG);
         mandatoryFields = getSpecLimitsMandatoryFields();
 
         String[] checkTwoArraysSameLength = LPArray.checkTwoArraysSameLength(specFieldName, specFieldValue);
@@ -627,12 +628,14 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
                 mandatoryFieldValue = LPArray.addValueToArray1D(mandatoryFieldValue, currFieldValue);
             }
         }                    
-        Integer fieldIndex = Arrays.asList(specFieldName).indexOf("code");
+        Integer fieldIndex = Arrays.asList(specFieldName).indexOf(dbObjectsConfigTables.FLD_CONFIG_SPEC_CODE);
         code = specFieldValue[fieldIndex].toString();
-        fieldIndex = Arrays.asList(specFieldName).indexOf("config_version");
+        fieldIndex = Arrays.asList(specFieldName).indexOf(dbObjectsConfigTables.FLD_CONFIG_SPEC_CONFIG_VERSION);
         Integer codeVersion = (Integer) specFieldValue[fieldIndex];
 
-        diagnoses = Rdbms.existsRecord(schemaName, "spec", new String[]{"code", "config_version"}, new Object[] {code, codeVersion});        
+        diagnoses = Rdbms.existsRecord(schemaName, dbObjectsConfigTables.TABLE_CONFIG_SPEC, 
+                new String[]{dbObjectsConfigTables.FLD_CONFIG_SPEC_CODE, dbObjectsConfigTables.FLD_CONFIG_SPEC_CONFIG_VERSION}, 
+                new Object[] {code, codeVersion});        
         if (!LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){                       
             return diagnoses;
         }
@@ -662,7 +665,7 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
                     Object specialFunctionReturn = DIAGNOSES_ERROR;
                     if (method!=null){ specialFunctionReturn = method.invoke(this, schemaName); }
                     if (specialFunctionReturn.toString().contains(DIAGNOSES_ERROR)){
-                        errorCode = "DataSample_SpecialFunctionReturnedERROR";
+                        errorCode = ERROR_TRAPING_DATA_SAMPLE_SPECIAL_FUNCTION_RETURN_ERROR;
                         errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, currField);
                         errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, aMethod);
                         errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, specialFunctionReturn.toString());
@@ -679,7 +682,6 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
                 }
             }
         }                        
-
         fieldIndex = Arrays.asList(specFieldName).indexOf("analysis");
         String analysis = (String) specFieldValue[fieldIndex];
         fieldIndex = Arrays.asList(specFieldName).indexOf("method_name");

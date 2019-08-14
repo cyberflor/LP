@@ -16,6 +16,17 @@ import functionalJava.parameter.Parameter;
  */
 public class UserMethod {
    String classVersion = "0.1";
+   public static final String TABLENAME_DATA_USER_METHOD="user_method";   
+        public static final String FIELDNAME_DATA_USER_METHOD_ACTIVE="active";
+        public static final String FIELDNAME_DATA_USER_METHOD_ANALYSIS="analysis";
+        public static final String FIELDNAME_DATA_USER_METHOD_LAST_ANALYSIS_ON="last_training_on";
+        public static final String FIELDNAME_DATA_USER_METHOD_LAST_TRAINING_ON="last_analysis_on";
+        public static final String FIELDNAME_DATA_USER_METHOD_METHOD_NAME="method_name";
+        public static final String FIELDNAME_DATA_USER_METHOD_METHOD_VERSION="method_version";
+        public static final String FIELDNAME_DATA_USER_METHOD_TRAIN_INTERVAL="train_interval";
+        public static final String FIELDNAME_DATA_USER_METHOD_USER_ID="user_id";
+        
+        
  
 /**
  * This function evaluate and return which is the current certification level for a given user and for one particular user method and version.
@@ -32,9 +43,7 @@ public class UserMethod {
  * @return String - The certification level
  */    
     public String userMethodCertificationLevel( String schemaPrefix, String analysis, String methodName, Integer methodVersion, String userName){
-
-        String tableName = "user_method";
-        
+                
         String schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, LPPlatform.SCHEMA_DATA);  
         String schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, LPPlatform.SCHEMA_CONFIG);   
         
@@ -42,25 +51,13 @@ public class UserMethod {
         String userMethodInactive = Parameter.getParameterBundle(schemaConfigName, "userMethodCertificate_inactive");
         String userMethodCertified = Parameter.getParameterBundle(schemaConfigName, "userMethodCertificate_certified");
         
-        String[] whereFieldName = new String[0];
-        Object[] whereFieldValue = new Object[0];
-        String[] getFieldName = new String[0];
-        
-        whereFieldName = LPArray.addValueToArray1D(whereFieldName, "user_id");
-        whereFieldValue = LPArray.addValueToArray1D(whereFieldValue, userName);
-        whereFieldName = LPArray.addValueToArray1D(whereFieldName, "analysis");
-        whereFieldValue = LPArray.addValueToArray1D(whereFieldValue, analysis);
-        whereFieldName = LPArray.addValueToArray1D(whereFieldName, "method_name");
-        whereFieldValue = LPArray.addValueToArray1D(whereFieldValue, methodName);
-        whereFieldName = LPArray.addValueToArray1D(whereFieldName, "method_version");
-        whereFieldValue = LPArray.addValueToArray1D(whereFieldValue, methodVersion);
-        
-        getFieldName = LPArray.addValueToArray1D(getFieldName, "active");
-        getFieldName = LPArray.addValueToArray1D(getFieldName, "train_interval");
-        getFieldName = LPArray.addValueToArray1D(getFieldName, "last_training_on");
-        getFieldName = LPArray.addValueToArray1D(getFieldName, "last_analysis_on");
-        
-        Object[][] userMethodData = Rdbms.getRecordFieldsByFilter(schemaDataName, tableName, whereFieldName, whereFieldValue, getFieldName);
+        String[] whereFieldName = new String[]{FIELDNAME_DATA_USER_METHOD_USER_ID, FIELDNAME_DATA_USER_METHOD_ANALYSIS,
+                FIELDNAME_DATA_USER_METHOD_METHOD_NAME, FIELDNAME_DATA_USER_METHOD_METHOD_VERSION};
+        Object[] whereFieldValue = new Object[]{userName, analysis, methodName, methodVersion};
+        String[] getFieldName = new String[]{FIELDNAME_DATA_USER_METHOD_ACTIVE, FIELDNAME_DATA_USER_METHOD_TRAIN_INTERVAL,
+                FIELDNAME_DATA_USER_METHOD_LAST_TRAINING_ON, FIELDNAME_DATA_USER_METHOD_LAST_ANALYSIS_ON};
+                
+        Object[][] userMethodData = Rdbms.getRecordFieldsByFilter(schemaDataName, TABLENAME_DATA_USER_METHOD, whereFieldName, whereFieldValue, getFieldName);
         if (LPPlatform.LAB_FALSE.equals(userMethodData[0][0].toString())){return userMethodNotAssigned;}    
         
         Boolean userMethodActive = (Boolean) userMethodData[0][0];
