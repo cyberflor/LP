@@ -74,7 +74,7 @@ public class _ConfigSamplingPlanForSpec {
      * @throws SQLException
      */
     public Object[] newSamplingPlanDetailRecordDev( String schemaPrefix, String userName, String userRole, String[] fieldsName, Object[] fieldsValue, Boolean devMode) {
-    if (devMode==true){
+    if (devMode){
         StackTraceElement[] elementsDev = Thread.currentThread().getStackTrace();
         javaDocLineName = "BEGIN";
         javaDocFields = LPArray.addValueToArray1D(javaDocFields, LPPlatform.JAVADOC_LINE_FLDNAME);         javaDocValues = LPArray.addValueToArray1D(javaDocValues, javaDocLineName);         
@@ -85,25 +85,25 @@ public class _ConfigSamplingPlanForSpec {
         tableName = "project";
         String auditActionName = "CREATE SAMPLING PLAN DETAIL RECORD";
         schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, schemaConfigName);
-    if (devMode==true){
+    if (devMode){
         StackTraceElement[] elementsDev = Thread.currentThread().getStackTrace();
         javaDocLineName = "CHECK fieldsName and fieldsValue match in length";
         javaDocFields = LPArray.addValueToArray1D(javaDocFields, LPPlatform.JAVADOC_LINE_FLDNAME);         javaDocValues = LPArray.addValueToArray1D(javaDocValues, javaDocLineName);         
         javaDocFields = LPArray.addValueToArray1D(javaDocFields, LPPlatform.JAVADOC_CLASS_FLDNAME);         javaDocValues = LPArray.addValueToArray1D(javaDocValues, classVersion);         
         LPPlatform.addJavaClassDoc(javaDocFields, javaDocValues, elementsDev);
     }    
-    if (devMode==false){
+    if (!devMode){
         diagnoses = LPArray.checkTwoArraysSameLength(fieldsName, fieldsValue);
         if (LPPlatform.LAB_FALSE.equalsIgnoreCase(diagnoses[0].toString())){ return diagnoses;}
     } 
-    if (devMode==true){
+    if (devMode){
         StackTraceElement[] elementsDev = Thread.currentThread().getStackTrace();
         javaDocLineName = "CHECK MANDATORY FIELDS";
         javaDocFields = LPArray.addValueToArray1D(javaDocFields, LPPlatform.JAVADOC_LINE_FLDNAME);         javaDocValues = LPArray.addValueToArray1D(javaDocValues, javaDocLineName);         
         javaDocFields = LPArray.addValueToArray1D(javaDocFields, LPPlatform.JAVADOC_CLASS_FLDNAME);         javaDocValues = LPArray.addValueToArray1D(javaDocValues, classVersion);         
         LPPlatform.addJavaClassDoc(javaDocFields, javaDocValues, elementsDev);
     }  
-    if (devMode==false){
+    if (!devMode){
         schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, schemaDataName);         
         Object[][] mandatoryFieldsCheck = LPPlatform.mandatoryFieldsCheck(schemaDataName, fieldsName, fieldsValue, tableName, actionName);                
         if (LPPlatform.LAB_FALSE.equalsIgnoreCase(mandatoryFieldsCheck[0][0].toString())){ return mandatoryFieldsCheck;}
@@ -121,41 +121,41 @@ public class _ConfigSamplingPlanForSpec {
             }
         }   
     }  
-    if (devMode==true){
+    if (devMode){
         StackTraceElement[] elementsDev = Thread.currentThread().getStackTrace();
         javaDocLineName = "CHECK CONFIG OBJECT EXISTS";
         javaDocFields = LPArray.addValueToArray1D(javaDocFields, LPPlatform.JAVADOC_LINE_FLDNAME);         javaDocValues = LPArray.addValueToArray1D(javaDocValues, javaDocLineName);         
         javaDocFields = LPArray.addValueToArray1D(javaDocFields, LPPlatform.JAVADOC_CLASS_FLDNAME);         javaDocValues = LPArray.addValueToArray1D(javaDocValues, classVersion);         
         LPPlatform.addJavaClassDoc(javaDocFields, javaDocValues, elementsDev);
     } 
-    if (devMode==false){
+    if (!devMode){
         diagnoses = LPPlatform.configObjectExists(schemaConfigName, fieldsName, fieldsValue, tableName);
         if (LPPlatform.LAB_FALSE.equalsIgnoreCase(diagnoses[0].toString())){return diagnoses;}
     }
-    if (devMode==true){
+    if (devMode){
         StackTraceElement[] elementsDev = Thread.currentThread().getStackTrace();
         javaDocLineName = "CHECK SPECIAL FIELDS";
         javaDocFields = LPArray.addValueToArray1D(javaDocFields, LPPlatform.JAVADOC_LINE_FLDNAME);         javaDocValues = LPArray.addValueToArray1D(javaDocValues, javaDocLineName);         
         javaDocFields = LPArray.addValueToArray1D(javaDocFields, LPPlatform.JAVADOC_CLASS_FLDNAME);         javaDocValues = LPArray.addValueToArray1D(javaDocValues, classVersion);         
         LPPlatform.addJavaClassDoc(javaDocFields, javaDocValues, elementsDev);
     }  
-    if (devMode==false){
+    if (!devMode){
         LPPlatform labPlat = new LPPlatform();
         diagnoses = labPlat.specialFieldsCheck(schemaDataName, fieldsName, fieldsValue, tableName, actionName);
         if (LPPlatform.LAB_FALSE.equalsIgnoreCase(diagnoses[0].toString())){return diagnoses;}
     }
-    if (devMode==true){
+    if (devMode){
         StackTraceElement[] elementsDev = Thread.currentThread().getStackTrace();
         javaDocLineName = "INSERT RECORD IN PROJECT TABLE";
         javaDocFields = LPArray.addValueToArray1D(javaDocFields, LPPlatform.JAVADOC_LINE_FLDNAME);         javaDocValues = LPArray.addValueToArray1D(javaDocValues, javaDocLineName);         
         javaDocFields = LPArray.addValueToArray1D(javaDocFields, LPPlatform.JAVADOC_CLASS_FLDNAME);         javaDocValues = LPArray.addValueToArray1D(javaDocValues, classVersion);         
         LPPlatform.addJavaClassDoc(javaDocFields, javaDocValues, elementsDev);
     }  
-    if (devMode==false){
+    if (!devMode){
         diagnoses = Rdbms.insertRecordInTable(schemaDataName, tableName, fieldsName, fieldsValue);    
         if (LPPlatform.LAB_FALSE.equalsIgnoreCase(diagnoses[0].toString())){return diagnoses;}
     }    
-    if (devMode==true){
+    if (devMode){
         StackTraceElement[] elementsDev = Thread.currentThread().getStackTrace();
         javaDocLineName = "END";
         javaDocFields = LPArray.addValueToArray1D(javaDocFields, LPPlatform.JAVADOC_LINE_FLDNAME);         javaDocValues = LPArray.addValueToArray1D(javaDocValues, javaDocLineName);         

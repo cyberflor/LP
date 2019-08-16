@@ -101,11 +101,7 @@ public class procedure_definition_to_instance {
          Object[][] procInfoRecordsSource = Rdbms.getRecordFieldsByFilter(LPPlatform.SCHEMA_REQUIREMENTS, TABLE_NAME_PROCEDURE, 
                 new String[]{FLD_NAME_PROCEDURE_NAME, FLD_NAME_PROCEDURE_VERSION,FLD_NAME_PROCEDURE_SCHEMA_PREFIX}, new Object[]{procedure, procVersion, schemaPrefix}, 
                 FIELDS_TO_RETRIEVE_PROCEDURE_INFO_SOURCE.split("\\|"), null);
-        if (LPPlatform.LAB_FALSE.equalsIgnoreCase(procInfoRecordsSource[0][0].toString())){
-          jsonObj.put(JSON_LABEL_FOR_ERROR, LPJson.convertToJSON(procInfoRecordsSource));
-        }else{
-            
-        }    */            
+            */            
     }
     public static final  JSONObject createDBPersonProfiles(String procedure,  Integer procVersion, String schemaPrefix){
         JSONObject jsonObj = new JSONObject();

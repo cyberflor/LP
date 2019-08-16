@@ -11,14 +11,7 @@ package functionalJava.requirement;
  */
 public class ConfigRequirement {
     
-    /**
-     *
-     * @param procedure
-     * @param pVersion
-     */
-    public void _getConfigObject2( String procedure, Integer pVersion){
-        // Not implemented yet
-    }
+
    /*
         try {
             String methodName = "RequirementConfigObjects-ProcessRequest";

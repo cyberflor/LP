@@ -16,7 +16,7 @@ import java.util.ResourceBundle;
  * @author Administrator
  */
 public class Parameter {
-    public static final String BUNDLE_TAG_PARAMETER_CONFIG_CONF="parameter.config.conf";
+    public static final String BUNDLE_TAG_PARAMETER_CONFIG_CONF="parameter.config.app-config";
     public static final String BUNDLE_TAG_TRANSLATION_DIR_PATH="translationDirPath";
     
 
@@ -74,6 +74,9 @@ public class Parameter {
     public static String getParameterBundle(String configFile, String parameterName) {
         try {
             ResourceBundle prop = ResourceBundle.getBundle("parameter.config." + configFile);
+           // ResourceBundle prop2 = ResourceBundle.getBundle("parameter.config.process-us-data");
+           // ResourceBundle prop3 = ResourceBundle.getBundle("parameter.config.labtimus");
+           // ResourceBundle prop4 = ResourceBundle.getBundle("parameter.config.app-config");
             if (!prop.containsKey(parameterName)) {
                 return "";
             } else {

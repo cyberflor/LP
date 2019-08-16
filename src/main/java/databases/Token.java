@@ -24,7 +24,7 @@ import java.util.Map;
  *
  * @author Administrator
  */
-public class Token {   
+public final class Token {   
     private static final String KEY = "mi clave";
     private static final String ISSUER = "LabPLANETdestrangisInTheNight";
     
@@ -83,7 +83,7 @@ public class Token {
             JWTVerifier verifier = JWT.require(algorithm)
                 .withIssuer(ISSUER)
                 .build(); //Reusable verifier instance
-            DecodedJWT decode = JWT.decode(token);
+            DecodedJWT decode = JWT.decode(token); // This is need for the check that should be implemented
             DecodedJWT jwt = verifier.verify(token);            
             
             // Check that the fields in the header are present, not just verify that the token construction is ok.
@@ -156,7 +156,7 @@ public class Token {
         myParams.put(TOKEN_PARAM_INTERNAL_USERID, userId);
         myParams.put(TOKEN_PARAM_USER_ROLE, userRole);
         myParams.put(TOKEN_PARAM_APP_SESSION_ID, appSessionId);
-        //myParams.put(TOKEN_PARAM_APP_SESSION_STARTED_DATE, appSessionStartedDate);
+        myParams.put(TOKEN_PARAM_APP_SESSION_STARTED_DATE, appSessionStartedDate);
         myParams.put(TOKEN_PARAM_USER_ESIGN, eSign);
         
         try{
@@ -188,7 +188,7 @@ public class Token {
     public String getTokenParamValue(String token, String paramName){
        Object[] tokenObj = isValidToken(token);
         
-       if ((Boolean) tokenObj[0]==false) return LPPlatform.LAB_FALSE;
+       if (!Boolean.valueOf(tokenObj[0].toString())) return LPPlatform.LAB_FALSE;
 
        DecodedJWT jwt = (DecodedJWT) tokenObj[1];
        Claim header1 = jwt.getHeaderClaim(paramName);            

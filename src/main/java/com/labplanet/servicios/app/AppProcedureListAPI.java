@@ -160,9 +160,9 @@ public class AppProcedureListAPI extends HttpServlet {
         Boolean userHasNotCompletedSOP = false;
         if ( (procEventSops==null) || ( (procEventSops!=null) && ("".equals(procEventSops)) ) ){
             procEventJson.put(LABEL_SOPS_PASSED, true);
-            userHasNotCompletedSOP = false;
+//            userHasNotCompletedSOP = false;
             if ( (procEventSops==null) ) {
-                userHasNotCompletedSOP = false;
+//                userHasNotCompletedSOP = false;
                 procEventJson.put(LABEL_SOPS_PASSED, true);
             }
             procEventSopDetail.put(LABEL_ARRAY_SOP_LIST, new JSONArray());

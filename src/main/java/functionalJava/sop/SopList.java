@@ -8,7 +8,6 @@ package functionalJava.sop;
 import databases.Rdbms;
 import LabPLANET.utilities.LPArray;
 import LabPLANET.utilities.LPPlatform;
-import java.sql.SQLException;
 import java.util.Arrays;
 
 /**
@@ -143,7 +142,6 @@ public class SopList {
      * @param schemaPrefix
      * @param sopAssigned
      * @return
-     * @throws SQLException
      */
     public Object[] dbUpdateSopListSopAssigned( String schemaPrefix, String[] sopAssigned){    
         String schemaConfigName = "config";     
@@ -208,7 +206,6 @@ public class SopList {
             for (Integer i=0;i<arrayPosic;i++){
                 newArray[i] = currSopAssignedValue[i];                
             }
-            newArray[arrayPosic++] = sopId;
             setSopListSopAssigned(newArray);
         }    
         return LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, "SopList_SopAssignedToSopList", 

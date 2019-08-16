@@ -103,7 +103,6 @@ public class QualityAssurance_requirements_doc extends HttpServlet {
                 Files.deleteIfExists(file.toPath());
                 fileWriter.write(fileContent);
                 fileWriter.flush();
-                fileWriter.close();   
             }
         }
     }

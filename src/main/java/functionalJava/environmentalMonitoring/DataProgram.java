@@ -78,7 +78,7 @@ Object[] createProgram( String schemaPrefix, String projectTemplate, Integer pro
     String javaDocLineNameProj = "";
     DataDataIntegrity labIntChecker = new DataDataIntegrity();
 
-    if (devMode==true){
+    if (devMode){
         StackTraceElement[] elementsDev = Thread.currentThread().getStackTrace();
         javaDocLineNameProj = "BEGIN";
         javaDocFieldsProj = LPArray.addValueToArray1D(javaDocFieldsProj, LPPlatform.JAVADOC_LINE_FLDNAME);
@@ -100,7 +100,7 @@ Object[] createProgram( String schemaPrefix, String projectTemplate, Integer pro
         mandatoryFieldsProj = labIntChecker.getTableMandatoryFields(schemaDataName, this.getSampleGrouper()+"_"+tableName, actionName);
         
         
-    if (devMode==true){
+    if (devMode){
         StackTraceElement[] elementsDev = Thread.currentThread().getStackTrace();
         javaDocLineNameProj = "CHECK sampleFieldName and sampleFieldValue match in length";
         javaDocFieldsProj = LPArray.addValueToArray1D(javaDocFieldsProj, LPPlatform.JAVADOC_LINE_FLDNAME);
@@ -109,7 +109,7 @@ Object[] createProgram( String schemaPrefix, String projectTemplate, Integer pro
         javaDocValuesProj = LPArray.addValueToArray1D(javaDocValuesProj, classVersionProj);
         LPPlatform.addJavaClassDoc(javaDocFieldsProj, javaDocValuesProj, elementsDev);
     }    
-    if (devMode==false){
+    if (!devMode){
         String[] diagnosesProj = LPArray.checkTwoArraysSameLength(sampleFieldName, sampleFieldValue);
         if (sampleFieldName.length!=sampleFieldValue.length){
             StackTraceElement[] elements = Thread.currentThread().getStackTrace();
@@ -122,7 +122,7 @@ Object[] createProgram( String schemaPrefix, String projectTemplate, Integer pro
             return diagnosesProj;
         }
     }    
-    if (devMode==true){
+    if (devMode){
         StackTraceElement[] elementsDev = Thread.currentThread().getStackTrace();
         javaDocLineNameProj = "CHECK sampleFieldName and sampleFieldValue match in length";
         javaDocFieldsProj = LPArray.addValueToArray1D(javaDocFieldsProj, LPPlatform.JAVADOC_LINE_FLDNAME);
@@ -132,7 +132,7 @@ Object[] createProgram( String schemaPrefix, String projectTemplate, Integer pro
         LPPlatform.addJavaClassDoc(javaDocFieldsProj, javaDocValuesProj, elementsDev);
     }    
     Object[] diagnosesProj = new Object[0];
-    if (devMode==false){        
+    if (!devMode){        
         if (LPArray.duplicates(sampleFieldName)){
             StackTraceElement[] elements = Thread.currentThread().getStackTrace();
             diagnosesProj[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
@@ -239,7 +239,7 @@ Object[] createProgram( String schemaPrefix, String projectTemplate, Integer pro
 
         return diagnosesProj;  
     }    
-    if (devMode==true){
+    if (devMode){
         StackTraceElement[] elementsDev = Thread.currentThread().getStackTrace();
         javaDocLineNameProj = "END";
         Integer specialFieldIndex = Arrays.asList(javaDocFieldsProj).indexOf(LPPlatform.JAVADOC_LINE_FLDNAME);

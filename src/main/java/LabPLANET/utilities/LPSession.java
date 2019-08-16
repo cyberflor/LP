@@ -17,20 +17,17 @@ public class LPSession {
     
     public static final String FIELDNAME_SESSION_ID = "session_id";
     
-    public static Object[] newAppSession( String[] fieldsName2, Object[] fieldsValue2){        
+    public static Object[] newAppSession( String[] fieldsName, Object[] fieldsValue){        
         Date nowLocalDate = LPDate.getTimeStampLocalDate();
-        String schemaAppName = "app";
         String tableName = "app_session";
         
-        String[] fieldsName = null;     
-        Object[] fieldsValue = null;
         
         fieldsName = LPArray.addValueToArray1D(fieldsName, "date_started");
         fieldsValue = LPArray.addValueToArray1D(fieldsValue, nowLocalDate);
 
-        fieldsName = LPArray.addValueToArray1D(fieldsName, "person");
-        fieldsValue = LPArray.addValueToArray1D(fieldsValue, "1111");        
-        return Rdbms.insertRecordInTable(schemaAppName, tableName, fieldsName, fieldsValue);            
+//        fieldsName = LPArray.addValueToArray1D(fieldsName, "person");
+//        fieldsValue = LPArray.addValueToArray1D(fieldsValue, "1");        
+        return Rdbms.insertRecordInTable(LPPlatform.SCHEMA_APP, tableName, fieldsName, fieldsValue);            
     }
     
     /**
@@ -40,14 +37,13 @@ public class LPSession {
      * @return
      */
     public static Object[] getAppSession( Integer appSessionId, String[] fieldsToRetrieve){
-        String schemaAppName = "app";
         String tableName = "app_session";
         if (fieldsToRetrieve==null){
             fieldsToRetrieve = LPArray.addValueToArray1D(fieldsToRetrieve, FIELDNAME_SESSION_ID);
             fieldsToRetrieve = LPArray.addValueToArray1D(fieldsToRetrieve, "date_started");
         }
         
-        Object[][] recordFieldsBySessionId = Rdbms.getRecordFieldsByFilter(schemaAppName, tableName, 
+        Object[][] recordFieldsBySessionId = Rdbms.getRecordFieldsByFilter(LPPlatform.SCHEMA_APP, tableName, 
                 new String[]{FIELDNAME_SESSION_ID}, new Object[]{appSessionId}, fieldsToRetrieve);
         return LPArray.array2dTo1d(recordFieldsBySessionId);
     }
@@ -65,7 +61,7 @@ public class LPSession {
      */
     public static Object[] addProcessSession( String processName, Integer appSessionId, String[] fieldsNamesToInsert){
         String tableName = "session";
-        String schemaAuditName = LPPlatform.buildSchemaName(processName, "data-audit");       
+        String schemaAuditName = LPPlatform.buildSchemaName(processName, LPPlatform.SCHEMA_DATA_AUDIT);       
         
         Object[][] recordFieldsBySessionId = Rdbms.getRecordFieldsByFilter(schemaAuditName, tableName, 
                 new String[]{FIELDNAME_SESSION_ID}, new Object[]{appSessionId}, fieldsNamesToInsert);

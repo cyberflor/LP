@@ -14,9 +14,6 @@ import functionalJava.user.UserAndRolesViews;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Arrays;
-import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 
 /**
@@ -285,27 +282,6 @@ public class UserSop {
         }
     }
     
-    Integer  _notRequireddbGetUserSopBySopId( String schemaName, String userId, Integer sopId) {
-        String schemaDataName = "data";
-        schemaName = LPPlatform.buildSchemaName(schemaDataName, schemaName);
-        
-        String query = "";
-        schemaName = "\""+schemaName+"\"";
-        query = "select user_sop_id from " + schemaName + ".user_sop "        
-            + "   where user_id =? and sop_id = ? ";
-        try{     
-            ResultSet res = Rdbms.prepRdQuery(query, new Object [] {userId, sopId.toString()});          
-            res.last();            
-
-            if (res.getRow()>0) return res.getInt("user_sop_id");
-
-            return null;
-        }catch (SQLException ex) {
-            Logger.getLogger(query).log(Level.SEVERE, null, ex);
-            return null;
-        }
-            
-    }
 
     /**
      *
@@ -408,13 +384,13 @@ public class UserSop {
         if (SOP_PASS_LIGHT_CODE.equalsIgnoreCase(sopInfo[0][3].toString())){
             return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, ERROR_TRAPING_SOP_MARKEDASCOMPLETED_NOT_PENDING, new Object[]{sopName, schemaPrefix});
         }
-        Object[] UserSopDiagnositc=Rdbms.updateRecordFieldsByFilter(schemaName, TABLENAME_DATA_USER_SOP, 
+        Object[] userSopDiagnositc=Rdbms.updateRecordFieldsByFilter(schemaName, TABLENAME_DATA_USER_SOP, 
                 new String[]{FIELDNAME_SOP_READ_COMPLETED, FIELDNAME_SOP_STATUS, FIELDNAME_SOP_LIGHT}, new Object[]{true, SOP_PASS_CODE, SOP_PASS_LIGHT_CODE},
                 new String[]{FIELDNAME_SOP_NAME, FIELDNAME_SOP_USER_NAME}, new Object[]{sopName, userName} );
-        if (LPPlatform.LAB_TRUE.equalsIgnoreCase(UserSopDiagnositc[0].toString())){
-            UserSopDiagnositc[UserSopDiagnositc.length]="Sop assigned";
+        if (LPPlatform.LAB_TRUE.equalsIgnoreCase(userSopDiagnositc[0].toString())){
+            userSopDiagnositc[userSopDiagnositc.length]="Sop assigned";
         }
-        return UserSopDiagnositc; 
+        return userSopDiagnositc; 
     }
     
 }

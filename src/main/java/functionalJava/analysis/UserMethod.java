@@ -5,7 +5,6 @@
  */
 package functionalJava.analysis;
 
-import LabPLANET.utilities.LPArray;
 import LabPLANET.utilities.LPPlatform;
 import databases.Rdbms;
 import functionalJava.parameter.Parameter;

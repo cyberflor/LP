@@ -9,7 +9,6 @@ import LabPLANET.utilities.LPNulls;
 import com.sun.rowset.CachedRowSetImpl;
 import LabPLANET.utilities.LPArray;
 import LabPLANET.utilities.LPPlatform;
-import com.labplanet.servicios.app.globalAPIsParams;
 import functionalJava.parameter.Parameter;
 import functionalJava.testingScripts.LPTestingOutFormat;
 import java.sql.Array;
@@ -43,8 +42,7 @@ public class Rdbms {
     private static Connection conn = null;
     private static Boolean isStarted = false;
     private static Integer timeout;
-    private final String lastError = "";
-    Integer transactionId = 0;
+    private static Integer transactionId = 0;
     String savepointName;
     Savepoint savepoint=null;  
     
@@ -58,7 +56,7 @@ public class Rdbms {
     public static final String ERROR_TRAPPING_RDBMS_NOT_FILTER_SPECIFIED="Rdbms_NotFilterSpecified";
     public static final String ERROR_TRAPPING_RDBMS_RECORD_NOT_FOUND="Rbdms_existsRecord_RecordNotFound";    
     
-    //public static final String BUNDLE_FILE_NAME_CONFIG="parameter.config.config";
+    public static final String BUNDLE_FILE_NAME_CONFIG="parameter.config.app-config";
         public static final String BUNDLE_PARAMETER_DBURL="dburl";
         public static final String BUNDLE_PARAMETER_DBDRIVER="dbDriver";
         public static final String BUNDLE_PARAMETER_DBTIMEOUT="dbtimeout";
@@ -90,11 +88,11 @@ public class Rdbms {
     public Boolean startRdbmsTomcat(String user, String pass) {        
             ResourceBundle prop = ResourceBundle.getBundle(Parameter.BUNDLE_TAG_PARAMETER_CONFIG_CONF);
             String url = prop.getString(BUNDLE_PARAMETER_DBURL);
-            String dbDriver = prop.getString(BUNDLE_PARAMETER_DBDRIVER);
+//            String dbDriver = prop.getString(BUNDLE_PARAMETER_DBDRIVER);
             Integer conTimeOut = Integer.valueOf(prop.getString(BUNDLE_PARAMETER_DBTIMEOUT));            
-            String datasrc = prop.getString(BUNDLE_PARAMETER_DATASOURCE);            
+//            String datasrc = prop.getString(BUNDLE_PARAMETER_DATASOURCE);            
             try{
-                Context ctx = new InitialContext();
+//                Context ctx = new InitialContext();
                 Properties dbProps = new Properties();
                 dbProps.setProperty("user", user);
                 dbProps.setProperty("password", pass);
@@ -114,7 +112,7 @@ public class Rdbms {
                   setIsStarted(Boolean.FALSE);
                   return Boolean.FALSE;
                 }                                 
-            } catch (SQLException | NamingException e){
+            } catch (SQLException e){
                 return Boolean.FALSE;
             }
             
@@ -202,11 +200,6 @@ public class Rdbms {
     
     public Integer getTimeout() { return timeout;}
 
-    /**
-     *
-     * @return
-     */
-    public String getLastError(){return lastError;}
 
     private static void setConnection(Connection con){ Rdbms.conn=con; }
     
@@ -701,32 +694,20 @@ public class Rdbms {
                 null, null, null, fieldNames, fieldValues,
                 null, null);              
         String query= hmQuery.keySet().iterator().next();   
-        //Object[] keyFieldValueNew = hmQuery.get(query);        
-        try {                        
-            fieldValues = LPArray.encryptTableFieldArray(schemaName, tableName, fieldNames, fieldValues); 
-            String[] insertRecordDiagnosis = Rdbms.prepUpQueryK(query, fieldValues, 1);
-            fieldValues = LPArray.decryptTableFieldArray(schemaName, tableName, fieldNames, (Object[]) fieldValues); 
-            Object[] diagnosis = new Object[0];
-            rdbms.errorCode = "Rdbms_RecordCreated";
-            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, String.valueOf(insertRecordDiagnosis[1]));
-            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, query);
-            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, Arrays.toString(fieldValues));            
-            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, schemaName);                
-            if (LPPlatform.LAB_TRUE.equalsIgnoreCase(insertRecordDiagnosis[0])){
-                diagnosis =  LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, rdbms.errorCode, errorDetailVariables);                         
-                diagnosis = LPArray.addValueToArray1D(diagnosis, insertRecordDiagnosis[1]);                
-            }else{
-                 diagnosis =  LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, rdbms.errorCode, errorDetailVariables);     
-                 diagnosis = LPArray.addValueToArray1D(diagnosis, insertRecordDiagnosis[1]);   
-            }
+        //Object[] keyFieldValueNew = hmQuery.get(query);
+        fieldValues = LPArray.encryptTableFieldArray(schemaName, tableName, fieldNames, fieldValues);
+        String[] insertRecordDiagnosis = Rdbms.prepUpQueryK(query, fieldValues, 1);
+        fieldValues = LPArray.decryptTableFieldArray(schemaName, tableName, fieldNames, (Object[]) fieldValues);
+        rdbms.errorCode = "Rdbms_RecordCreated";
+        errorDetailVariables = new String[]{String.valueOf(insertRecordDiagnosis[1]), query, Arrays.toString(fieldValues), schemaName};
+        if (LPPlatform.LAB_TRUE.equalsIgnoreCase(insertRecordDiagnosis[0])){
+            Object[] diagnosis =  LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, rdbms.errorCode, errorDetailVariables);
+            diagnosis = LPArray.addValueToArray1D(diagnosis, insertRecordDiagnosis[1]);
             return diagnosis;
-        } catch (SQLException er) {
-            String ermessage=er.getLocalizedMessage()+er.getCause();
-            Logger.getLogger(query).log(Level.SEVERE, null, er);     
-            rdbms.errorCode = ERROR_TRAPPING_RDBMS_DT_SQL_EXCEPTION;
-            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, ermessage);
-            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, query);
-            return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, rdbms.errorCode, errorDetailVariables);                         
+        }else{
+            Object[] diagnosis =  LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, rdbms.errorCode, errorDetailVariables);
+            diagnosis = LPArray.addValueToArray1D(diagnosis, insertRecordDiagnosis[1]);
+            return diagnosis;                         
         }
     }
     
@@ -844,12 +825,12 @@ public class Rdbms {
         return -999;
     }
     
-    private static String[] prepUpQueryK(String consultaconinterrogaciones, Object [] valoresinterrogaciones, Integer indexposition) throws SQLException{
-        String pkValue = "";
-        PreparedStatement prep=getConnection().prepareStatement(consultaconinterrogaciones, Statement.RETURN_GENERATED_KEYS);            
-        setTimeout(rdbms.getTimeout());
-        buildPreparedStatement(valoresinterrogaciones, prep);         
+    private static String[] prepUpQueryK(String consultaconinterrogaciones, Object [] valoresinterrogaciones, Integer indexposition) {
         try{
+            String pkValue = "";
+            PreparedStatement prep=getConnection().prepareStatement(consultaconinterrogaciones, Statement.RETURN_GENERATED_KEYS);            
+            setTimeout(rdbms.getTimeout());
+            buildPreparedStatement(valoresinterrogaciones, prep);         
 //            PreparedStatement prep=getConnection().prepareStatement(consultaconinterrogaciones);            
             prep.executeUpdate();        
             ResultSet rs = prep.getGeneratedKeys();
@@ -863,10 +844,11 @@ public class Rdbms {
                   return new String[]{LPPlatform.LAB_TRUE, String.valueOf(newId)};              
               }
             }
+            return new String[]{LPPlatform.LAB_TRUE, pkValue};
         }catch (SQLException er){
             return new String[]{LPPlatform.LAB_FALSE, er.getMessage()}; //"TABLE WITH NO KEY";
         }//finally{rs.close();}
-        return new String[]{LPPlatform.LAB_TRUE, pkValue};
+
     }
     
     /**

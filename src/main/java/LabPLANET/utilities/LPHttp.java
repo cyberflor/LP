@@ -5,9 +5,7 @@
  */
 package LabPLANET.utilities;
 
-import functionalJava.parameter.Parameter;
 import java.io.UnsupportedEncodingException;
-import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
@@ -33,11 +31,9 @@ public class LPHttp {
         response.setContentType("application/json");
         response.setCharacterEncoding(LPPlatform.LAB_ENCODER_UTF8);
 
-        ResourceBundle prop = ResourceBundle.getBundle(Parameter.BUNDLE_TAG_PARAMETER_CONFIG_CONF);
-        String frontendUrl = prop.getString("frontend_url");
+ //       ResourceBundle prop = ResourceBundle.getBundle("parameter.config.conf");
         response.setHeader("CORS_ORIGIN_ALLOW_ALL", "True");                
         response.setHeader("CORS_ALLOW_CREDENTIALS", "True");                 //False
-        //response.setHeader("Access-Control-Allow-Origin", fronendUrl);
         response.setHeader("Access-Control-Allow-Methods", "GET");        
         response.setHeader("Access-Control-Allow-Origin", "*");
         //response.setHeader("Access-Control-Allow-Origin", "http://127.0.0.1:8081");

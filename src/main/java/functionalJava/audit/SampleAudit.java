@@ -361,6 +361,7 @@ public class SampleAudit {
  * @return 
  */    
     public String _sampleJsonString( String schemaPrefix, Integer sampleId) {
+        // Not implemented yet
         String jsonStructure = null;
                
         String schemaName = LPPlatform.buildSchemaName(schemaPrefix, LPPlatform.SCHEMA_DATA);  
@@ -434,6 +435,7 @@ object.element("def", array);
  * Under development!!!! Example on how to build a json structure using JsonGenerator.
  */    
     public void _jsonToFile(){
+        // Not implemented yet
         String typeString = "STRING";
         FileWriter writer = null;
             try {

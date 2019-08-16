@@ -22,13 +22,13 @@ import javax.sql.rowset.serial.SerialException;
  * @author Administrator
  */
 public final class BatchArray extends Batch{
-    public Integer numTotalPositions = 0;
-    public Integer numRows = 0;
-    public Integer numCols = 0; 
-    public Integer numTotalObjects = 0;
+    private Integer numTotalPositions = 0;
+    private Integer numRows = 0;
+    private Integer numCols = 0; 
+    private Integer numTotalObjects = 0;
     public String[][] batchPosic;    
-    public Object[] linesName;
-    public Object[] columnsName;
+    private Object[] linesName;
+    private Object[] columnsName;
 
     /**
      *  Creates one BatchArray object in memory
@@ -97,7 +97,7 @@ public final class BatchArray extends Batch{
      * Return the number of objects contained in the Batch Array
      * @return Integer
      */
-    public Integer getBatchTotalObjets(){return this.numTotalObjects;}
+    public Integer getBatchTotalObjets(){return this.getNumTotalObjects();}
     
     /**
      * Return the batch content in a 2-dimensions way independently of being in use or free.
@@ -166,7 +166,7 @@ public final class BatchArray extends Batch{
      * @return String
      */
     public String batchArrayAddObjectInPosic(Integer row, Integer col, String objId) {
-        if ( (row<=this.numRows) && (col<=this.numCols)) {                               
+        if ( (row<=this.getNumRows()) && (col<=this.getNumCols())) {                               
             if (batchPosic[row-1][col-1] == null) {
                 ++this.numTotalObjects;
                 batchPosic[row-1][col-1] = objId;
@@ -188,7 +188,7 @@ public final class BatchArray extends Batch{
      */
     public String batchArrayAddObjectInPosicOverride(Integer row, Integer col, String objId) {
         String addType = ""; 
-        if ( (row<=this.numRows) && (col<=this.numCols)) {                               
+        if ( (row<=this.getNumRows()) && (col<=this.getNumCols())) {                               
             if (batchPosic[row-1][col-1] == null){
                 ++this.numTotalObjects;
                 addType = "Added Succesfully";
@@ -223,8 +223,8 @@ public final class BatchArray extends Batch{
     public ArrayList searchStringContent(String searchPattern) {  
         ArrayList foundPosic = new ArrayList();            
 //    Arrays.sort(batchPosic);        
-        for(int i = 0; i < this.numRows; i++){
-          for(int j = 0; j < this.numCols; j++){              
+        for(int i = 0; i < this.getNumRows(); i++){
+          for(int j = 0; j < this.getNumCols(); j++){              
             if ((batchPosic[i][j] != null) && (batchPosic[i][j] == null ? searchPattern == null : batchPosic[i][j].equals(searchPattern)) ){
                 int posicI = i + 1; 
                 int posicJ = j + 1;
@@ -248,8 +248,7 @@ public final class BatchArray extends Batch{
                                                 new String[]{"name", "template", "template_version", "array_num_rows",
                                                      "array_num_cols", "array_total_positions", "array_total_objects",
                                                     "array_lines_name", "array_columns_name"},
-                                                new Object [] {this.getBatchName(), this.getBatchTemplate(), this.getBatchTemplateVersion(), this.numRows,
-                                                    this.numCols, this.numTotalPositions, this.numTotalObjects,
+                                                new Object [] {this.getBatchName(), this.getBatchTemplate(), this.getBatchTemplateVersion(), this.getNumRows(), this.getNumCols(), this.numTotalPositions, this.getNumTotalObjects(),
                                                     this.linesName, this.columnsName});
     }   
     public static BatchArray dbGetBatchArray(String schemaName, String batchName){
@@ -283,5 +282,26 @@ public final class BatchArray extends Batch{
             }
         }
         return null;
+    }
+
+    /**
+     * @return the numRows
+     */
+    public Integer getNumRows() {
+        return numRows;
+    }
+
+    /**
+     * @return the numCols
+     */
+    public Integer getNumCols() {
+        return numCols;
+    }
+
+    /**
+     * @return the numTotalObjects
+     */
+    public Integer getNumTotalObjects() {
+        return numTotalObjects;
     }
 }

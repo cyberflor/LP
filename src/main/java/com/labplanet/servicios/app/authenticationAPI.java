@@ -14,6 +14,7 @@ import LabPLANET.utilities.LPSession;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import databases.Rdbms;
 import databases.Token;
+import databases.dbObjectsAppTables;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Arrays;
@@ -69,10 +70,10 @@ public class authenticationAPI extends HttpServlet {
                     }     
                     String dbUserName = request.getParameter(globalAPIsParams.REQUEST_PARAM_DB_USERNAME);                   
                     String dbUserPassword = request.getParameter(globalAPIsParams.REQUEST_PARAM_DB_PSSWD);  
+                    String personName = UserAndRolesViews.getUserByPerson(dbUserName);
                     
                     if (!LPFrontEnd.servletStablishDBConection(request, response)){return;}
                                        
-                    String personName = UserAndRolesViews.getUserByPerson(dbUserName);
                     if (LPPlatform.LAB_FALSE.equalsIgnoreCase(personName)){               
                         LPFrontEnd.servletReturnResponseError(request, response, authenticationAPIParams.ERROR_PROPERTY_PERSON_NOT_FOUND, null, language);              
                         return;                                                          
@@ -123,8 +124,8 @@ public class authenticationAPI extends HttpServlet {
                     jArray.addAll(Arrays.asList(allUserProcedureRoles));        
                     response.getWriter().write(jArray.toJSONString()); 
 
-                    Rdbms.closeRdbms();                     
-                    if (1==1) return;
+Rdbms.closeRdbms();                     
+if (1==1) return;
                     
                     Object[][] recordFieldsByFilter = Rdbms.getRecordFieldsByFilter(LPPlatform.SCHEMA_CONFIG, "user_profile", 
                                 new String[]{"user_info_id"}, new Object[]{personName}, new String[]{"role_id"});
@@ -144,7 +145,8 @@ public class authenticationAPI extends HttpServlet {
                     response.getWriter().write(jArray.toJSONString());   
                     Rdbms.closeRdbms();    
                     return;                                
-                case authenticationAPIParams.API_ENDPOINT_FINAL_TOKEN:     
+                case authenticationAPIParams.API_ENDPOINT_FINAL_TOKEN:   
+                    if (!LPFrontEnd.servletStablishDBConection(request, response)){return;}      
                     areMandatoryParamsInResponse = LPHttp.areMandatoryParamsInApiRequest(request, authenticationAPIParams.MANDATORY_PARAMS_CASE_FINALTOKEN.split("\\|"));
                     if (LPPlatform.LAB_FALSE.equalsIgnoreCase(areMandatoryParamsInResponse[0].toString())){
                         LPFrontEnd.servletReturnResponseError(request, response, 
@@ -152,49 +154,35 @@ public class authenticationAPI extends HttpServlet {
                         return;                                               
                     }                                                     
                     firstToken = request.getParameter(globalAPIsParams.REQUEST_PARAM_MY_TOKEN);                   
-                    String userRole = request.getParameter(globalAPIsParams.REQUEST_PARAM_USER_ROLE);                      
- if (1!=1){
-     JSONObject obj = new JSONObject();
-     obj.put(   authenticationAPIParams.RESPONSE_JSON_TAG_APP_SESSION_ID, "12");
-     obj.put(   authenticationAPIParams.RESPONSE_JSON_TAG_APP_SESSION_DATE, LPDate.getTimeStampLocalDate().toString());
-     obj.put(   authenticationAPIParams.RESPONSE_JSON_TAG_FINAL_TOKEN, "eyJ1c2VyREIiOiJsYWJwbGFuZXQiLCJ0eXAiOiJKV1QiLCJ1c2VyUm9sZSI6ImNvb3JkaW5hdG9yIiwidXNlckRCUGFzc3dvcmQiOiJMYWJQbGFuZXQiLCJhbGciOiJIUzI1NiIsImludGVybmFsVXNlcklEIjoiMSJ9.eyJpc3MiOiJMYWJQTEFORVRkZXN0cmFuZ2lzSW5UaGVOaWdodCJ9.4_dqXo8ebPx6Oiyh6Ef3HxhFdmZG8qzZ0oyirgVG7zU");
-     response.getWriter().write(obj.toString());
-     return;
- }        
+                    String userRole = request.getParameter(globalAPIsParams.REQUEST_PARAM_USER_ROLE); 
+                    String userName = request.getParameter(globalAPIsParams.REQUEST_PARAM_DB_USERNAME); 
+
                     token = new Token(firstToken);
 
-String sessionIdStr = "";
-if (1==1){
-    sessionIdStr = "12";
-}else{                    
                     String[] fieldsName = new String[]{"person", "role_name"};
-                    Object[] fieldsValue = new Object[]{personName, userRole};
-                    Object[] newAppSession = LPSession.newAppSession(fieldsName, fieldsValue);
-                    
+                    Object[] fieldsValue = new Object[]{token.getPersonName(), userRole};
+                    Object[] newAppSession = LPSession.newAppSession(fieldsName, fieldsValue);                    
                     if (LPPlatform.LAB_FALSE.equalsIgnoreCase(newAppSession[0].toString())){   
                         LPFrontEnd.servletReturnResponseError(request, response, authenticationAPIParams.ERROR_PROPERTY_SESSION_ID_NOT_GENERATED, null, language);              
                         return;                                                         
-                    }
-                    
+                    }                    
                     Integer sessionId = Integer.parseInt((String) newAppSession[newAppSession.length-1]);
+                    String sessionIdStr = sessionId.toString();
                     if (sessionId==null){
                         LPFrontEnd.servletReturnResponseError(request, response, authenticationAPIParams.ERROR_PROPERTY_SESSION_ID_NULL_NOT_ALLOWED, null, language);          
                         return;                                                   
                     }
-}                    
-                    Date nowLocalDate = LPDate.getTimeStampLocalDate();
+                    Date nowLocalDate =LPDate.getTimeStampLocalDate();
                     
-//                    Object[][] userEsignInfo = Rdbms.getRecordFieldsByFilter("app", "users", new String[]{"user_name"}, new Object[]{userName}, new String[]{"e_sign"});
-                    Object[][] userEsignInfo = new Object[1][1];
-                    userEsignInfo[0][0]="mala";
+                    Object[][] userEsignInfo = Rdbms.getRecordFieldsByFilter(LPPlatform.SCHEMA_APP, dbObjectsAppTables.TABLE_NAME_APP_USERS, 
+                            new String[]{dbObjectsAppTables.FIELD_NAME_APP_USERS_USER_NAME}, new Object[]{userName}, 
+                            new String[]{dbObjectsAppTables.FIELD_NAME_APP_USERS_ESIGN});
                     if (LPPlatform.LAB_FALSE.equalsIgnoreCase(userEsignInfo[0][0].toString())){  
                         LPFrontEnd.servletReturnResponseError(request, response, authenticationAPIParams.ERROR_PROPERTY_ESIGN_INFO_NOT_AVAILABLE, null, language);       
                         return;                                                                                
-                    }
-                               
+                    }                               
                     String myFinalToken = token.createToken(token.getUserName(), token.getUsrPw(), token.getPersonName(), 
                             userRole, sessionIdStr, nowLocalDate.toString(), userEsignInfo[0][0].toString());
-
                     Rdbms.closeRdbms();                    
                     jsonObj = new JSONObject();
                     jsonObj.put(authenticationAPIParams.RESPONSE_JSON_TAG_FINAL_TOKEN, myFinalToken);

@@ -97,7 +97,7 @@ public class sopUserAPI extends HttpServlet {
         } catch (SQLException ex) {
             Logger.getLogger(envMonAPI.class.getName()).log(Level.SEVERE, null, ex);
         }        
-        Object[] UserSopDiagnositc=new Object[0];
+        Object[] userSopDiagnositc=new Object[0];
         try (PrintWriter out = response.getWriter()) {        
             switch (actionName.toUpperCase()){
             case "SOP_MARK_AS_COMPLETED":    
@@ -109,7 +109,7 @@ public class sopUserAPI extends HttpServlet {
                 }   
                 String sopName = request.getParameter(globalAPIsParams.REQUEST_PARAM_SOP_NAME);
                 String userName = token.getUserName();
-                UserSopDiagnositc=UserSop.userSopMarkedAsCompletedByUser(schemaPrefix, userName, sopName);
+                userSopDiagnositc=UserSop.userSopMarkedAsCompletedByUser(schemaPrefix, userName, sopName);
                 break;
 
             default:                
@@ -117,14 +117,14 @@ public class sopUserAPI extends HttpServlet {
                 return;                                          
             }
 
-            if (LPPlatform.LAB_FALSE.equalsIgnoreCase(UserSopDiagnositc[0].toString())){  
+            if (LPPlatform.LAB_FALSE.equalsIgnoreCase(userSopDiagnositc[0].toString())){  
                 Rdbms.rollbackWithSavePoint();
                 if (!con.getAutoCommit()){
                     con.rollback();
                     con.setAutoCommit(true);}                
-                LPFrontEnd.servletReturnResponseErrorLPFalseDiagnostic(request, response, UserSopDiagnositc);   
+                LPFrontEnd.servletReturnResponseErrorLPFalseDiagnostic(request, response, userSopDiagnositc);   
             }else{
-                LPFrontEnd.servletReturnResponseErrorLPTrueDiagnostic(request, response, UserSopDiagnositc);
+                LPFrontEnd.servletReturnResponseErrorLPTrueDiagnostic(request, response, userSopDiagnositc);
             }                 
         }catch(Exception e){
             LPFrontEnd.servletReturnResponseError(request, response, LPPlatform.API_ERRORTRAPING_EXCEPTION_RAISED, new Object[]{e.getMessage(), this.getServletName()}, language);                   
@@ -137,7 +137,6 @@ public class sopUserAPI extends HttpServlet {
      *
      * @param request servlet request
      * @param response servlet response
-     * @throws IOException if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response){

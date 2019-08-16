@@ -279,7 +279,7 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
                 Object[] isCorrect = null;
                 if (ruleVariablesArr.length==2){isCorrect = qualSpec.specLimitIsCorrectQualitative(ruleVariablesArr[0], ruleVariablesArr[1], null);}                
                 else{isCorrect = qualSpec.specLimitIsCorrectQualitative(ruleVariablesArr[0], ruleVariablesArr[1], ruleVariablesArr[2]);}
-                if ((Boolean) isCorrect[0]==true){myDiagnoses=DIAGNOSES_SUCCESS;}
+                if ((Boolean) isCorrect[0]){myDiagnoses=DIAGNOSES_SUCCESS;}
                 else{myDiagnoses="ERROR: "+isCorrect[1];}
                 break;
             case "QUANTITATIVE": 
@@ -299,7 +299,7 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
                 }                
                 ConfigSpecRule quantSpec2 = new ConfigSpecRule();
                 isCorrect = quantSpec2.specLimitIsCorrectQuantitative(minSpec, maxSpec, minControl, maxControl);                
-                if ((Boolean) isCorrect[0]==true){myDiagnoses=DIAGNOSES_SUCCESS;}
+                if ((Boolean) isCorrect[0]){myDiagnoses=DIAGNOSES_SUCCESS;}
                 else{myDiagnoses="ERROR: "+isCorrect[1];}
                 break;       
             default:   

@@ -227,13 +227,11 @@ public class  LPArray {
                         break;               
                     case "DATE":        
                         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-                        {
                             try {
                                 myObjectsArray[i]= format.parse((String) rowParse[0]);
                             } catch (ParseException ex) {
                                 Logger.getLogger(LPArray.class.getName()).log(Level.SEVERE, null, ex);
                             }
-                        }
                         break;                                                            
                     default:
                         myObjectsArray[i]=rowParse[0];
@@ -277,7 +275,6 @@ public class  LPArray {
             BufferedReader bufin = new BufferedReader(reader);
             Integer numLines = 0;
             String line = null;
-            String[][] myArray = new String[0][0];
             
             while((line = bufin.readLine()) != null) {            
                 numLines++;            
@@ -286,7 +283,7 @@ public class  LPArray {
                 if (inArray.length>columnsInCsv) {columnsInCsv = inArray.length;}                
             }
 
-            myArray = new String[numLines][columnsInCsv];    
+            String[][] myArray = new String[numLines][columnsInCsv];    
             for (Integer inumLines=0;inumLines<numLines;inumLines++){                
                 String[] inArray = myArray1D[inumLines].split(String.valueOf(csvSeparator));
                 System.arraycopy(inArray, 0, myArray[inumLines], 0, inArray.length);

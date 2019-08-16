@@ -1009,9 +1009,7 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
         String[] updFields = new String[]{"last_analysis_on", "last_sample", "last_sample_analysis"};
         Object[] updFieldsValue = new Object[]{Rdbms.getLocalDate(), sampleId, testId};            
         Object[][] userMethodInfo;
-        userMethodInfo = Rdbms.getRecordFieldsByFilter(schemaDataName, "user_method", 
-                                                whereFields,
-                                                whereFieldsValue,
+        userMethodInfo = Rdbms.getRecordFieldsByFilter(schemaDataName, "user_method", whereFields, whereFieldsValue,
                                                 new String[]{"user_method_id", "user_id", FIELDNAME_ANALYSIS, FIELDNAME_SAMPLE_ANALYSIS_METHOD_NAME, FIELDNAME_SAMPLE_ANALYSIS_METHOD_VERSION});
         if (!(LPPlatform.LAB_FALSE.equalsIgnoreCase(userMethodInfo[0][0].toString())) ){ 
             diagnoses = Rdbms.updateRecordFieldsByFilter(schemaDataName, "user_method", 
@@ -1217,7 +1215,7 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
             }
             String specEval = (String) resSpecEvaluation[resSpecEvaluation.length-1];      
             String specEvalDetail = (String) resSpecEvaluation[resSpecEvaluation.length-2];
-            if (requiresUnitsConversion==true){
+            if (requiresUnitsConversion){
                 specEvalDetail=specEvalDetail+ " in "+specUomName;}
             
             fieldsName = LPArray.addValueToArray1D(fieldsName, FIELDNAME_SPEC_EVAL);
@@ -1433,13 +1431,6 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
             errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, currStatus);                    
             return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);                                  
         }
-    }
-
-    /**
-     *
-     */
-    public void _groupSampleCreate(){
-    // Not implemented yet
     }
 /*
 private Map getDefaultValuesTemplate(String schema, String tsample, String template) throws SQLException {
@@ -2251,7 +2242,6 @@ public Object[] logSampleSubAliquot( String schemaPrefix, Integer aliquotId, Str
     String auditActionName = "LOG_SAMPLE_SUBALIQUOT";
 
     String schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, LPPlatform.SCHEMA_DATA);    
-    String schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, LPPlatform.SCHEMA_CONFIG); 
     
     Object[] fieldNameValueArrayChecker = LPParadigm.fieldNameValueArrayChecker(smpSubAliqFieldName, smpSubAliqFieldValue);
     if (!LPPlatform.LAB_TRUE.equalsIgnoreCase(fieldNameValueArrayChecker[0].toString())){return fieldNameValueArrayChecker;}          
@@ -2350,7 +2340,6 @@ public Object[] logSampleSubAliquot( String schemaPrefix, Integer aliquotId, Str
      * @param fieldName
      * @param fieldValue
      * @param userRole
-     * @param dataSample
      * @return
      */
     public Object[] sampleAnalysisAddtoSample(String schemaPrefix, String userName, Integer sampleId, String[] fieldName, Object[] fieldValue, String userRole) {
@@ -2424,7 +2413,7 @@ public Object[] logSampleSubAliquot( String schemaPrefix, Integer aliquotId, Str
                     this.errorDetailVariables = LPArray.addValueToArray1D(this.errorDetailVariables, schemaDataName);
                     return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, this.errorCode, this.errorDetailVariables);
                 }
-                if ((Boolean) specRules[0][0] == false) {
+                if (!Boolean.valueOf(specRules[0][0].toString())) {
                     String[] specAnalysisFieldName = new String[]{DataSample.FIELDNAME_ANALYSIS, FIELDNAME_SAMPLE_ANALYSIS_METHOD_NAME, FIELDNAME_SAMPLE_ANALYSIS_METHOD_VERSION};
                     Object[] specAnalysisFieldValue = new Object[0];
                     for (String iFieldN : specAnalysisFieldName) {

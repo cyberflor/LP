@@ -117,28 +117,27 @@ public class TstDataBatchArrSequence extends HttpServlet {
                 mb.batchAssignOperator("newOper");
                 String comment = mb.batchCommentOpen("OperA", "");
                 if (!comment.isEmpty())
-                {comment = comment + " (Comment created by:" + mb.getBatchCommentAuthor() + ") <br>";
-                };
+                    comment = comment + " (Comment created by:" + mb.getBatchCommentAuthor() + ") <br>";
                 
-                out.println("Batch Position length is: " + mb.numTotalPositions + " in a " + mb.numRows + " x " + mb.numCols + " array.<br>");
+                out.println("Batch Position length is: " + mb.getNumTotalObjects() + " in a " + mb.getNumRows() + " x " + mb.getNumCols() + " array.<br>");
                 
                 //System.out.println(mb.name + " " + mb.getBatchOperator() + " " + comment);
                 
-                out.println("Adding Sample 1 in position 11x1: " + mb.batchArrayAddObjectInPosic(1, 1, "Sample 1") + ". Objects in the array: " + mb.getBatchTotalObjets() + " / " + mb.numTotalPositions + "<br>");
-                out.println("Adding Sample 2 in position 9x1: " + mb.batchArrayAddObjectInPosic(2, 1, "Sample 2") + ". Objects in the array: " + mb.getBatchTotalObjets() + " / " + mb.numTotalPositions + "<br>");
-                out.println("Adding Sample 3 in position 9x1: " + mb.batchArrayAddObjectInPosic(1, 2, "Sample 3") + ". Objects in the array: " + mb.getBatchTotalObjets() + " / " + mb.numTotalPositions + "<br>");
+                out.println("Adding Sample 1 in position 11x1: " + mb.batchArrayAddObjectInPosic(1, 1, "Sample 1") + ". Objects in the array: " + mb.getBatchTotalObjets() + " / " + mb.getNumTotalObjects() + "<br>");
+                out.println("Adding Sample 2 in position 9x1: " + mb.batchArrayAddObjectInPosic(2, 1, "Sample 2") + ". Objects in the array: " + mb.getBatchTotalObjets() + " / " + mb.getNumTotalObjects() + "<br>");
+                out.println("Adding Sample 3 in position 9x1: " + mb.batchArrayAddObjectInPosic(1, 2, "Sample 3") + ". Objects in the array: " + mb.getBatchTotalObjets() + " / " + mb.getNumTotalObjects() + "<br>");
                 
-                out.println("Adding Sample 4 in position 9x1 by override: " + mb.batchArrayAddObjectInPosicOverride(2, 2, "Sample 4") + ". Objects in the array: " + mb.getBatchTotalObjets() + " / " + mb.numTotalPositions + "<br>");
+                out.println("Adding Sample 4 in position 9x1 by override: " + mb.batchArrayAddObjectInPosicOverride(2, 2, "Sample 4") + ". Objects in the array: " + mb.getBatchTotalObjets() + " / " + mb.getNumTotalObjects() + "<br>");
                 
-                out.println("Adding Sample 5 in position 10x10 by override: " + mb.batchArrayAddObjectInPosicOverride(10, 10, "Sample 5") + ". Objects in the array: " + mb.getBatchTotalObjets() + " / " + mb.numTotalPositions + "<br>");
+                out.println("Adding Sample 5 in position 10x10 by override: " + mb.batchArrayAddObjectInPosicOverride(10, 10, "Sample 5") + ". Objects in the array: " + mb.getBatchTotalObjets() + " / " + mb.getNumTotalObjects() + "<br>");
                 
-                out.println("Adding Sample 5 in position 10x2 by override: " + mb.batchArrayAddObjectInPosicOverride(10, 2, "Sample 5") + ". Objects in the array: " + mb.getBatchTotalObjets() + " / " + mb.numTotalPositions + "<br>");
+                out.println("Adding Sample 5 in position 10x2 by override: " + mb.batchArrayAddObjectInPosicOverride(10, 2, "Sample 5") + ". Objects in the array: " + mb.getBatchTotalObjets() + " / " + mb.getNumTotalObjects() + "<br>");
 
-                out.println("Adding Sample 6 in position 10x2 without override: " + mb.batchArrayAddObjectInPosic(10, 2, "Sample 6") + ". Objects in the array: " + mb.getBatchTotalObjets() + " / " + mb.numTotalPositions + "<br>");
+                out.println("Adding Sample 6 in position 10x2 without override: " + mb.batchArrayAddObjectInPosic(10, 2, "Sample 6") + ". Objects in the array: " + mb.getBatchTotalObjets() + " / " + mb.getNumTotalObjects() + "<br>");
                                 
-                out.println("Adding Sample 6 in position 1x1 by override: " + mb.batchArrayAddObjectInPosicOverride(1, 1, "Sample 6") + ". Objects in the array: " + mb.getBatchTotalObjets() + " / " + mb.numTotalPositions + "<br>");
+                out.println("Adding Sample 6 in position 1x1 by override: " + mb.batchArrayAddObjectInPosicOverride(1, 1, "Sample 6") + ". Objects in the array: " + mb.getBatchTotalObjets() + " / " + mb.getNumTotalObjects() + "<br>");
                 
-                out.println("Adding Sample 7 in position 2x5 by override: " + mb.batchArrayAddObjectInPosicOverride(2, 5, "Sample 7") + ". Objects in the array: " + mb.getBatchTotalObjets() + " / " + mb.numTotalPositions + "<br>");
+                out.println("Adding Sample 7 in position 2x5 by override: " + mb.batchArrayAddObjectInPosicOverride(2, 5, "Sample 7") + ". Objects in the array: " + mb.getBatchTotalObjets() + " / " + mb.getNumTotalObjects() + "<br>");
 
                 out.println("The object in position 9x1 is: " + mb.getBatchPositionContent(1, 1) + "<br>");
                 
@@ -152,7 +151,7 @@ public class TstDataBatchArrSequence extends HttpServlet {
                 
                 out.println("The Sample 1 was found in " + mb.searchStringContent("Sample 1").size() + " positions." + "<br>");
                 
-                out.println("Adding Sample 4 again in position 1x2 by override: " + mb.batchArrayAddObjectInPosicOverride(1, 2, "Sample 4") + ". Objects in the array: " + mb.getBatchTotalObjets() + " / " + mb.numTotalPositions + "<br>");
+                out.println("Adding Sample 4 again in position 1x2 by override: " + mb.batchArrayAddObjectInPosicOverride(1, 2, "Sample 4") + ". Objects in the array: " + mb.getBatchTotalObjets() + " / " + mb.getNumTotalObjects() + "<br>");
                 
                 out.println("The Sample 4 was found in " + mb.searchStringContent("Sample 4").size() + " positions." + "<br>");
                 
@@ -183,9 +182,9 @@ public class TstDataBatchArrSequence extends HttpServlet {
                 fieldName[2] = "array_lines_name";
                 fieldValue[2] = lineName;                
                 fieldName[3] = "array_total_objects";
-                fieldValue[3] = myBatchArray[0].numTotalObjects;                
+                fieldValue[3] = myBatchArray[0].getNumTotalObjects();                
                 fieldName[4] = "array_total_positions";
-                fieldValue[4] = myBatchArray[0].numTotalPositions;                
+                fieldValue[4] = myBatchArray[0].getNumTotalObjects();                
 //                dbObj = new DBTransac(rdbm, schemaName, currentUser, currentUSerRole, "Update",tableName, fieldName, fieldValue, keyFieldName, keyFieldValue);                                                                  
 //                dbObj.DBAction(rdbm);                                
             }

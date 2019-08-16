@@ -222,46 +222,7 @@ public class LPTestingOutFormat {
         return hm;
     }
 
-    public static HashMap<String, Object>  _getCSVHeader(Object[][] csvContent){
-        HashMap<String, Object> fieldsRequired = new HashMap();   
-        fieldsRequired.put(FILEHEADER_NUM_HEADER_LINES_TAG_NAME, "");   fieldsRequired.put(FILEHEADER_NUM_TABLES_TAG_NAME, "");   
-        fieldsRequired.put(FILEHEADER_NUM_EVALUATION_ARGUMENTS, "");   
-        HashMap<String, Object> hm = new HashMap();   
-        
-        Integer maxHeaderLines=FILEHEADER_MAX_NUM_HEADER_LINES;
-        if (csvContent.length<maxHeaderLines){maxHeaderLines=csvContent.length-1;}
-        Integer iLineParsed = 0;
-        Boolean continueParsing=true;        
-        while (continueParsing){
-            String getLineKey = LPNulls.replaceNull(csvContent[iLineParsed][0]).toString().toUpperCase();
-            String getLineValue = LPNulls.replaceNull((String) csvContent[iLineParsed][1]);
-            if (fieldsRequired.containsKey(getLineKey)){
-                switch (getLineKey.toUpperCase()){
-                    case FILEHEADER_NUM_HEADER_LINES_TAG_NAME:
-                        maxHeaderLines=Integer.parseInt(getLineValue);
-                        break;
-                    case FILEHEADER_NUM_TABLES_TAG_NAME:
-                        Integer numTbls=Integer.parseInt(getLineValue);
-                        for (int iNumTbls=1; iNumTbls<=numTbls; iNumTbls++){
-                            fieldsRequired.put(FILEHEADER_TABLE_NAME_TAG_NAME+String.valueOf(iNumTbls), "");
-                        }
-                        break; 
-                    default:
-                        break;
-                }                
-                hm.put(getLineKey, getLineValue);
-                fieldsRequired.remove(getLineKey);
-            }                
-            if (iLineParsed>=maxHeaderLines){continueParsing=false;}
-            iLineParsed++;
-        }
-        if (!fieldsRequired.isEmpty()){
-            hm.clear();                 
-            hm.put(LPPlatform.LAB_FALSE, LPHashMap.hashMapToStringKeys(fieldsRequired, ", "));
-        }        
-        return hm;
-    }
-        
+
     public static String createSummaryTable(TestingAssertSummary tstAssert){
         String fileContentHeaderSummary = LPTestingOutFormat.tableStart()+rowStart();
         String fileContentSummary =rowStart();

@@ -31,7 +31,6 @@ public class DBActions extends HttpServlet {
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      *
-     * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
@@ -40,7 +39,7 @@ public class DBActions extends HttpServlet {
         public static final String ENDPOINTS_BEING_TESTED_INSERT="INSERT";
         public static final String ENDPOINTS_BEING_TESTED_GETRECORDFIELDSBYFILTER="GETRECORDFIELDSBYFILTER";
         public static final String ENDPOINTS_BEING_TESTED_UPDATE="UPDATE";
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)            throws ServletException, IOException {
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response)            throws IOException {
         request=LPHttp.requestPreparation(request);
         response=LPHttp.responsePreparation(response);
 
@@ -233,7 +232,7 @@ public class DBActions extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)  {
         try{
         processRequest(request, response);
-        }catch(ServletException|IOException e){
+        }catch(IOException e){
             LPFrontEnd.servletReturnResponseError(request, response, e.getMessage(), new Object[]{}, null);
         }
     }
@@ -248,7 +247,7 @@ public class DBActions extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)  {
         try{
         processRequest(request, response);
-        }catch(ServletException|IOException e){
+        }catch(IOException e){
             LPFrontEnd.servletReturnResponseError(request, response, e.getMessage(), new Object[]{}, null);
         }
     }

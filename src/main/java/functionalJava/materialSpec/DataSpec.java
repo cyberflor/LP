@@ -372,7 +372,7 @@ public class DataSpec {
 
         if (minControl!=null){
             if (minControl.equals(minSpec)) {                
-                if (minStrict==false || minStrict==null){
+                if (!minStrict || minStrict==null){
                     errorVariables = LPArray.addValueToArray1D(errorVariables, EVALUATION_CODE_QUANTITATIVE_OUT_ARGUMENT_MIN_SPEC_MIN_CONTROL);                   
                     errorVariables = LPArray.addValueToArray1D(errorVariables, minSpec);
                     errorVariables = LPArray.addValueToArray1D(errorVariables, "Min Strict  is set to false.");                   
@@ -381,7 +381,7 @@ public class DataSpec {
                     return diagnoses;
                 }
 
-                if (minStrict==true && minControlStrict==true){
+                if (minStrict && minControlStrict){
                     errorVariables = LPArray.addValueToArray1D(errorVariables, EVALUATION_CODE_QUANTITATIVE_OUT_ARGUMENT_MIN_SPEC_MIN_CONTROL);                   
                     errorVariables = LPArray.addValueToArray1D(errorVariables, minSpec);
                     errorVariables = LPArray.addValueToArray1D(errorVariables, "both, min Spec & Control Strict, set to true");                   
@@ -417,7 +417,7 @@ public class DataSpec {
         
         if (maxControl!=null){
             if (maxControl.equals(maxSpec)) {                
-                if (maxStrict==false || maxStrict==null){
+                if (!maxStrict || maxStrict==null){
                     errorVariables = LPArray.addValueToArray1D(errorVariables, EVALUATION_CODE_QUANTITATIVE_OUT_ARGUMENT_MAX_SPEC_MAX_CONTROL);                   
                     errorVariables = LPArray.addValueToArray1D(errorVariables, maxSpec);
                     errorVariables = LPArray.addValueToArray1D(errorVariables, "max Strict is set to false.");                   
@@ -426,7 +426,7 @@ public class DataSpec {
                     return diagnoses;                    
                 }
 
-                if (maxStrict==true && maxControlStrict==true){
+                if (maxStrict && maxControlStrict){
                     errorVariables = LPArray.addValueToArray1D(errorVariables, EVALUATION_CODE_QUANTITATIVE_OUT_ARGUMENT_MAX_SPEC_MAX_CONTROL);                   
                     errorVariables = LPArray.addValueToArray1D(errorVariables, maxSpec);
                     errorVariables = LPArray.addValueToArray1D(errorVariables, "both, max Spec & Control Strict, set to true..");                   
@@ -502,7 +502,7 @@ public class DataSpec {
 
         if (minControl!=null){
             if (minControl.equals(minSpec)) {                
-                if (minStrict==false || minStrict==null){
+                if (!minStrict || minStrict==null){
                     errorCode = ERROR_TRAPPING_RESULT_CHECK_STRICT_DOES_NOT_ALLOW_EQUALS;
                     errorVariables = LPArray.addValueToArray1D(errorVariables, EVALUATION_CODE_QUANTITATIVE_OUT_ARGUMENT_MIN_SPEC_MIN_CONTROL);                   
                     errorVariables = LPArray.addValueToArray1D(errorVariables, minSpec);
@@ -512,7 +512,7 @@ public class DataSpec {
                     return diagnoses;
                 }
 
-                if (minStrict==true && minControlStrict==true){
+                if (minStrict && minControlStrict){
                     errorCode = ERROR_TRAPPING_RESULT_CHECK_STRICT_DOES_NOT_ALLOW_EQUALS;
                     errorVariables = LPArray.addValueToArray1D(errorVariables, EVALUATION_CODE_QUANTITATIVE_OUT_ARGUMENT_MIN_SPEC_MIN_CONTROL);                   
                     errorVariables = LPArray.addValueToArray1D(errorVariables, minSpec);
@@ -540,7 +540,7 @@ public class DataSpec {
         if (maxControl!=null){
             
             if (maxControl.equals(maxSpec)) {                
-                if (maxStrict==false || maxStrict==null){
+                if (!maxStrict || maxStrict==null){
                     errorCode = ERROR_TRAPPING_RESULT_CHECK_STRICT_DOES_NOT_ALLOW_EQUALS;
                     errorVariables = LPArray.addValueToArray1D(errorVariables, EVALUATION_CODE_QUANTITATIVE_OUT_ARGUMENT_MAX_SPEC_MAX_CONTROL);                   
                     errorVariables = LPArray.addValueToArray1D(errorVariables, maxSpec);
@@ -550,7 +550,7 @@ public class DataSpec {
                     return diagnoses;                    
                 }
 
-                if (maxStrict==true && maxControlStrict==true){
+                if (maxStrict && maxControlStrict){
                     errorCode = ERROR_TRAPPING_RESULT_CHECK_STRICT_DOES_NOT_ALLOW_EQUALS;
                     errorVariables = LPArray.addValueToArray1D(errorVariables, EVALUATION_CODE_QUANTITATIVE_OUT_ARGUMENT_MAX_SPEC_MAX_CONTROL);                   
                     errorVariables = LPArray.addValueToArray1D(errorVariables, maxSpec);

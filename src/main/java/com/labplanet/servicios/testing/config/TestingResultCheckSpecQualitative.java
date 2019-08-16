@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.labplanet.servicios.testing.config;;
+package com.labplanet.servicios.testing.config;
 
 import LabPLANET.utilities.LPPlatform;
 import LabPLANET.utilities.LPArray;

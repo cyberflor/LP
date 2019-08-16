@@ -38,8 +38,8 @@ public class DataBatch {
         Object[] insertRecordInTable = Rdbms.insertRecordInTable(schemaName, tableName, 
                                                 new String[]{"name, template, template_version, array_num_rows,"
                                                     + "array_num_cols, array_total_positions, array_total_objects"},
-                                                new Object [] {batchArray.getBatchName(), batchArray.getBatchTemplate(), batchArray.getBatchTemplateVersion(), batchArray.numRows,
-                                                    + batchArray.numCols, batchArray.numTotalPositions, batchArray.numTotalObjects});
+                                                new Object [] {batchArray.getBatchName(), batchArray.getBatchTemplate(), batchArray.getBatchTemplateVersion(), batchArray.getNumRows(),
+                                                    + batchArray.getNumCols(), batchArray.getNumTotalObjects(), batchArray.getNumTotalObjects()});
         if (LPPlatform.LAB_FALSE.equalsIgnoreCase(insertRecordInTable[0].toString())){return insertRecordInTable[0].toString();}
         functionResult = "Added to the database";
         return functionResult;
@@ -64,8 +64,8 @@ public class DataBatch {
         return Rdbms.insertRecordInTable(schemaName, tableName, 
                                                 new String[]{"name, template, template_version, array_num_rows,"
                                                     + "array_num_cols, array_total_positions, array_total_objects"},
-                                                new Object [] {batchArray.getBatchName(), batchArray.getBatchTemplate(), batchArray.getBatchTemplateVersion(), batchArray.numRows,
-                                                    + batchArray.numCols, batchArray.numTotalPositions, batchArray.numTotalObjects});    
+                                                new Object [] {batchArray.getBatchName(), batchArray.getBatchTemplate(), batchArray.getBatchTemplateVersion(), batchArray.getNumRows(),
+                                                    + batchArray.getNumCols(), batchArray.getNumTotalObjects(), batchArray.getNumTotalObjects()});    
     }
     
     /**
