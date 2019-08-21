@@ -115,8 +115,7 @@ public class SopList {
      * @return
      */
     public Object[] dbInsertSopList( String schemaPrefix, String userInfoId){
-        String schemaConfigName = "config";     
-        schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, schemaConfigName);
+        String schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, LPPlatform.SCHEMA_CONFIG);
 
         //requires added_on
         String[] fieldNames = new String[0];
@@ -143,9 +142,8 @@ public class SopList {
      * @param sopAssigned
      * @return
      */
-    public Object[] dbUpdateSopListSopAssigned( String schemaPrefix, String[] sopAssigned){    
-        String schemaConfigName = "config";     
-        schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, schemaConfigName);
+    public Object[] dbUpdateSopListSopAssigned( String schemaPrefix, String[] sopAssigned){            
+        String schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, LPPlatform.SCHEMA_CONFIG);
         Object[] diagnoses = Rdbms.updateRecordFieldsByFilter(schemaConfigName, tableName, 
                                         new String[]{"sop_assigned"}, new Object[]{this.sopListId}, 
                                         new String[]{"sop_list_id"}, new Object[]{sopAssigned});

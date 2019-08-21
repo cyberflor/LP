@@ -26,8 +26,7 @@ public class _ConfigSamplingPlanForSpec {
     
     String[] mandatoryFields = new String[1];
     String tableName = "";
-    String schemaDataName = "data";
-    String schemaConfigName = "config";
+
         
     String mandatoryFieldsMissing = ""; 
 
@@ -71,7 +70,6 @@ public class _ConfigSamplingPlanForSpec {
      * @param fieldsValue
      * @param devMode
      * @return
-     * @throws SQLException
      */
     public Object[] newSamplingPlanDetailRecordDev( String schemaPrefix, String userName, String userRole, String[] fieldsName, Object[] fieldsValue, Boolean devMode) {
     if (devMode){
@@ -84,7 +82,7 @@ public class _ConfigSamplingPlanForSpec {
         String actionName = "Insert";
         tableName = "project";
         String auditActionName = "CREATE SAMPLING PLAN DETAIL RECORD";
-        schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, schemaConfigName);
+        String schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, LPPlatform.SCHEMA_CONFIG);
     if (devMode){
         StackTraceElement[] elementsDev = Thread.currentThread().getStackTrace();
         javaDocLineName = "CHECK fieldsName and fieldsValue match in length";
@@ -104,7 +102,7 @@ public class _ConfigSamplingPlanForSpec {
         LPPlatform.addJavaClassDoc(javaDocFields, javaDocValues, elementsDev);
     }  
     if (!devMode){
-        schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, schemaDataName);         
+        String schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, LPPlatform.SCHEMA_DATA);         
         Object[][] mandatoryFieldsCheck = LPPlatform.mandatoryFieldsCheck(schemaDataName, fieldsName, fieldsValue, tableName, actionName);                
         if (LPPlatform.LAB_FALSE.equalsIgnoreCase(mandatoryFieldsCheck[0][0].toString())){ return mandatoryFieldsCheck;}
         for (Integer i=0;i<mandatoryFieldsCheck[1].length;i++){
@@ -129,7 +127,7 @@ public class _ConfigSamplingPlanForSpec {
         LPPlatform.addJavaClassDoc(javaDocFields, javaDocValues, elementsDev);
     } 
     if (!devMode){
-        diagnoses = LPPlatform.configObjectExists(schemaConfigName, fieldsName, fieldsValue, tableName);
+        diagnoses = LPPlatform.configObjectExists(LPPlatform.SCHEMA_CONFIG, fieldsName, fieldsValue, tableName);
         if (LPPlatform.LAB_FALSE.equalsIgnoreCase(diagnoses[0].toString())){return diagnoses;}
     }
     if (devMode){
@@ -141,7 +139,7 @@ public class _ConfigSamplingPlanForSpec {
     }  
     if (!devMode){
         LPPlatform labPlat = new LPPlatform();
-        diagnoses = labPlat.specialFieldsCheck(schemaDataName, fieldsName, fieldsValue, tableName, actionName);
+        diagnoses = labPlat.specialFieldsCheck(LPPlatform.SCHEMA_DATA, fieldsName, fieldsValue, tableName, actionName);
         if (LPPlatform.LAB_FALSE.equalsIgnoreCase(diagnoses[0].toString())){return diagnoses;}
     }
     if (devMode){
@@ -152,7 +150,7 @@ public class _ConfigSamplingPlanForSpec {
         LPPlatform.addJavaClassDoc(javaDocFields, javaDocValues, elementsDev);
     }  
     if (!devMode){
-        diagnoses = Rdbms.insertRecordInTable(schemaDataName, tableName, fieldsName, fieldsValue);    
+        diagnoses = Rdbms.insertRecordInTable(LPPlatform.SCHEMA_DATA, tableName, fieldsName, fieldsValue);    
         if (LPPlatform.LAB_FALSE.equalsIgnoreCase(diagnoses[0].toString())){return diagnoses;}
     }    
     if (devMode){

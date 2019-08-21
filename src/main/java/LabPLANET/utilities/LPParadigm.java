@@ -20,19 +20,19 @@ public class LPParadigm {
         Object[] errorDetailVariables= new Object[0];
 
         diagnoses = LPArray.checkTwoArraysSameLength(fName, fValue);
-        if (!"LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){
+        if (!LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){
            errorCode = "DataSample_FieldArraysDifferentSize";
            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, Arrays.toString(fName));
            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, Arrays.toString(fValue));
-           return LPPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);
+           return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);
         }
         
         if (LPArray.duplicates(fName)){
            errorCode = "DataSample_FieldsDuplicated";
            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, Arrays.toString(fName));
-           return LPPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);                      
+           return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);                      
         }        
-        diagnoses = LPArray.addValueToArray1D(diagnoses, "LABPLANET_TRUE");
+        diagnoses = LPArray.addValueToArray1D(diagnoses, LPPlatform.LAB_TRUE);
         return diagnoses;
                 
     }

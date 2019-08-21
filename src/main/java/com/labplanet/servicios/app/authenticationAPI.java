@@ -58,8 +58,9 @@ public class authenticationAPI extends HttpServlet {
                         LPPlatform.API_ERRORTRAPING_MANDATORY_PARAMS_MISSING, new Object[]{areMandatoryParamsInResponse[1].toString()}, language);              
                 return;          
             }                        
-            String actionName = request.getParameter(globalAPIsParams.REQUEST_PARAM_ACTION_NAME);
-                                    
+            if (!LPFrontEnd.servletStablishDBConection(request, response)){return;}
+
+            String actionName = request.getParameter(globalAPIsParams.REQUEST_PARAM_ACTION_NAME);                                    
             switch (actionName.toUpperCase()){
                 case authenticationAPIParams.API_ENDPOINT_AUTHENTICATE:                         
                     areMandatoryParamsInResponse = LPHttp.areMandatoryParamsInApiRequest(request, authenticationAPIParams.MANDATORY_PARAMS_CASE_AUTHENTICATE.split("\\|"));
@@ -70,17 +71,13 @@ public class authenticationAPI extends HttpServlet {
                     }     
                     String dbUserName = request.getParameter(globalAPIsParams.REQUEST_PARAM_DB_USERNAME);                   
                     String dbUserPassword = request.getParameter(globalAPIsParams.REQUEST_PARAM_DB_PSSWD);  
-                    String personName = UserAndRolesViews.getUserByPerson(dbUserName);
-                    
-                    if (!LPFrontEnd.servletStablishDBConection(request, response)){return;}
-                                       
+                    String personName = UserAndRolesViews.getPersonByUser(dbUserName);
                     if (LPPlatform.LAB_FALSE.equalsIgnoreCase(personName)){               
                         LPFrontEnd.servletReturnResponseError(request, response, authenticationAPIParams.ERROR_PROPERTY_PERSON_NOT_FOUND, null, language);              
                         return;                                                          
                     }                    
                     Object[] validUserPassword = UserAndRolesViews.isValidUserPassword(dbUserName, dbUserPassword);
                     if (LPPlatform.LAB_FALSE.equalsIgnoreCase(validUserPassword[0].toString())){
-                        if (!LPFrontEnd.servletStablishDBConection(request, response)){return;}
                         validUserPassword = UserAndRolesViews.isValidUserPassword(dbUserName, dbUserPassword);
                         if (LPPlatform.LAB_FALSE.equalsIgnoreCase(validUserPassword[0].toString())){     
                             LPFrontEnd.servletReturnResponseError(request, response, authenticationAPIParams.ERROR_PROPERTY_INVALID_USER_PSSWD, null, language);              
@@ -105,8 +102,6 @@ public class authenticationAPI extends HttpServlet {
                     String firstToken = request.getParameter(globalAPIsParams.REQUEST_PARAM_MY_TOKEN);                   
                     
                     token = new Token(firstToken);
-                    
-                    if (!LPFrontEnd.servletStablishDBConection(request, response)){return;}             
                     
                     UserProfile usProf = new UserProfile();
                     Object[] allUserProcedurePrefix = usProf.getAllUserProcedurePrefix(token.getUserName());
@@ -146,7 +141,6 @@ if (1==1) return;
                     Rdbms.closeRdbms();    
                     return;                                
                 case authenticationAPIParams.API_ENDPOINT_FINAL_TOKEN:   
-                    if (!LPFrontEnd.servletStablishDBConection(request, response)){return;}      
                     areMandatoryParamsInResponse = LPHttp.areMandatoryParamsInApiRequest(request, authenticationAPIParams.MANDATORY_PARAMS_CASE_FINALTOKEN.split("\\|"));
                     if (LPPlatform.LAB_FALSE.equalsIgnoreCase(areMandatoryParamsInResponse[0].toString())){
                         LPFrontEnd.servletReturnResponseError(request, response, 
@@ -154,8 +148,7 @@ if (1==1) return;
                         return;                                               
                     }                                                     
                     firstToken = request.getParameter(globalAPIsParams.REQUEST_PARAM_MY_TOKEN);                   
-                    String userRole = request.getParameter(globalAPIsParams.REQUEST_PARAM_USER_ROLE); 
-                    String userName = request.getParameter(globalAPIsParams.REQUEST_PARAM_DB_USERNAME); 
+                    String userRole = request.getParameter(globalAPIsParams.REQUEST_PARAM_USER_ROLE);                     
 
                     token = new Token(firstToken);
 
@@ -174,8 +167,8 @@ if (1==1) return;
                     }
                     Date nowLocalDate =LPDate.getTimeStampLocalDate();
                     
-                    Object[][] userEsignInfo = Rdbms.getRecordFieldsByFilter(LPPlatform.SCHEMA_APP, dbObjectsAppTables.TABLE_NAME_APP_USERS, 
-                            new String[]{dbObjectsAppTables.FIELD_NAME_APP_USERS_USER_NAME}, new Object[]{userName}, 
+                   Object[][] userEsignInfo = Rdbms.getRecordFieldsByFilter(LPPlatform.SCHEMA_APP, dbObjectsAppTables.TABLE_NAME_APP_USERS, 
+                            new String[]{dbObjectsAppTables.FIELD_NAME_APP_USERS_USER_NAME}, new Object[]{token.getUserName()}, 
                             new String[]{dbObjectsAppTables.FIELD_NAME_APP_USERS_ESIGN});
                     if (LPPlatform.LAB_FALSE.equalsIgnoreCase(userEsignInfo[0][0].toString())){  
                         LPFrontEnd.servletReturnResponseError(request, response, authenticationAPIParams.ERROR_PROPERTY_ESIGN_INFO_NOT_AVAILABLE, null, language);       

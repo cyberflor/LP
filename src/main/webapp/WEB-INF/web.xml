@@ -82,7 +82,7 @@
         <servlet-class>com.labplanet.servicios.testing.data.TstDataBatchArrSequence</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>batchAPI</servlet-name>
+        <servlet-name>BatchAPI</servlet-name>
         <servlet-class>com.labplanet.servicios.ModuleBatch.batchAPI</servlet-class>
     </servlet>
     <!--// testing for the Platform. End  
@@ -148,6 +148,10 @@
         <servlet-name>procedureDefinitionToInstance</servlet-name>
         <servlet-class>com.labplanet.servicios.Requirements.procedureDefinitionToInstance</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>UserProfileAPI</servlet-name>
+        <servlet-class>com.labplanet.servicios.app.UserProfileAPI</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>DBActions</servlet-name>
         <url-pattern>/testing/platform/DBActions</url-pattern>
@@ -184,10 +188,6 @@
         <url-pattern>/testing/config/UOMFamilyTable</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>sampleAPI</servlet-name>
-        <url-pattern>/moduleSample/sampleAPI</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
         <servlet-name>authenticationAPI</servlet-name>
         <url-pattern>/frontEnd/authenticationAPI</url-pattern>
     </servlet-mapping>
@@ -218,10 +218,6 @@
     <servlet-mapping>
         <servlet-name>TstDataBatchArrSequence</servlet-name>
         <url-pattern>/Testing/DB/TstDataBatchArrSequence</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>batchAPI</servlet-name>
-        <url-pattern>/moduleBatch/batchAPI</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>TestingConfig_specQuantitative_ruleFormat</servlet-name>
@@ -286,6 +282,18 @@
     <servlet-mapping>
         <servlet-name>sopUser</servlet-name>
         <url-pattern>/app/sopUserAPI</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>BatchAPI</servlet-name>
+        <url-pattern>/moduleBatch/BatchAPI</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>sampleAPI</servlet-name>
+        <url-pattern>/moduleSample/sampleAPI</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>UserProfileAPI</servlet-name>
+        <url-pattern>/app/UserProfileAPI</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

@@ -24,11 +24,6 @@ public class DataProject extends DataSample{
 
     private Object[] diagnosesProj = new Object[7];
 
-
-    
-//    private final String schemaDataNameProj = "data";
-//    private final String schemaConfigNameProj = LPPlatform.SCHEMA_CONFIG;
-
     /**
      *
      * @param grouperName
@@ -47,11 +42,9 @@ public class DataProject extends DataSample{
      * @param userName
      * @param userRole
      * @return
-     * @throws IllegalAccessException
      * @throws IllegalArgumentException
-     * @throws InvocationTargetException
      */
-    public Object[] createProjectDev( String schemaPrefix, String sampleTemplate, Integer sampleTemplateVersion, String[] sampleFieldName, Object[] sampleFieldValue, String userName, String userRole) throws IllegalAccessException, InvocationTargetException{
+    public Object[] createProjectDev( String schemaPrefix, String sampleTemplate, Integer sampleTemplateVersion, String[] sampleFieldName, Object[] sampleFieldValue, String userName, String userRole){
         return createProject(schemaPrefix, sampleTemplate, sampleTemplateVersion, sampleFieldName, sampleFieldValue, userName, userRole, true);
 }
 
@@ -64,16 +57,13 @@ public class DataProject extends DataSample{
      * @param sampleFieldValue
      * @param userName
      * @param userRole
-     * @return
-     * @throws IllegalAccessException
-     * @throws IllegalArgumentException
-     * @throws InvocationTargetException
+     * @return     
      */
-    public Object[] createProject( String schemaPrefix, String sampleTemplate, Integer sampleTemplateVersion, String[] sampleFieldName, Object[] sampleFieldValue, String userName, String userRole) throws IllegalAccessException, InvocationTargetException{
+    public Object[] createProject( String schemaPrefix, String sampleTemplate, Integer sampleTemplateVersion, String[] sampleFieldName, Object[] sampleFieldValue, String userName, String userRole) {
         return createProject(schemaPrefix, sampleTemplate, sampleTemplateVersion, sampleFieldName, sampleFieldValue, userName, userRole, false);
     }
 
-Object[] createProject( String schemaPrefix, String projectTemplate, Integer projectTemplateVersion, String[] sampleFieldName, Object[] sampleFieldValue, String userName, String userRole, Boolean devMode) throws IllegalAccessException, InvocationTargetException{
+Object[] createProject( String schemaPrefix, String projectTemplate, Integer projectTemplateVersion, String[] sampleFieldName, Object[] sampleFieldValue, String userName, String userRole, Boolean devMode) {
     String classVersionProj = "0.1";
     String[] mandatoryFieldsProj = null;
     Object[] mandatoryFieldsValueProj = null;
@@ -121,7 +111,7 @@ Object[] createProject( String schemaPrefix, String projectTemplate, Integer pro
             diagnosesProj[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
             diagnosesProj[1]= classVersionProj;
             diagnosesProj[2]= "Code Line " + (elements[1].getLineNumber());   
-            diagnosesProj[3]="LABPLANET_FALSE";
+            diagnosesProj[3]=LPPlatform.LAB_FALSE;
             diagnosesProj[4]="ERROR:Field names and values arrays with different length";
             diagnosesProj[5]="The values in FieldName are:"+ Arrays.toString(sampleFieldName)+". and in FieldValue are:"+Arrays.toString(sampleFieldValue);
             return diagnosesProj;
@@ -184,7 +174,7 @@ Object[] createProject( String schemaPrefix, String projectTemplate, Integer pro
             return diagnosesProj;
         }        
         Object[] diagnosis = Rdbms.existsRecord(schemaConfigName, tableName, new String[]{LPPlatform.SCHEMA_CONFIG,"config_version"}, new Object[]{projectTemplate, projectTemplateVersion});
-        if (!"LABPLANET_TRUE".equalsIgnoreCase(diagnosis[0].toString())){	
+        if (!LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnosis[0].toString())){	
             StackTraceElement[] elements = Thread.currentThread().getStackTrace();
             diagnosesProj[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
             diagnosesProj[1]= classVersionProj;
@@ -205,29 +195,30 @@ Object[] createProject( String schemaPrefix, String projectTemplate, Integer pro
             String currFieldValue = sampleFieldValue[inumLines].toString();
             boolean contains = Arrays.asList(specialFields).contains(currField);
             if (contains){                    
-                    specialFieldIndex = Arrays.asList(specialFields).indexOf(currField);
-                    String aMethod = specialFieldsFunction[specialFieldIndex];
-                    Method method = null;
-                    try {
+                    try {                    
+                        specialFieldIndex = Arrays.asList(specialFields).indexOf(currField);
+                        String aMethod = specialFieldsFunction[specialFieldIndex];
+                        Method method = null;
                         Class<?>[] paramTypes = {Rdbms.class, String[].class, String.class, String.class, Integer.class};
                         method = getClass().getDeclaredMethod(aMethod, paramTypes);
-                    } catch (NoSuchMethodException | SecurityException ex) {
-                        String errorCode = "LabPLANETPlatform_SpecialFunctionReturnedEXCEPTION";
-                        Object[] errorDetailVariables = new Object[0];
-                        errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, ex.getMessage());
-                        return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);                        
+                        Object specialFunctionReturn = method.invoke(this, null, schemaPrefix, projectTemplate, projectTemplateVersion);
+                        if (specialFunctionReturn.toString().contains("ERROR")){
+                            StackTraceElement[] elements = Thread.currentThread().getStackTrace();
+                            diagnosesProj[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
+                            diagnosesProj[1]= classVersionProj;
+                            diagnosesProj[2]= "Code Line " + (elements[1].getLineNumber());
+                            diagnosesProj[3]=LPPlatform.LAB_FALSE;
+                            diagnosesProj[4]=specialFunctionReturn.toString();
+                            diagnosesProj[5]="The field " + currField + " is considered special and its checker (" + aMethod + ") returned the Error above";
+                            return diagnosesProj;                
+                        }
+                    } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException | NoSuchMethodException ex) {
+                        Logger.getLogger(DataProject.class.getName()).log(Level.SEVERE, null, ex);
+                            String errorCode = "LabPLANETPlatform_SpecialFunctionReturnedEXCEPTION";
+                            Object[] errorDetailVariables = new Object[0];
+                            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, ex.getMessage());
+                            return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);                        
                     }
-                    Object specialFunctionReturn = method.invoke(this, null, schemaPrefix, projectTemplate, projectTemplateVersion);      
-                    if (specialFunctionReturn.toString().contains("ERROR")){
-                        StackTraceElement[] elements = Thread.currentThread().getStackTrace();
-                        diagnosesProj[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
-                        diagnosesProj[1]= classVersionProj;
-                        diagnosesProj[2]= "Code Line " + (elements[1].getLineNumber());
-                        diagnosesProj[3]=LPPlatform.LAB_FALSE;
-                        diagnosesProj[4]=specialFunctionReturn.toString();
-                        diagnosesProj[5]="The field " + currField + " is considered special and its checker (" + aMethod + ") returned the Error above";
-                        return diagnosesProj;                            
-                    }                
             }
         }
         sampleFieldName = LPArray.addValueToArray1D(sampleFieldName, LPPlatform.SCHEMA_CONFIG);    
@@ -278,7 +269,7 @@ Object[] createProject( String schemaPrefix, String projectTemplate, Integer pro
             fieldValue = LPArray.addValueToArray1D(fieldValue, projectName);
             newProjSample = ds.logSample(schemaPrefix, projectTemplate, projectTemplateVersion, fieldName, fieldValue, userName, userRole, appSessionId);
             /*if (!newProjSample[3].equalsIgnoreCase(LPPlatform.LAB_FALSE)){
-                String schemaDataNameProj = "data";
+                String schemaDataNameProj = LPPlatform.SCHEMA_DATA;
                 String schemaConfigNameProj = LPPlatform.SCHEMA_CONFIG;
 
                 LPPlatform labPlat = new LPPlatform();

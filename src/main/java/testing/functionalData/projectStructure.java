@@ -15,7 +15,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -101,11 +100,7 @@ public class projectStructure extends HttpServlet {
                         fileContent = fileContent + "<td>templateName, templateVersion, fieldNames, fieldValues</td>";
                         fileContent = fileContent + LPTestingOutFormat.fieldStart()+projectTemplate+", "+projectTemplateVersion.toString()+", "
                                 +configSpecTestingArray[i][4].toString()+", "+configSpecTestingArray[i][5].toString()+LPTestingOutFormat.fieldEnd();                        
-                        try {
-                            dataProject = prj.createProject(schemaPrefix, projectTemplate, projectTemplateVersion, fieldName, fieldValue, userName, userRole);
-                        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
-                            Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
-                        }
+                        dataProject = prj.createProject(schemaPrefix, projectTemplate, projectTemplateVersion, fieldName, fieldValue, userName, userRole);
                         break;
                     case "LOGPROJECTSAMPLE":
                         String projectName=null;
@@ -121,11 +116,7 @@ public class projectStructure extends HttpServlet {
                         fileContent = fileContent + "<td>projectName, templateName, templateVersion, fieldNames, fieldValues</td>";
                         fileContent = fileContent + LPTestingOutFormat.fieldStart()+projectName+", "+projectTemplate+", "+projectTemplateVersion.toString()+", "
                                 +configSpecTestingArray[i][4].toString()+", "+configSpecTestingArray[i][5].toString()+LPTestingOutFormat.fieldEnd();                        
-                        try {
-                            dataProject = prj.logProjectSample(schemaPrefix, projectTemplate, projectTemplateVersion, fieldName, fieldValue, userName, userRole, projectName, null);
-                        } catch (IllegalArgumentException ex) {
-                            Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
-                        }
+                        dataProject = prj.logProjectSample(schemaPrefix, projectTemplate, projectTemplateVersion, fieldName, fieldValue, userName, userRole, projectName, null);
                         break;   
                     case "SAMPLEANALYSISADD":
                         if (configSpecTestingArray[i][3]!=null){sampleId = Integer.parseInt( (String) configSpecTestingArray[i][3]);}
@@ -133,15 +124,11 @@ public class projectStructure extends HttpServlet {
                         if (configSpecTestingArray[i][5]!=null){fieldName = configSpecTestingArray[i][5].toString().split("\\|");}              
                         if (configSpecTestingArray[i][6]!=null){fieldValue = configSpecTestingArray[i][6].toString().split("\\|");}
                         fieldValue = LPArray.convertStringWithDataTypeToObjectArray((String[]) fieldValue);
-                        try {                        
-                            fieldValue = LPArray.convertStringWithDataTypeToObjectArray(configSpecTestingArray[i][6].toString().split("\\|"));
-                            fileContent = fileContent + "<td>sampleId, userName, fieldNames, fieldValues</td>";
-                            fileContent = fileContent + LPTestingOutFormat.fieldStart()+sampleId.toString()+", "+userName+", "
-                                +configSpecTestingArray[i][5].toString()+", "+configSpecTestingArray[i][6].toString()+LPTestingOutFormat.fieldEnd();                             
-                            dataProject = prj.sampleAnalysisAddtoSample(schemaPrefix, userName, sampleId, fieldName, fieldValue, userRole);
-                        } catch (IllegalArgumentException | NullPointerException ex) {
-                            Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
-                        }
+                        fieldValue = LPArray.convertStringWithDataTypeToObjectArray(configSpecTestingArray[i][6].toString().split("\\|"));
+                        fileContent = fileContent + "<td>sampleId, userName, fieldNames, fieldValues</td>";
+                        fileContent = fileContent + LPTestingOutFormat.fieldStart()+sampleId.toString()+", "+userName+", "
+                            +configSpecTestingArray[i][5].toString()+", "+configSpecTestingArray[i][6].toString()+LPTestingOutFormat.fieldEnd();                             
+                        dataProject = prj.sampleAnalysisAddtoSample(schemaPrefix, userName, sampleId, fieldName, fieldValue, userRole);
                         break;                           
                     default:                
                         break;

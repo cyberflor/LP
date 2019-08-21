@@ -45,7 +45,6 @@ public class DataSpec {
     public static final String EVALUATION_CODE_QUANTITATIVE_OUT_ARGUMENT_MIN_SPEC_MIN_CONTROL="Min Spec and Min Control";
     public static final String EVALUATION_CODE_QUANTITATIVE_OUT_ARGUMENT_MAX_SPEC_MAX_CONTROL="Max Spec and Control";    
     
-    
     public static final String EVALUATION_CODE_QUALITATIVE_IN="DataSpec_resultCheck_qualitativeIN";    
     public static final String EVALUATION_CODE_QUALITATIVE_OUT_EQUAL_TO="DataSpec_resultCheck_qualitativeEqualToOUT"; 
     public static final String EVALUATION_CODE_QUALITATIVE_OUT_NOT_EQUAL_TO="DataSpec_resultCheck_qualitativeNotEqualToOUT"; 
@@ -577,6 +576,7 @@ public class DataSpec {
         diagnoses = LPArray.addValueToArray1D(diagnoses, EVALUATION_IN);
         return diagnoses;            
     }
+    
     
 
 }

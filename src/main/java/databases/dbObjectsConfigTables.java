@@ -9,7 +9,19 @@ package databases;
  *
  * @author Administrator
  */
-public class dbObjectsConfigTables {
+public class dbObjectsConfigTables {    
+    
+    public static final String TABLE_CONFIG_PERSON="person";
+        public static final String FLD_CONFIG_PERSON_PERSON_ID="person_id";
+        public static final String FLD_CONFIG_PERSON_BIRTH_DATE="birth_date";
+        public static final String FLD_CONFIG_PERSON_FIRST_NAME="first_name";  
+        public static final String FLD_CONFIG_PERSON_LAST_NAME="last_name";  
+        public static final String FLD_CONFIG_PERSON_PHOTO="photo";
+    private Object[][] tableConfigPersonScript(String schemaPrefix){
+        //Falta implementarlo
+        String tableName = TABLE_CONFIG_SPEC;
+        return new Object[0][0];
+    }  
     
     public static final String TABLE_CONFIG_SPEC="spec";
         public static final String FLD_CONFIG_SPEC_CODE="code";

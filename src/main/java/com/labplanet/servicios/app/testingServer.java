@@ -11,6 +11,8 @@ import LabPLANET.utilities.LPHttp;
 import LabPLANET.utilities.LPMath;
 import databases.Rdbms;
 import databases.Token;
+import databases.dbObjectsAppTables;
+import databases.dbObjectsAppTables.SchemaApppTableAppSession;
 import functionalJava.sampleStructure.DataSampleUtilities;
 import functionalJava.testingScripts.LPTestingOutFormat;
 import java.io.IOException;
@@ -87,6 +89,10 @@ public class testingServer extends HttpServlet {
             }else{
                 out.println("NOT Connected to the db :(");
             }
+            out.println("The name for the table Session in db is "+ SchemaApppTableAppSession.valueOf("TABLE_NAME").getName());
+            out.println("The name for the field Session_id in db is "+SchemaApppTableAppSession.valueOf("FIELD_SESSION_ID").getName());
+            
+            //String appSessionTbl =Enum.valueOf(dbObjectsAppTables.SchemaApppTableAppSession, TABLE_NAME); 
             
             out.println("Before creating the token");
             Token token = new Token("");

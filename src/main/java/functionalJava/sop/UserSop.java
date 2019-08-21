@@ -241,7 +241,7 @@ public class UserSop {
                 query = query+" "+fRet+","; 
             }
             query=query.substring(0, query.length()-1);
-            if (currSchemaPrefix.contains("data")){query = query+" from \""+ currSchemaPrefix+"\"."+tableName+" where 1=1";}
+            if (currSchemaPrefix.contains(LPPlatform.SCHEMA_DATA)){query = query+" from \""+ currSchemaPrefix+"\"."+tableName+" where 1=1";}
             else{query = query+" from \""+ currSchemaPrefix+"-data\"."+tableName+" where 1=1";}
             for(String fFN: filterFieldName){
                 query = query+" and "+fFN;

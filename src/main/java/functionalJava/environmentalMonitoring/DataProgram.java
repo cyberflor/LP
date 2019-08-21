@@ -11,7 +11,6 @@ import databases.DataDataIntegrity;
 import databases.Rdbms;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.sql.SQLException;
 import java.util.Arrays;
 
 import functionalJava.sampleStructure.DataSample;
@@ -20,9 +19,6 @@ import functionalJava.sampleStructure.DataSample;
  * @author Administrator
  */
 public class DataProgram extends DataSample{
-
-//    private final String schemaDataNameProj = "data";
-//    private final String schemaConfigNameProj = LPPlatform.SCHEMA_CONFIG;
 
     /**
      *
@@ -63,7 +59,6 @@ public class DataProgram extends DataSample{
      * @throws IllegalAccessException
      * @throws IllegalArgumentException
      * @throws InvocationTargetException
-     * @throws SQLException
      */
     public Object[] createProgram( String schemaPrefix, String template, Integer templateVersion, String[] fieldName, Object[] fieldValue, String userName, String userRole) throws IllegalAccessException, InvocationTargetException{
         return DataProgram.this.createProgram(schemaPrefix, template, templateVersion, fieldName, fieldValue, userName, userRole, false);
@@ -116,7 +111,7 @@ Object[] createProgram( String schemaPrefix, String projectTemplate, Integer pro
             diagnosesProj[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
             diagnosesProj[1]= classVersionProj;
             diagnosesProj[2]= "Code Line " + (elements[1].getLineNumber());   
-            diagnosesProj[3]="LABPLANET_FALSE";
+            diagnosesProj[3]=LPPlatform.LAB_FALSE;
             diagnosesProj[4]="ERROR:Field names and values arrays with different length";
             diagnosesProj[5]="The values in FieldName are:"+ Arrays.toString(sampleFieldName)+". and in FieldValue are:"+Arrays.toString(sampleFieldValue);
             return diagnosesProj;
@@ -180,7 +175,7 @@ Object[] createProgram( String schemaPrefix, String projectTemplate, Integer pro
             return diagnosesProj;
         }        
         Object[] diagnosis = Rdbms.existsRecord(schemaConfigName, tableName, new String[]{LPPlatform.SCHEMA_CONFIG,"config_version"}, new Object[]{projectTemplate, projectTemplateVersion});
-        if (!"LABPLANET_TRUE".equalsIgnoreCase(diagnosis[0].toString())){	
+        if (!LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnosis[0].toString())){	
             StackTraceElement[] elements = Thread.currentThread().getStackTrace();
             diagnosesProj[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
             diagnosesProj[1]= classVersionProj;

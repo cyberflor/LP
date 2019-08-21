@@ -188,8 +188,8 @@ public class DataProjectScheduleAdhoc {
         diagn[0] = ""; diagn[1] = ""; diagn[2] = ""; diagn[4] = ""; diagn[5] = "";
         diagn[3] = LPPlatform.LAB_FALSE;
         
-        String schemaNameConfig = "config";LPPlatform.buildSchemaName(schemaName, "config");   
-        String schemaNameData = LPPlatform.buildSchemaName(schemaName, "data");   
+        String schemaNameConfig = LPPlatform.SCHEMA_CONFIG;LPPlatform.buildSchemaName(schemaName, LPPlatform.SCHEMA_CONFIG);   
+        String schemaNameData = LPPlatform.buildSchemaName(schemaName, LPPlatform.SCHEMA_DATA);   
         
         Object[] existsRecord = Rdbms.existsRecord(schemaNameConfig, "holidays_calendar",  new String[]{"code", "active"}, new Object[]{calendarCode, true});
         if (LPPlatform.LAB_FALSE.equalsIgnoreCase(existsRecord[0].toString())){ return existsRecord;}     
@@ -256,8 +256,8 @@ public class DataProjectScheduleAdhoc {
         diagn[0] = ""; diagn[1] = ""; diagn[2] = ""; diagn[4] = ""; diagn[5] = "";
         diagn[3] = LPPlatform.LAB_FALSE;
                 
-        schemaName = LPPlatform.buildSchemaName(schemaName, "data");       
-        Object[] existsRecord = Rdbms.existsRecord(schemaName, tableName,  new String[]{"project", "id"}, new Object[]{pName, projSchedId});
+        String schemaDataName = LPPlatform.buildSchemaName(schemaName, LPPlatform.SCHEMA_DATA);       
+        Object[] existsRecord = Rdbms.existsRecord(schemaDataName, tableName,  new String[]{"project", "id"}, new Object[]{pName, projSchedId});
         if (LPPlatform.LAB_FALSE.equals(existsRecord[0].toString())){ return existsRecord;}
         
         Calendar startDate = null; 
@@ -271,7 +271,7 @@ public class DataProjectScheduleAdhoc {
         }      
         Object[][] projectInfo = new Object[0][0];
         if (startDate==null || endDate==null){
-            projectInfo = Rdbms.getRecordFieldsByFilter(schemaName, tableName, new String[]{"project", "id"}, new Object[]{pName, projSchedId}, new String[]{"project", "start_date", "end_date", "end_date"});
+            projectInfo = Rdbms.getRecordFieldsByFilter(schemaDataName, tableName, new String[]{"project", "id"}, new Object[]{pName, projSchedId}, new String[]{"project", "start_date", "end_date", "end_date"});
             if (startDate==null){
                 Date currDate = (Date) projectInfo[0][1]; 
                 if (currDate!=null){
@@ -306,7 +306,7 @@ public class DataProjectScheduleAdhoc {
         Object[] daysInRange = LPDate.getDaysInRange(startDate, endDate, daysOfWeek);  
         Object[] newProjSchedRecursive = null;
         if (daysInRange.length>0){
-            newProjSchedRecursive = Rdbms.insertRecordInTable(schemaName, "project_schedule_recursive", 
+            newProjSchedRecursive = Rdbms.insertRecordInTable(schemaDataName, "project_schedule_recursive", 
                     new String[]{"project", "project_schedule_id", "rule", "start_date", "end_date"},
                     new Object[]{pName, projSchedId, daysOfWeek, (Date) projectInfo[0][1], (Date) projectInfo[0][2]});
         }else{
@@ -320,18 +320,18 @@ public class DataProjectScheduleAdhoc {
             s = format1.format(cale.getTime());            
             datesStr=datesStr+s+"|";
             
-            Object[] isHolidays = Rdbms.existsRecord(schemaName, "project_schedule_item", 
+            Object[] isHolidays = Rdbms.existsRecord(schemaDataName, "project_schedule_item", 
                     new String[]{"project", "project_schedule_id", "date", "is_holidays"}, 
                     new Object[]{pName, projSchedId, daysInRange1, true});             
             String[] fieldNames = new String[]{"project", "project_schedule_id", "project_sched_recursive_id", "date"};
             Object[] fieldValues = new Object[]{pName, projSchedId, projRecursiveId, daysInRange1};
-            if ("LABPLANET_TRUE".equalsIgnoreCase(isHolidays[0].toString())){
+            if (LPPlatform.LAB_TRUE.equalsIgnoreCase(isHolidays[0].toString())){
                 fieldNames=LPArray.addValueToArray1D(fieldNames, "conflict");
                 fieldNames=LPArray.addValueToArray1D(fieldNames, "conflict_detail");
                 fieldValues=LPArray.addValueToArray1D(fieldValues, true);
                 fieldValues=LPArray.addValueToArray1D(fieldValues, conflictDetail);
             }         
-            Rdbms.insertRecordInTable(schemaName, "project_schedule_item", fieldNames, fieldValues);            
+            Rdbms.insertRecordInTable(schemaDataName, "project_schedule_item", fieldNames, fieldValues);            
 
         }
         diagn[3]="TRUE"; diagn[5]=datesStr;

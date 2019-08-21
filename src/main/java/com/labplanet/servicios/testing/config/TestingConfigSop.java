@@ -8,6 +8,7 @@ package com.labplanet.servicios.testing.config;
 import functionalJava.testingScripts.LPTestingOutFormat;
 import LabPLANET.utilities.LPArray;
 import LabPLANET.utilities.LPFrontEnd;
+import LabPLANET.utilities.LPPlatform;
 import functionalJava.sop.*;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -108,7 +109,7 @@ public class TestingConfigSop extends HttpServlet {
             fileContent = fileContent + LPTestingOutFormat.fieldStart()+Arrays.toString(LPArray.array2dTo1d(userSOP))+LPTestingOutFormat.fieldEnd()+LPTestingOutFormat.rowEnd();  
             
             
-//            if ("LABPLANET_FALSE".equalsIgnoreCase(userSOP[0][0].toString())){
+//            if (LPPlatform.LAB_FALSE.equalsIgnoreCase(userSOP[0][0].toString())){
 //                out.println(Arrays.toString(userSOP));
 //            }
 
@@ -139,7 +140,7 @@ public class TestingConfigSop extends HttpServlet {
             
             Sop s = new Sop(sopId, sopName, 1, 1, "ACTIVE", "READ");
             Object[][] dbGetSopIdByName = s.dbGetSopObjByName(schemaConfigName, sopName,new String[]{FIELDNAME_SOP_ID, FIELDNAME_SOP_NAME});            
-            if ("LABPLANET_FALSE".equalsIgnoreCase(dbGetSopIdByName[0][0].toString())){
+            if (LPPlatform.LAB_FALSE.equalsIgnoreCase(dbGetSopIdByName[0][0].toString())){
                 Object[] recordCreated = s.dbInsertSopId(schemaConfigName, sopName);
                 fileContent = fileContent + LPTestingOutFormat.rowStart()+LPTestingOutFormat.fieldStart()+"dbInsertSopId"+LPTestingOutFormat.fieldEnd();                                   
                 fileContent = fileContent + LPTestingOutFormat.fieldStart()+"schemaConfigName: "+schemaConfigName+LPTestingOutFormat.fieldEnd();  

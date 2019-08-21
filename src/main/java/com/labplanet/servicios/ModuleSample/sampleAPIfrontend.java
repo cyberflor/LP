@@ -11,7 +11,6 @@ import LabPLANET.utilities.LPFrontEnd;
 import LabPLANET.utilities.LPPlatform;
 import LabPLANET.utilities.LPJson;
 import com.labplanet.servicios.app.globalAPIsParams;
-import com.sun.rowset.CachedRowSetImpl;
 import databases.Rdbms;
 import databases.Token;
 import functionalJava.sampleStructure.DataSample;
@@ -535,37 +534,35 @@ public class sampleAPIfrontend extends HttpServlet {
                                 LPPlatform.API_ERRORTRAPING_MANDATORY_PARAMS_MISSING, new Object[]{areMandatoryParamsInResponse[1].toString()}, language);              
                         return;                  
                     }                      
-                    String resultIdStr = request.getParameter(globalAPIsParams.REQUEST_PARAM_RESULT_ID);
-                    // No implementado aun
+                    // No implementado aun, seguramente no tiene sentido porque al final la spec está evaluada y guardada en la tabla sample_analysis_result
                     Rdbms.closeRdbms();
                     return;  
                 case API_ENDPOINT_SAMPLE_ENTIRE_STRUCTURE:
-                   sampleIdStr = request.getParameter(globalAPIsParams.REQUEST_PARAM_SAMPLE_ID);        
-                   sampleId = Integer.parseInt(sampleIdStr);    
-                   //schemaDataName
-                    String qry = "";                    
-                    qry = qry  + "select row_to_json(sQry)from "
-                                    +" ( select s.sample_id, s.status, "
-                                    +" ( select COALESCE(array_to_json(array_agg(row_to_json(saQry))),'[]') from  "
-                                    +"( select sa.test_id, sa.analysis, "
+                   sampleIdStr = request.getParameter(globalAPIsParams.REQUEST_PARAM_SAMPLE_ID);                     
+                   String[] sampleIdStrArr=sampleIdStr.split("\\|");  
+                   Object[] sampleIdArr=new Object[0];
+                   for (String smp: sampleIdStrArr){
+                       sampleIdArr=LPArray.addValueToArray1D(sampleIdArr,  Integer.parseInt(smp));
+                   }
+                   String numSamples="";
+                   for (Object smp: sampleIdArr){
+                       numSamples=numSamples+"?, ";
+                   }
+                   numSamples=numSamples.substring(0, numSamples.length()-2);
+                   //sampleId = Integer.parseInt(sampleIdStr);    
 
-                                    +"( select COALESCE(array_to_json(array_agg(row_to_json(sarQry))),'[]') from "
-                                    +"( select sar.result_id, sar.raw_value from \"process-us-data\".sample_analysis_result sar where sar.test_id=sa.test_id "        
-                                    +"order by sar.test_id asc      ) sarQry    ) as sample_analysis_result "          
-          
-                                    +"from \"process-us-data\".sample_analysis sa where sa.sample_id=s.sample_id "         
-                                    +"order by sa.test_id asc      ) saQry    ) as sample_analysis "
-                                    +"from \"process-us-data\".sample s where s.sample_id = 13649 ) sQry   ";
-                
-                    CachedRowSetImpl prepRdQuery = Rdbms.prepRdQuery(qry, new Object[]{sampleId});
+                   sampleFieldToRetrieve = request.getParameter(globalAPIsParams.REQUEST_PARAM_SAMPLE_FIELD_TO_RETRIEVE);
+                   sampleAnalysisFieldToRetrieve = request.getParameter(globalAPIsParams.REQUEST_PARAM_SAMPLE_ANALYSIS_FIELD_TO_RETRIEVE);
+                   String sampleAnalysisFieldToSort = request.getParameter(globalAPIsParams.REQUEST_PARAM_SAMPLE_ANALYSIS_FIELD_TO_SORT);
+                   String sarFieldToRetrieve = request.getParameter(globalAPIsParams.REQUEST_PARAM_SAMPLE_ANALYSIS_RESULT_FIELD_TO_RETRIEVE);
+                   String sarFieldToSort = request.getParameter(globalAPIsParams.REQUEST_PARAM_SAMPLE_ANALYSIS_RESULT_FIELD_TO_SORT);
+                   String sampleAuditFieldToRetrieve = request.getParameter(globalAPIsParams.REQUEST_PARAM_SAMPLE_AUDIT_FIELD_TO_RETRIEVE);
+                   String sampleAuditResultFieldToSort = request.getParameter(globalAPIsParams.REQUEST_PARAM_SAMPLE_AUDIT_FIELD_TO_SORT);
+                   
 
-
-                    boolean first = prepRdQuery.first();
-                    String finalString = "";
-                    if (prepRdQuery.getString(1)==null){
-                        LPFrontEnd.servletReturnResponseError(request, response, "NOTHING_TO_RETURN", new Object[0], language);
-                    }
-                    String jsonarrayf = prepRdQuery.getString(1);
+                    String jsonarrayf=DataSample.sampleEntireStructureData(schemaPrefix, Integer.parseInt(sampleIdStr), sampleFieldToRetrieve, 
+                            sampleAnalysisFieldToRetrieve, sampleAnalysisFieldToSort, sarFieldToRetrieve, sarFieldToSort, 
+                            sampleAuditFieldToRetrieve, sampleAuditResultFieldToSort);
                     LPFrontEnd.servletReturnSuccess(request, response, jsonarrayf);
                     return;
                 default:      

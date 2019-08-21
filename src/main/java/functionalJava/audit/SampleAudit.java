@@ -27,6 +27,7 @@ public class SampleAudit {
     public static final String TABLE_NAME_DATA_AUDIT_SAMPLE="sample";
         public static final String FIELD_NAME_DATA_AUDIT_SAMPLE_PROCEDURE="procedure";
         public static final String FIELD_NAME_DATA_AUDIT_SAMPLE_PROCEDURE_VERSION="procedure_version";
+        public static final String FIELD_NAME_DATA_AUDIT_SAMPLE_AUDIT_ID="audit_id";
         public static final String FIELD_NAME_DATA_AUDIT_SAMPLE_ACTION_NAME="action_name";
         public static final String FIELD_NAME_DATA_AUDIT_SAMPLE_TABLE_NAME="table_name";
         public static final String FIELD_NAME_DATA_AUDIT_SAMPLE_TABLE_ID="table_id";
@@ -65,7 +66,7 @@ public class SampleAudit {
         Object[] fieldValues = new Object[0];
         
         Object[][] procedureInfo = Requirement.getProcedureBySchemaPrefix(schemaPrefix);
-        if (!(procedureInfo[0][3].toString().equalsIgnoreCase(LPPlatform.LAB_FALSE))){
+        if (!(LPPlatform.LAB_FALSE.equalsIgnoreCase(procedureInfo[0][0].toString()))){
             fieldNames = LPArray.addValueToArray1D(fieldNames, FIELD_NAME_DATA_AUDIT_SAMPLE_PROCEDURE);
             fieldValues = LPArray.addValueToArray1D(fieldValues, procedureInfo[0][0]);
             fieldNames = LPArray.addValueToArray1D(fieldNames, FIELD_NAME_DATA_AUDIT_SAMPLE_PROCEDURE_VERSION);
@@ -101,7 +102,7 @@ public class SampleAudit {
             Object[] appSession = LPSession.addProcessSession(schemaName, appSessionId, new String[]{"date_started"});
         
     //        Object[] appSession = labSession.getAppSession(appSessionId, new String[]{"date_started"});
-            if ("LABPLANET_FALSE".equalsIgnoreCase(appSession[0].toString())){
+            if (LPPlatform.LAB_FALSE.equalsIgnoreCase(appSession[0].toString())){
                 return;
             }else{
 
@@ -134,7 +135,7 @@ public class SampleAudit {
         Object[] fieldValues = new Object[0];
         
         Object[][] procedureInfo = Requirement.getProcedureBySchemaPrefix(schemaPrefix);
-        if (!(procedureInfo[0][3].toString().equalsIgnoreCase(LPPlatform.LAB_FALSE))){
+        if (!(LPPlatform.LAB_FALSE.equalsIgnoreCase(procedureInfo[0][0].toString()))){
             fieldNames = LPArray.addValueToArray1D(fieldNames, FIELD_NAME_DATA_AUDIT_SAMPLE_PROCEDURE);
             fieldValues = LPArray.addValueToArray1D(fieldValues, procedureInfo[0][0]);
             fieldNames = LPArray.addValueToArray1D(fieldNames, FIELD_NAME_DATA_AUDIT_SAMPLE_PROCEDURE_VERSION);
@@ -200,7 +201,7 @@ public class SampleAudit {
         Object[] fieldValues = new Object[0];
         
         Object[][] procedureInfo = Requirement.getProcedureBySchemaPrefix(schemaPrefix);
-        if (!(procedureInfo[0][3].toString().equalsIgnoreCase(LPPlatform.LAB_FALSE))){
+        if (!(LPPlatform.LAB_FALSE.equalsIgnoreCase(procedureInfo[0][0].toString()))){
             fieldNames = LPArray.addValueToArray1D(fieldNames, FIELD_NAME_DATA_AUDIT_SAMPLE_PROCEDURE);
             fieldValues = LPArray.addValueToArray1D(fieldValues, procedureInfo[0][0]);
             fieldNames = LPArray.addValueToArray1D(fieldNames, FIELD_NAME_DATA_AUDIT_SAMPLE_PROCEDURE_VERSION);
@@ -271,7 +272,7 @@ public class SampleAudit {
         Object[] fieldValues = new Object[0];
         
         Object[][] procedureInfo = Requirement.getProcedureBySchemaPrefix(schemaPrefix);
-        if (!(procedureInfo[0][3].toString().equalsIgnoreCase(LPPlatform.LAB_FALSE))){
+        if (!(LPPlatform.LAB_FALSE.equalsIgnoreCase(procedureInfo[0][0].toString()))){
             fieldNames = LPArray.addValueToArray1D(fieldNames, FIELD_NAME_DATA_AUDIT_SAMPLE_PROCEDURE);
             fieldValues = LPArray.addValueToArray1D(fieldValues, procedureInfo[0][0]);
             fieldNames = LPArray.addValueToArray1D(fieldNames, FIELD_NAME_DATA_AUDIT_SAMPLE_PROCEDURE_VERSION);

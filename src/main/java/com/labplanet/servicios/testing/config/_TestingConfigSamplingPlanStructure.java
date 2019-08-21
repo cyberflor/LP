@@ -13,6 +13,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import LabPLANET.utilities.LPArray;
 import LabPLANET.utilities.LPFrontEnd;
+import LabPLANET.utilities.LPPlatform;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -43,7 +44,7 @@ public class _TestingConfigSamplingPlanStructure extends HttpServlet {
 
         if (!LPFrontEnd.servletStablishDBConection(request, response)){return;}           
             
-        Object[] exRec =  Rdbms.existsRecord("app", "users", new String[]{"user_name"}, new Object[]{"labplanet"});
+        Object[] exRec =  Rdbms.existsRecord(LPPlatform.SCHEMA_APP, "users", new String[]{"user_name"}, new Object[]{"labplanet"});
         out.println("Exists record? " + Arrays.toString(exRec));
         
         String csvFileName = "dbActions.txt"; 

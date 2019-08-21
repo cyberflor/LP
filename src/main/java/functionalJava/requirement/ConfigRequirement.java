@@ -54,9 +54,9 @@ public class ConfigRequirement {
 //                    Logger.getLogger(RequirementConfigObjects.class.getName()).log(Level.SEVERE, null, ex);}
 //                
                 String foreignTableName = "user_info";
-                Object[] diagnoses = rdbm.existsRecord(rdbm, "config", foreignTableName, 
+                Object[] diagnoses = rdbm.existsRecord(rdbm, LPPlatform.SCHEMA_CONFIG, foreignTableName, 
                         new String[]{fieldName1}, new Object[]{fieldValue1});
-                if (!"LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){
+                if (!LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){
                     schemaName = "\"" + schemaName + "\"";
                     query = "Insert into " + schemaName + "."+foreignTableName+" (user_info_id) values (?)";
                     try{        
@@ -76,9 +76,9 @@ public class ConfigRequirement {
 //                }
 //
                 foreignTableName = "role";
-                diagnoses = rdbm.existsRecord(rdbm, "config", foreignTableName, 
+                diagnoses = rdbm.existsRecord(rdbm, LPPlatform.SCHEMA_CONFIG, foreignTableName, 
                         new String[]{fieldName2}, new Object[]{fieldValue2});
-                if (!"LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){
+                if (!LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){
                     schemaName = "\"" + schemaName + "\"";
                     query = "Insert into " + schemaName + "."+foreignTableName+" (user_info_id) values (?)";
                     try{        
@@ -99,8 +99,8 @@ public class ConfigRequirement {
 //                
                 //user role    
                 Integer userRoleCount = 0;
-                diagnoses = rdbm.existsRecord(rdbm, "config", tableName, new String[]{fieldName1, fieldName2}, new Object[]{fieldValue1, fieldValue2});
-                if (!"LABPLANET_TRUE".equalsIgnoreCase(diagnoses[0].toString())){                              
+                diagnoses = rdbm.existsRecord(rdbm, LPPlatform.SCHEMA_CONFIG, tableName, new String[]{fieldName1, fieldName2}, new Object[]{fieldValue1, fieldValue2});
+                if (!LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){                              
                     schemaName = "\"" + schemaName + "\"";
                     if ( userRoleCount==0){
                         query="select count(role_id) as cont from config.user_profile";                        

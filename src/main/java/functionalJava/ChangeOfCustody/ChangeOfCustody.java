@@ -31,7 +31,7 @@ public class ChangeOfCustody {
         String auditActionName = "START_CHAIN_OF_CUSTODY";
         
         Object[] errorDetailVariables = null;
-        String schemaName=LPPlatform.buildSchemaName(schemaPrefix, "data");
+        String schemaName=LPPlatform.buildSchemaName(schemaPrefix, LPPlatform.SCHEMA_DATA);
 
         if ((custodianCandidate==null) || (custodianCandidate.length()==0) ) {
                 String errorCode = "ChainOfCustody_noCustodian";
@@ -111,7 +111,7 @@ public class ChangeOfCustody {
         
         Object[] errorDetailVariables = null;        
 
-        String schemaName=LPPlatform.buildSchemaName(schemaPrefix, "data");
+        String schemaName=LPPlatform.buildSchemaName(schemaPrefix, LPPlatform.SCHEMA_DATA);
         String cocTableName = objectTable.toLowerCase()+"_coc";
 
         Object[] changeOfCustodyEnable = isChangeOfCustodyEnable(schemaName, objectTable);

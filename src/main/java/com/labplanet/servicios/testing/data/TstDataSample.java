@@ -15,7 +15,6 @@ import functionalJava.ChangeOfCustody.ChangeOfCustody;
 import functionalJava.sampleStructure.DataSample;
 import functionalJava.testingScripts.TestingAssert;
 import functionalJava.testingScripts.TestingAssertSummary;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -40,6 +39,8 @@ public class TstDataSample extends HttpServlet {
         public static final String OBJECT_LEVEL_SAMPLE="SAMPLE";
         public static final String OBJECT_LEVEL_TEST="TEST";
         public static final String OBJECT_LEVEL_RESULT="RESULT";
+        
+        public static final String LOD_JAVASCRIPT_FORMULA="C:\\home\\myResult.js";
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -288,9 +289,8 @@ public class TstDataSample extends HttpServlet {
                                     testId.toString()+", "+userName+", "+newAnalyst});                              
                             dataSample = smp.sampleAnalysisAssignAnalyst(schemaPrefix, userName, testId, newAnalyst, userRole);
                             break;   
-                        case "GETSAMPLEINFO":
-                            String schemaDataName = "data";
-                            schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, schemaDataName);                     
+                        case "GETSAMPLEINFO":                            
+                            String schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, LPPlatform.SCHEMA_DATA);                     
                             sampleId = 0;
                             if (lineNumCols>=numEvaluationArguments+4)                
                                 sampleId=LPTestingOutFormat.csvExtractFieldValueInteger(csvFileContent[iLines][numEvaluationArguments+4]);
@@ -309,16 +309,12 @@ public class TstDataSample extends HttpServlet {
                             if (lineNumCols>=numEvaluationArguments+5)                
                                 secondParameter=LPTestingOutFormat.csvExtractFieldValueInteger(csvFileContent[iLines][numEvaluationArguments+5]);                            
                             ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
-                            try {
-                                engine.eval(new FileReader("C:\\home\\myResult.js"));
+                                engine.eval(new FileReader(LOD_JAVASCRIPT_FORMULA));
                                 Invocable invocable = (Invocable) engine;
                                 Object result;
                                 result = invocable.invokeFunction("lossOnDrying", firstParameter, secondParameter);
                                 dataSample=LPArray.addValueToArray1D(dataSample, result);
 
-                            } catch (FileNotFoundException | NoSuchMethodException | ScriptException e) {
-                                return;
-                            }
                             break;
                         case "COC_STARTCHANGE":
                             String custodianCandidate=null;
@@ -474,8 +470,7 @@ public class TstDataSample extends HttpServlet {
             LPTestingOutFormat.createLogFile(csvPathName, fileContent);
             Rdbms.closeRdbms();
             tstAssertSummary=null; 
-        }
-        catch(IOException e){
+        } catch(IOException | NoSuchMethodException | ScriptException ex){
             Rdbms.closeRdbms();
             tstAssertSummary=null; 
         }        

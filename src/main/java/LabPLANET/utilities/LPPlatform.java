@@ -754,11 +754,9 @@ public class LPPlatform {
         if (errorCodeText.length()==0){errorCodeText = errorCode; errorCodeFromBundle=false;}
         
         if (!errorCodeFromBundle){
-            if ( errorVariables.length>0){errorDetail = (String) errorVariables[0];
-                if (errorVariables!=null){
-                    for (int iVarValue=1; iVarValue<errorVariables.length; iVarValue++){
-                        errorDetail = errorDetail.replace("<*"+iVarValue+"*>", errorVariables[iVarValue].toString());
-                    }
+            if ( (errorVariables!=null) &&  errorVariables.length>0){errorDetail = (String) errorVariables[0];
+                for (int iVarValue=1; iVarValue<errorVariables.length; iVarValue++){
+                    errorDetail = errorDetail.replace("<*"+iVarValue+"*>", errorVariables[iVarValue].toString());
                 }
             }            
         }else{

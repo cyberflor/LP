@@ -25,7 +25,7 @@ public class DataDataIntegrity {
     public String[] getTableMandatoryFields(String schemaName, String tableName, String actionName){
         
         String[] myMandatoryFields = new String[0];
-        String schemaDataName = LPPlatform.buildSchemaName(schemaName, "data");
+        String schemaDataName = LPPlatform.buildSchemaName(schemaName, LPPlatform.SCHEMA_DATA);
         
         String propertyEntryName = tableName+"_mandatoryFields"+actionName;        
         String propertyEntryValue = Parameter.getParameterBundle(schemaDataName.replace("\"", ""), propertyEntryName);        
@@ -44,7 +44,7 @@ public class DataDataIntegrity {
      */
     public String[] getTableFieldsDefaulValues(String schemaName, String tableName, String actionName){
         String[] myMandatoryFields = new String[0];
-        String schemaDataName = LPPlatform.buildSchemaName(schemaName, "data");
+        String schemaDataName = LPPlatform.buildSchemaName(schemaName, LPPlatform.SCHEMA_DATA);
         
         String propertyEntryName = tableName+"_fieldsDefaultValues"+actionName;        
         
@@ -64,7 +64,7 @@ public class DataDataIntegrity {
      */
     public String[] getStructureSpecialFields(String schemaName, String tableName, String actionName){
         String[] myMandatoryFields = new String[0];
-        String schemaDataName = LPPlatform.buildSchemaName(schemaName, "data");
+        String schemaDataName = LPPlatform.buildSchemaName(schemaName, LPPlatform.SCHEMA_DATA);
         
         String propertyEntryName = tableName+"_specialFields";        
         
@@ -84,7 +84,7 @@ public class DataDataIntegrity {
      */
     public String[] getStructureSpecialFieldsFunction(String schemaName, String tableName, String actionName){
         String[] myMandatoryFields = new String[0];
-        String schemaDataName = LPPlatform.buildSchemaName(schemaName, "data");
+        String schemaDataName = LPPlatform.buildSchemaName(schemaName, LPPlatform.SCHEMA_DATA);
         
         String propertyEntryName = tableName+"_specialFieldsFunction";        
         

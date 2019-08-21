@@ -88,7 +88,7 @@ public class TestingUOMFamilyTable extends HttpServlet {
                    fileContentTable1 = fileContentTable1 + LPTestingOutFormat.rowAddField(String.valueOf(iRows));     
                    Boolean continueLoop=true;
                    for (int iColumns=0;iColumns<fieldsToRetrieve.length && continueLoop;iColumns++){
-                        if ("LABPLANET_FALSE".equalsIgnoreCase(tableGet[0][0].toString())) {
+                        if (LPPlatform.LAB_FALSE.equalsIgnoreCase(tableGet[0][0].toString())) {
                              fileContentTable1 = fileContentTable1+ 
                                      LPTestingOutFormat.rowAddField(String.valueOf(tableGet[0][3]))+
                                      LPTestingOutFormat.rowAddField(String.valueOf(tableGet[0][5]));

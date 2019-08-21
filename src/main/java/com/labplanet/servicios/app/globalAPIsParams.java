@@ -50,6 +50,8 @@ public class globalAPIsParams extends HttpServlet {
     public static final String REQUEST_PARAM_PERSON_FIELDS_NAME = "passwordToCheck";
     public static final String REQUEST_PARAM_RAW_VALUE_RESULT = "rawValueResult";
     public static final String REQUEST_PARAM_RESULT_ID = "resultId";
+    public static final String REQUEST_PARAM_SAMPLE_AUDIT_FIELD_TO_RETRIEVE = "sampleAuditFieldToRetrieve";
+    public static final String REQUEST_PARAM_SAMPLE_AUDIT_FIELD_TO_SORT = "sampleAuditFieldToSort";
     public static final String REQUEST_PARAM_SAMPLE_COMMENT = "sampleComment";
     public static final String REQUEST_PARAM_SAMPLE_ID = "sampleId";
     public static final String REQUEST_PARAM_SAMPLE_FIELD_NAME = "fieldName";
@@ -59,7 +61,9 @@ public class globalAPIsParams extends HttpServlet {
     public static final String REQUEST_PARAM_SAMPLE_TEMPLATE = "sampleTemplate";
     public static final String REQUEST_PARAM_SAMPLE_TEMPLATE_VERSION = "sampleTemplateVersion";
     public static final String REQUEST_PARAM_SAMPLE_ANALYSIS_FIELD_TO_RETRIEVE = "sampleAnalysisFieldToRetrieve";
+    public static final String REQUEST_PARAM_SAMPLE_ANALYSIS_FIELD_TO_SORT = "sampleAnalysisFieldToSort";
     public static final String REQUEST_PARAM_SAMPLE_ANALYSIS_RESULT_FIELD_TO_RETRIEVE = "sampleAnalysisResultFieldToRetrieve";
+    public static final String REQUEST_PARAM_SAMPLE_ANALYSIS_RESULT_FIELD_TO_SORT = "sampleAnalysisResultFieldToSort";
     public static final String REQUEST_PARAM_SOP_FIELDS_TO_RETRIEVE = "sopFieldsToRetrieve";
     public static final String REQUEST_PARAM_SORT_FIELDS_NAME = "sortFieldsName";
     public static final String REQUEST_PARAM_SOP_NAME = "sopName";

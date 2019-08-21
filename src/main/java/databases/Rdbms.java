@@ -170,12 +170,12 @@ public class Rdbms {
         if (transactionIdNextVal==-999){
             transactionIdNextVal=12;
         }
-        rdbms.transactionId = transactionIdNextVal;
+        Rdbms.transactionId = transactionIdNextVal;
         
     }
     
     public static Integer getTransactionId(){
-        return rdbms.transactionId;
+        return Rdbms.transactionId;
     }
             
     /**
@@ -772,7 +772,6 @@ public class Rdbms {
     public  static CachedRowSetImpl prepRdQuery(String consultaconinterrogaciones, Object [] valoresinterrogaciones) {
         try{
             CachedRowSetImpl crs =new CachedRowSetImpl();
-            try{
                 Object[] filteredValoresConInterrogaciones = new Object[0];
                 PreparedStatement prepareStatement = conn.prepareStatement(consultaconinterrogaciones);
                 prepareStatement.setQueryTimeout(rdbms.getTimeout());
@@ -789,13 +788,11 @@ public class Rdbms {
                 ResultSet res = prepareStatement.executeQuery();
                 crs.populate(res);
                 return crs;
-            }catch(SQLException er){
-                return crs;
-            }//finally{crs.close();conn.close();}
+            
         }catch(SQLException ex){
             Logger.getLogger(Rdbms.class.getName()).log(Level.SEVERE, null, ex);
-        }//finally{crs.close();conn.close();}
-        return null;
+            return null;
+        }        
     }
   
 
@@ -807,22 +804,16 @@ public class Rdbms {
 */    
     private static Integer prepUpQuery(String consultaconinterrogaciones, Object [] valoresinterrogaciones) {
         try{
-            PreparedStatement prep=getConnection().prepareStatement(consultaconinterrogaciones);
-            
-            setTimeout(rdbms.getTimeout());
-            
-            try{
-                if (valoresinterrogaciones != null){
-                    buildPreparedStatement(valoresinterrogaciones, prep);
-                }
-                return prep.executeUpdate();
-            }catch (SQLException er){
-                return -999;
-            }//finally{            prep.close();        }
+            PreparedStatement prep=getConnection().prepareStatement(consultaconinterrogaciones);            
+            setTimeout(rdbms.getTimeout());            
+            if (valoresinterrogaciones != null){
+                buildPreparedStatement(valoresinterrogaciones, prep);}
+            return prep.executeUpdate();
+                
         }catch (SQLException ex){
             Logger.getLogger(Rdbms.class.getName()).log(Level.SEVERE, null, ex);
+            return -999;
         }//finally{            prep.close();        }
-        return -999;
     }
     
     private static String[] prepUpQueryK(String consultaconinterrogaciones, Object [] valoresinterrogaciones, Integer indexposition) {

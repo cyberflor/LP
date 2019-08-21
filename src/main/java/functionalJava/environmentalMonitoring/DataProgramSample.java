@@ -41,7 +41,7 @@ public class DataProgramSample extends DataSample{
             fieldValue = LPArray.addValueToArray1D(fieldValue, programName);
             newProjSample = ds.logSample(schemaPrefix, programTemplate, programTemplateVersion, fieldName, fieldValue, userName, userRole, appSessionId);
             /*if (!newProjSample[3].equalsIgnoreCase(LPPlatform.LAB_FALSE)){
-            String schemaDataNameProj = "data";
+            String schemaDataNameProj = LPPlatform.SCHEMA_DATA;
             String schemaConfigNameProj = LPPlatform.SCHEMA_CONFIG;
             LPPlatform labPlat = new LPPlatform();
             schemaDataNameProj = labPlat.buildSchemaName(schemaPrefix, schemaDataNameProj);

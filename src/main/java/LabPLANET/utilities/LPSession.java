@@ -65,7 +65,7 @@ public class LPSession {
         
         Object[][] recordFieldsBySessionId = Rdbms.getRecordFieldsByFilter(schemaAuditName, tableName, 
                 new String[]{FIELDNAME_SESSION_ID}, new Object[]{appSessionId}, fieldsNamesToInsert);
-        if ("LABPLANET_FALSE".equalsIgnoreCase(recordFieldsBySessionId[0][0].toString())){
+        if (LPPlatform.LAB_FALSE.equalsIgnoreCase(recordFieldsBySessionId[0][0].toString())){
             Object[] appSession = getAppSession(appSessionId, fieldsNamesToInsert);
             if (!LPArray.valueInArray(fieldsNamesToInsert, FIELDNAME_SESSION_ID)){
                 fieldsNamesToInsert = LPArray.addValueToArray1D(fieldsNamesToInsert, FIELDNAME_SESSION_ID);

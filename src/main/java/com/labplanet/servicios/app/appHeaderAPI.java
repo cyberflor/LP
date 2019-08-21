@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import databases.Token;
+import databases.dbObjectsConfigTables;
 import org.json.simple.JSONObject;
 
 /**
@@ -24,6 +25,8 @@ import org.json.simple.JSONObject;
  * @author Administrator
  */
 public class appHeaderAPI extends HttpServlet {
+    public static final String ENDPOINT_NAME_GETAPPHEADER="GETAPPHEADER";
+    
     public static final String MANDATORY_PARAMS_MAIN_SERVLET="actionName|finalToken";
     
     public static final String MANDATORY_PARAMS_FRONTEND_GETAPPHEADER_PERSONFIELDSNAME_DEFAULT_VALUE="first_name|last_name|photo";
@@ -57,7 +60,7 @@ public class appHeaderAPI extends HttpServlet {
 
             JSONObject personInfoJsonObj = new JSONObject();
             switch (actionName.toUpperCase()){
-                case "GETAPPHEADER":          
+                case ENDPOINT_NAME_GETAPPHEADER:          
                     String personFieldsName = request.getParameter(globalAPIsParams.REQUEST_PARAM_PERSON_FIELDS_NAME);
                     String[] personFieldsNameArr = new String[0];
                     if ( personFieldsName==null || personFieldsName.length()==0){
@@ -67,9 +70,9 @@ public class appHeaderAPI extends HttpServlet {
                     }    
                     if (!LPFrontEnd.servletStablishDBConection(request, response)){return;}   
                     Token token = new Token(finalToken);
-                    Object[][] personInfoArr = Rdbms.getRecordFieldsByFilter("config", "person", 
-                         new String[]{"person_id"}, new String[]{token.getPersonName()}, personFieldsNameArr);             
-                    if ("LABPLANET_FALSE".equals(personInfoArr[0][0].toString())){                                                                                                                                                   
+                    Object[][] personInfoArr = Rdbms.getRecordFieldsByFilter(LPPlatform.SCHEMA_CONFIG, dbObjectsConfigTables.TABLE_CONFIG_PERSON, 
+                         new String[]{dbObjectsConfigTables.FLD_CONFIG_PERSON_PERSON_ID}, new String[]{token.getPersonName()}, personFieldsNameArr);             
+                    if (LPPlatform.LAB_FALSE.equals(personInfoArr[0][0].toString())){                                                                                                                                                   
                         Object[] errMsg = LPFrontEnd.responseError(LPArray.array2dTo1d(personInfoArr), language, null);
                         response.sendError((int) errMsg[0], (String) errMsg[1]);   
                         Rdbms.closeRdbms();    

@@ -5,6 +5,8 @@
  */
 package functionalJava.requirement;
 
+import LabPLANET.utilities.LPPlatform;
+import databases.DbObjectsRequirementsTables;
 import databases.Rdbms;
 
 /**
@@ -21,11 +23,11 @@ public class Requirement {
      */
     public static final Object[][] getProcedureBySchemaPrefix( String schemaPrefix){
                 
-        String schemaName = "requirements";
-        String tableName = "procedure";
-        String[] whereFldName = new String[]{"schema_prefix"};
+        String schemaName = LPPlatform.SCHEMA_REQUIREMENTS;
+        String tableName = DbObjectsRequirementsTables.TABLE_NAME_REQS_PROCEDURE_INFO;
+        String[] whereFldName = new String[]{DbObjectsRequirementsTables.FIELD_NAME_REQS_PROCEDURE_INFO_SCHEMA_PREFIX};
         Object[] whereFldValue = new Object[]{schemaPrefix};
-        String[] fieldsToRetrieve = new String[]{"name","version","name","version"};
+        String[] fieldsToRetrieve = new String[]{DbObjectsRequirementsTables.FIELD_NAME_REQS_PROCEDURE_INFO_NAME, DbObjectsRequirementsTables.FIELD_NAME_REQS_PROCEDURE_INFO_VERSION};
         
         return Rdbms.getRecordFieldsByFilter(schemaName, tableName, whereFldName, whereFldValue, fieldsToRetrieve);        
     }    

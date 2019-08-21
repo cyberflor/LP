@@ -242,7 +242,7 @@ public final class BatchArray extends Batch{
         for (String[] array :this.batchPosic) {         
               singleDArray.addAll(Arrays.asList(array));
         }       
-        schemaName = LPPlatform.buildSchemaName(schemaName, "data");
+        schemaName = LPPlatform.buildSchemaName(schemaName, LPPlatform.SCHEMA_DATA);
         
         return Rdbms.insertRecordInTable(schemaName, tableName, 
                                                 new String[]{"name", "template", "template_version", "array_num_rows",
@@ -252,7 +252,7 @@ public final class BatchArray extends Batch{
                                                     this.linesName, this.columnsName});
     }   
     public static BatchArray dbGetBatchArray(String schemaName, String batchName){
-        schemaName = LPPlatform.buildSchemaName(schemaName, "data");
+        schemaName = LPPlatform.buildSchemaName(schemaName, LPPlatform.SCHEMA_DATA);
         String tableName = "batch_java";
         Object[][] recordFieldsByFilter = Rdbms.getRecordFieldsByFilter(schemaName, tableName, 
                 new String[]{"name"}, new Object[]{batchName}, 
@@ -260,7 +260,7 @@ public final class BatchArray extends Batch{
                     "array_num_cols", "array_total_positions", "array_total_objects",
                     "array_lines_name", "array_columns_name"}
         );
-        if (!"LABPLANET_FALSE".equalsIgnoreCase(recordFieldsByFilter[0][0].toString())){                    
+        if (!LPPlatform.LAB_FALSE.equalsIgnoreCase(recordFieldsByFilter[0][0].toString())){                    
             try {
                 SerialArray rowNames = (SerialArray) recordFieldsByFilter[0][8];
                 Object[] rowNamesArr = (Object[]) rowNames.getArray();

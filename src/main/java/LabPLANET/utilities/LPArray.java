@@ -693,9 +693,9 @@ public class  LPArray {
            errorCode = "DataSample_FieldArraysDifferentSize";
            errorDetailVariables = addValueToArray1D(errorDetailVariables, Arrays.toString(arrayA));
            errorDetailVariables = addValueToArray1D(errorDetailVariables, Arrays.toString(arrayB));
-           return (String[]) LPPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);           
+           return (String[]) LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);           
         }else{
-            diagnoses[0]="LABPLANET_TRUE";
+            diagnoses[0]=LPPlatform.LAB_TRUE;
         }    
         return diagnoses;
     }
@@ -715,7 +715,7 @@ public class  LPArray {
            errorCode = "LabPLANETArray_getColumnFromArray2D_ColNotFound";
            errorDetailVariables = (String[]) addValueToArray1D(errorDetailVariables, array[0].length);
            errorDetailVariables = addValueToArray1D(errorDetailVariables, colNum.toString());
-           return LPPlatform.trapErrorMessage("LABPLANET_FALSE", errorCode, errorDetailVariables);           
+           return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);           
         }       
         for (Integer i=0;i<array.length;i++){
             diagnoses=addValueToArray1D(diagnoses, array[i][colNum]);
@@ -768,7 +768,23 @@ public class  LPArray {
                 unique.add(entry.getKey());
 
         return unique.toArray(new String[unique.size()]);
-    }    
+    } 
+    public static String convertArrayToString(Object[] matrix, String fieldsSeparator, String fieldAdorn){
+        if (matrix.length > 0) {
+            StringBuilder nameBuilder = new StringBuilder();
+            for (Object n : matrix) {
+                nameBuilder.append(fieldAdorn).append(n.toString().replace("'", "\\'")).append(fieldAdorn).append(fieldsSeparator);
+                // can also do the following
+                // nameBuilder.append("'").append(n.replace("'", "''")).append("',");
+            }
+
+            nameBuilder.deleteCharAt(nameBuilder.length() - 2);
+
+            return nameBuilder.toString();
+        } else {
+            return "";
+        }        
+    }
 }
 
 

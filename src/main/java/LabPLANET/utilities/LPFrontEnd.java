@@ -51,24 +51,20 @@ public class LPFrontEnd {
         return isConnected;
     }
     public static final Boolean servletUserToVerify(HttpServletRequest request, HttpServletResponse response, Object[] procActionRequiresUserConfirmation, String dbUserName, String dbUserPassword){    
-        if (LPPlatform.LAB_TRUE.equalsIgnoreCase(procActionRequiresUserConfirmation[0].toString())){    
-            String userToVerify = request.getParameter(globalAPIsParams.REQUEST_PARAM_USER_TO_CHECK);                   
-            String passwordToVerify = request.getParameter(globalAPIsParams.REQUEST_PARAM_PASSWORD_TO_CHECK);    
-            if ( (!userToVerify.equalsIgnoreCase(dbUserName)) || (!passwordToVerify.equalsIgnoreCase(dbUserPassword)) ){
-                servletReturnResponseError(request, response, LPPlatform.API_ERRORTRAPING_INVALID_USER_VERIFICATION, null, null);           
-                return false;                                
-            }            
-        }
+        String userToVerify = request.getParameter(globalAPIsParams.REQUEST_PARAM_USER_TO_CHECK);                   
+        String passwordToVerify = request.getParameter(globalAPIsParams.REQUEST_PARAM_PASSWORD_TO_CHECK);    
+        if ( (!userToVerify.equalsIgnoreCase(dbUserName)) || (!passwordToVerify.equalsIgnoreCase(dbUserPassword)) ){
+            servletReturnResponseError(request, response, LPPlatform.API_ERRORTRAPING_INVALID_USER_VERIFICATION, null, null);           
+            return false;                                
+        }            
         return true;
     }
     public static final Boolean servletEsignToVerify(HttpServletRequest request, HttpServletResponse response, Object[] procActionRequiresEsignConfirmation, String eSign){    
-        if (LPPlatform.LAB_TRUE.equalsIgnoreCase(procActionRequiresEsignConfirmation[0].toString())){                                                      
-            String eSignToVerify = request.getParameter(globalAPIsParams.REQUEST_PARAM_ESIGN_TO_CHECK);                   
-            if (!eSignToVerify.equalsIgnoreCase(eSign)) {  
-                servletReturnResponseError(request, response, LPPlatform.API_ERRORTRAPING_INVALID_ESIGN, null, null);           
-                return false;                                
-            }            
-        }
+        String eSignToVerify = request.getParameter(globalAPIsParams.REQUEST_PARAM_ESIGN_TO_CHECK);                   
+        if (!eSignToVerify.equalsIgnoreCase(eSign)) {  
+            servletReturnResponseError(request, response, LPPlatform.API_ERRORTRAPING_INVALID_ESIGN, null, null);           
+            return false;                                
+        }            
         return true;
     }
     /**

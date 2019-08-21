@@ -13,9 +13,12 @@ import functionalJava.audit.SampleAudit;
 import functionalJava.materialSpec.DataSpec;
 import LabPLANET.utilities.LPArray;
 import LabPLANET.utilities.LPDate;
+import LabPLANET.utilities.LPFrontEnd;
 import LabPLANET.utilities.LPPlatform;
 import static LabPLANET.utilities.LPPlatform.trapErrorMessage;
 import LabPLANET.utilities.LPMath;
+import com.labplanet.servicios.app.globalAPIsParams;
+import com.sun.rowset.CachedRowSetImpl;
 import databases.DataDataIntegrity;
 import functionalJava.ChangeOfCustody.ChangeOfCustody;
 import functionalJava.parameter.Parameter;
@@ -28,6 +31,7 @@ import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.json.simple.JSONObject;
 
 /**
  *
@@ -2096,7 +2100,7 @@ private Map getDefaultValuesTemplate(String schema, String tsample, String templ
                 new String[]{FIELDNAME_RESULT_ID },
                 new Object[]{ resultId}, 
                 new String[]{FIELDNAME_RESULT_ID, FIELDNAME_STATUS, FIELDNAME_DATA_SAMPLE_ANALYSIS_RESULT_PARAM_NAME, FIELDNAME_DATA_SAMPLE_ANALYSIS_RESULT_UOM, FIELDNAME_DATA_SAMPLE_ANALYSIS_RESULT_RAW_VALUE, FIELDNAME_TEST_ID, FIELDNAME_SAMPLE_ID, FIELDNAME_DATA_SAMPLE_ANALYSIS_RESULT_UOM_CONVERSION_MODE});
-        if ("LabPLANET_FALSE".equalsIgnoreCase(resultInfo[0][0].toString())){
+        if (LPPlatform.LAB_FALSE.equalsIgnoreCase(resultInfo[0][0].toString())){
             return LPArray.array2dTo1d(resultInfo);
         }
         String paramName = resultInfo[0][2].toString();
@@ -2150,7 +2154,7 @@ public Object[] logSampleAliquot( String schemaPrefix, Integer sampleId, String[
     String tableName = "sample_aliq";
     String auditActionName = "LOG_SAMPLE_ALIQUOT";
 
-    String schemaDataName = "data";
+    String schemaDataName = LPPlatform.SCHEMA_DATA;
     String schemaConfigName = LPPlatform.SCHEMA_CONFIG;
     
     Object[] fieldNameValueArrayChecker = LPParadigm.fieldNameValueArrayChecker(smpAliqFieldName, smpAliqFieldValue);
@@ -2651,6 +2655,76 @@ public Object[] logSampleSubAliquot( String schemaPrefix, Integer aliquotId, Str
     }
     public Object[] sarRawToPrettyResult(Object rawValue){
         return new Object[]{LPPlatform.LAB_TRUE, rawValue};
+    }
+    
+    public static String sampleEntireStructureData(String schemaPrefix, Integer sampleId, String sampleFieldToRetrieve, String sampleAnalysisFieldToRetrieve, String sampleAnalysisFieldToSort,
+            String sarFieldToRetrieve, String sarFieldToSort, String sampleAuditFieldToRetrieve, String sampleAuditResultFieldToSort){
+        
+        return sampleEntireStructureDataPostgres(schemaPrefix, sampleId, sampleFieldToRetrieve, sampleAnalysisFieldToRetrieve, sampleAnalysisFieldToSort,
+                sarFieldToRetrieve, sarFieldToSort, sampleAuditFieldToRetrieve, sampleAuditResultFieldToSort);
+    }
+    private static String sampleEntireStructureDataPostgres(String schemaPrefix, Integer sampleId, String sampleFieldToRetrieve, String sampleAnalysisFieldToRetrieve, String sampleAnalysisFieldToSort,
+            String sarFieldToRetrieve, String sarFieldToSort, String sampleAuditFieldToRetrieve, String sampleAuditResultFieldToSort){
+        
+        String [] sampleFieldToRetrieveArr = new String[0];        
+            if (sampleFieldToRetrieve!=null){sampleFieldToRetrieveArr=sampleFieldToRetrieve.split("\\|");                   
+            }else {sampleFieldToRetrieveArr=new String[0];}
+            sampleFieldToRetrieveArr = LPArray.addValueToArray1D(sampleFieldToRetrieveArr, new String[]{FIELDNAME_SAMPLE_ID, FIELDNAME_STATUS});
+            sampleFieldToRetrieve = LPArray.convertArrayToString(sampleFieldToRetrieveArr, ", ", "");       
+        String [] sampleAnalysisFieldToRetrieveArr = new String[0];        
+            if (sampleAnalysisFieldToRetrieve!=null){sampleAnalysisFieldToRetrieveArr=sampleAnalysisFieldToRetrieve.split("\\|");                   
+            }else {sampleAnalysisFieldToRetrieveArr=new String[0];}
+            sampleAnalysisFieldToRetrieveArr = LPArray.addValueToArray1D(sampleAnalysisFieldToRetrieveArr, new String[]{FIELDNAME_TEST_ID, FIELDNAME_STATUS});
+            sampleAnalysisFieldToRetrieve = LPArray.convertArrayToString(sampleAnalysisFieldToRetrieveArr, ", ", "");
+            if (sampleAnalysisFieldToSort==null){sampleAnalysisFieldToSort=FIELDNAME_TEST_ID;}                           
+        String[] sarFieldToRetrieveArr = new String[0];
+            if (sarFieldToRetrieve!=null){sarFieldToRetrieveArr=sarFieldToRetrieve.split("\\|");                   
+            }else {sarFieldToRetrieveArr=new String[0];}
+            sarFieldToRetrieveArr = LPArray.addValueToArray1D(sarFieldToRetrieveArr, new String[]{DataSample.FIELDNAME_RESULT_ID, DataSample.FIELDNAME_STATUS});
+            sarFieldToRetrieve = LPArray.convertArrayToString(sarFieldToRetrieveArr, ", ", "");
+            if (sarFieldToSort==null){sarFieldToSort=DataSample.FIELDNAME_RESULT_ID;}                            
+        String[] sampleAuditFieldToRetrieveArr = new String[0];
+            if (sampleAuditFieldToRetrieve!=null){sampleAuditFieldToRetrieveArr=sampleAuditFieldToRetrieve.split("\\|");                   
+            }else {sampleAuditFieldToRetrieveArr=new String[0];}
+            sampleAuditFieldToRetrieveArr = LPArray.addValueToArray1D(sampleAuditFieldToRetrieveArr, 
+                    new String[]{SampleAudit.FIELD_NAME_DATA_AUDIT_SAMPLE_AUDIT_ID, SampleAudit.FIELD_NAME_DATA_AUDIT_SAMPLE_TRANSACTION_ID, 
+                         SampleAudit.FIELD_NAME_DATA_AUDIT_SAMPLE_ACTION_NAME, SampleAudit.FIELD_NAME_DATA_AUDIT_SAMPLE_PERSON, SampleAudit.FIELD_NAME_DATA_AUDIT_SAMPLE_USER_ROLE});
+            sampleAuditFieldToRetrieve = LPArray.convertArrayToString(sampleAuditFieldToRetrieveArr, ", ", "");
+            if (sampleAuditResultFieldToSort==null){sampleAuditResultFieldToSort=SampleAudit.FIELD_NAME_DATA_AUDIT_SAMPLE_AUDIT_ID;}                            
+        
+        try {
+            String schemaData = LPPlatform.buildSchemaName(schemaPrefix, LPPlatform.SCHEMA_DATA);
+            String schemaDataAudit = LPPlatform.buildSchemaName(schemaPrefix, LPPlatform.SCHEMA_DATA_AUDIT);
+            String qry = "";
+            qry = qry  + "select row_to_json(sQry)from "
+                    +" ( select "+sampleFieldToRetrieve+", "
+                    +" ( select COALESCE(array_to_json(array_agg(row_to_json(saQry))),'[]') from  "
+                    +"( select "+sampleAnalysisFieldToRetrieve+", "
+                    +"( select COALESCE(array_to_json(array_agg(row_to_json(sarQry))),'[]') from "
+                    +"( select "+sarFieldToRetrieve+" from "+schemaData+".sample_analysis_result sar where sar.test_id=sa.test_id "
+                    +"order by "+sarFieldToSort+"     ) sarQry    ) as sample_analysis_result "
+                    +"from "+schemaData+".sample_analysis sa where sa.sample_id=s.sample_id "
+                    +"order by "+sampleAnalysisFieldToSort+"      ) saQry    ) as sample_analysis,"
+                    + "( select COALESCE(array_to_json(array_agg(row_to_json(sauditQry))),'[]') from  "
+                    +"( select "+sampleAuditFieldToRetrieve
+                    +"from "+schemaDataAudit+".sample saudit where saudit.sample_id=s.sample_id "
+                    +"order by "+sampleAuditResultFieldToSort+"      ) sauditQry    ) as sample_audit "
+                    +"from "+schemaData+".sample s where s.sample_id in ("+ "?"+" ) ) sQry   ";
+            
+            CachedRowSetImpl prepRdQuery = Rdbms.prepRdQuery(qry, new Object[]{sampleId});
+            
+            
+            boolean first = prepRdQuery.first();
+            String finalString = "";
+            if (prepRdQuery.getString(1)==null){
+                return LPPlatform.LAB_FALSE;
+            }
+            String jsonarrayf = prepRdQuery.getString(1);
+            return jsonarrayf;
+        } catch (SQLException ex) {
+            Logger.getLogger(DataSample.class.getName()).log(Level.SEVERE, null, ex);
+            return LPPlatform.LAB_FALSE;
+        }        
     }
 
 }
