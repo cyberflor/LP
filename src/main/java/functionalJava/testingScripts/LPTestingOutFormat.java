@@ -26,8 +26,8 @@ import javax.servlet.http.HttpServletResponse;
 public class LPTestingOutFormat {
     private LPTestingOutFormat(){    throw new IllegalStateException("Utility class");}    
     
-    public static final String TESTING_FILES_PATH_SERVER = "http://51.75.202.142:8888/testingRepository/"; //\\\\FRANCLOUD\\fran\\LabPlanet\\testingRepository\\"; // "\\testingRepository\\";
-    public static final String TESTING_FILES_PATH = "\\\\FRANCLOUD\\fran\\LabPlanet\\testingRepository\\"; // "\\testingRepository\\";
+    public static final String TESTING_FILES_PATH = "http://51.75.202.142:8888/testingRepository/"; //\\\\FRANCLOUD\\fran\\LabPlanet\\testingRepository\\"; // "\\testingRepository\\";
+    public static final String TESTING_FILES_PATH_NAS = "\\\\FRANCLOUD\\fran\\LabPlanet\\testingRepository\\"; // "\\testingRepository\\";
     public static final String TESTING_FILES_FIELD_SEPARATOR=";";
     public static final String TESTING_USER="labplanet";
     public static final String TESTING_PW="avecesllegaelmomento";
@@ -143,16 +143,12 @@ public class LPTestingOutFormat {
         csvPathName = csvPathName.replace(".txt", ".html");            
         File file = new File(csvPathName);
             try (FileWriter fileWriter = new FileWriter(file)) {
-                if (file.exists()){
-                    if (!file.delete()){
+                if ((file.exists()) && (!file.delete()) ) {
                         return;
-                    }
-                    
                 }
                 if (!file.createNewFile()){
                     return;
                 }
-                //Files.deleteIfExists(file.toPath());
                 fileWriter.write(fileContent);
                 fileWriter.flush();
             } 
@@ -175,8 +171,6 @@ public class LPTestingOutFormat {
         fileContent = fileContent + "</head>" + "";
         fileContent = fileContent + "<body>" + "\n";
         fileContent = fileContent + "<h1>Servlet TestingUnitConversion at " + servletName + "</h1>" + "";
-        //fileContent = fileContent + "</body>" + "";
-        //fileContent = fileContent + "</html>" + "";
         fileContent = fileContent + "<table id=\"scriptTable\">";
         return fileContent;
     }

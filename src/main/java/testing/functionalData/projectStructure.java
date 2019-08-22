@@ -72,14 +72,13 @@ public class projectStructure extends HttpServlet {
             }            
 
             for (Integer i=1;i<configSpecTestingArray.length;i++){
-                //if (configSpecTestingArray[i][2]==null && configSpecTestingArray[i][3]==null){
                 fileContent = fileContent + LPTestingOutFormat.rowStart();
                 String[] fieldName=null;    
                 Object[] fieldValue=null;
                 String schemaPrefix=null;
                 Integer sampleId=null;
                 userName=null;                
-                String actionName=null;
+                String actionName="<<<";
                 Object[] dataProject = null;
 
                 if (configSpecTestingArray[i][1]!=null){schemaPrefix = (String) configSpecTestingArray[i][1];}
@@ -126,6 +125,7 @@ public class projectStructure extends HttpServlet {
                         fieldValue = LPArray.convertStringWithDataTypeToObjectArray((String[]) fieldValue);
                         fieldValue = LPArray.convertStringWithDataTypeToObjectArray(configSpecTestingArray[i][6].toString().split("\\|"));
                         fileContent = fileContent + "<td>sampleId, userName, fieldNames, fieldValues</td>";
+                        if (sampleId==null){sampleId=-9;}
                         fileContent = fileContent + LPTestingOutFormat.fieldStart()+sampleId.toString()+", "+userName+", "
                             +configSpecTestingArray[i][5].toString()+", "+configSpecTestingArray[i][6].toString()+LPTestingOutFormat.fieldEnd();                             
                         dataProject = prj.sampleAnalysisAddtoSample(schemaPrefix, userName, sampleId, fieldName, fieldValue, userRole);

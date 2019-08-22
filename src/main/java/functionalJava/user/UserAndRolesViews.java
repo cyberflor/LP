@@ -39,7 +39,6 @@ public class UserAndRolesViews {
      * @return
      */
     public static final Object[] isValidUserPassword(String user, String pass) {
-        //Object[][] recordFieldsByFilter = Rdbms.getRecordFieldsByFilter(, new String[]{"user_name"});
         return Rdbms.existsRecord(LPPlatform.SCHEMA_APP, dbObjectsAppTables.TABLE_NAME_APP_USERS, 
                 new String[]{dbObjectsAppTables.FIELD_NAME_APP_USERS_USER_NAME, dbObjectsAppTables.FIELD_NAME_APP_USERS_PASSWORD}, new Object[]{user, pass});
     }

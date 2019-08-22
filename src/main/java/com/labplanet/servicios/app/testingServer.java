@@ -13,6 +13,7 @@ import databases.Rdbms;
 import databases.Token;
 import databases.dbObjectsAppTables;
 import databases.dbObjectsAppTables.SchemaApppTableAppSession;
+import functionalJava.parameter.Parameter;
 import functionalJava.sampleStructure.DataSampleUtilities;
 import functionalJava.testingScripts.LPTestingOutFormat;
 import java.io.IOException;
@@ -24,6 +25,7 @@ import java.net.URL;
 import java.nio.charset.CharsetDecoder;
 import java.nio.charset.CodingErrorAction;
 import java.nio.charset.StandardCharsets;
+import java.security.Policy.Parameters;
 import java.util.Arrays;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -72,6 +74,9 @@ public class testingServer extends HttpServlet {
             
             out.println("Statuses en inglés: "+Arrays.toString(DataSampleUtilities.getSchemaSampleStatusList(procName)));
             out.println("Statuses en castellano: "+Arrays.toString(DataSampleUtilities.getSchemaSampleStatusList(procName, "es")));
+            
+            out.println("First sample analysis status for process-us is: "+Parameter.getParameterBundle("process-us-data", "sampleAnalysis_statusFirst"));
+            
             String[] errObject = new String[]{"Servlet sampleAPI at " + request.getServletPath()};          
             boolean isConnected = false;
             //isConnected = Rdbms.getRdbms().startRdbms(dbUserName, dbUserPassword);
@@ -99,18 +104,7 @@ public class testingServer extends HttpServlet {
             String myToken = token.createToken(LPTestingOutFormat.TESTING_USER, LPTestingOutFormat.TESTING_PW, "3", "Admin", "", "", "");
             out.println("Token created: "+myToken);
             
-            //out.println(RequirementLogFile.requirementsLogEntry("This is a requirement log called from TestingServer", "methodName", LPPlatform.SCHEMA_APP,2);         
-            
- //           response.sendError(Response.SC_OK, "SC_OK response");
- //           if (1==1){                return;            }
-
-            //response.getWriter().write("Unauthorized response zzzzzzzzzzzz");
-            //response.setStatus(Response.SC_UNAUTHORIZED);
-//String CustomResponse = "CustomResponse";
-//            Response response2 = Response.status (Response.SC_UNAUTHORIZED).entity(CustomResponse).build ();
-            
             out.println("Reading web text file");
-            //String exampleUrl = "https://www.w3.org/TR/PNG/iso_8859-1.txt";
             String exampleUrl = "http://51.75.202.142:8888/myfiles/txtfile.txt";
             final URL url = new URL(exampleUrl);
             final StringBuilder sb = new StringBuilder();

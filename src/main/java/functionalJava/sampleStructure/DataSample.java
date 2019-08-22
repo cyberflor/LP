@@ -1633,7 +1633,7 @@ private Map getDefaultValuesTemplate(String schema, String tsample, String templ
      * @param templateVersion
      * @return
      */
-    public String specialFieldCheckSampleSpecCode( String[] parameters, String schemaPrefix, String template, Integer templateVersion){ //, String schemaPrefix, String analysisList){                        
+    public String specialFieldCheckSampleSpecCode( String[] parameters, String schemaPrefix, String template, Integer templateVersion){ 
 
         String myDiagnoses = "";        
         String schemaConfigName = LPPlatform.SCHEMA_CONFIG;
@@ -1660,7 +1660,7 @@ private Map getDefaultValuesTemplate(String schema, String tsample, String templ
             myDiagnoses = "ERROR: The sample_rule record for "+template+" does not exist in schema"+schemaConfigName+". ERROR: "+diagnosis[5];
             return myDiagnoses;}
         
-        myDiagnoses = DIAGNOSES_SUCCESS; //: Spec "+specCode+" with version "+specCodeVersion.toString()+" and variation "+specVariationName+" does not exist in schema"+schemaConfigName+". ERROR: "+diagnosis[5];
+        myDiagnoses = DIAGNOSES_SUCCESS; 
         return myDiagnoses;}
     
     /**
@@ -2148,7 +2148,6 @@ private Map getDefaultValuesTemplate(String schema, String tsample, String templ
         return updateRecordFieldsByFilter;
     }
     
-//public Object[] logSampleAliquot( String schemaPrefix, Integer sampleId, String sampleTemplate, Integer sampleTemplateVersion, String[] smpAliqFieldName, Object[] smpAliqFieldValue, String userName, String userRole, Integer appSessionId, Boolean devMode) {
 public Object[] logSampleAliquot( String schemaPrefix, Integer sampleId, String[] smpAliqFieldName, Object[] smpAliqFieldValue, String userName, String userRole, Integer appSessionId) {    
     String parentTableName = TABLENAME_DATA_SAMPLE;
     String tableName = "sample_aliq";
@@ -2230,7 +2229,6 @@ public Object[] logSampleAliquot( String schemaPrefix, Integer sampleId, String[
     }
     Integer aliquotId = Integer.parseInt(diagnoses[diagnoses.length-1].toString());
     Object[] fieldsOnLogSample = LPArray.joinTwo1DArraysInOneOf1DString(smpAliqFieldName, smpAliqFieldValue, ":");
-    //diagnoses = LPArray.addValueToArray1D(diagnoses, diagnoses[diagnoses.length-1]);
     SampleAudit smpAudit = new SampleAudit();
     smpAudit.sampleAuditAdd(schemaPrefix, auditActionName, tableName, aliquotId, aliquotId,
             sampleId, null, null, 
@@ -2326,7 +2324,6 @@ public Object[] logSampleSubAliquot( String schemaPrefix, Integer aliquotId, Str
     }
     Integer subaliquotId = Integer.parseInt(diagnoses[diagnoses.length-1].toString());
     Object[] fieldsOnLogSample = LPArray.joinTwo1DArraysInOneOf1DString(smpSubAliqFieldName, smpSubAliqFieldValue, ":");
-    //diagnoses = LPArray.addValueToArray1D(diagnoses, diagnoses[diagnoses.length-1]);
     SampleAudit smpAudit = new SampleAudit();
     smpAudit.sampleAuditAdd(schemaPrefix, auditActionName, tableName, subaliquotId, subaliquotId, aliquotId,
             sampleId, null, null, 
@@ -2347,7 +2344,6 @@ public Object[] logSampleSubAliquot( String schemaPrefix, Integer aliquotId, Str
      * @return
      */
     public Object[] sampleAnalysisAddtoSample(String schemaPrefix, String userName, Integer sampleId, String[] fieldName, Object[] fieldValue, String userRole) {
-        // throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException{
         String tableName = "_analysis";
         String actionName = "Insert";
         String auditActionName = "ADD_SAMPLE_ANALYSIS";
@@ -2386,7 +2382,7 @@ public Object[] logSampleSubAliquot( String schemaPrefix, Integer aliquotId, Str
             return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, ERROR_TRAPPING_DATA_SAMPLE_ANALYSIS_ADD_TO_SAMPLE_MISSING_MANDATORY_FIELDS, this.errorDetailVariables);
         }
         // set first status. Begin
-        String firstStatus = "NOT_STARTED"; //Rdbms.getParameterBundleInConfigFile(schemaDataName, "sampleAnalysis_statusFirst");
+        String firstStatus = Parameter.getParameterBundle(schemaDataName, "sampleAnalysis_statusFirst");
         Integer specialFieldIndex = Arrays.asList(fieldName).indexOf(DataSample.FIELDNAME_STATUS);
         if (specialFieldIndex == -1) {
             fieldName = LPArray.addValueToArray1D(fieldName, DataSample.FIELDNAME_STATUS);
@@ -2460,7 +2456,11 @@ public Object[] logSampleSubAliquot( String schemaPrefix, Integer aliquotId, Str
                     Class<?>[] paramTypes = {Rdbms.class, String.class};
                     method = this.getClass().getDeclaredMethod(aMethod, paramTypes);
                 } catch (NoSuchMethodException | SecurityException ex) {
-                    //                    Logger.getLogger(configSpecStructure.class.getName()).log(Level.SEVERE, null, ex);
+                    this.errorCode = "DataSample_SpecialFunctionReturnedERROR";
+                    this.errorDetailVariables = LPArray.addValueToArray1D(this.errorDetailVariables, currField);
+                    this.errorDetailVariables = LPArray.addValueToArray1D(this.errorDetailVariables, aMethod);
+                    this.errorDetailVariables = LPArray.addValueToArray1D(this.errorDetailVariables, ex.getMessage());                    
+                    return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, this.errorCode, this.errorDetailVariables);
                 }
                 Object specialFunctionReturn = null;
                 try {
@@ -2545,7 +2545,7 @@ public Object[] logSampleSubAliquot( String schemaPrefix, Integer aliquotId, Str
         // This is temporary !!!! ***************************************************************
         specialFieldIndex = Arrays.asList(getResultFields).indexOf(DataSample.FIELDNAME_STATUS);
         if (specialFieldIndex == -1) {
-            firstStatus = "BLANK"; //Rdbms.getParameterBundleInConfigFile(schemaDataName, "sampleAnalysis_statusFirst");
+            firstStatus = Parameter.getParameterBundle(schemaDataName, "sampleAnalysisResult_statusFirst");
             resultFieldRecords = LPArray.addColumnToArray2D(resultFieldRecords, firstStatus);
             getResultFields = LPArray.addValueToArray1D(getResultFields, DataSample.FIELDNAME_STATUS);
         }
@@ -2571,11 +2571,6 @@ public Object[] logSampleSubAliquot( String schemaPrefix, Integer aliquotId, Str
                     getResultFields = LPArray.addValueToArray1D(getResultFields, currField);
                 }
             }
-            /*        else{
-            Integer valuePosic = Arrays.asList(fieldName).indexOf(currField);
-            resultMandatoryFields[inumLines] = fieldValue[valuePosic];
-            }
-             */
         }
         if (resultMandatoryFieldsMissing.length() > 0) {
             this.errorCode = "DataSample_MissingMandatoryFields";

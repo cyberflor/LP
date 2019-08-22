@@ -133,8 +133,6 @@ public class UnitsOfMeasurement {
             return conversion;            
         }
         
-        //if (currentUnit.equalsIgnoreCase(newUnit)){return valueToConvert;}
-        
         Integer currentUnitFamilyFieldPosic = Arrays.asList(fieldsToGet).indexOf(familyFieldNameDataBase);         
         Integer newUnitFamilyFieldPosic = Arrays.asList(fieldsToGet).indexOf(familyFieldNameDataBase);                
         if ((currentUnitFamilyFieldPosic==-1) || (newUnitFamilyFieldPosic==-1) ){
@@ -158,11 +156,6 @@ public class UnitsOfMeasurement {
         valueConverted=valueConverted.multiply(newUnitFactor);
         newUnitOffset=newUnitOffset.add(currentUnitOffset.negate());
         valueConverted=valueConverted.add(newUnitOffset);
-        
-        //valueConverted.add(new BigDecimal(  - new BigDecimal(currentUnitInfo[0][4].toString()) ));
-        //valueConverted = valueConverted * ((float)newUnitInfo[0][3] / (float)currentUnitInfo[0][3]);
-        //valueConverted = valueConverted + ((float)newUnitInfo[0][4] - (float)currentUnitInfo[0][4]);
-        //valueConverted = Float.valueOf(String.format("%.10f",valueConverted));
         
         conversion = LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, MESSAGE_TRAPPING_CONVERTED_SUCCESS,
                         new Object[]{currentUnit , newUnitInfo, valueToConvert, valueConverted, schemaPrefix,

@@ -31,12 +31,10 @@ public class LPHttp {
         response.setContentType("application/json");
         response.setCharacterEncoding(LPPlatform.LAB_ENCODER_UTF8);
 
- //       ResourceBundle prop = ResourceBundle.getBundle("parameter.config.conf");
         response.setHeader("CORS_ORIGIN_ALLOW_ALL", "True");                
         response.setHeader("CORS_ALLOW_CREDENTIALS", "True");                 //False
         response.setHeader("Access-Control-Allow-Methods", "GET");        
         response.setHeader("Access-Control-Allow-Origin", "*");
-        //response.setHeader("Access-Control-Allow-Origin", "http://127.0.0.1:8081");
         response.setHeader("Access-Control-Allow-Credentials", "true");        
         return response;
     }    

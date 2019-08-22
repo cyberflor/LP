@@ -98,8 +98,6 @@ public class ConfigSpecStructure {
 
 if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
         
-        //String[] variationNameArray = variationNames.split("\\|", -1);
-        
         Object[] variationNameDiagnosticArray = specVariationGetNamesList(schemaPrefix, specCode);
         if (!LPPlatform.LAB_TRUE.equalsIgnoreCase(variationNameDiagnosticArray[0].toString())){
             return DIAGNOSES_SUCCESS;
@@ -131,15 +129,11 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
         String myDiagnoses = "";
         String schemaPrefix = parameters[0];
         String variationNames = parameters[1];
-
         
         Integer specialFieldIndex = Arrays.asList(mandatoryFields).indexOf("code");        
         String specCode = (String) mandatoryFieldValue[specialFieldIndex];
 
         String variationNameExist = "";
-
-        
-        //String[] variationNameArray = variationNames.split("\\|", -1);
         
         Object[] variationNameDiagnosticArray = specVariationGetNamesList(schemaPrefix, specCode);
         if (!LPPlatform.LAB_TRUE.equalsIgnoreCase(variationNameDiagnosticArray[0].toString())){
@@ -166,7 +160,7 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
      * @param schemaPrefix
      * @return
      */
-    public String specialFieldCheckSpecLimitsVariationName(String schemaPrefix){ //, String schemaPrefix, String analysisList){                        
+    public String specialFieldCheckSpecLimitsVariationName(String schemaPrefix){ 
                 
         String analysesMissing = "";
         String myDiagnoses = "";        
@@ -210,7 +204,7 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
      * @param schemaPrefix
      * @return
      */
-    public String specialFieldCheckSpecLimitsAnalysis(String schemaPrefix){ //, String schemaPrefix, String analysisList){                        
+    public String specialFieldCheckSpecLimitsAnalysis(String schemaPrefix){ 
 
         String myDiagnoses = "";  
         String schemaName = LPPlatform.SCHEMA_CONFIG;
@@ -259,7 +253,7 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
      * @param schemaPrefix
      * @return
      */
-    public String specialFieldCheckSpecLimitsRuleType(String schemaPrefix){ //, String schemaPrefix, String analysisList){                        
+    public String specialFieldCheckSpecLimitsRuleType(String schemaPrefix){ 
         Integer specialFieldIndex = Arrays.asList(mandatoryFields).indexOf("rule_type");
         String ruleType = (String) mandatoryFieldValue[specialFieldIndex];        
         
@@ -477,7 +471,6 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
                         errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, specialFunctionReturn.toString());
                         return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);                            
                     }
-                    //String specialFunctionReturnStatus = String.valueOf(specialFunctionReturn);
             }
         }
         diagnoses = Rdbms.existsRecord(schemaConfigName, dbObjectsConfigTables.TABLE_CONFIG_SPEC, 
@@ -537,54 +530,7 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
             errorCode = "specVariationGetNamesList_successfully";
             return LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, errorCode, new String[]{variationList});            
         }
-/*        String query = ""; //distinct on (name)
-        query = "select name from " + schemaConfigName + ".spec_limits "
-                + "   where code=? ";               
-        try{
-            ResultSet res = rdbm.prepRdQuery(query, new Object [] {specCode});
-            res.last();
 
-            if (res.getRow()>0){  
-                
-                String[] variationListArray = new String[res.getRow()];
-                res.first();
-                for (int i=0;i<=res.getRow();i++){
-                    if (variationList.length()>0){variationList=variationList+"|";}
-                    variationList=variationList+res.getString("name");
-                }
-                StackTraceElement[] elements = Thread.currentThread().getStackTrace();
-                diagnosis[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
-                diagnosis[1]= classVersion;
-                diagnosis[2]= "Code Line " + String.valueOf(elements[1].getLineNumber());   
-                diagnosis[3]=LPPlatform.LAB_TRUE;
-                diagnosis[4]=variationList;
-                diagnosis[5]=String.valueOf(res.getRow())+" records found, Query: "+query;
-                return diagnosis;  
-            }
-            else{
-                StackTraceElement[] elements = Thread.currentThread().getStackTrace();
-                diagnosis[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
-                diagnosis[1]= classVersion;
-                diagnosis[2]= "Code Line " + String.valueOf(elements[1].getLineNumber());   
-                diagnosis[3]="FALSE";
-                diagnosis[4]="ERROR:VARIATIONS NOT FOUND";
-                diagnosis[5]="No records found, Query: "+query;
-                return diagnosis;         
-            }
-
-        }catch (SQLException er) {
-            String ermessage=er.getLocalizedMessage()+er.getCause();
-            Logger.getLogger(query).log(Level.SEVERE, null, er);     
-            StackTraceElement[] elements = Thread.currentThread().getStackTrace();
-            diagnosis[0]= elements[1].getClassName() + "." + elements[1].getMethodName();
-            diagnosis[1]= classVersion;
-            diagnosis[2]= "Code Line " + String.valueOf(elements[1].getLineNumber());   
-            diagnosis[3]="FALSE";
-            diagnosis[4]="ERROR:DB RETURNED ERROR";
-            diagnosis[5]="The database returned error: "+ermessage+ " Query: "+query;
-            return diagnosis;                
-        }   
-*/
     }
     
     /**

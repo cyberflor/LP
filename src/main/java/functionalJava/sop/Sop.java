@@ -71,7 +71,6 @@ public class Sop {
     public Object[] dbInsertSopId( String schemaPrefix, String userInfoId) {
          String schemaConfigName = LPPlatform.SCHEMA_CONFIG;
          schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, schemaConfigName);
-//        schemaPrefix = "\""+schemaPrefix+"\"";
         //requires added_on
         String[] fieldNames = new String[0];
         Object[] fieldValues = new Object[0];

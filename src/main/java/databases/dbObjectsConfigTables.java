@@ -30,6 +30,7 @@ public class dbObjectsConfigTables {
     private Object[][] tableConfigSpecScript(String schemaPrefix){
         //Falta implementarlo
         String tableName = TABLE_CONFIG_SPEC;
+        String script = "CREATE TABLE "+tableName;
         return new Object[0][0];
     }  
     

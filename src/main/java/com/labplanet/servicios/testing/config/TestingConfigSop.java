@@ -59,9 +59,6 @@ public class TestingConfigSop extends HttpServlet {
             
             String schemaConfigName = "oil-pl1";
             String schemaDataName = "oil-pl1";
-//            String schemaConfigName = "\"oil-pl1-config\"";
-//            String schemaDataName = "\"oil-pl1-data\"";
-//            HttpSession miSession = request.getSession(false);         
             
             if (!LPFrontEnd.servletStablishDBConection(request, response)){return;}   
         
@@ -109,9 +106,6 @@ public class TestingConfigSop extends HttpServlet {
             fileContent = fileContent + LPTestingOutFormat.fieldStart()+Arrays.toString(LPArray.array2dTo1d(userSOP))+LPTestingOutFormat.fieldEnd()+LPTestingOutFormat.rowEnd();  
             
             
-//            if (LPPlatform.LAB_FALSE.equalsIgnoreCase(userSOP[0][0].toString())){
-//                out.println(Arrays.toString(userSOP));
-//            }
 
             Object[][] userPendingSOPs = usSop.getNotCompletedUserSOP("1", "ALL", null);
             fileContent = fileContent + LPTestingOutFormat.rowStart()+LPTestingOutFormat.fieldStart()+"getNotCompletedUserSOP"+LPTestingOutFormat.fieldEnd();                                   
@@ -134,8 +128,6 @@ public class TestingConfigSop extends HttpServlet {
             fileContent = fileContent + LPTestingOutFormat.fieldStart()+"SopId: 58"+LPTestingOutFormat.fieldEnd();      
             fileContent = fileContent + LPTestingOutFormat.fieldStart()+Arrays.toString(certificationStatus)+LPTestingOutFormat.fieldEnd()+LPTestingOutFormat.rowEnd();               
             
-//            if (1==1)return;
-//            System.exit(1);
             String sopName = "Demo UAT";
             
             Sop s = new Sop(sopId, sopName, 1, 1, "ACTIVE", "READ");

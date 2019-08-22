@@ -64,8 +64,6 @@ public class UserSop {
         Object[][] getUserProfileFieldValues = getUserProfileFieldValues(filterFieldName, filterFieldValue, fieldsToReturn, new String[]{schemaPrefix});   
         if (getUserProfileFieldValues.length<=0){
             Object[] diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, ERROR_TRAPING_SOP_NOT_ASSIGNED_TO_THIS_USER, new Object[]{sopName, userName, schemaPrefix});
-            //diagnoses = LPArray.addValueToArray1D(diagnoses, DIAGNOSES_ERROR_CODE);
-            //diagnoses = LPArray.addValueToArray1D(diagnoses, Parameter.getParameterBundle(schemaConfigName, "userSopCertificationLevelImage_NotAssigned"));
             return LPArray.array1dTo2d(diagnoses, diagnoses.length);
         }        
         return getUserProfileFieldValues;
@@ -192,16 +190,7 @@ public class UserSop {
             fieldsToReturn = LPArray.addValueToArray1D(fieldsToReturn, FIELDNAME_SOP_ID);
             fieldsToReturn = LPArray.addValueToArray1D(fieldsToReturn, FIELDNAME_SOP_NAME);
         }
-        return getUserProfileFieldValues(filterFieldName, filterFieldValue, fieldsToReturn, (String[]) userSchemas);   
-/*
-        Integer numLines=getUserProfileFieldValues.length;
-
-        String[]UserSchemas=new String[numLines];
-        for (Integer inumLines=0;inumLines<numLines;inumLines++){                
-            UserSchemas[inumLines]=getUserProfileFieldValues[inumLines][0].toString();
-        }
-        return UserSchemas;           
-*/        
+        return getUserProfileFieldValues(filterFieldName, filterFieldValue, fieldsToReturn, (String[]) userSchemas);     
     }
   
     // This function cannot be replaced by a single query through the rdbm because it run the query through the many procedures
@@ -217,7 +206,7 @@ public class UserSop {
      */
         
     public static final Object[][] getUserProfileFieldValues(String[] filterFieldName, Object[] filterFieldValue, String[] fieldsToReturn, String[] schemaPrefix){                
-        String tableName = "user_and_meta_data_sop_vw"; //user_sop";
+        String tableName = "user_and_meta_data_sop_vw"; 
         
         if (fieldsToReturn.length<=0){
 //            Object[] diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, "Rdbms_NotFilterSpecified", new Object[]{tableName, schemaPrefix});

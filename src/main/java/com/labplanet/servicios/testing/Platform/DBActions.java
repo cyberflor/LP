@@ -70,7 +70,6 @@ public class DBActions extends HttpServlet {
                 
             Integer numEvaluationArguments = Integer.valueOf(csvHeaderTags.get(LPTestingOutFormat.FILEHEADER_NUM_EVALUATION_ARGUMENTS).toString());   
             Integer numHeaderLines = Integer.valueOf(csvHeaderTags.get(LPTestingOutFormat.FILEHEADER_NUM_HEADER_LINES_TAG_NAME).toString());   
-            //numEvaluationArguments=numEvaluationArguments+1;
             String table1Header = csvHeaderTags.get(LPTestingOutFormat.FILEHEADER_TABLE_NAME_TAG_NAME+"1").toString();               
             String fileContentTable1 = LPTestingOutFormat.createTableWithHeader(table1Header, numEvaluationArguments);
             
@@ -139,8 +138,6 @@ public class DBActions extends HttpServlet {
                 allFunctionsBeingTested = LPArray.addValueToArray1D(allFunctionsBeingTested, ENDPOINTS_BEING_TESTED_GETRECORDFIELDSBYFILTER);
                 allFunctionsBeingTested = LPArray.addValueToArray1D(allFunctionsBeingTested, ENDPOINTS_BEING_TESTED_UPDATE);
 
-//                fileContentTable1=fileContentTable1+LPTestingOutFormat.rowAddFields(
-//                        new Object[]{iLines, result, ruleType, values, separator, listName});
                 switch (actionName.toUpperCase()){
                     case ENDPOINTS_BEING_TESTED_EXISTSRECORD:   
                         Object[] exRec =  Rdbms.existsRecord(schemaPrefix, tableName, fieldName, fieldValues);
@@ -186,7 +183,6 @@ public class DBActions extends HttpServlet {
                             Object[] evaluate = tstAssert.evaluate(numEvaluationArguments, tstAssertSummary, dataSample2Din1D);
                             fileContentTable1=fileContentTable1+LPTestingOutFormat.rowAddFields(evaluate);                        
                         }
-                        //fileContent = fileContent +LPTestingOutFormat.rowAddField(Arrays.toString(dataSample2Din1D));
                     }
                     if ( (!ENDPOINTS_BEING_TESTED_GETRECORDFIELDSBYFILTER.equalsIgnoreCase(actionName)) && (!LPPlatform.LAB_FALSE.equalsIgnoreCase(dataSample2D[0][0].toString())) ){                        
                         String dataSampleFldOut = "";
@@ -200,7 +196,6 @@ public class DBActions extends HttpServlet {
                             Object[] evaluate = tstAssert.evaluate(numEvaluationArguments, tstAssertSummary, new Object[]{dataSampleFldOut});
                             fileContentTable1=fileContentTable1+LPTestingOutFormat.rowAddFields(evaluate);                        
                         }
-                        //fileContent = fileContent +LPTestingOutFormat.rowAddField(dataSampleFldOut);
                     }
                 }
                 fileContentTable1=fileContentTable1+LPTestingOutFormat.rowEnd();                                                

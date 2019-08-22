@@ -774,8 +774,6 @@ public class  LPArray {
             StringBuilder nameBuilder = new StringBuilder();
             for (Object n : matrix) {
                 nameBuilder.append(fieldAdorn).append(n.toString().replace("'", "\\'")).append(fieldAdorn).append(fieldsSeparator);
-                // can also do the following
-                // nameBuilder.append("'").append(n.replace("'", "''")).append("',");
             }
 
             nameBuilder.deleteCharAt(nameBuilder.length() - 2);

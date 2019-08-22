@@ -21,12 +21,9 @@ public class LPSession {
         Date nowLocalDate = LPDate.getTimeStampLocalDate();
         String tableName = "app_session";
         
-        
         fieldsName = LPArray.addValueToArray1D(fieldsName, "date_started");
         fieldsValue = LPArray.addValueToArray1D(fieldsValue, nowLocalDate);
 
-//        fieldsName = LPArray.addValueToArray1D(fieldsName, "person");
-//        fieldsValue = LPArray.addValueToArray1D(fieldsValue, "1");        
         return Rdbms.insertRecordInTable(LPPlatform.SCHEMA_APP, tableName, fieldsName, fieldsValue);            
     }
     

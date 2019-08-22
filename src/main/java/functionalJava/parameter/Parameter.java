@@ -57,11 +57,15 @@ public class Parameter {
      * @return
      */
     public static String getParameterBundleInConfigFile(String configFile, String parameterName, String language) {
-        ResourceBundle prop = ResourceBundle.getBundle("parameter.config." + configFile + "_" + language);
-        if (!prop.containsKey(parameterName)) {
-            return "";
-        } else {
-            return prop.getString(parameterName);
+        try {
+            ResourceBundle prop = ResourceBundle.getBundle("parameter.config." + configFile + "_" + language);
+            if (!prop.containsKey(parameterName)) {
+                return "";
+            } else {
+                return prop.getString(parameterName);
+            }
+        } catch (Exception e) {
+            return e.getMessage();
         }
     }
 
@@ -74,9 +78,6 @@ public class Parameter {
     public static String getParameterBundle(String configFile, String parameterName) {
         try {
             ResourceBundle prop = ResourceBundle.getBundle("parameter.config." + configFile);
-           // ResourceBundle prop2 = ResourceBundle.getBundle("parameter.config.process-us-data");
-           // ResourceBundle prop3 = ResourceBundle.getBundle("parameter.config.labtimus");
-           // ResourceBundle prop4 = ResourceBundle.getBundle("parameter.config.app-config");
             if (!prop.containsKey(parameterName)) {
                 return "";
             } else {
@@ -87,7 +88,7 @@ public class Parameter {
         }
     }
 
-    private void addTagInPropertiesFile(String fileName, String entryName, String entryValue, String testBackup) throws IOException{
+    public void addTagInPropertiesFile(String fileName, String entryName, String entryValue, String testBackup) throws IOException{
          
         String newEntry = "";
         
@@ -97,8 +98,6 @@ public class Parameter {
           
         String fileidt = translationsDir + "\\" + fileName + "_es_CO.properties";        
         String currFileName = fileName + "_es_CO.properties";
-        
-        //String existingEntryValue = prop.getString(entryName);
         
         if (!prop.containsKey(entryName)){        
             if (fileName.equalsIgnoreCase("USERNAV")){ newEntry = entryName + ":" +entryValue;}
@@ -123,7 +122,6 @@ public class Parameter {
      */
     public String addTagInPropertiesFile(String fileName, String entryName, String entryValue) throws IOException{
 
-        //FileWriter fw = null;
         String newEntry = "";
 
         ResourceBundle propConfig = ResourceBundle.getBundle(BUNDLE_TAG_PARAMETER_CONFIG_CONF);        
@@ -147,13 +145,10 @@ public class Parameter {
                 else { newEntry = entryName + "=" +entryValue;}
                 
                 try (FileWriter fw = new FileWriter(fileidt, true)){
-                //fw = new FileWriter(fileidt, true);
-
-                if (!newEntry.isEmpty()){
-                    newEntry = newEntry + "\n";
-                    fw.append(newEntry);
-                    }
-                //fw.close();
+                    if (!newEntry.isEmpty()){
+                        newEntry = newEntry + "\n";
+                        fw.append(newEntry);
+                        }
                 }
                 return newLogEntry;
             }

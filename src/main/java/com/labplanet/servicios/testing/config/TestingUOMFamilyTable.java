@@ -60,7 +60,6 @@ public class TestingUOMFamilyTable extends HttpServlet {
             
             Integer numEvaluationArguments = Integer.valueOf(csvHeaderTags.get(LPTestingOutFormat.FILEHEADER_NUM_EVALUATION_ARGUMENTS).toString());   
             Integer numHeaderLines = Integer.valueOf(csvHeaderTags.get(LPTestingOutFormat.FILEHEADER_NUM_HEADER_LINES_TAG_NAME).toString());   
-            //numEvaluationArguments=numEvaluationArguments+1;
             String table1Header = csvHeaderTags.get(LPTestingOutFormat.FILEHEADER_TABLE_NAME_TAG_NAME+"1").toString();               
             String fileContentTable1 = LPTestingOutFormat.createTableWithHeader(table1Header, numEvaluationArguments);
             
@@ -119,10 +118,8 @@ public class TestingUOMFamilyTable extends HttpServlet {
             fileContent=fileContent+LPTestingOutFormat.bodyEnd()+LPTestingOutFormat.htmlEnd();
             out.println(fileContent);            
             LPTestingOutFormat.createLogFile(csvPathName, fileContent);
-            //testingSummary=null; resChkSpec=null;
         }
         catch(IOException error){
-            //testingSummary=null; resChkSpec=null;
             Rdbms.closeRdbms();
         }        
     }        

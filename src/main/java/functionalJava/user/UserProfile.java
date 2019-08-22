@@ -14,8 +14,6 @@ import databases.Rdbms;
  * @author Administrator
  */
 public class UserProfile {
-    //String schemaDataName = LPPlatform.SCHEMA_DATA;
-    //private static final String SCHEMANAMEAPP = LPPlatform.SCHEMA_APP;
     private static final String FIELDVALUE_ACTIVE="active";
     /**
      *
@@ -101,7 +99,6 @@ public class UserProfile {
             Object[] currProcUserProfiles =  getProcedureUserProfileFieldValues(currProcPrefix, personName);
             for (Object fn: currProcUserProfiles ){
                 totalProcUserProfiles = LPArray.addValueToArray1D(totalProcUserProfiles, fn);}
-            //totalProcUserProfiles = labArr.addValueToArray1D(totalProcUserProfiles, currProcPrefix+" - "+fn);}
         }            
             return totalProcUserProfiles;                         
         }                

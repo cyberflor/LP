@@ -112,7 +112,6 @@ public class sampleAPI extends HttpServlet {
         String schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, LPPlatform.SCHEMA_DATA);    
         String schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, LPPlatform.SCHEMA_CONFIG);    
         Rdbms.setTransactionId(schemaConfigName);
-        //ResponseEntity<String121> responsew;        
         try (PrintWriter out = response.getWriter()) {
 
             Object[] actionEnabled = LPPlatform.procActionEnabled(schemaPrefix, actionName);
@@ -407,11 +406,6 @@ public class sampleAPI extends HttpServlet {
                     }                                                               
                     sampleIdStr = request.getParameter(globalAPIsParams.REQUEST_PARAM_SAMPLE_ID);              
                     sampleId = Integer.valueOf(sampleIdStr);                    
-                    //sampleTemplate=null;
-                    //sampleTemplateVersion=null;
-                    //sampleTemplateInfo = configSpecTestingArray[i][6].toString().split("\\|");
-                    //sampleTemplate = sampleTemplateInfo[0];
-                    //sampleTemplateVersion = Integer.parseInt(sampleTemplateInfo[1]);
                     fieldName=request.getParameter(globalAPIsParams.REQUEST_PARAM_SAMPLE_FIELD_NAME);                                        
                     fieldValue=request.getParameter(globalAPIsParams.REQUEST_PARAM_SAMPLE_FIELD_VALUE);                    
                     fieldNames=null;
@@ -431,11 +425,6 @@ public class sampleAPI extends HttpServlet {
                     }                                                             
                     String aliquotIdStr = request.getParameter(globalAPIsParams.REQUEST_PARAM_ALIQUOT_ID);              
                     Integer aliquotId = Integer.valueOf(aliquotIdStr);
-                    //sampleTemplate=null;
-                    //sampleTemplateVersion=null;
-                    //sampleTemplateInfo = configSpecTestingArray[i][6].toString().split("\\|");
-                    //sampleTemplate = sampleTemplateInfo[0];
-                    //sampleTemplateVersion = Integer.parseInt(sampleTemplateInfo[1]);
                     fieldName=request.getParameter(globalAPIsParams.REQUEST_PARAM_SAMPLE_FIELD_NAME);                                        
                     fieldValue=request.getParameter(globalAPIsParams.REQUEST_PARAM_SAMPLE_FIELD_VALUE);                    
                     fieldNames=null;

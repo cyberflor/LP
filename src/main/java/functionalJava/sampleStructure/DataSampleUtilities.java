@@ -17,13 +17,10 @@ public class DataSampleUtilities {
     private DataSampleUtilities(){    throw new IllegalStateException("Utility class");}    
     
     public static Object[] getSchemaSampleStatusList(String schemaPrefix){      
-//        String stList = "LOGGED|RECEIVED|INCOMPLETE|COMPLETE|CANCELED";
         return getSchemaSampleStatusList(schemaPrefix, "en");
-        //return new String[0];
     }
 
     public static Object[] getSchemaSampleStatusList(String schemaPrefix, String language){      
-        //sample_statuses:LOGGED|RECEIVED|INCOMPLETE|COMPLETE|CANCELED; está en properties.data  
         String stList = "";
         String schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, LPPlatform.SCHEMA_DATA);
         if (language==null){language="en";}
@@ -39,7 +36,6 @@ public class DataSampleUtilities {
                break;
        }        
         return LPTestingOutFormat.csvExtractFieldValueStringArr(stList);
-        //return new String[0];
     }
     
 }
