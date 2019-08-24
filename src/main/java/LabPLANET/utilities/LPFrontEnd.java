@@ -39,9 +39,6 @@ public class LPFrontEnd {
     
     public static final Boolean servletStablishDBConection(HttpServletRequest request, HttpServletResponse response){
         
-        String dbUserName = request.getParameter(globalAPIsParams.REQUEST_PARAM_DB_USERNAME);                   
-        String dbUserPassword = request.getParameter(globalAPIsParams.REQUEST_PARAM_DB_PSSWD);     
-
         boolean isConnected = false;                               
         isConnected = Rdbms.getRdbms().startRdbms(LPTestingOutFormat.TESTING_USER, LPTestingOutFormat.TESTING_PW);      
         if (!isConnected){      

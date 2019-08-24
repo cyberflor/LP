@@ -763,7 +763,7 @@ public class LPPlatform {
             errorDetail = Parameter.getParameterBundle(CONFIG_FILES_FOLDER, CONFIG_FILES_ERRORTRAPING, null, className+"_"+errorCode+"_detail", null);
             if (errorDetail.length()==0){errorDetail = Parameter.getParameterBundle(CONFIG_FILES_FOLDER, CONFIG_FILES_ERRORTRAPING, null, errorCode+"_detail", null);}
             if (errorDetail==null || (errorDetail!=null && errorDetail.length()==0) ){
-                if (errorVariables!=null){errorDetail =errorVariables[0].toString();}else{errorDetail="";}
+                if (errorVariables.length>0){errorDetail =errorVariables[0].toString();}else{errorDetail="";}
             }else{
                 if (errorVariables!=null){
                     for (int iVarValue=1; iVarValue<=errorVariables.length; iVarValue++){

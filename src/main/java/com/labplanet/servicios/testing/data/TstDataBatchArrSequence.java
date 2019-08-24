@@ -145,7 +145,7 @@ public class TstDataBatchArrSequence extends HttpServlet {
                 
                 out.println("The Sample 4 was found in " + mb.searchStringContent("Sample 4").size() + " positions." + "<br>");
                 
-                mb.searchStringContent("Sample 4").forEach((al) -> {
+                mb.searchStringContent("Sample 4").forEach((Object al) -> {
                     System.out.println("    " + al + "<br>");
                 });
                 

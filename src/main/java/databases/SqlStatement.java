@@ -116,7 +116,7 @@ public class SqlStatement {
     private String buildSetFieldNamesValues(String[] setFieldNames) {
         String setFieldNamesArgStr = "";
         if (setFieldNames != null) {
-            for (String setFieldName : setFieldNames) {
+            for (String setFieldName: setFieldNames) {
                 setFieldNamesArgStr = setFieldNamesArgStr + "?, ";
             }
             setFieldNamesArgStr = setFieldNamesArgStr.substring(0, setFieldNamesArgStr.length() - 2);

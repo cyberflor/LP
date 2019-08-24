@@ -46,23 +46,25 @@ public class TestingUOMFamilyTable extends HttpServlet {
         String csvFileSeparator=LPTestingOutFormat.TESTING_FILES_FIELD_SEPARATOR;
         Object[][] csvFileContent = LPArray.convertCSVinArray(csvPathName, csvFileSeparator); 
 
-        String fileContent = LPTestingOutFormat.getHtmlStyleHeader(this.getClass().getSimpleName());
+        StringBuilder fileContentBuilder = new StringBuilder();
+        fileContentBuilder.append(LPTestingOutFormat.getHtmlStyleHeader(this.getClass().getSimpleName()));
         
         if (!LPFrontEnd.servletStablishDBConection(request, response)){return;}   
         
         try (PrintWriter out = response.getWriter()) {
             HashMap<String, Object> csvHeaderTags = LPTestingOutFormat.getCSVHeader(LPArray.convertCSVinArray(csvPathName, "="));
             if (csvHeaderTags.containsKey(LPPlatform.LAB_FALSE)){
-                fileContent=fileContent+"There are missing tags in the file header: "+csvHeaderTags.get(LPPlatform.LAB_FALSE);                        
-                out.println(fileContent); 
+                fileContentBuilder.append("There are missing tags in the file header: ").append(csvHeaderTags.get(LPPlatform.LAB_FALSE));
+                out.println(fileContentBuilder.toString()); 
                 return;
             }            
             
             Integer numEvaluationArguments = Integer.valueOf(csvHeaderTags.get(LPTestingOutFormat.FILEHEADER_NUM_EVALUATION_ARGUMENTS).toString());   
             Integer numHeaderLines = Integer.valueOf(csvHeaderTags.get(LPTestingOutFormat.FILEHEADER_NUM_HEADER_LINES_TAG_NAME).toString());   
             String table1Header = csvHeaderTags.get(LPTestingOutFormat.FILEHEADER_TABLE_NAME_TAG_NAME+"1").toString();               
-            String fileContentTable1 = LPTestingOutFormat.createTableWithHeader(table1Header, numEvaluationArguments);
-            
+             StringBuilder fileContentTable1Builder = new StringBuilder();
+            fileContentTable1Builder.append(LPTestingOutFormat.createTableWithHeader(table1Header, numEvaluationArguments));
+               
             for (Integer iLines=numHeaderLines;iLines<csvFileContent.length;iLines++){
                 tstAssertSummary.increaseTotalTests();
                 TestingAssert tstAssert = new TestingAssert(csvFileContent[iLines], numEvaluationArguments);
@@ -81,43 +83,42 @@ public class TestingUOMFamilyTable extends HttpServlet {
                 UnitsOfMeasurement uom = new UnitsOfMeasurement();
 
                 Object[][] tableGet = uom.getAllUnitsPerFamily(schemaPrefix, familyName, fieldsToRetrieve);    
-                fileContentTable1 = fileContentTable1 +LPTestingOutFormat.tableStart();
+                fileContentTable1Builder.append(LPTestingOutFormat.tableStart());
                 for (int iRows=0;iRows<tableGet.length;iRows++){
-                   fileContentTable1 = fileContentTable1 +LPTestingOutFormat.rowStart(); 
-                   fileContentTable1 = fileContentTable1 + LPTestingOutFormat.rowAddField(String.valueOf(iRows));     
+                   fileContentTable1Builder.append(LPTestingOutFormat.rowStart()); 
+                   fileContentTable1Builder.append(LPTestingOutFormat.rowAddField(String.valueOf(iRows)));     
                    Boolean continueLoop=true;
                    for (int iColumns=0;iColumns<fieldsToRetrieve.length && continueLoop;iColumns++){
                         if (LPPlatform.LAB_FALSE.equalsIgnoreCase(tableGet[0][0].toString())) {
-                             fileContentTable1 = fileContentTable1+ 
-                                     LPTestingOutFormat.rowAddField(String.valueOf(tableGet[0][3]))+
-                                     LPTestingOutFormat.rowAddField(String.valueOf(tableGet[0][5]));
+                             fileContentTable1Builder.append(LPTestingOutFormat.rowAddField(String.valueOf(tableGet[0][3])))
+                                     .append(LPTestingOutFormat.rowAddField(String.valueOf(tableGet[0][5])));
                              continueLoop=false;
                         }else{                       
-                           fileContentTable1 = fileContentTable1 + LPTestingOutFormat.rowAddField(String.valueOf(tableGet[iRows][iColumns]));     
+                           fileContentTable1Builder.append(LPTestingOutFormat.rowAddField(String.valueOf(tableGet[iRows][iColumns])));     
                         }
                    }    
-                   fileContentTable1 = fileContentTable1 +LPTestingOutFormat.rowEnd(); 
+                   fileContentTable1Builder.append(LPTestingOutFormat.rowEnd()); 
                    
                 }    
-                fileContentTable1 = fileContentTable1 +LPTestingOutFormat.tableEnd();
+                fileContentTable1Builder.append(LPTestingOutFormat.tableEnd());
                 
                 if (numEvaluationArguments>0){                    
                     Object[] evaluate = tstAssert.evaluate(numEvaluationArguments, tstAssertSummary, new Object[0]);
-                    fileContentTable1=fileContentTable1+LPTestingOutFormat.rowAddFields(evaluate);                        
+                    fileContentTable1Builder.append(LPTestingOutFormat.rowAddFields(evaluate));                        
                 }
-                fileContentTable1 = fileContentTable1 +LPTestingOutFormat.rowEnd();                        
+                fileContentTable1Builder.append(LPTestingOutFormat.rowEnd());                        
             }   
             tstAssertSummary.notifyResults();
             Rdbms.closeRdbms();
-            fileContentTable1 = fileContentTable1 +LPTestingOutFormat.tableEnd();
-            fileContent=fileContent+fileContentTable1;
+            fileContentTable1Builder.append(LPTestingOutFormat.tableEnd());
+            fileContentBuilder.append(fileContentTable1Builder);
             if (numEvaluationArguments>0){
                 String fileContentSummary = LPTestingOutFormat.createSummaryTable(tstAssertSummary);
-                fileContent=fileContent+fileContentSummary;
+                fileContentBuilder.append(fileContentSummary);
             }
-            fileContent=fileContent+LPTestingOutFormat.bodyEnd()+LPTestingOutFormat.htmlEnd();
-            out.println(fileContent);            
-            LPTestingOutFormat.createLogFile(csvPathName, fileContent);
+            fileContentBuilder.append(LPTestingOutFormat.bodyEnd()+LPTestingOutFormat.htmlEnd());
+            out.println(fileContentBuilder.toString());            
+            LPTestingOutFormat.createLogFile(csvPathName, fileContentBuilder.toString());
         }
         catch(IOException error){
             Rdbms.closeRdbms();

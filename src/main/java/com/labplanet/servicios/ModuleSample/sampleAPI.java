@@ -46,7 +46,6 @@ public class sampleAPI extends HttpServlet {
         response=LPHttp.responsePreparation(response);
 
         String language = LPFrontEnd.setLanguage(request); 
-        String[] errObject = new String[]{"Servlet sampleAPI at " + request.getServletPath()};   
 
         String[] mandatoryParams = new String[]{""};
         Object[] areMandatoryParamsInResponse = LPHttp.areMandatoryParamsInApiRequest(request, sampleAPIParams.MANDATORY_PARAMS_MAIN_SERVLET.split("\\|"));                       

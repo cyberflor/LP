@@ -13,11 +13,9 @@ import functionalJava.audit.SampleAudit;
 import functionalJava.materialSpec.DataSpec;
 import LabPLANET.utilities.LPArray;
 import LabPLANET.utilities.LPDate;
-import LabPLANET.utilities.LPFrontEnd;
 import LabPLANET.utilities.LPPlatform;
 import static LabPLANET.utilities.LPPlatform.trapErrorMessage;
 import LabPLANET.utilities.LPMath;
-import com.labplanet.servicios.app.globalAPIsParams;
 import com.sun.rowset.CachedRowSetImpl;
 import databases.DataDataIntegrity;
 import functionalJava.ChangeOfCustody.ChangeOfCustody;
@@ -31,7 +29,6 @@ import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.json.simple.JSONObject;
 
 /**
  *

@@ -268,12 +268,9 @@ public class sampleAPIfrontend extends HttpServlet {
                     if ( LPPlatform.LAB_FALSE.equalsIgnoreCase(mySamples[0][0].toString())) {  
                         LPFrontEnd.servletReturnSuccess(request, response);       
                         return;
-                    }else{
-                        
+                    }else{                        
                         JSONArray mySamplesJSArr = new JSONArray();
-                        Integer iLines = 0;
                         for (Object[] mySample : mySamples) {
-                            iLines++;
                             JSONObject mySampleJSObj = LPJson.convertArrayRowToJSONObject(sampleFieldToRetrieveArr, mySample);                
                             if ("TRUE".equalsIgnoreCase(addSampleAnalysis)){
                                 String[] testWhereFieldsNameArr = new String[]{DataSample.FIELDNAME_SAMPLE_ID};
@@ -544,12 +541,6 @@ public class sampleAPIfrontend extends HttpServlet {
                    for (String smp: sampleIdStrArr){
                        sampleIdArr=LPArray.addValueToArray1D(sampleIdArr,  Integer.parseInt(smp));
                    }
-                   String numSamples="";
-                   for (Object smp: sampleIdArr){
-                       numSamples=numSamples+"?, ";
-                   }
-                   numSamples=numSamples.substring(0, numSamples.length()-2);
-                   //sampleId = Integer.parseInt(sampleIdStr);    
 
                    sampleFieldToRetrieve = request.getParameter(globalAPIsParams.REQUEST_PARAM_SAMPLE_FIELD_TO_RETRIEVE);
                    sampleAnalysisFieldToRetrieve = request.getParameter(globalAPIsParams.REQUEST_PARAM_SAMPLE_ANALYSIS_FIELD_TO_RETRIEVE);

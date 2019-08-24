@@ -171,19 +171,16 @@ public class TestingConfigSop extends HttpServlet {
             sopListStatus = "DRAFT";            
             sList = new SopList(sopListId, sopListName, sopListVersion, sopListRevision, sopListStatus, null);
             
-            Integer sopsInSopList = sList.getSopListSopAssigned().length;
             Object[] addSopToSopList = sList.addSopToSopList(sopName);
             fileContent = fileContent + LPTestingOutFormat.rowStart()+LPTestingOutFormat.fieldStart()+"addSopToSopList"+LPTestingOutFormat.fieldEnd();                                   
             fileContent = fileContent + LPTestingOutFormat.fieldStart()+"sopName:"+sopName+LPTestingOutFormat.fieldEnd();      
             fileContent = fileContent + LPTestingOutFormat.fieldStart()+Arrays.toString(addSopToSopList)+LPTestingOutFormat.fieldEnd()+LPTestingOutFormat.rowEnd();        
             
-            sopsInSopList = sList.getSopListSopAssigned().length;          
             Object[] addSopToSopList1 = sList.addSopToSopList("SOP-DEMO3");
             fileContent = fileContent + LPTestingOutFormat.rowStart()+LPTestingOutFormat.fieldStart()+"addSopToSopList"+LPTestingOutFormat.fieldEnd();                                   
             fileContent = fileContent + LPTestingOutFormat.fieldStart()+"sopName:"+"SOP-DEMO3"+LPTestingOutFormat.fieldEnd();      
             fileContent = fileContent + LPTestingOutFormat.fieldStart()+Arrays.toString(addSopToSopList1)+LPTestingOutFormat.fieldEnd()+LPTestingOutFormat.rowEnd();        
             
-            sopsInSopList = sList.getSopListSopAssigned().length;          
             Object[] addSopToSopList2 = sList.addSopToSopList(sopName);
             fileContent = fileContent + LPTestingOutFormat.rowStart()+LPTestingOutFormat.fieldStart()+"addSopToSopList"+LPTestingOutFormat.fieldEnd();                                   
             fileContent = fileContent + LPTestingOutFormat.fieldStart()+"sopName:"+sopName+LPTestingOutFormat.fieldEnd();      
@@ -191,22 +188,18 @@ public class TestingConfigSop extends HttpServlet {
 
             sList.dbInsertSopList(schemaConfigName, currentUser);
 
-            sopsInSopList = sList.getSopListSopAssigned().length;  
             Object[] dbUpdateSopListSopAssigned = sList.dbUpdateSopListSopAssigned(schemaConfigName, sList.getSopListSopAssigned());
             fileContent = fileContent + LPTestingOutFormat.rowStart()+LPTestingOutFormat.fieldStart()+"dbUpdateSopListSopAssigned"+LPTestingOutFormat.fieldEnd();                                   
             fileContent = fileContent + LPTestingOutFormat.fieldStart()+"schemaConfigName: "+schemaConfigName+LPTestingOutFormat.fieldEnd();  
             fileContent = fileContent + LPTestingOutFormat.fieldStart()+"getSopListSopAssigned: "+Arrays.toString(sList.getSopListSopAssigned())+LPTestingOutFormat.fieldEnd();              
             fileContent = fileContent + LPTestingOutFormat.fieldStart()+Arrays.toString(dbUpdateSopListSopAssigned)+LPTestingOutFormat.fieldEnd()+LPTestingOutFormat.rowEnd();        
 
-            sopsInSopList = sList.getSopListSopAssigned().length;  
             dbUpdateSopListSopAssigned = sList.dbUpdateSopListSopAssigned(schemaConfigName, sList.getSopListSopAssigned());
             fileContent = fileContent + LPTestingOutFormat.rowStart()+LPTestingOutFormat.fieldStart()+"dbUpdateSopListSopAssigned"+LPTestingOutFormat.fieldEnd();                                   
             fileContent = fileContent + LPTestingOutFormat.fieldStart()+"schemaConfigName: "+schemaConfigName+LPTestingOutFormat.fieldEnd();  
             fileContent = fileContent + LPTestingOutFormat.fieldStart()+"getSopListSopAssigned: "+Arrays.toString(sList.getSopListSopAssigned())+LPTestingOutFormat.fieldEnd();              
             fileContent = fileContent + LPTestingOutFormat.fieldStart()+Arrays.toString(dbUpdateSopListSopAssigned)+LPTestingOutFormat.fieldEnd()+LPTestingOutFormat.rowEnd();        
             
-            sopsInSopList++;
-
             fileContent = fileContent + "</table>";
             out.println(fileContent);
 

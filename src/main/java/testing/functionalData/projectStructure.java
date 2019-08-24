@@ -55,7 +55,6 @@ public class projectStructure extends HttpServlet {
             Object[][] dataSample2D = new Object[0][0];
         
             Integer numTesting = 1;
-            Integer inumTesting = 0;
             Object[][] configSpecTestingArray = new Object[numTesting][6];
             String userName="1"; 
             String userRole="oil1plant_analyst";

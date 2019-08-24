@@ -47,7 +47,6 @@ public class appHeaderAPI extends HttpServlet {
         String language = LPFrontEnd.setLanguage(request); 
    
         try (PrintWriter out = response.getWriter()) {            
-            String[] errObject = new String[]{"Servlet appHeaderAPI at " + request.getServletPath()};            
 
             Object[] areMandatoryParamsInResponse = LPHttp.areMandatoryParamsInApiRequest(request, MANDATORY_PARAMS_MAIN_SERVLET.split("\\|"));                       
             if (LPPlatform.LAB_FALSE.equalsIgnoreCase(areMandatoryParamsInResponse[0].toString())){

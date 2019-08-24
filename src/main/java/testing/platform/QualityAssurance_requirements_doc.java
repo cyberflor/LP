@@ -6,7 +6,6 @@
 package testing.platform;
 
 import LabPLANET.utilities.LPFrontEnd;
-import LabPLANET.utilities.LPQualityAssurance;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -64,7 +63,7 @@ public class QualityAssurance_requirements_doc extends HttpServlet {
             fileContent = fileContent + "</body>" + "";
             fileContent = fileContent + "</html>" + "";
             fileContent = fileContent + "<table id=\"scriptTable\">";  
-            
+/*            
             LPQualityAssurance labQA = new LPQualityAssurance();
             
             try {
@@ -93,7 +92,7 @@ public class QualityAssurance_requirements_doc extends HttpServlet {
             } catch (ClassNotFoundException ex) {
                 Logger.getLogger(QualityAssurance_requirements_doc.class.getName()).log(Level.SEVERE, null, ex);
             }
-            
+*/            
             fileContent = fileContent + "</table>";        
             out.println(fileContent);
 

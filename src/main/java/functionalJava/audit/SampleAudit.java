@@ -9,12 +9,7 @@ import databases.Rdbms;
 import LabPLANET.utilities.LPArray;
 import LabPLANET.utilities.LPPlatform;
 import LabPLANET.utilities.LPSession;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.Arrays;
-import javax.json.Json;
-import javax.json.JsonException;
-import javax.json.stream.JsonGenerator;
 import functionalJava.requirement.Requirement;
 
 /**
@@ -354,118 +349,5 @@ public class SampleAudit {
 //        fieldValues = LPArray.addValueToArray1D(fieldValues, userName);        
            Rdbms.insertRecordInTable(schemaName, auditTableName, fieldNames, fieldValues);
     }
-
-/**
- * Creates the structure representation in a way of sample-analysis-results.
- * @param schemaPrefix String - Procedure Name
- * @param sampleId Integer - sampleId
- * @return 
- */    
-    public String _sampleJsonString( String schemaPrefix, Integer sampleId) {
-        // Not implemented yet
-        String jsonStructure = null;
-               
-        String schemaName = LPPlatform.buildSchemaName(schemaPrefix, LPPlatform.SCHEMA_DATA);  
-        String[] sampleTblFldsArr = Rdbms.getTableFieldsArrayEj(schemaName.replace("\"", ""), TABLE_NAME_DATA_AUDIT_SAMPLE);
-        String sampleTblFlds = Rdbms.getTableFieldsArrayEj(schemaName.replace("\"", ""), TABLE_NAME_DATA_AUDIT_SAMPLE, ",", true);
-//        String sampleAnalysisTblFlds = Rdbms.getTableFieldsArrayEj(schemaName.replace("\"", ""), "sample_analysis", ",", true);
-//        String sampleAnalysisResultTblFlds = Rdbms.getTableFieldsArrayEj(schemaName.replace("\"", ""), "sample_analysis_result", ",", true);
-        
-        FileWriter writer = null;
-        try {
-                writer = new FileWriter("C:\\home\\judas\\logs\\sample.txt");
-            } catch (IOException e) { return ""; }
-        try (JsonGenerator gen = Json.createGenerator(writer)) {
-//            String query = " select " + sampleTblFlds + " from " + schemaName + ".sample where sample_id="+sampleId;            
-//            Object[][] recordFieldsByFilter = Rdbms.getRecordFieldsByFilter(schemaName, TABLE_NAME_DATA_AUDIT_SAMPLE new String[]{FIELD_NAME_DATA_AUDIT_SAMPLE_SAMPLE_ID}, new Object[]{sampleId}, sampleTblFldsArr);
-            //gen.writeStartObject().write(TABLE_NAME_DATA_AUDIT_SAMPLE, sampleId.toString());
-            // gen.writeStartArray("Sample Info");
-            gen.writeStartObject();
-            for (Integer iFields=0; iFields< sampleTblFldsArr.length;iFields++){
-                String currValue = "y";            
-                //if (recordFieldsByFilter[0][iFields]==null){currValue = "null";}
-                //else{currValue=recordFieldsByFilter[0][iFields].toString();}
-                //gen.writeStartObject().write(TABLE_NAME_DATA_AUDIT_SAMPLE, sampleId.toString()).write(sampleTblFldsArr[iFields],"X");
-                try{
-                    gen.writeStartArray().write(sampleTblFldsArr[iFields], currValue);
-                }catch (JsonException ex){
-//                    String m = ex.getMessage();
-                }
-                //gen.write(sampleTblFldsArr[iFields], (String) recordFieldsByFilter[0][iFields]);
-            }
-            gen.writeEnd();
-//            gen.writeStartObject().write(FIELD_NAME_DATA_AUDIT_SAMPLE_SAMPLE_ID, sampleId.toString());
-//            gen.writeEnd();
-        }   
-    
-/*        query = "  select " + sampleTblFlds + ", " + sampleAnalysisTblFlds + ", " + sampleAnalysisResultTblFlds
-                + "  from " + schemaName + ".sample "
-                +       "left outer join " + schemaName + ".sample_analysis on sample_analysis.sample_id=sample.sample_id "
-                +       "left outer join " + schemaName + ".sample_analysis_result on sample_analysis_result.test_id=sample_analysis.test_id "
-                + " where sample.sample_id="+sampleId;
-
-        JSONObject object = new JSONObject();
-object.element("name", TABLE_NAME_DATA_AUDIT_SAMPLE);
-JSONArray array = new JSONArray();
-
-JSONObject arrayElementOne = new JSONObject();
-arrayElementOne.element("setId", 1);
-JSONArray arrayElementOneArray = new JSONArray();
-
-JSONObject arrayElementOneArrayElementOne = new JSONObject();
-arrayElementOneArrayElementOne.element("name", "ABC");
-arrayElementOneArrayElementOne.element("type", "STRING");
-
-JSONObject arrayElementOneArrayElementTwo = new JSONObject();
-arrayElementOneArrayElementTwo.element("name", "XYZ");
-arrayElementOneArrayElementTwo.element("type", "STRING");
-
-arrayElementOneArray.add(arrayElementOneArrayElementOne);
-arrayElementOneArray.add(arrayElementOneArrayElementTwo);
-
-arrayElementOne.element("setDef", arrayElementOneArray);
-object.element("def", array);
-
-
-        jsonStructure = Rdbms.querytoJSON(query);
-*/
-    return jsonStructure;
-            
-    }
-/**
- * Under development!!!! Example on how to build a json structure using JsonGenerator.
- */    
-    public void _jsonToFile(){
-        // Not implemented yet
-        String typeString = "STRING";
-        FileWriter writer = null;
-            try {
-                writer = new FileWriter("C:\\home\\judas\\logs\\sample.txt");
-            } catch (IOException e) {     return;       }
-        try (JsonGenerator gen = Json.createGenerator(writer)) {
-            gen.writeStartObject(TABLE_NAME_DATA_AUDIT_SAMPLE).write(FIELD_NAME_DATA_AUDIT_SAMPLE_SAMPLE_ID, "Sample Audit Info")
-                    .writeStartArray("def");
-            
-            gen.writeStartObject().write("name", TABLE_NAME_DATA_AUDIT_SAMPLE)
-                    .writeStartArray("def")
-                    .writeStartObject().write("setId", 1)
-                    .writeStartArray("setDef")
-                    .writeStartObject().write("name", "ABC").write("type", typeString)
-                    .writeEnd()
-                    .writeStartObject().write("name", "XYZ").write("type", typeString)
-                    .writeEnd()
-                    .writeEnd()
-                    .writeEnd()
-                    .writeStartObject().write("setId", 2)
-                    .writeStartArray("setDef")
-                    .writeStartObject().write("name", "abc").write("type", typeString)
-                    .writeEnd()
-                    .writeStartObject().write("name", "xyz").write("type", typeString)
-                    .writeEnd()
-                    .writeEnd()
-                    .writeEnd()    
-                    .writeEnd()
-                    .writeEnd();
-        }
-        }        
+      
 }

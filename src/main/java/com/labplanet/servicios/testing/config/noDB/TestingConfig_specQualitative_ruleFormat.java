@@ -47,15 +47,16 @@ public class TestingConfig_specQualitative_ruleFormat extends HttpServlet {
         String csvFileSeparator=LPTestingOutFormat.TESTING_FILES_FIELD_SEPARATOR;
         
         Object[][] csvFileContent = LPArray.convertCSVinArray(csvPathName, csvFileSeparator); 
+        StringBuilder fileContentBuilder = new StringBuilder();
+        fileContentBuilder.append(LPTestingOutFormat.getHtmlStyleHeader(this.getClass().getSimpleName()));
                 
         try (PrintWriter out = response.getWriter()) {
-            String fileContent = LPTestingOutFormat.getHtmlStyleHeader(this.getClass().getSimpleName());
             String[][] headerInfo = LPArray.convertCSVinArray(csvPathName, "=");
             HashMap<String, Object> csvHeaderTags = LPTestingOutFormat.getCSVHeader(headerInfo);
             //HashMap<String, Object> csvHeaderTags = LPTestingOutFormat.getCSVHeader(csvFileContent);
             if (csvHeaderTags.containsKey(LPPlatform.LAB_FALSE)){
-                fileContent=fileContent+"There are missing tags in the file header: "+csvHeaderTags.get(LPPlatform.LAB_FALSE);                        
-                out.println(fileContent); 
+                fileContentBuilder.append("There are missing tags in the file header: ").append(csvHeaderTags.get(LPPlatform.LAB_FALSE));
+                out.println(fileContentBuilder.toString()); 
                 return;
             }            
             
@@ -64,7 +65,8 @@ public class TestingConfig_specQualitative_ruleFormat extends HttpServlet {
             //numEvaluationArguments=numEvaluationArguments+1;
             
             String table1Header = csvHeaderTags.get(LPTestingOutFormat.FILEHEADER_TABLE_NAME_TAG_NAME+"1").toString();               
-            String fileContentTable1 = LPTestingOutFormat.createTableWithHeader(table1Header, numEvaluationArguments);
+            StringBuilder fileContentTable1Builder = new StringBuilder();
+            fileContentTable1Builder.append(LPTestingOutFormat.createTableWithHeader(table1Header, numEvaluationArguments));
             
             for ( Integer iLines =numHeaderLines;iLines<csvFileContent.length;iLines++){
                 tstAssertSummary.increaseTotalTests();
@@ -85,29 +87,28 @@ public class TestingConfig_specQualitative_ruleFormat extends HttpServlet {
                 if (lineNumCols>=numEvaluationArguments+2)                               
                      separator = LPTestingOutFormat.csvExtractFieldValueString(csvFileContent[iLines][numEvaluationArguments+2]);
 
-                fileContentTable1=fileContentTable1+LPTestingOutFormat.rowAddFields(
-                        new Object[]{iLines, ruleType, specText, separator});
+                fileContentTable1Builder.append(LPTestingOutFormat.rowAddFields(new Object[]{iLines, ruleType, specText, separator}));
                     
                 Object[] resSpecEvaluation = mSpec.specLimitIsCorrectQualitative(ruleType, specText, separator);
                     
                 if (numEvaluationArguments==0){                    
-                    fileContentTable1=fileContentTable1+LPTestingOutFormat.rowAddField(Arrays.toString(resSpecEvaluation));                     
+                    fileContentTable1Builder.append(LPTestingOutFormat.rowAddField(Arrays.toString(resSpecEvaluation)));                     
                 }                                
                 if (numEvaluationArguments>0){                    
                     Object[] evaluate = tstAssert.evaluate(numEvaluationArguments, tstAssertSummary, resSpecEvaluation);
-                    fileContentTable1=fileContentTable1+LPTestingOutFormat.rowAddFields(evaluate);                        
-                    fileContentTable1=fileContentTable1+LPTestingOutFormat.rowEnd();                                                
+                    fileContentTable1Builder.append(LPTestingOutFormat.rowAddFields(evaluate));                        
+                    fileContentTable1Builder.append(LPTestingOutFormat.rowEnd());                                                
                 }
             }    
             tstAssertSummary.notifyResults();
-            fileContentTable1 = fileContentTable1 +LPTestingOutFormat.tableEnd();
+            fileContentTable1Builder.append(LPTestingOutFormat.tableEnd());
             if (numEvaluationArguments>0){
                 String fileContentSummary = LPTestingOutFormat.createSummaryTable(tstAssertSummary);
-                fileContent=fileContent+fileContentSummary+fileContentTable1;
+                fileContentBuilder.append(fileContentSummary).append(fileContentTable1Builder);
             }
-            fileContent=fileContent+LPTestingOutFormat.bodyEnd()+LPTestingOutFormat.htmlEnd();
-            out.println(fileContent);            
-            LPTestingOutFormat.createLogFile(csvPathName, fileContent);
+            fileContentBuilder.append(LPTestingOutFormat.bodyEnd()).append(LPTestingOutFormat.htmlEnd());
+            out.println(fileContentBuilder.toString());            
+            LPTestingOutFormat.createLogFile(csvPathName, fileContentBuilder.toString());
             tstAssertSummary=null; mSpec=null;
         }
         catch(IOException error){

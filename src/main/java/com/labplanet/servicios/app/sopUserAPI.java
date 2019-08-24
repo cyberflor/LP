@@ -46,7 +46,6 @@ public class sopUserAPI extends HttpServlet {
         String language = LPFrontEnd.setLanguage(request); 
         
 
-            String[] errObject = new String[]{"Servlet sopUserAPI at " + request.getServletPath()};                        
             String[] mandatoryParams = new String[]{""};
             Object[] areMandatoryParamsInResponse = LPHttp.areMandatoryParamsInApiRequest(request, MANDATORY_PARAMS_MAIN_SERVLET.split("\\|"));                       
             if (LPPlatform.LAB_FALSE.equalsIgnoreCase(areMandatoryParamsInResponse[0].toString())){

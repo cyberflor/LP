@@ -44,7 +44,6 @@ public class procedureDefinitionToInstance extends HttpServlet {
         Integer procVersion = 1; 
         String schemaPrefix = "process-us";
         
-        Integer numEvaluationArguments = 1;
         String[][] businessVariablesHeader = new String[][]{{"Business Rule", "Value"}                 
                             , {"Process Name", procName}, {"Process Version", procVersion.toString()}, {"Instance", schemaPrefix}
                             , {"PROC_DEPLOY_PROCEDURE_INFO", PROC_DEPLOY_PROCEDURE_INFO.toString()}

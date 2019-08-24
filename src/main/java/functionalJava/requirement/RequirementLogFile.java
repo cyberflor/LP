@@ -5,11 +5,13 @@
  */
 package functionalJava.requirement;
 
+import LabPLANET.utilities.LPFrontEnd;
 import LabPLANET.utilities.LPPlatform;
 import functionalJava.parameter.Parameter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
 
 /**
  *
@@ -42,7 +44,7 @@ public class RequirementLogFile {
 
             fw.close();        
         }catch(IOException e){ 
-            String errMessage = e.getMessage();
+            java.util.logging.Logger.getLogger(LPFrontEnd.class.getName()).log(Level.SEVERE, null, e);
         }
     }    
     
