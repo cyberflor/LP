@@ -246,7 +246,7 @@ public class  LPArray {
     public static String[][] convertCSVinArray(String xfileLocation, String csvSeparator){
         
         if (xfileLocation.startsWith("\\\\")){return convertCSVinArrayNetwork(xfileLocation, csvSeparator);}
-        
+         if (xfileLocation.startsWith("C:")){return convertCSVinArrayNetwork(xfileLocation, csvSeparator);}
         return convertCSVinArrayUrl(xfileLocation, csvSeparator);
     }
     /**

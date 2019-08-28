@@ -39,6 +39,7 @@ public class TestingResultCheckSpecQualitative extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response = LPTestingOutFormat.responsePreparation(response);        
         DataSpec resChkSpec = new DataSpec();   
+
         TestingAssertSummary tstAssertSummary = new TestingAssertSummary();
 
         String csvFileName = "noDBSchema_config_specQualitative_resultCheck.txt";                              
@@ -47,9 +48,9 @@ public class TestingResultCheckSpecQualitative extends HttpServlet {
         StringBuilder fileContentBuilder = new StringBuilder();
         fileContentBuilder.append(LPTestingOutFormat.getHtmlStyleHeader(this.getClass().getSimpleName()));
         try (PrintWriter out = response.getWriter()) {
-            HashMap<String, Object> csvHeaderTags = LPTestingOutFormat.getCSVHeader(LPArray.convertCSVinArray(csvPathName, "="));
+            HashMap<String, Object> csvHeaderTags = LPTestingOutFormat.getCSVHeader(LPArray.convertCSVinArray(csvPathName, LPTestingOutFormat.FILEHEADER_TAGS_SEPARATOR));
             if (csvHeaderTags.containsKey(LPPlatform.LAB_FALSE)){
-                fileContentBuilder.append("There are missing tags in the file header: ").append(csvHeaderTags.get(LPPlatform.LAB_FALSE));
+                fileContentBuilder.append(LPTestingOutFormat.ERROR_TRAPPING_FILEHEADER_MISSING_TAGS).append(csvHeaderTags.get(LPPlatform.LAB_FALSE));
                 out.println(fileContentBuilder.toString()); 
                 return;
             }                        
@@ -74,8 +75,7 @@ public class TestingResultCheckSpecQualitative extends HttpServlet {
                 if (lineNumCols>=numEvaluationArguments+3) separator = LPTestingOutFormat.csvExtractFieldValueString(csvFileContent[iLines][numEvaluationArguments+3]);
                 if (lineNumCols>=numEvaluationArguments+4) listName = LPTestingOutFormat.csvExtractFieldValueString(csvFileContent[iLines][numEvaluationArguments+4]);
 
-                fileContentTable1Builder.append(LPTestingOutFormat.rowAddFields(new Object[]{iLines, result, ruleType, values, separator, listName}));
-                    
+                fileContentTable1Builder.append(LPTestingOutFormat.rowAddFields(new Object[]{iLines, result, ruleType, values, separator, listName}));                    
                 Object[] resSpecEvaluation = resChkSpec.resultCheck(result, ruleType, values, separator, listName);
                 if (numEvaluationArguments<=0){                    
                     fileContentTable1Builder.append(LPTestingOutFormat.rowAddField(Arrays.toString(resSpecEvaluation)));

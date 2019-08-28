@@ -20,7 +20,7 @@ import functionalJava.sampleStructure.DataSample;
  *
  * @author Administrator
  */
-public class DataProject extends DataSample{
+public class DataProject {
 
     private Object[] diagnosesProj = new Object[7];
 
@@ -28,8 +28,8 @@ public class DataProject extends DataSample{
      *
      * @param grouperName
      */
-    public DataProject(String grouperName) {
-        super(grouperName);
+    public DataProject() {
+        super();
     }
 
     /**
@@ -92,7 +92,7 @@ Object[] createProject( String schemaPrefix, String projectTemplate, Integer pro
         schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, schemaDataName);    
         schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, schemaConfigName); 
         
-        mandatoryFieldsProj = labIntChecker.getTableMandatoryFields(schemaDataName, this.getSampleGrouper()+"_"+tableName, actionName);
+        mandatoryFieldsProj = labIntChecker.getTableMandatoryFields(schemaDataName, tableName, actionName);
         
         
     if (devMode){
@@ -154,7 +154,7 @@ Object[] createProject( String schemaPrefix, String projectTemplate, Integer pro
             String currField = mandatoryFieldsProj[inumLines];
             boolean contains = Arrays.asList(sampleFieldName).contains(currField.toLowerCase());
             if (!contains){
-                Object[] sampleDefaultFieldValues = labIntChecker.getTableFieldsDefaulValues(schemaDataName, this.getSampleGrouper()+"_"+tableName, actionName); 
+                Object[] sampleDefaultFieldValues = labIntChecker.getTableFieldsDefaulValues(schemaDataName, tableName, actionName); 
                 if (mandatoryFieldsMissing.length()>0){mandatoryFieldsMissing = mandatoryFieldsMissing + ",";}
                 mandatoryFieldsMissing = mandatoryFieldsMissing + currField;
             }else{
@@ -185,8 +185,8 @@ Object[] createProject( String schemaPrefix, String projectTemplate, Integer pro
             return diagnosesProj;
         }
 
-        String[] specialFields = labIntChecker.getStructureSpecialFields(schemaDataName, this.getSampleGrouper()+"_"+"projectStructure", actionName);
-        String[] specialFieldsFunction = labIntChecker.getStructureSpecialFieldsFunction(schemaDataName, this.getSampleGrouper()+"_"+"projectStructure", actionName);
+        String[] specialFields = labIntChecker.getStructureSpecialFields(schemaDataName, "projectStructure", actionName);
+        String[] specialFieldsFunction = labIntChecker.getStructureSpecialFieldsFunction(schemaDataName, "projectStructure", actionName);
         
         String specialFieldsCheck = "";
         Integer specialFieldIndex = -1;
@@ -264,7 +264,7 @@ Object[] createProject( String schemaPrefix, String projectTemplate, Integer pro
     public Object[] logProjectSample( String schemaPrefix, String projectTemplate, Integer projectTemplateVersion, String[] fieldName, Object[] fieldValue, String userName, String userRole, String projectName, Integer appSessionId){    
     Object[] newProjSample = new Object[0];
         try {
-            DataSample ds = new DataSample("project");
+            DataSample ds = new DataSample();
             fieldName = LPArray.addValueToArray1D(fieldName, "project");
             fieldValue = LPArray.addValueToArray1D(fieldValue, projectName);
             newProjSample = ds.logSample(schemaPrefix, projectTemplate, projectTemplateVersion, fieldName, fieldValue, userName, userRole, appSessionId);
@@ -292,7 +292,7 @@ Object[] createProject( String schemaPrefix, String projectTemplate, Integer pro
      *
      */
     public void createProjectName(){
-    DataSample prjSmp = new DataSample("project");
+    DataSample prjSmp = new DataSample();
     
 }
 

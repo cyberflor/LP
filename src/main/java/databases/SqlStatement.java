@@ -48,8 +48,8 @@ public class SqlStatement {
         String fieldsToOrderStr = buildOrderBy(fieldsToOrder);
         String fieldsToGroupStr = buildGroupBy(fieldsToGroup);
         
-        String setFieldNamesStr = buildSetFieldNames(setFieldNames);
-        String setFieldNamesArgStr = buildSetFieldNamesValues(setFieldNames);
+        String insertFieldNamesStr = buildInsertFieldNames(setFieldNames);
+        String insertFieldValuesStr = buildInsertFieldNamesValues(setFieldNames);
         
         String query = "";
         switch (operation.toUpperCase()) {
@@ -59,7 +59,7 @@ public class SqlStatement {
                 query=query+ " " + fieldsToRetrieveStr + " from " + schemaName + "." + tableName + "   where " + queryWhere + " " + fieldsToGroupStr + " " + fieldsToOrderStr;
                 break;
             case "INSERT":
-                query = "insert into " + schemaName + "." + tableName + " (" + setFieldNamesStr + ") values ( " + setFieldNamesArgStr + ") ";
+                query = "insert into " + schemaName + "." + tableName + " (" + insertFieldNamesStr + ") values ( " + insertFieldValuesStr + ") ";
                 break;
             case "UPDATE":
                 String updateSetSectionStr=buildUpdateSetFields(setFieldNames);
@@ -73,68 +73,73 @@ public class SqlStatement {
         return hm;
     }
     private Object[] buildWhereClause(String[] whereFieldNames, Object[] whereFieldValues){
-        String queryWhere = "";
+        StringBuilder queryWhere = new StringBuilder();
         Object[] whereFieldValuesNew = new Object[0];
         for (int iwhereFieldNames=0; iwhereFieldNames<whereFieldNames.length; iwhereFieldNames++){
             String fn = whereFieldNames[iwhereFieldNames];
             if (iwhereFieldNames > 0) {
-                queryWhere = queryWhere + " and ";
+                queryWhere.append(" and ");
             }
             if (fn.toUpperCase().contains("NULL")) {
-				queryWhere = queryWhere + fn;
+                queryWhere.append(fn);
             } else if (fn.toUpperCase().contains(" LIKE")) {
-                queryWhere = queryWhere + fn + " ? ";
+                queryWhere.append(" ? ");
                 whereFieldValuesNew = LPArray.addValueToArray1D(whereFieldValuesNew, whereFieldValues[iwhereFieldNames]);
             } else if (fn.toUpperCase().contains(" IN")) {
                 String separator = inSeparator(fn);
                 String textSpecs = (String) whereFieldValues[iwhereFieldNames];
                 String[] textSpecArray = textSpecs.split("\\" + separator);
                 Integer posicINClause = fn.toUpperCase().indexOf("IN");
-                queryWhere = queryWhere + fn.substring(0, posicINClause + 2) + " (";
+                queryWhere.append(fn.substring(0, posicINClause + 2)).append(" (");
                 for (String f : textSpecArray) {
-                    queryWhere = queryWhere + "?,";
+                    queryWhere.append("?,");
                     whereFieldValuesNew = LPArray.addValueToArray1D(whereFieldValuesNew, f);
                 }
-                queryWhere = queryWhere.substring(0, queryWhere.length() - 1);
-                queryWhere = queryWhere + ")";
+                queryWhere.deleteCharAt(queryWhere.length() - 1);
+                //queryWhere.append(queryWhere.toString().substring(0, queryWhere.toString().length() - 1));
+                queryWhere.append(")");
             } else {
-                queryWhere = queryWhere + fn + "=? ";
+                queryWhere.append(fn).append("=? ");
                 whereFieldValuesNew = LPArray.addValueToArray1D(whereFieldValuesNew, whereFieldValues[iwhereFieldNames]);
             }
         }
-        return new Object[]{queryWhere, whereFieldValuesNew};
+        return new Object[]{queryWhere.toString(), whereFieldValuesNew};
     }
     private String  buildUpdateSetFields(String[] setFieldNames) {
-        String updateSetSectionStr = "";
+        StringBuilder updateSetSectionStr = new StringBuilder();
         for (String setFieldName : setFieldNames) {
-            updateSetSectionStr = updateSetSectionStr + setFieldName + "=?, ";
+            updateSetSectionStr.append(setFieldName).append("=?, ");
         }
-        updateSetSectionStr = updateSetSectionStr.substring(0, updateSetSectionStr.length() - 2);
-        return updateSetSectionStr;
+        updateSetSectionStr.deleteCharAt(updateSetSectionStr.length() - 1);
+        updateSetSectionStr.deleteCharAt(updateSetSectionStr.length() - 1);
+//        updateSetSectionStr = updateSetSectionStr.substring(0, updateSetSectionStr.length() - 2);
+        return updateSetSectionStr.toString();
     }
 
-    private String buildSetFieldNamesValues(String[] setFieldNames) {
-        String setFieldNamesArgStr = "";
+    private String buildInsertFieldNames(String[] setFieldNames) {
+        StringBuilder setFieldNamesStr = new StringBuilder();
         if (setFieldNames != null) {
             for (String setFieldName: setFieldNames) {
-                setFieldNamesArgStr = setFieldNamesArgStr + "?, ";
+                setFieldNamesStr.append(setFieldName).append(", ");
             }
-            setFieldNamesArgStr = setFieldNamesArgStr.substring(0, setFieldNamesArgStr.length() - 2);
+            setFieldNamesStr.deleteCharAt(setFieldNamesStr.length() - 1);
+            setFieldNamesStr.deleteCharAt(setFieldNamesStr.length() - 1);
         }
-        return setFieldNamesArgStr;
+        return setFieldNamesStr.toString();
     }
 
-    private String buildSetFieldNames(String[] setFieldNames) {
-        String setFieldNamesStr = "";
+    private String buildInsertFieldNamesValues(String[] setFieldNames) {
+        StringBuilder setFieldNamesArgStr = new StringBuilder();
         if (setFieldNames != null) {
-            for (String setFieldName : setFieldNames) {
-                setFieldNamesStr = setFieldNamesStr + setFieldName + ", ";
+            for (String setFieldName: setFieldNames) {
+                setFieldNamesArgStr.append("?, ");
             }
-            setFieldNamesStr = setFieldNamesStr.substring(0, setFieldNamesStr.length() - 2);
+            setFieldNamesArgStr.deleteCharAt(setFieldNamesArgStr.length() - 1);
+            setFieldNamesArgStr.deleteCharAt(setFieldNamesArgStr.length() - 1);
         }
-        return setFieldNamesStr;
+        return setFieldNamesArgStr.toString();
     }
-
+    
     private String setSchemaName(String schemaName) {
         schemaName = schemaName.replace("\"", "");
         schemaName = "\"" + schemaName + "\"";
@@ -142,47 +147,50 @@ public class SqlStatement {
     }
 
     private String buildFieldsToRetrieve(String[] fieldsToRetrieve) {
-        String fieldsToRetrieveStr = "";
+        StringBuilder fieldsToRetrieveStr = new StringBuilder();
         if (fieldsToRetrieve != null) {
             for (String fn : fieldsToRetrieve) {
                 if (fn.toUpperCase().contains(" IN")) {
                     Integer posicINClause = fn.toUpperCase().indexOf("IN");
                     fn = fn.substring(0, posicINClause - 1);
-                    fieldsToRetrieveStr = fieldsToRetrieveStr + fn.toLowerCase() + ", ";
+                    fieldsToRetrieveStr.append(fn.toLowerCase()).append(", ");
                 }
-                fieldsToRetrieveStr = fieldsToRetrieveStr + fn.toLowerCase() + ", ";
+                fieldsToRetrieveStr.append(fn.toLowerCase()).append(", ");
             }
-            fieldsToRetrieveStr = fieldsToRetrieveStr.substring(0, fieldsToRetrieveStr.length() - 2);
+            fieldsToRetrieveStr.deleteCharAt(fieldsToRetrieveStr.length() - 1);
+            fieldsToRetrieveStr.deleteCharAt(fieldsToRetrieveStr.length() - 1);
         }
-        return fieldsToRetrieveStr;
+        return fieldsToRetrieveStr.toString();
     }
 
     private String buildGroupBy(String[] fieldsToGroup) {
-        String fieldsToGroupStr = "";
+        StringBuilder fieldsToGroupStr = new StringBuilder();
         if (fieldsToGroup != null) {
             for (String fn : fieldsToGroup) {
-                fieldsToGroupStr = fieldsToGroupStr + fn + ", ";
+                fieldsToGroupStr.append(fn).append(", ");
             }
             if (fieldsToGroupStr.length() > 0) {
-                fieldsToGroupStr = fieldsToGroupStr.substring(0, fieldsToGroupStr.length() - 2);
-                fieldsToGroupStr = "Group By " + fieldsToGroupStr;
+                fieldsToGroupStr.deleteCharAt(fieldsToGroupStr.length() - 1);
+                fieldsToGroupStr.deleteCharAt(fieldsToGroupStr.length() - 1);
+                fieldsToGroupStr.insert(0, "Group By ");
             }
         }
-        return fieldsToGroupStr;
+        return fieldsToGroupStr.toString();
     }
 
     private String buildOrderBy(String[] fieldsToOrder) {
-        String fieldsToOrderStr = "";
+        StringBuilder fieldsToOrderBuilder = new StringBuilder();
         if (fieldsToOrder != null) {
             for (String fn : fieldsToOrder) {
-                fieldsToOrderStr = fieldsToOrderStr + fn + ", ";
+                fieldsToOrderBuilder.append(fn).append(", ");
             }
-            if (fieldsToOrderStr.length() > 0) {
-                fieldsToOrderStr = fieldsToOrderStr.substring(0, fieldsToOrderStr.length() - 2);
-                fieldsToOrderStr = "Order By " + fieldsToOrderStr;
+            if (fieldsToOrderBuilder.length() > 0) {
+                fieldsToOrderBuilder.deleteCharAt(fieldsToOrderBuilder.length() - 1);
+                fieldsToOrderBuilder.deleteCharAt(fieldsToOrderBuilder.length() - 1);
+                fieldsToOrderBuilder.insert(0, "Order By ");
             }
         }
-        return fieldsToOrderStr;
+        return fieldsToOrderBuilder.toString();
     }
     
     /**

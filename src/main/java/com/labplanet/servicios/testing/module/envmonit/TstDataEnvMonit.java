@@ -117,7 +117,7 @@ public class TstDataEnvMonit extends HttpServlet {
              (!LPFrontEnd.servletEsignToVerify(request, response, procActionRequiresUserConfirmation, token.geteSign())) ){return;}
         if (!LPFrontEnd.servletStablishDBConection(request, response)){return;}     
             
-            DataProgramSample prgSmp = new DataProgramSample("");            
+            DataProgramSample prgSmp = new DataProgramSample();            
             Object[] dataSample = null;
             
             switch (actionName.toUpperCase()){

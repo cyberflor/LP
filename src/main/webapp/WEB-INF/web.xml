@@ -152,6 +152,10 @@
         <servlet-name>UserProfileAPI</servlet-name>
         <servlet-class>com.labplanet.servicios.app.UserProfileAPI</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>dbTestingQuantitativeLimitAndResult</servlet-name>
+        <servlet-class>com.labplanet.servicios.testing.config.DB.TestingQuantitativeLimitAndResult</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>DBActions</servlet-name>
         <url-pattern>/testing/platform/DBActions</url-pattern>
@@ -294,6 +298,10 @@
     <servlet-mapping>
         <servlet-name>UserProfileAPI</servlet-name>
         <url-pattern>/app/UserProfileAPI</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>dbTestingQuantitativeLimitAndResult</servlet-name>
+        <url-pattern>/testing/config/db/quantitativeLimitAndResult</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

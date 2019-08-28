@@ -57,6 +57,8 @@ public class Rdbms {
     public static final String ERROR_TRAPPING_RDBMS_RECORD_NOT_FOUND="Rbdms_existsRecord_RecordNotFound";  
     
     public static final String ERROR_TRAPPING_ARG_VALUE_RES_NULL="res is set to null";  
+    public static final String ERROR_TRAPPING_ARG_VALUE_LBL_VALUES=" Values: ";  
+    
     
     
     public static final String BUNDLE_FILE_NAME_CONFIG="parameter.config.app-config";
@@ -241,7 +243,7 @@ public class Rdbms {
             if (res==null){
                 rdbms.errorCode = ERROR_TRAPPING_RDBMS_DT_SQL_EXCEPTION;
                 errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, ERROR_TRAPPING_ARG_VALUE_RES_NULL);
-                errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, query + " Values: "+ Arrays.toString(keyFieldValueNew));
+                errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, query + ERROR_TRAPPING_ARG_VALUE_LBL_VALUES+ Arrays.toString(keyFieldValueNew));
                 return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, rdbms.errorCode, errorDetailVariables);
             }
             res.last();
@@ -335,7 +337,7 @@ public class Rdbms {
             if (res==null){
                 rdbms.errorCode = ERROR_TRAPPING_RDBMS_DT_SQL_EXCEPTION;
                 errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, ERROR_TRAPPING_ARG_VALUE_RES_NULL);
-                errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, query + " Values: "+ Arrays.toString(keyFieldValueNew));
+                errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, query + ERROR_TRAPPING_ARG_VALUE_LBL_VALUES+ Arrays.toString(keyFieldValueNew));
                 return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, rdbms.errorCode, errorDetailVariables);
             }            
             res.first();
@@ -415,7 +417,7 @@ public class Rdbms {
             if (res==null){
                 rdbms.errorCode = ERROR_TRAPPING_RDBMS_DT_SQL_EXCEPTION;
                 errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, ERROR_TRAPPING_ARG_VALUE_RES_NULL);
-                errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, query + " Values: "+ Arrays.toString(keyFieldValueNew));
+                errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, query + ERROR_TRAPPING_ARG_VALUE_LBL_VALUES+ Arrays.toString(keyFieldValueNew));
                  LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, rdbms.errorCode, errorDetailVariables);
                  return null;
             }            
@@ -510,7 +512,7 @@ public class Rdbms {
             if (res==null){
                 rdbms.errorCode = ERROR_TRAPPING_RDBMS_DT_SQL_EXCEPTION;
                 errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, ERROR_TRAPPING_ARG_VALUE_RES_NULL);
-                errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, query + " Values: "+ Arrays.toString(keyFieldValueNew));
+                errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, query + ERROR_TRAPPING_ARG_VALUE_LBL_VALUES+ Arrays.toString(keyFieldValueNew));
                 Object[] errorLog = LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, rdbms.errorCode, errorDetailVariables);
                 return LPArray.array1dTo2d(errorLog, 1);
             }              
@@ -567,35 +569,36 @@ public class Rdbms {
            Object[] diagnosesError = LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, ERROR_TRAPPING_RDBMS_NOT_FILTER_SPECIFIED, errorDetailVariables);                         
            return LPArray.array1dTo2d(diagnosesError, diagnosesError.length);               
         }        
-        String query = "";
-        String fieldsToRetrieveStr = "";
-        for (String fn: fieldsToRetrieve){fieldsToRetrieveStr = fieldsToRetrieveStr + fn + ", ";}
-        fieldsToRetrieveStr = fieldsToRetrieveStr.substring(0, fieldsToRetrieveStr.length()-2);
-        query = "select " + fieldsToRetrieveStr + " from ";
+        StringBuilder query = new StringBuilder();
+        StringBuilder fieldsToRetrieveStr = new StringBuilder();
+        for (String fn: fieldsToRetrieve){fieldsToRetrieveStr.append(fn).append(", ");}
+        fieldsToRetrieveStr.deleteCharAt(fieldsToRetrieveStr.length() - 1);
+        fieldsToRetrieveStr.deleteCharAt(fieldsToRetrieveStr.length() - 1);
+        query.append("select ").append(fieldsToRetrieveStr).append(" from ");
         Integer i=1;
         for (String tbl: tableName){
-            if (i>1){query = query + " , ";}
-            query = query + " " + schemaName + "." + tbl;
+            if (i>1){query.append(" , ");}
+            query.append(" ").append(schemaName + "." + tbl);
             i++;
         }    
-        query = query + "   where " ;
+        query.append("   where ");
         i=1;
         for (String fn: whereFieldNames){
-                if (i>1){query = query + " and ";}
+                if (i>1){query.append(" and ");}
                 
                 if ( (fn.toUpperCase().contains("NULL")) || (fn.toUpperCase().contains("LIKE")) ){
-                    query = query + fn;
-                }else {query = query + fn + "=? ";}
+                    query.append(fn);
+                }else {query.append(fn).append("=? ");}
                 
                 i++;
         }        
         try{
-            ResultSet res = Rdbms.prepRdQuery(query, whereFieldValues);
+            ResultSet res = Rdbms.prepRdQuery(query.toString(), whereFieldValues);
             if (res==null){
                 rdbms.errorCode = ERROR_TRAPPING_RDBMS_DT_SQL_EXCEPTION;
                 String[] errorDetailVariables = new String[0];
                 errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, ERROR_TRAPPING_ARG_VALUE_RES_NULL);
-                errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, query + " Values: "+ Arrays.toString(whereFieldValues));
+                errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, query + ERROR_TRAPPING_ARG_VALUE_LBL_VALUES+ Arrays.toString(whereFieldValues));
                 Object[] errorLog=LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, rdbms.errorCode, errorDetailVariables);
                 return LPArray.array1dTo2d(errorLog, 1);
             }              
@@ -624,8 +627,8 @@ public class Rdbms {
             }
         }catch (SQLException er) {
             String ermessage=er.getLocalizedMessage()+er.getCause();
-            Logger.getLogger(query).log(Level.SEVERE, null, er);                 
-            String[] errorDetailVariables = new String[]{ermessage, query};
+            Logger.getLogger(query.toString()).log(Level.SEVERE, null, er);                 
+            String[] errorDetailVariables = new String[]{ermessage, query.toString()};
             Object[] diagnosesError = LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, ERROR_TRAPPING_RDBMS_DT_SQL_EXCEPTION, errorDetailVariables);                         
             return LPArray.array1dTo2d(diagnosesError, diagnosesError.length);               
         }                    
@@ -666,7 +669,7 @@ public class Rdbms {
             if (res==null){
                 rdbms.errorCode = ERROR_TRAPPING_RDBMS_DT_SQL_EXCEPTION;
                 errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, ERROR_TRAPPING_ARG_VALUE_RES_NULL);
-                errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, query + " Values: "+ Arrays.toString(whereFieldValues));
+                errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, query + ERROR_TRAPPING_ARG_VALUE_LBL_VALUES+ Arrays.toString(whereFieldValues));
                 Object[] errorLog=LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, rdbms.errorCode, errorDetailVariables);
                 return LPArray.array1dTo2d(errorLog, 1);
             }               
@@ -901,7 +904,7 @@ public class Rdbms {
                 rdbms.errorCode = ERROR_TRAPPING_RDBMS_DT_SQL_EXCEPTION;
                 String[] errorDetailVariables = new String[0];
                 errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, ERROR_TRAPPING_ARG_VALUE_RES_NULL);
-                errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, query + " Values: "+ Arrays.toString(new Object[]{schema, table}));
+                errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, query + ERROR_TRAPPING_ARG_VALUE_LBL_VALUES+ Arrays.toString(new Object[]{schema, table}));
                 Object[] errorLog = LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, rdbms.errorCode, errorDetailVariables);
                 return new String[] {errorLog[0].toString()};
             }               
@@ -931,19 +934,19 @@ public class Rdbms {
                 rdbms.errorCode = ERROR_TRAPPING_RDBMS_DT_SQL_EXCEPTION;
                 String[] errorDetailVariables = new String[0];
                 errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, ERROR_TRAPPING_ARG_VALUE_RES_NULL);
-                errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, query + " Values: "+ Arrays.toString(new Object[]{schema, table}));
+                errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, query + ERROR_TRAPPING_ARG_VALUE_LBL_VALUES+ Arrays.toString(new Object[]{schema, table}));
                 Object[] errorLog = LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, rdbms.errorCode, errorDetailVariables);
                 return Arrays.toString(errorLog);
             }                  
             items = res.next() ? LPArray.getStringArray(res.getArray("fields").getArray()) : null;
-            String tableFields = "";
+            StringBuilder tableFields = new StringBuilder();
 
             for (String f: items){
-                if (tableFields.length()>0){tableFields=tableFields+separator;}
-                if (addTableName){tableFields = tableFields+table+"."+f;            
-                }else{tableFields = tableFields+f;}
+                if (tableFields.length()>0){tableFields.append(separator);}
+                if (addTableName){tableFields.append(table).append(".").append(f);            
+                }else{tableFields.append(f);}
             }
-            return tableFields;
+            return tableFields.toString();
             
         } catch (SQLException ex) {
             Logger.getLogger(Rdbms.class.getName()).log(Level.SEVERE, null, ex);

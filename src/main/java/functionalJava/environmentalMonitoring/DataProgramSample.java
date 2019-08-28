@@ -16,8 +16,8 @@ import java.util.logging.Logger;
  */
 public class DataProgramSample extends DataSample{
     
-    public DataProgramSample(String grouperName) {
-        super(grouperName);
+    public DataProgramSample() {
+        super();
     }
 
     /**
@@ -30,14 +30,15 @@ public class DataProgramSample extends DataSample{
      * @param userName
      * @param userRole
      * @param programName
+     * @param programLocation
      * @param appSessionId
      * @return
      */
     public Object[] logProgramSample(String schemaPrefix, String programTemplate, Integer programTemplateVersion, String[] fieldName, Object[] fieldValue, String userName, String userRole, String programName, String programLocation, Integer appSessionId) {
         Object[] newProjSample = new Object[0];
         try {
-            DataSample ds = new DataSample("program");
-            fieldName = LPArray.addValueToArray1D(fieldName, "program");
+            DataSample ds = new DataSample();
+            fieldName = LPArray.addValueToArray1D(fieldName, "program_name");
             fieldValue = LPArray.addValueToArray1D(fieldValue, programName);
             newProjSample = ds.logSample(schemaPrefix, programTemplate, programTemplateVersion, fieldName, fieldValue, userName, userRole, appSessionId);
             /*if (!newProjSample[3].equalsIgnoreCase(LPPlatform.LAB_FALSE)){

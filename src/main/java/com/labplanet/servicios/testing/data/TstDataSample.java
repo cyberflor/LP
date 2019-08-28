@@ -13,6 +13,8 @@ import LabPLANET.utilities.LPNulls;
 import databases.Rdbms;
 import functionalJava.ChangeOfCustody.ChangeOfCustody;
 import functionalJava.sampleStructure.DataSample;
+import functionalJava.sampleStructure.DataSampleAnalysis;
+import functionalJava.sampleStructure.DataSampleAnalysisResult;
 import functionalJava.testingScripts.TestingAssert;
 import functionalJava.testingScripts.TestingAssertSummary;
 import java.io.FileReader;
@@ -56,7 +58,9 @@ public class TstDataSample extends HttpServlet {
         String csvFileName = "dataSampleStructure.txt";      
         Object[][] dataSample2D = new Object[1][6];
         Object[] dataSample = new Object[6];
-        DataSample smp = new DataSample("");   
+        DataSample smp = new DataSample();   
+        DataSampleAnalysis smpAna = new DataSampleAnalysis();   
+        DataSampleAnalysisResult smpAnaRes = new DataSampleAnalysisResult();   
         Integer appSessionId = null;
         
         TestingAssertSummary tstAssertSummary = new TestingAssertSummary();
@@ -207,7 +211,7 @@ public class TstDataSample extends HttpServlet {
                             fileContentTable1Builder.append(LPTestingOutFormat.rowAddFields(
                                 new Object[]{"sampleId, userName, fieldNames, fieldValues", 
                                     LPNulls.replaceNull(sampleId).toString()+", "+userName+", "+Arrays.toString(fieldName)+", "+Arrays.toString(fieldValueObjArr)}));                              
-                            dataSample = smp.sampleAnalysisAddtoSample(schemaPrefix, userName, sampleId, fieldName, fieldValueObjArr, userRole);
+                            dataSample = smpAna.sampleAnalysisAddtoSample(schemaPrefix, userName, sampleId, fieldName, fieldValueObjArr, userRole);
                             break;              
                         case "ENTERRESULT":
                             Integer resultId = 0;
@@ -218,7 +222,7 @@ public class TstDataSample extends HttpServlet {
                                 rawValueResult=LPTestingOutFormat.csvExtractFieldValueString(csvFileContent[iLines][numEvaluationArguments+5]);
                             fileContentTable1Builder.append(LPTestingOutFormat.rowAddFields(
                                 new Object[]{"resultId, userName, fieldNames, rawValueResult", resultId.toString()+", "+userName+", "+rawValueResult}));                              
-                            dataSample = smp.sampleAnalysisResultEntry(schemaPrefix, userName, resultId, rawValueResult, userRole);
+                            dataSample = smpAnaRes.sampleAnalysisResultEntry(schemaPrefix, userName, resultId, rawValueResult, userRole, smp);
                             break;  
                         case "REVIEWRESULT":
                             Integer objectId = 0;
@@ -248,7 +252,7 @@ public class TstDataSample extends HttpServlet {
                             if (objectLevel.equalsIgnoreCase(OBJECT_LEVEL_SAMPLE)){sampleId = objectId;}
                             if (objectLevel.equalsIgnoreCase(OBJECT_LEVEL_TEST)){testId = objectId;}
                             if (objectLevel.equalsIgnoreCase(OBJECT_LEVEL_RESULT)){resultId = objectId;}
-                            dataSample = smp.sampleAnalysisResultCancel(schemaPrefix, userName, sampleId, testId, resultId, userRole);
+                            dataSample = smpAnaRes.sampleAnalysisResultCancel(schemaPrefix, userName, sampleId, testId, resultId, userRole, smp);
                             break;                            
                         case "UNCANCELRESULT": 
                             objectId = 0;
@@ -264,7 +268,7 @@ public class TstDataSample extends HttpServlet {
                             if (objectLevel.equalsIgnoreCase(OBJECT_LEVEL_SAMPLE)){sampleId = objectId;}
                             if (objectLevel.equalsIgnoreCase(OBJECT_LEVEL_TEST)){testId = objectId;}
                             if (objectLevel.equalsIgnoreCase(OBJECT_LEVEL_RESULT)){resultId = objectId;}
-                            dataSample = smp.sampleAnalysisResultUnCancel(schemaPrefix, userName, sampleId, testId, resultId, userRole);
+                            dataSample = smpAnaRes.sampleAnalysisResultUnCancel(schemaPrefix, userName, sampleId, testId, resultId, userRole, smp);
                             break;       
                         case "TESTASSIGNMENT": 
                             testId = 0;
@@ -275,7 +279,7 @@ public class TstDataSample extends HttpServlet {
                                 newAnalyst=LPTestingOutFormat.csvExtractFieldValueString(csvFileContent[iLines][numEvaluationArguments+5]);
                             fileContentTable1Builder.append(LPTestingOutFormat.rowAddFields(
                                 new Object[]{"testId, userName, newAnalyst", testId.toString()+", "+userName+", "+newAnalyst}));                              
-                            dataSample = smp.sampleAnalysisAssignAnalyst(schemaPrefix, userName, testId, newAnalyst, userRole);
+                            dataSample = smpAna.sampleAnalysisAssignAnalyst(schemaPrefix, userName, testId, newAnalyst, userRole, smp);
                             break;   
                         case "GETSAMPLEINFO":                            
                             String schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, LPPlatform.SCHEMA_DATA);                     
@@ -352,7 +356,7 @@ public class TstDataSample extends HttpServlet {
                                 newUOM=LPTestingOutFormat.csvExtractFieldValueString(csvFileContent[iLines][numEvaluationArguments+5]);
                             fileContentTable1Builder.append(LPTestingOutFormat.rowAddFields(
                                 new Object[]{"resultId, newUOM", resultId.toString()+", "+newUOM}));                                  
-                            dataSample = smp.sarChangeUom(schemaPrefix, resultId, newUOM, userName, userRole);
+                            dataSample = smpAnaRes.sarChangeUom(schemaPrefix, resultId, newUOM, userName, userRole, smp);
                             break;
                         case "LOGALIQUOT":
                             sampleId = 0;

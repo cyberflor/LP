@@ -144,13 +144,13 @@ public class envMonAPI extends HttpServlet {
                 return ;                           
             }            
             
-            DataProgramSample prgSmp = new DataProgramSample("");            
+            DataProgramSample prgSmp = new DataProgramSample();            
             Object[] dataSample = null;
             
             switch (actionName.toUpperCase()){
                 case "LOGSAMPLExxxxxxx":
-//                    String programName=request.getParameter("programName");
-//                    String programLocation=request.getParameter("programLocation");
+                    String programName=request.getParameter("programName");
+                    String programLocation=request.getParameter("programLocation");
 
                     RequestDispatcher rd2 = request.getRequestDispatcher(globalAPIsParams.ENDPOINT_URLS_SAMPLEAPI);
                     rd2.forward(request,response); 

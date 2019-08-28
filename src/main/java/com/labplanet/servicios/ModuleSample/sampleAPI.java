@@ -15,6 +15,8 @@ import databases.Rdbms;
 import databases.Token;
 import functionalJava.ChangeOfCustody.ChangeOfCustody;
 import functionalJava.sampleStructure.DataSample;
+import functionalJava.sampleStructure.DataSampleAnalysis;
+import functionalJava.sampleStructure.DataSampleAnalysisResult;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
@@ -26,6 +28,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.json.simple.JSONObject;
 /**
  *
  * @author Administrator
@@ -124,7 +127,9 @@ public class sampleAPI extends HttpServlet {
                 return ;                           
             }            
             
-            DataSample smp = new DataSample("");            
+            DataSample smp = new DataSample();    
+            DataSampleAnalysis smpAna = new DataSampleAnalysis();   
+            DataSampleAnalysisResult smpAnaRes = new DataSampleAnalysisResult();   
             Object[] dataSample = null;
             
             switch (actionName.toUpperCase()){
@@ -243,7 +248,7 @@ public class sampleAPI extends HttpServlet {
                     fieldValue = request.getParameter(globalAPIsParams.REQUEST_PARAM_SAMPLE_FIELD_VALUE);
                     fieldValueArr = fieldValue.split("\\|");                        
                     fieldValueArr = LPArray.convertStringWithDataTypeToObjectArray((String[]) fieldValueArr);
-                    dataSample = smp.sampleAnalysisAddtoSample(schemaPrefix, token.getPersonName(), sampleId, fieldNameArr, fieldValueArr, token.getUserRole());  
+                    dataSample = smpAna.sampleAnalysisAddtoSample(schemaPrefix, token.getPersonName(), sampleId, fieldNameArr, fieldValueArr, token.getUserRole());  
                     break;              
                 case sampleAPIParams.API_ENDPOINT_ENTERRESULT:
                     areMandatoryParamsInResponse = LPHttp.areMandatoryParamsInApiRequest(request, sampleAPIParams.MANDATORY_PARAMS_ENTERRESULT.split("\\|"));
@@ -257,7 +262,7 @@ public class sampleAPI extends HttpServlet {
                     String resultIdStr = request.getParameter(globalAPIsParams.REQUEST_PARAM_RESULT_ID);
                     resultId = Integer.parseInt(resultIdStr);       
                     rawValueResult = request.getParameter(globalAPIsParams.REQUEST_PARAM_RAW_VALUE_RESULT);
-                    dataSample = smp.sampleAnalysisResultEntry(schemaPrefix, token.getPersonName(), resultId, rawValueResult, token.getUserRole());
+                    dataSample = smpAnaRes.sampleAnalysisResultEntry(schemaPrefix, token.getPersonName(), resultId, rawValueResult, token.getUserRole(), smp);
                     break;              
                 case sampleAPIParams.API_ENDPOINT_REVIEWRESULT:
                     areMandatoryParamsInResponse = LPHttp.areMandatoryParamsInApiRequest(request, sampleAPIParams.MANDATORY_PARAMS_REVIEWRESULT.split("\\|"));
@@ -291,7 +296,7 @@ public class sampleAPI extends HttpServlet {
                         if (objectLevel.equalsIgnoreCase(globalAPIsParams.REQUEST_PARAM_OBJECT_LEVEL_SAMPLE)){sampleId = objectId;}
                         if (objectLevel.equalsIgnoreCase(globalAPIsParams.REQUEST_PARAM_OBJECT_LEVEL_TEST)){testId = objectId;}
                         if (objectLevel.equalsIgnoreCase(globalAPIsParams.REQUEST_PARAM_OBJECT_LEVEL_RESULT)){resultId = objectId;}
-                        dataSample = smp.sampleAnalysisResultCancel(schemaPrefix, token.getPersonName(), sampleId, testId, resultId, token.getUserRole());
+                        dataSample = smpAnaRes.sampleAnalysisResultCancel(schemaPrefix, token.getPersonName(), sampleId, testId, resultId, token.getUserRole(),smp);
                     break;   
                 case sampleAPIParams.API_ENDPOINT_UNREVIEWRESULT:   // No break then will take the same logic than the next one  
                 case sampleAPIParams.API_ENDPOINT_UNCANCELRESULT:
@@ -309,7 +314,7 @@ public class sampleAPI extends HttpServlet {
                         if (objectLevel.equalsIgnoreCase(globalAPIsParams.REQUEST_PARAM_OBJECT_LEVEL_SAMPLE)){sampleId = objectId;}
                         if (objectLevel.equalsIgnoreCase(globalAPIsParams.REQUEST_PARAM_OBJECT_LEVEL_TEST)){testId = objectId;}
                         if (objectLevel.equalsIgnoreCase(globalAPIsParams.REQUEST_PARAM_OBJECT_LEVEL_RESULT)){resultId = objectId;}
-                        dataSample = smp.sampleAnalysisResultUnCancel(schemaPrefix, token.getPersonName(), sampleId, testId, resultId, token.getUserRole());
+                        dataSample = smpAnaRes.sampleAnalysisResultUnCancel(schemaPrefix, token.getPersonName(), sampleId, testId, resultId, token.getUserRole(), smp);
                     break;       
                 case sampleAPIParams.API_ENDPOINT_TESTASSIGNMENT: 
                     areMandatoryParamsInResponse = LPHttp.areMandatoryParamsInApiRequest(request, sampleAPIParams.MANDATORY_PARAMS_TESTASSIGNMENT.split("\\|"));
@@ -321,7 +326,7 @@ public class sampleAPI extends HttpServlet {
                     objectIdStr = request.getParameter(globalAPIsParams.REQUEST_PARAM_TEST_ID);
                     testId = Integer.parseInt(objectIdStr);     
                     String newAnalyst = request.getParameter(globalAPIsParams.REQUEST_PARAM_NEW_ANALYST);
-                    dataSample = smp.sampleAnalysisAssignAnalyst(schemaPrefix, token.getPersonName(), testId, newAnalyst, token.getUserRole());
+                    dataSample = smpAna.sampleAnalysisAssignAnalyst(schemaPrefix, token.getPersonName(), testId, newAnalyst, token.getUserRole(), smp);
  
                     break;                       
                 case sampleAPIParams.API_ENDPOINT_GETSAMPLEINFO:
@@ -445,7 +450,8 @@ public class sampleAPI extends HttpServlet {
                     con.setAutoCommit(true);}                
                 LPFrontEnd.servletReturnResponseErrorLPFalseDiagnostic(request, response, dataSample);   
             }else{
-                LPFrontEnd.servletReturnResponseErrorLPTrueDiagnostic(request, response, dataSample);
+                JSONObject dataSampleJSONMsg = LPFrontEnd.responseJSONDiagnosticLPTrue(dataSample);
+                LPFrontEnd.servletReturnSuccess(request, response, dataSampleJSONMsg);
             }            
         }catch(Exception e){   
             LPFrontEnd.servletReturnResponseError(request, response, LPPlatform.API_ERRORTRAPING_EXCEPTION_RAISED, new Object[]{e.getMessage(), this.getServletName()}, language);                   

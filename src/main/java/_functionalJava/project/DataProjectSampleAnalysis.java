@@ -5,20 +5,12 @@
  */
 package _functionalJava.project;
 
-import functionalJava.sampleStructure.DataSample;
+import functionalJava.sampleStructure.DataSampleAnalysis;
 
 /**
  *
  * @author Administrator
  */
-public class DataProjectSample extends DataSample{
-    /**
-     *
-     * @param grouperName
-     */
-    public DataProjectSample() {
-        super();
-        String tableName = "project_sample";            
-    }
+public class DataProjectSampleAnalysis extends DataSampleAnalysis{
     
 }

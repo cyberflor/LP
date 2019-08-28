@@ -10,6 +10,7 @@ import _functionalJava.project.DataProject;
 import LabPLANET.utilities.LPArray;
 import LabPLANET.utilities.LPFrontEnd;
 import LabPLANET.utilities.LPNulls;
+import _functionalJava.project.DataProjectSampleAnalysis;
 import functionalJava.testingScripts.LPTestingOutFormat;
 import java.io.File;
 import java.io.FileWriter;
@@ -64,7 +65,10 @@ public class projectStructure extends HttpServlet {
             String fileContent="";
             fileContent = LPTestingOutFormat.getHtmlStyleHeader(this.getServletName());
 
-            DataProject prj = new DataProject("project");
+            DataProject prj = new DataProject();
+            DataProjectSampleAnalysis prjSmpAna = new DataProjectSampleAnalysis();
+            
+            
             
             for (Integer j=0;j<configSpecTestingArray[0].length;j++){
                 fileContent = fileContent + "<th>"+configSpecTestingArray[0][j]+"</th>";
@@ -127,7 +131,7 @@ public class projectStructure extends HttpServlet {
                         if (sampleId==null){sampleId=-9;}
                         fileContent = fileContent + LPTestingOutFormat.fieldStart()+sampleId.toString()+", "+userName+", "
                             +configSpecTestingArray[i][5].toString()+", "+configSpecTestingArray[i][6].toString()+LPTestingOutFormat.fieldEnd();                             
-                        dataProject = prj.sampleAnalysisAddtoSample(schemaPrefix, userName, sampleId, fieldName, fieldValue, userRole);
+                        dataProject = prjSmpAna.sampleAnalysisAddtoSample(schemaPrefix, userName, sampleId, fieldName, fieldValue, userRole);
                         break;                           
                     default:                
                         break;

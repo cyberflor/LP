@@ -223,22 +223,25 @@ public class UserSop {
             if (filterFieldValue==null){getUserProfileNEW[0][3]="filterFieldValue is null";}else{getUserProfileNEW[0][3]="filterFieldValue="+Arrays.toString(filterFieldValue);}
             return getUserProfileNEW;}       
                 
-        String query = "";
+        StringBuilder query = new StringBuilder();
         for(String currSchemaPrefix: schemaPrefix){                    
-            query = query+"(select ";
+            query.append("(select ");
             for(String fRet: fieldsToReturn){
-                query = query+" "+fRet+","; 
+                query.append(fRet).append(",");
             }
-            query=query.substring(0, query.length()-1);
-            if (currSchemaPrefix.contains(LPPlatform.SCHEMA_DATA)){query = query+" from \""+ currSchemaPrefix+"\"."+tableName+" where 1=1";}
-            else{query = query+" from \""+ currSchemaPrefix+"-data\"."+tableName+" where 1=1";}
+            query.deleteCharAt(query.length() - 1);
+
+            if (currSchemaPrefix.contains(LPPlatform.SCHEMA_DATA)){
+                query.append(" from \"").append(currSchemaPrefix).append("\".").append(tableName).append(" where 1=1");}
+            else{query.append(" from \"").append(currSchemaPrefix).append("-data\".").append(tableName).append(" where 1=1");}
             for(String fFN: filterFieldName){
-                query = query+" and "+fFN;
-                if (!fFN.contains("null")){query=query+"= ?";}
+                query.append(" and ").append(fFN); 
+                if (!fFN.contains("null")){query.append("= ?");}
             }
-            query = query+") union ";
+            query.append(") union ");
         }       
-        query=query.substring(0, query.length()-6);
+        for (int i=0;i<6;i++){query.deleteCharAt(query.length() - 1);}
+        
         
         Object[] filterFieldValueAllSchemas = new Object[filterFieldValue.length*schemaPrefix.length];
         Integer iFldValue=0;
@@ -249,7 +252,7 @@ public class UserSop {
             }
         }               
         try{
-            ResultSet res = Rdbms.prepRdQuery(query, filterFieldValueAllSchemas);         
+            ResultSet res = Rdbms.prepRdQuery(query.toString(), filterFieldValueAllSchemas);         
             res.last();
             Integer numLines=res.getRow();
             Integer numColumns=fieldsToReturn.length;

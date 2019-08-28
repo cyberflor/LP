@@ -26,14 +26,16 @@ import javax.servlet.http.HttpServletResponse;
 public class LPTestingOutFormat {
     private LPTestingOutFormat(){    throw new IllegalStateException("Utility class");}    
     
-    public static final String TESTING_FILES_PATH = "http://51.75.202.142:8888/testingRepository/"; //\\\\FRANCLOUD\\fran\\LabPlanet\\testingRepository\\"; // "\\testingRepository\\";
+    public static final String TESTING_FILES_PATH_OVH = "http://51.75.202.142:8888/testingRepository/"; //\\\\FRANCLOUD\\fran\\LabPlanet\\testingRepository\\"; // "\\testingRepository\\";
     public static final String TESTING_FILES_PATH_NAS = "\\\\FRANCLOUD\\fran\\LabPlanet\\testingRepository\\"; // "\\testingRepository\\";
+    public static final String TESTING_FILES_PATH = "C:\\Chemos\\"; // "\\testingRepository\\";
     public static final String TESTING_FILES_FIELD_SEPARATOR=";";
     public static final String TESTING_USER="labplanet";
     public static final String TESTING_PW="avecesllegaelmomento";
     public static final String MSG_DB_CON_ERROR="<th>Error connecting to the database</th>";       
 
     public static final Integer FILEHEADER_MAX_NUM_HEADER_LINES=25;
+    public static final String FILEHEADER_TAGS_SEPARATOR="=";
     public static final String FILEHEADER_NUM_HEADER_LINES_TAG_NAME="NUMHEADERLINES";
     public static final String FILEHEADER_NUM_TABLES_TAG_NAME="NUMTABLES"; 
     public static final String FILEHEADER_TABLE_NAME_TAG_NAME="TABLE";
@@ -41,6 +43,8 @@ public class LPTestingOutFormat {
     public static final String FILEHEADER_NUM_ARGUMENTS="NUMARGUMENTS";
     public static final String FILEHEADER_NUM_EVALUATION_ARGUMENTS="NUMEVALUATIONARGUMENTS";
     public static final String FILEHEADER_EVALUATION_POSITION="EVALUATIONPOSITION";
+    
+    public static final String ERROR_TRAPPING_FILEHEADER_MISSING_TAGS="There are missing tags in the file header: ";
     
     public static final String BUNDLE_FILE_NAME="parameter.config.labtimus";
 
@@ -88,19 +92,19 @@ public class LPTestingOutFormat {
     }
     
     public static String headerAddFields(Object[] fields){
-        String content="";
+        StringBuilder content=new StringBuilder();
         for (Object fld: fields){
-            content = content+headerStart()+LPNulls.replaceNull(fld).toString()+headerEnd();           
+            content.append(headerStart()).append(LPNulls.replaceNull(fld).toString()).append(headerEnd());           
         }
-        return content;
+        return content.toString();
     }
 
     public static String headerAddFields(String[] fields){
-        String content="";
+        StringBuilder content=new StringBuilder();
         for (Object fld: fields){
-            content = content+headerStart()+LPNulls.replaceNull(fld)+headerEnd();           
+            content.append(headerStart()).append(LPNulls.replaceNull(fld).toString()).append(headerEnd());           
         }
-        return content;
+        return content.toString();
     }
     
     public static String[] addUATColumns(String[] fields, Integer numEvaluationArguments){
@@ -116,21 +120,21 @@ public class LPTestingOutFormat {
 
 
     public static String rowAddField(String field){
-        String content="";
-        content = content+fieldStart()+LPNulls.replaceNull((String) field)+fieldEnd();           
-        return content;
+        StringBuilder content=new StringBuilder();
+        content.append(headerStart()).append(LPNulls.replaceNull(field).toString()).append(headerEnd());           
+        return content.toString();
     }
 
     public static String rowAddFields(Object[] fields){
-        String content="";
+        StringBuilder content=new StringBuilder();
         for (Object field: fields){
             if (field==null){
-                content = content+fieldStart()+""+fieldEnd();           
+                content.append(fieldStart()).append("").append(fieldEnd());  
             }else{
-                content = content+fieldStart()+LPNulls.replaceNull(field.toString())+fieldEnd();           
+                content.append(fieldStart()).append(LPNulls.replaceNull(field).toString()).append(fieldEnd());  
             }
         }
-        return content;
+        return content.toString();
     }
 
     /**
@@ -242,13 +246,14 @@ public class LPTestingOutFormat {
     }
     
     public static String convertArrayInHtmlTable(Object[][] content){
-        String fileContentTable = LPTestingOutFormat.tableStart();    
-        fileContentTable=fileContentTable+headerAddFields(content[0])+headerEnd();
+        StringBuilder fileContentTable = new StringBuilder();
+        fileContentTable.append(LPTestingOutFormat.tableStart());    
+        fileContentTable.append(headerAddFields(content[0])).append(headerEnd());
         for (int iRows=1; iRows< content.length; iRows++){
-            fileContentTable=fileContentTable+rowStart()+rowAddFields(content[iRows])+rowEnd();
+            fileContentTable.append(rowStart()).append(rowAddFields(content[iRows])).append(rowEnd());
         }
-        fileContentTable = fileContentTable + LPTestingOutFormat.tableEnd();    
-        return fileContentTable;
+        fileContentTable.append(LPTestingOutFormat.tableEnd());    
+        return fileContentTable.toString();
     }
     
     public static String createTableWithHeader(String table1Header, Integer numEvaluationArguments){
@@ -268,7 +273,8 @@ public class LPTestingOutFormat {
         if (value==null) return false;
         if (value.toString().length()==0){return false;}
         try{
-            return Boolean.getBoolean(value.toString());        
+            return Boolean.valueOf(value.toString());
+            //return Boolean.getBoolean(value.toString());        
         }catch(Exception e){return false;}                    
     }
     public static String csvExtractFieldValueString(Object value){
