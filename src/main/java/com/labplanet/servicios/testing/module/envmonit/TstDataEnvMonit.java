@@ -5,14 +5,14 @@
  */
 package com.labplanet.servicios.testing.module.envmonit;
 
-import LabPLANET.utilities.LPArray;
-import LabPLANET.utilities.LPFrontEnd;
-import LabPLANET.utilities.LPHttp;
-import LabPLANET.utilities.LPPlatform;
-import com.labplanet.servicios.app.globalAPIsParams;
+import lbplanet.utilities.LPArray;
+import lbplanet.utilities.LPFrontEnd;
+import lbplanet.utilities.LPHttp;
+import lbplanet.utilities.LPPlatform;
+import com.labplanet.servicios.app.GlobalAPIsParams;
 import databases.Rdbms;
 import databases.Token;
-import functionalJava.environmentalMonitoring.DataProgramSample;
+import functionaljavaa.environmentalmonitoring.DataProgramSample;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
@@ -57,9 +57,9 @@ public class TstDataEnvMonit extends HttpServlet {
                 LPPlatform.API_ERRORTRAPING_MANDATORY_PARAMS_MISSING, new Object[]{areMandatoryParamsInResponse[1].toString()}, language);              
             return;          
         }             
-        String schemaPrefix = request.getParameter(globalAPIsParams.REQUEST_PARAM_SCHEMA_PREFIX);            
-        String actionName = request.getParameter(globalAPIsParams.REQUEST_PARAM_ACTION_NAME);
-        String finalToken = request.getParameter(globalAPIsParams.REQUEST_PARAM_FINAL_TOKEN);                   
+        String schemaPrefix = request.getParameter(GlobalAPIsParams.REQUEST_PARAM_SCHEMA_PREFIX);            
+        String actionName = request.getParameter(GlobalAPIsParams.REQUEST_PARAM_ACTION_NAME);
+        String finalToken = request.getParameter(GlobalAPIsParams.REQUEST_PARAM_FINAL_TOKEN);                   
         
         Token token = new Token(finalToken);
         if (LPPlatform.LAB_FALSE.equalsIgnoreCase(token.getUserName())){
@@ -74,12 +74,12 @@ public class TstDataEnvMonit extends HttpServlet {
 
          Object[] procActionRequiresUserConfirmation = LPPlatform.procActionRequiresUserConfirmation(schemaPrefix, actionName);
         if (LPPlatform.LAB_TRUE.equalsIgnoreCase(procActionRequiresUserConfirmation[0].toString())){     
-            mandatoryParams = LPArray.addValueToArray1D(mandatoryParams, globalAPIsParams.REQUEST_PARAM_USER_TO_CHECK);    
-            mandatoryParams = LPArray.addValueToArray1D(mandatoryParams, globalAPIsParams.REQUEST_PARAM_PASSWORD_TO_CHECK);    
+            mandatoryParams = LPArray.addValueToArray1D(mandatoryParams, GlobalAPIsParams.REQUEST_PARAM_USER_TO_CHECK);    
+            mandatoryParams = LPArray.addValueToArray1D(mandatoryParams, GlobalAPIsParams.REQUEST_PARAM_PASSWORD_TO_CHECK);    
         }
         Object[] procActionRequiresEsignConfirmation = LPPlatform.procActionRequiresEsignConfirmation(schemaPrefix, actionName);
         if (LPPlatform.LAB_TRUE.equalsIgnoreCase(procActionRequiresEsignConfirmation[0].toString())){                                                      
-            mandatoryParams = LPArray.addValueToArray1D(mandatoryParams, globalAPIsParams.REQUEST_PARAM_ESIGN_TO_CHECK);    
+            mandatoryParams = LPArray.addValueToArray1D(mandatoryParams, GlobalAPIsParams.REQUEST_PARAM_ESIGN_TO_CHECK);    
         }        
                 
         boolean isConnected = false;

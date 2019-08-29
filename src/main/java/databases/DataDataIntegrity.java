@@ -5,8 +5,8 @@
  */
 package databases;
 
-import LabPLANET.utilities.LPPlatform;
-import functionalJava.parameter.Parameter;
+import lbplanet.utilities.LPPlatform;
+import functionaljavaa.parameter.Parameter;
 
 /**
  *

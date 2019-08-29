@@ -5,14 +5,14 @@
  */
 package com.labplanet.servicios.app;
 
-import LabPLANET.utilities.LPArray;
-import LabPLANET.utilities.LPFrontEnd;
-import LabPLANET.utilities.LPPlatform;
-import LabPLANET.utilities.LPHttp;
-import LabPLANET.utilities.LPJson;
+import lbplanet.utilities.LPArray;
+import lbplanet.utilities.LPFrontEnd;
+import lbplanet.utilities.LPPlatform;
+import lbplanet.utilities.LPHttp;
+import lbplanet.utilities.LPJson;
 import databases.Rdbms;
 import databases.Token;
-import functionalJava.user.UserProfile;
+import functionaljavaa.user.UserProfile;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
@@ -21,7 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONArray;
-import functionalJava.sop.UserSop;
+import functionaljavaa.sop.UserSop;
 
 /**
  *
@@ -75,7 +75,7 @@ public class AppProcedureListAPI extends HttpServlet {
                          LPPlatform.API_ERRORTRAPING_MANDATORY_PARAMS_MISSING, new Object[]{areMandatoryParamsInResponse[1].toString()}, language);              
                  return;          
              }               
-            String finalToken = request.getParameter(globalAPIsParams.REQUEST_PARAM_FINAL_TOKEN);    
+            String finalToken = request.getParameter(GlobalAPIsParams.REQUEST_PARAM_FINAL_TOKEN);    
                            
             Token token = new Token(finalToken);
                         
@@ -132,7 +132,6 @@ public class AppProcedureListAPI extends HttpServlet {
                 procedures.add(procedure);
             }
             procFldNameArray = LPArray.addValueToArray1D(procFldNameArray, LABEL_PROC_SCHEMA);
-            //Object[][] procArray2d = LPArray.array1dTo2d(procArray, procFldNameArray.length);              
             JSONObject proceduresList = new JSONObject();
             proceduresList.put(LABEL_ARRAY_PROCEDURES, procedures);
             LPFrontEnd.servletReturnSuccess(request, response, proceduresList);
@@ -148,7 +147,7 @@ public class AppProcedureListAPI extends HttpServlet {
         Boolean isProcedureSopEnable = userSop.isProcedureSopEnable((String) curProc);
         if (!isProcedureSopEnable) procedure.put(LABEL_SOP_CERTIFICATION, LABEL_VALUE_SOP_CERTIFICATION_DISABLE);                 
         if (isProcedureSopEnable){
-            notCompletedUserSOP = userSop.getNotCompletedUserSOP(internalUserID, curProc, new String[]{"sop_name"});
+            notCompletedUserSOP = userSop.getNotCompletedUserSOP(internalUserID, curProc, new String[]{LABEL_SOP_NAME});
             notCompletedUserSOP1D = LPArray.array2dTo1d(notCompletedUserSOP);
         }        
         JSONObject procEventSopDetail = new JSONObject();
@@ -160,9 +159,7 @@ public class AppProcedureListAPI extends HttpServlet {
         Boolean userHasNotCompletedSOP = false;
         if ( (procEventSops==null) || ( (procEventSops!=null) && ("".equals(procEventSops)) ) ){
             procEventJson.put(LABEL_SOPS_PASSED, true);
-//            userHasNotCompletedSOP = false;
             if ( (procEventSops==null) ) {
-//                userHasNotCompletedSOP = false;
                 procEventJson.put(LABEL_SOPS_PASSED, true);
             }
             procEventSopDetail.put(LABEL_ARRAY_SOP_LIST, new JSONArray());
@@ -172,7 +169,7 @@ public class AppProcedureListAPI extends HttpServlet {
             procEventSopDetail.put(LABEL_SOP_TOTAL_NOT_COMPLETED, 0);
         }else{
             Object[] procEventSopsArr = procEventSops.split("\\|");
-            String sopListStr = "";
+            StringBuilder sopListStrBuilder = new StringBuilder();
             Integer sopTotalNotCompleted = 0;                
             Integer sopTotalCompleted = 0;                
             JSONArray procEventSopSummary = new JSONArray();   
@@ -181,7 +178,7 @@ public class AppProcedureListAPI extends HttpServlet {
                 procEventSopDetailJson.put(LABEL_SOP_NAME, curProcEvSop);
                 if (LPArray.valuePosicInArray(notCompletedUserSOP1D, curProcEvSop)==-1) {
                     sopTotalNotCompleted++;
-                    sopListStr=sopListStr+curProcEvSop.toString()+"*NO, ";
+                    sopListStrBuilder.append(curProcEvSop.toString()).append("*NO, ");
                     userHasNotCompletedSOP = true;
                     procEventSopDetailJson.put(LABEL_SOP_TOTAL_COMPLETED, false);
                 }else{

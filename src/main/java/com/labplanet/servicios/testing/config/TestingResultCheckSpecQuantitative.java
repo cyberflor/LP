@@ -1,6 +1,6 @@
 package com.labplanet.servicios.testing.config;
 
-import functionalJava.materialSpec.DataSpec;
+import functionaljavaa.materialspec.DataSpec;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
@@ -9,12 +9,12 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import LabPLANET.utilities.LPPlatform;
-import functionalJava.testingScripts.LPTestingOutFormat;
-import LabPLANET.utilities.LPArray;
-import LabPLANET.utilities.LPFrontEnd;
-import functionalJava.testingScripts.TestingAssert;
-import functionalJava.testingScripts.TestingAssertSummary;
+import lbplanet.utilities.LPPlatform;
+import functionaljavaa.testingscripts.LPTestingOutFormat;
+import lbplanet.utilities.LPArray;
+import lbplanet.utilities.LPFrontEnd;
+import functionaljavaa.testingscripts.TestingAssert;
+import functionaljavaa.testingscripts.TestingAssertSummary;
 import java.util.HashMap;
 /**
  *
@@ -97,7 +97,6 @@ public class TestingResultCheckSpecQuantitative extends HttpServlet {
                 Object[] resSpecEvaluation = new Object[0];
                 if (minControl==null){
                     fileContentTable1Builder.append(LPTestingOutFormat.rowAddFields(new Object[]{iLines, result, minSpec, minStrict, maxSpec, maxStrict}));
-                    //fileContentTable1=fileContentTable1+LPTestingOutFormat.rowAddFields(                            new Object[]{iLines, result, minSpec, minStrict, maxSpec, maxStrict});
                     resSpecEvaluation = resChkSpec.resultCheck(result, minSpec, maxSpec, minStrict, maxStrict);
                 }else{
                     fileContentTable2Builder.append(LPTestingOutFormat.rowAddFields(

@@ -11,7 +11,6 @@ import LabPLANET.utilities.LPHttp;
 import LabPLANET.utilities.LPMath;
 import databases.Rdbms;
 import databases.Token;
-import databases.dbObjectsAppTables;
 import databases.dbObjectsAppTables.SchemaApppTableAppSession;
 import functionalJava.parameter.Parameter;
 import functionalJava.sampleStructure.DataSampleUtilities;
@@ -25,7 +24,6 @@ import java.net.URL;
 import java.nio.charset.CharsetDecoder;
 import java.nio.charset.CodingErrorAction;
 import java.nio.charset.StandardCharsets;
-import java.security.Policy.Parameters;
 import java.util.Arrays;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -89,11 +87,17 @@ public class testingServer extends HttpServlet {
                 Rdbms.closeRdbms(); 
                 return ;               
             }              
-            if (isConnected){
-                out.println("Connected to the db :)");
-            }else{
-                out.println("NOT Connected to the db :(");
-            }
+            if (isConnected){out.println("Connected to the db :)");
+            }else{out.println("NOT Connected to the db :(");}
+            
+            Object[] firstArray=new Object[]{"A", "B"};
+            Object[] secondArray=new Object[]{"1", "2", 3};
+                String[] myJoinedArray=LPArray.joinTwo1DArraysInOneOf1DString(firstArray, secondArray, ":");
+                out.println("joining two arrays of "+Arrays.toString(firstArray)+" and "+Arrays.toString(secondArray)+" with the separator "+":"+" I obtained "+Arrays.toString(myJoinedArray));
+            firstArray=new Object[]{"A", "B","c", "Z"};
+                myJoinedArray=LPArray.joinTwo1DArraysInOneOf1DString(firstArray, secondArray, ":");
+                out.println("joining two arrays of "+Arrays.toString(firstArray)+" and "+Arrays.toString(secondArray)+" with the separator "+":"+" I obtained "+Arrays.toString(myJoinedArray));
+            
             out.println("The name for the table Session in db is "+ SchemaApppTableAppSession.valueOf("TABLE_NAME").getName());
             out.println("The name for the field Session_id in db is "+SchemaApppTableAppSession.valueOf("FIELD_SESSION_ID").getName());
             

@@ -27,7 +27,6 @@ import functionalJava.user.UserProfile;
 import java.util.Date;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-//import com.google.gson.Gson;
 /**
  *
  * @author Administrator
@@ -42,7 +41,6 @@ public class authenticationAPI extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    //public enum actionsList {    AUTHENTICATE,    GETUSERROLE,    LOW    }
     
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)            throws ServletException, IOException {
         request=LPHttp.requestPreparation(request);
@@ -118,26 +116,6 @@ public class authenticationAPI extends HttpServlet {
                     JSONArray jArray= new JSONArray();
                     jArray.addAll(Arrays.asList(allUserProcedureRoles));        
                     response.getWriter().write(jArray.toJSONString()); 
-
-Rdbms.closeRdbms();                     
-if (1==1) return;
-                    
-                    Object[][] recordFieldsByFilter = Rdbms.getRecordFieldsByFilter(LPPlatform.SCHEMA_CONFIG, "user_profile", 
-                                new String[]{"user_info_id"}, new Object[]{personName}, new String[]{"role_id"});
-                        //Object[] recordFieldsByFilter1D =  LPArray.array2dTo1d(recordFieldsByFilter);
-                    if (LPPlatform.LAB_FALSE.equalsIgnoreCase(recordFieldsByFilter[0][0].toString())){
-                        LPFrontEnd.servletReturnResponseErrorLPFalseDiagnostic(request, response, LPArray.array2dTo1d(recordFieldsByFilter));
-                        return;                                                  
-                    }
-                    Object[] recordsFieldsByFilter1D = LPArray.array2dTo1d(recordFieldsByFilter);                    
-                    
-                     jArray= new JSONArray();
-                    for (Object[] recordFieldsByFilter1 : recordFieldsByFilter) {
-                        for (int j = 0; j < recordFieldsByFilter[0].length; j++) {
-                            jArray.add(recordFieldsByFilter1[j]);
-                        }
-                    }        
-                    response.getWriter().write(jArray.toJSONString());   
                     Rdbms.closeRdbms();    
                     return;                                
                 case authenticationAPIParams.API_ENDPOINT_FINAL_TOKEN:   

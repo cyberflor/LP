@@ -16,6 +16,7 @@ import java.util.Arrays;
  */
 public class ConfigSpecRule {
     String classVersion = "0.1";
+    public static String MESSAGE_CODE_QUANT_MINSPEC_MAXSPEC_SUCCESS="specLimits_quantitativeMinSpecMaxSpec_Successfully";
     /**
      *
      * @param rule
@@ -84,7 +85,7 @@ public class ConfigSpecRule {
  * @param maxSpec Float - The maximum value
  * Bundle parameters:
  *          config-specLimits_MinAndMaxSpecBothMandatory, specLimits_quantitativeMinSpecSuccessfully, specLimits_quantitativeMaxSpecSuccessfully<br>
- *          specLimits_quantitativeMinSpecMaxSpec_Successfully, specLimits_quantitativeMinSpecMaxSpec_MinSpecGreaterOrEqualToMaxSpec
+ *          MESSAGE_CODE_QUANT_MINSPEC_MAXSPEC_SUCCESS, specLimits_quantitativeMinSpecMaxSpec_MinSpecGreaterOrEqualToMaxSpec
  * @return Object[] position 0 is a boolean to determine if the arguments are correct, when set to false then position 1 provides detail about the deficiency 
  */
     public Object[] specLimitIsCorrectQuantitative(Float minSpec, Float maxSpec){
@@ -98,7 +99,7 @@ public class ConfigSpecRule {
         if ((minSpec==null) && (maxSpec!=null)){
             errorCode = "specLimits_quantitativeMaxSpecSuccessfully"; return LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, errorCode, errorDetailVariables);}                                           
         if (minSpec<maxSpec){
-            errorCode = "specLimits_quantitativeMinSpecMaxSpec_Successfully"; return LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, errorCode, errorDetailVariables);}                                    
+            errorCode = MESSAGE_CODE_QUANT_MINSPEC_MAXSPEC_SUCCESS; return LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, errorCode, errorDetailVariables);}                                    
         
         errorCode = "specLimits_quantitativeMinSpecMaxSpec_MinSpecGreaterOrEqualToMaxSpec"; 
         errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, minSpec.toString());        
@@ -128,7 +129,7 @@ public class ConfigSpecRule {
             errorCode = "specLimits_quantitativeMaxSpecSuccessfully"; return LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, errorCode, errorDetailVariables);}                                           
         int comparsion = minSpec.compareTo(maxSpec);
          if (comparsion!=1){
-            errorCode = "specLimits_quantitativeMinSpecMaxSpec_Successfully"; return LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, errorCode, errorDetailVariables);}                                    
+            errorCode = MESSAGE_CODE_QUANT_MINSPEC_MAXSPEC_SUCCESS; return LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, errorCode, errorDetailVariables);}                                    
         
         errorCode = "specLimits_quantitativeMinSpecMaxSpec_MinSpecGreaterOrEqualToMaxSpec"; 
         errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, minSpec.toString());        
@@ -159,7 +160,7 @@ public class ConfigSpecRule {
             return isCorrectMinMaxSpec;}
                 
         if ((minControl1==null) && (maxControl1==null)){
-            errorCode = "specLimits_quantitativeMinSpecMaxSpec_Successfully"; return LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, errorCode, errorDetailVariables);}                                            
+            errorCode = MESSAGE_CODE_QUANT_MINSPEC_MAXSPEC_SUCCESS; return LPPlatform.trapErrorMessage(LPPlatform.LAB_TRUE, errorCode, errorDetailVariables);}                                            
         if ((minControl1!=null) && (minSpec==null)){
             errorCode = "specLimits_MinControlPresent_MinSpecMandatory"; 
             errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, minControl1.toString());        

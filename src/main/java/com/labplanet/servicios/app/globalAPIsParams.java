@@ -21,7 +21,6 @@ public class globalAPIsParams extends HttpServlet {
     
     public static final String ENDPOINT_URLS_SAMPLEAPI = "/moduleSample/sampleAPI";
     
-
     // Por favor, agregar ordenado alfabeticamente para evitar duplicados
     public static final String REQUEST_PARAM_ACTION_NAME = "actionName";
     public static final String REQUEST_PARAM_ADD_SAMPLE_ANALYSIS = "addSampleAnalysis";
@@ -75,6 +74,9 @@ public class globalAPIsParams extends HttpServlet {
     public static final String REQUEST_PARAM_USER_INFO = "userInfoId";
     public static final String REQUEST_PARAM_WHERE_FIELDS_NAME = "whereFieldsName"; 
     public static final String REQUEST_PARAM_WHERE_FIELDS_VALUE = "whereFieldsValue";
+    
+    public static final String REQUEST_PARAM_VALUE_UNDEFINED="undefined";
+    
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      *

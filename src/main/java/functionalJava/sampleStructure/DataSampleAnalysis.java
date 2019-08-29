@@ -42,7 +42,7 @@ public class DataSampleAnalysis {
 
     private static final String ERROR_TRAPPING_DATA_SAMPLE_ANALYSIS_ADD_TO_SAMPLE_MISSING_MANDATORY_FIELDS= "DataSample_sampleAnalaysisAddToSample_MissingMandatoryFields";
 
-    public DataSampleAnalysis(){
+    public DataSampleAnalysis(){this.errorCode="";
     }    
     /**
      *  Automate the sample analysis assignment as to be triggered by any sample action.<br>
@@ -85,7 +85,6 @@ public class DataSampleAnalysis {
      * @return
      */
     public String specialFieldCheckSampleAnalysisAnalyst(String schemaPrefix, String template, Integer templateVersion, DataSample dataSample) {
-        //, String schemaPrefix, String analysisList){
         String myDiagnoses = "";
         String schemaConfigName = LPPlatform.SCHEMA_CONFIG;
         schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, schemaConfigName);
@@ -133,7 +132,6 @@ public class DataSampleAnalysis {
      * @return diagnoses
      */
     public Object[] sampleAnalysisReview(String schemaPrefix, String userName, String userRole, Integer testId, DataSample dataSample) {
-        Object[] diagnoses = new Object[7];
         String tableName = TABLENAME_DATA_SAMPLE_ANALYSIS;
         String schemaDataName = LPPlatform.buildSchemaName(schemaPrefix, LPPlatform.SCHEMA_DATA);
         String sampleAnalysisStatusCanceled = Parameter.getParameterBundle(schemaDataName.replace("\"", ""), CONFIG_SAMPLEANALYSIS_STATUSCANCELED);
@@ -142,7 +140,7 @@ public class DataSampleAnalysis {
         String currStatus = (String) objectInfo[0][0];
         Integer sampleId = (Integer) objectInfo[0][3];
         if ((!(sampleAnalysisStatusCanceled.equalsIgnoreCase(currStatus))) && (!(sampleAnalysisStatusReviewed.equalsIgnoreCase(currStatus))) && (testId != null)) {
-            diagnoses = Rdbms.updateRecordFieldsByFilter(schemaDataName, tableName, new String[]{DataSample.FIELDNAME_STATUS, DataSample.FIELDNAME_STATUS_PREVIOUS}, new Object[]{sampleAnalysisStatusReviewed, currStatus}, new String[]{DataSample.FIELDNAME_TEST_ID}, new Object[]{testId});
+            Object[] diagnoses = Rdbms.updateRecordFieldsByFilter(schemaDataName, tableName, new String[]{DataSample.FIELDNAME_STATUS, DataSample.FIELDNAME_STATUS_PREVIOUS}, new Object[]{sampleAnalysisStatusReviewed, currStatus}, new String[]{DataSample.FIELDNAME_TEST_ID}, new Object[]{testId});
             if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())) {
                 String[] fieldsForAudit = new String[0];
                 fieldsForAudit = LPArray.addValueToArray1D(fieldsForAudit, DataSample.FIELDNAME_STATUS + ":" + sampleAnalysisStatusCanceled);
@@ -159,35 +157,6 @@ public class DataSampleAnalysis {
             return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, dataSample.errorCode, dataSample.errorDetailVariables);
         }
     }
-    /*
-    private Map getDefaultValuesTemplate(String schema, String tsample, String template) throws SQLException {
-    String q = "SELECT column_name,\n" +
-    "\n" +
-    "(SELECT CASE\n" +
-    "          WHEN isc.column_default IS NOT NULL THEN isc.column_default\n" +
-    "          WHEN tsd.value IS NOT NULL THEN tsd.value\n" +
-    "          ELSE null\n" +
-    "       END) \n" +
-    "\n" +
-    "fielDefault\n" +
-    "FROM information_schema.columns isc\n" +
-    "left join template.sample ts on (isc.table_schema=ts.schema)\n" +
-    "left join template.sample_default tsd on (isc.column_name = tsd.field)\n" +
-    "WHERE isc.table_name = '"+tsample+"' and isc.table_schema='"+schema+"' and ts.sample_name = '"+template+"'\n" +
-    "ORDER BY ordinal_position;";
-    Map<String, String> myMap = new HashMap<>();
-    try{
-    CachedRowSetImpl res = rdbms.prepRdQuery(q, null);
-    while (res.next()) {
-    String col_name = res.getString("column_name");
-    String col_value = res.getString("fielDefault");
-    myMap.put(col_name, col_value);
-    }
-    }catch(SQLException ex){
-    }
-    return  myMap;
-    }
-     */
 
     /**
      *
@@ -353,7 +322,6 @@ public class DataSampleAnalysis {
      * @return
      */
     public String specialFieldCheckSampleAnalysisMethod(String schemaPrefix, DataSample dataSample) {
-        //, String schemaPrefix, String analysisList){
         String myDiagnoses = "";
         String schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, LPPlatform.SCHEMA_CONFIG);
         Integer specialFieldIndex = Arrays.asList(dataSample.mandatoryFields).indexOf(DataSample.FIELDNAME_ANALYSIS);
@@ -395,10 +363,6 @@ public class DataSampleAnalysis {
         }
         return myDiagnoses;
     }
-/*    public void autoSampleAnalysisAdd( String schemaPrefix, Integer sampleId, String userName, String userRole, String[] sampleFieldName, Object[] sampleFieldValue, String eventName, Integer appSessionId, Integer transactionId){
-        
-        DataSampleAnalysis.autoSampleAnalysisAdd(schemaPrefix, sampleId, userName, userRole, sampleFieldName, sampleFieldValue, eventName, appSessionId, transactionId);
-    }*/
     /**
      *
      * @param schemaPrefix
@@ -410,7 +374,6 @@ public class DataSampleAnalysis {
      * @return
      */
     public Object[] sampleAnalysisAddtoSample(String schemaPrefix, String userName, Integer sampleId, String[] fieldName, Object[] fieldValue, String userRole) {
-        //DataSample dataSample = new DataSample();        
         String tableName = TABLENAME_DATA_SAMPLE_ANALYSIS;
         String actionName = "Insert";
         String auditActionName = "ADD_SAMPLE_ANALYSIS";
@@ -466,7 +429,7 @@ public class DataSampleAnalysis {
             Integer sampleSpecCodeVersion = (Integer) sampleSpecData[0][2];
             String sampleSpecVariationName = (String) sampleSpecData[0][3];
             if (sampleSpecCode != null) {
-                Object[][] specRules = Rdbms.getRecordFieldsByFilter(schemaConfigName, "spec_rules", new String[]{DataSample.FIELDNAME_CODE, "config_version"}, new Object[]{sampleSpecCode, sampleSpecCodeVersion}, new String[]{"allow_other_analysis", "allow_multi_spec", DataSample.FIELDNAME_CODE, "config_version"});
+                Object[][] specRules = Rdbms.getRecordFieldsByFilter(schemaConfigName, "spec_rules", new String[]{DataSample.FIELDNAME_CODE, DataSample.FIELDNAME_CODE_VERSION}, new Object[]{sampleSpecCode, sampleSpecCodeVersion}, new String[]{"allow_other_analysis", "allow_multi_spec", DataSample.FIELDNAME_CODE, DataSample.FIELDNAME_CODE_VERSION});
                 if (LPPlatform.LAB_FALSE.equalsIgnoreCase(specRules[0][0].toString())) {
                     errorCode = "DataSample_SpecRuleNotFound";
                     errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, sampleSpecCode);
@@ -487,7 +450,7 @@ public class DataSampleAnalysis {
                     }
                     specAnalysisFieldName = LPArray.addValueToArray1D(specAnalysisFieldName, DataSample.FIELDNAME_CODE);
                     specAnalysisFieldValue = LPArray.addValueToArray1D(specAnalysisFieldValue, sampleSpecCode);
-                    specAnalysisFieldName = LPArray.addValueToArray1D(specAnalysisFieldName, "config_version");
+                    specAnalysisFieldName = LPArray.addValueToArray1D(specAnalysisFieldName, DataSample.FIELDNAME_CODE_VERSION);
                     specAnalysisFieldValue = LPArray.addValueToArray1D(specAnalysisFieldValue, sampleSpecCodeVersion);
                     specAnalysisFieldName = LPArray.addValueToArray1D(specAnalysisFieldName, DataSample.FIELDNAME_VARIATION_NAME);
                     specAnalysisFieldValue = LPArray.addValueToArray1D(specAnalysisFieldValue, sampleSpecVariationName);
@@ -502,8 +465,6 @@ public class DataSampleAnalysis {
             }
         }
         // Spec Business Rule. Allow other analyses. End
-        //    String[] specialFields = getSpecialFields();
-        //    String[] specialFieldsFunction = getSpecialFieldsFunction();
         String[] specialFields = labIntChecker.getStructureSpecialFields(schemaDataName, sampleLevel + "Structure", actionName);
         String[] specialFieldsFunction = labIntChecker.getStructureSpecialFieldsFunction(schemaDataName, sampleLevel + "Structure", actionName);
         for (Integer inumLines = 0; inumLines < fieldName.length; inumLines++) {
@@ -540,7 +501,6 @@ public class DataSampleAnalysis {
                 }
             }
         }
-        specialFieldIndex = 0;
         Object value = null;
         Object[] whereResultFieldValue = new Object[0];
         String[] whereResultFieldName = new String[0];
@@ -700,7 +660,6 @@ public class DataSampleAnalysis {
                 smpAudit.sampleAuditAdd(schemaPrefix, auditActionName, sampleLevel + "_analysis_result", resultId, sampleId, testId, resultId, fieldsForAudit, userName, userRole);
             }
         }
-        //String[] diagnoses2 = sampleAnalysisEvaluateStatus(schemaPrefix, userName, sampleId, testId);
         Object[] diagnoses3 = DataSample.sampleEvaluateStatus(schemaPrefix, userName, sampleId, auditActionName, userRole);
         if (LPPlatform.LAB_FALSE.equalsIgnoreCase(diagnoses3[0].toString())) {
             return diagnoses3;

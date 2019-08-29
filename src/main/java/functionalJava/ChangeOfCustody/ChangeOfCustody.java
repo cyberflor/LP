@@ -188,7 +188,6 @@ public class ChangeOfCustody {
     
     public Object[] isChangeOfCustodyEnable(String schemaName, String objectTable){
             // Este método no está implementado y es necesario.
-            String procBusinessRuleName = "changeOfCustodyObjects";
             return new Object[]{LPPlatform.LAB_TRUE};
     }
     

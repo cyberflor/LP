@@ -5,11 +5,11 @@
  */
 package com.labplanet.servicios.testing.data;
 
-import LabPLANET.utilities.LPNulls;
-import LabPLANET.utilities.LPPlatform;
-import functionalJava.testingScripts.LPTestingOutFormat;
-import LabPLANET.utilities.LPArray;
-import LabPLANET.utilities.LPFrontEnd;
+import lbplanet.utilities.LPNulls;
+import lbplanet.utilities.LPPlatform;
+import functionaljavaa.testingscripts.LPTestingOutFormat;
+import lbplanet.utilities.LPArray;
+import lbplanet.utilities.LPFrontEnd;
 import databases.Rdbms;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -39,7 +39,6 @@ public class TstDataBatchArr extends HttpServlet {
         response = LPTestingOutFormat.responsePreparation(response);        
         String csvFileName = "tstDataBatchArray.txt"; 
         StringBuilder fileContentBuilder = new StringBuilder();
-        //String fileContent = "";                          
         String csvPathName = LPTestingOutFormat.TESTING_FILES_PATH+csvFileName; 
         String csvFileSeparator=LPTestingOutFormat.TESTING_FILES_FIELD_SEPARATOR;
 
@@ -75,9 +74,9 @@ public class TstDataBatchArr extends HttpServlet {
                 String actionName="";                     
                 Object[] dataSample2Din1D = new Object[0];
 
-                if (configSpecTestingArray[i][1]!=null){actionName = (String) configSpecTestingArray[i][1];}
-                if (configSpecTestingArray[i][2]!=null){schemaPrefix = (String) configSpecTestingArray[i][2];}
-                if (configSpecTestingArray[i][3]!=null){tableName = (String) configSpecTestingArray[i][3];}
+                if (configSpecTestingArray[i][1]!=null){actionName = LPNulls.replaceNull(configSpecTestingArray[i][1]);}
+                if (configSpecTestingArray[i][2]!=null){schemaPrefix = LPNulls.replaceNull(configSpecTestingArray[i][2]);}
+                if (configSpecTestingArray[i][3]!=null){tableName = LPNulls.replaceNull(configSpecTestingArray[i][3]);}
                 if (configSpecTestingArray[i][4]!=null){fieldName = configSpecTestingArray[i][4].split("\\|");}else{fieldName = new String[0];}              
                 if (configSpecTestingArray[i][5]!=null){fieldValue = configSpecTestingArray[i][5].split("\\|");}else{fieldValue = new String[0];}
                 if (configSpecTestingArray[i][6]!=null){fieldsToRetrieve = configSpecTestingArray[i][6].split("\\|");}else{fieldsToRetrieve = new String[0];}                  
@@ -86,11 +85,6 @@ public class TstDataBatchArr extends HttpServlet {
                 if (configSpecTestingArray[i][9]!=null){orderBy = configSpecTestingArray[i][9].split("\\|");}else{orderBy = new String[0];}
                 if (configSpecTestingArray[i][10]!=null){groupBy = configSpecTestingArray[i][10].split("\\|");}else{groupBy = new String[0];}
                 
-/*                String[] whereFieldsNameArr = new String[]{"status in|"};
-                Object[] whereFieldsValueArr = null;
-                Object[] recEncrypted = labPlat.encryptString("RECEIVED");
-                whereFieldsValueArr=labArr.addValueToArray1D(whereFieldsValueArr, "RECEIVED|"+recEncrypted[1]);                
-*/                
                 Object[] fieldValues = LPArray.convertStringWithDataTypeToObjectArray(fieldValue);
                 if ( (fieldName!=null) && (fieldValue!=null) ){
                     //whereFieldsNameArr=labArr.addValueToArray1D(whereFieldsNameArr, whereFieldsName.split("\\|"));

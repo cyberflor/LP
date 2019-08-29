@@ -242,7 +242,6 @@ public class DataSpec {
                 
         if (minStrict==null){minStrict=true;}
         if (maxStrict==null){maxStrict=true;}
-        //&& (maxSpec!=null)){
         if (minSpec!=null){  
             if (minStrict){
                 if (result<=minSpec){                                    
@@ -582,26 +581,24 @@ public class DataSpec {
         }
 
         if (maxControl!=null){            
-            if (maxControl.equals(maxSpec)) {                
-                if (!maxStrict || maxStrict==null){
-                    errorCode = ERROR_TRAPPING_RESULT_CHECK_STRICT_DOES_NOT_ALLOW_EQUALS;
-                    errorVariables = LPArray.addValueToArray1D(errorVariables, EVALUATION_CODE_QUANTITATIVE_OUT_ARGUMENT_MAX_SPEC_MAX_CONTROL);                   
-                    errorVariables = LPArray.addValueToArray1D(errorVariables, maxSpec);
-                    errorVariables = LPArray.addValueToArray1D(errorVariables, "max Strict is set to false.");                   
-                    Object[] diagnoses =  LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorVariables);
-                    diagnoses = LPArray.addValueToArray1D(diagnoses, EVALUATION_WRONG_RULE);
-                    return diagnoses;                    
-                }
-                if (maxStrict && maxControlStrict){
-                    errorCode = ERROR_TRAPPING_RESULT_CHECK_STRICT_DOES_NOT_ALLOW_EQUALS;
-                    errorVariables = LPArray.addValueToArray1D(errorVariables, EVALUATION_CODE_QUANTITATIVE_OUT_ARGUMENT_MAX_SPEC_MAX_CONTROL);                   
-                    errorVariables = LPArray.addValueToArray1D(errorVariables, maxSpec);
-                    errorVariables = LPArray.addValueToArray1D(errorVariables, "both, max Spec & Control Strict, set to true..");                   
-                    Object[] diagnoses =  LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorVariables);
-                    diagnoses = LPArray.addValueToArray1D(diagnoses, EVALUATION_WRONG_RULE);
-                    return diagnoses;                    
-                }                    
-            }            
+            if ( (maxControl.equals(maxSpec)) && (!maxStrict || maxStrict==null) ) {
+                errorCode = ERROR_TRAPPING_RESULT_CHECK_STRICT_DOES_NOT_ALLOW_EQUALS;
+                errorVariables = LPArray.addValueToArray1D(errorVariables, EVALUATION_CODE_QUANTITATIVE_OUT_ARGUMENT_MAX_SPEC_MAX_CONTROL);                   
+                errorVariables = LPArray.addValueToArray1D(errorVariables, maxSpec);
+                errorVariables = LPArray.addValueToArray1D(errorVariables, "max Strict is set to false.");                   
+                Object[] diagnoses =  LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorVariables);
+                diagnoses = LPArray.addValueToArray1D(diagnoses, EVALUATION_WRONG_RULE);
+                return diagnoses;                    
+            }
+            if ( (maxControl.equals(maxSpec)) && (maxStrict && maxControlStrict) ){
+                errorCode = ERROR_TRAPPING_RESULT_CHECK_STRICT_DOES_NOT_ALLOW_EQUALS;
+                errorVariables = LPArray.addValueToArray1D(errorVariables, EVALUATION_CODE_QUANTITATIVE_OUT_ARGUMENT_MAX_SPEC_MAX_CONTROL);                   
+                errorVariables = LPArray.addValueToArray1D(errorVariables, maxSpec);
+                errorVariables = LPArray.addValueToArray1D(errorVariables, "both, max Spec & Control Strict, set to true..");                   
+                Object[] diagnoses =  LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorVariables);
+                diagnoses = LPArray.addValueToArray1D(diagnoses, EVALUATION_WRONG_RULE);
+                return diagnoses;                    
+            }                    
         }
         if (maxControl!=null){
             int comparingMAX = result.compareTo(maxControl);

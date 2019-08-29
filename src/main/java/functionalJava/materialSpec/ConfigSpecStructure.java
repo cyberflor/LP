@@ -243,7 +243,7 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
         else{    
             diagnosis = Rdbms.existsRecord(schemaName, dbObjectsConfigTables.FLD_CONFIG_SPEC_LIMITS_ANALYSIS, 
                     new String[]{"code"}, new Object[]{analysis});
-            if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){
+            if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnosis[0].toString())){
                 return "ERROR: The analysis " + analysis + " exists but the method " + methodName +" with version "+ methodVersion+ " was not found in the schema "+schemaPrefix;            
             }
             else{
@@ -328,8 +328,7 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
      */
     public Object[] specUpdate( String schemaPrefix, String specCode, Integer specCodeVersion, String[] specFieldName, Object[] specFieldValue) {
         
-        String schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, LPPlatform.SCHEMA_CONFIG);
-        String errorCode = ERROR_TRAPING_DATA_SAMPLE_SPECIAL_FUNCTION_RETURN_ERROR;
+        String schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, LPPlatform.SCHEMA_CONFIG);        
         Object[] errorDetailVariables = new Object[0];
             
         diagnoses = Rdbms.existsRecord(schemaConfigName, dbObjectsConfigTables.TABLE_CONFIG_SPEC, 
@@ -362,7 +361,7 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
                     Logger.getLogger(ConfigSpecStructure.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 if ( (specialFunctionReturn.toString().contains(DIAGNOSES_ERROR)) ){
-                    errorCode = ERROR_TRAPING_DATA_SAMPLE_SPECIAL_FUNCTION_RETURN_ERROR;
+                    String errorCode = ERROR_TRAPING_DATA_SAMPLE_SPECIAL_FUNCTION_RETURN_ERROR;
                     errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, currField);
                     errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, aMethod);
                     errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, LPNulls.replaceNull(specialFunctionReturn));
@@ -387,7 +386,7 @@ if (1==1){myDiagnoses="SUCCESS, but not implemeneted yet"; return myDiagnoses;}
        } catch (IllegalArgumentException ex) {
            Logger.getLogger(ConfigSpecStructure.class.getName()).log(Level.SEVERE, null, ex);
        }  
-        errorCode = ERROR_TRAPING_UNHANDLED_EXCEPTION_IN_CODE;
+        String errorCode = ERROR_TRAPING_UNHANDLED_EXCEPTION_IN_CODE;
         String params = "SchemaPrefix: "+schemaPrefix+"specCode"+specCode+"specCodeVersion"+specCodeVersion.toString()
                 +"specFieldName"+Arrays.toString(specFieldName)+"specFieldValue"+Arrays.toString(specFieldValue);
         errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, params);        

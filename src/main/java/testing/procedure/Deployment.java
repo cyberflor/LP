@@ -5,9 +5,9 @@
  */
 package testing.procedure;
 
-import LabPLANET.utilities.LPFrontEnd;
+import lbplanet.utilities.LPFrontEnd;
 import databases.Rdbms;
-import functionalJava.requirement.RequirementDeployment;
+import functionaljavaa.requirement.RequirementDeployment;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;

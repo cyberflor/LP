@@ -5,7 +5,7 @@
  */
 package databases;
 
-import LabPLANET.utilities.LPArray;
+import lbplanet.utilities.LPArray;
 import java.util.HashMap;
 
 /**
@@ -96,7 +96,6 @@ public class SqlStatement {
                     whereFieldValuesNew = LPArray.addValueToArray1D(whereFieldValuesNew, f);
                 }
                 queryWhere.deleteCharAt(queryWhere.length() - 1);
-                //queryWhere.append(queryWhere.toString().substring(0, queryWhere.toString().length() - 1));
                 queryWhere.append(")");
             } else {
                 queryWhere.append(fn).append("=? ");
@@ -112,7 +111,6 @@ public class SqlStatement {
         }
         updateSetSectionStr.deleteCharAt(updateSetSectionStr.length() - 1);
         updateSetSectionStr.deleteCharAt(updateSetSectionStr.length() - 1);
-//        updateSetSectionStr = updateSetSectionStr.substring(0, updateSetSectionStr.length() - 2);
         return updateSetSectionStr.toString();
     }
 

@@ -5,14 +5,14 @@
  */
 package com.labplanet.servicios.testing.config;
 
-import LabPLANET.utilities.LPPlatform;
+import lbplanet.utilities.LPPlatform;
 import databases.Rdbms;
-import functionalJava.unitsOfMeasurement.UnitsOfMeasurement;
-import LabPLANET.utilities.LPArray;
-import LabPLANET.utilities.LPFrontEnd;
-import functionalJava.testingScripts.LPTestingOutFormat;
-import functionalJava.testingScripts.TestingAssert;
-import functionalJava.testingScripts.TestingAssertSummary;
+import functionaljavaa.unitsofmeasurement.UnitsOfMeasurement;
+import lbplanet.utilities.LPArray;
+import lbplanet.utilities.LPFrontEnd;
+import functionaljavaa.testingscripts.LPTestingOutFormat;
+import functionaljavaa.testingscripts.TestingAssert;
+import functionaljavaa.testingscripts.TestingAssertSummary;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;

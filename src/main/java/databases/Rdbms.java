@@ -5,12 +5,12 @@
  */
 package databases;
 
-import LabPLANET.utilities.LPNulls;
+import lbplanet.utilities.LPNulls;
 import com.sun.rowset.CachedRowSetImpl;
-import LabPLANET.utilities.LPArray;
-import LabPLANET.utilities.LPPlatform;
-import functionalJava.parameter.Parameter;
-import functionalJava.testingScripts.LPTestingOutFormat;
+import lbplanet.utilities.LPArray;
+import lbplanet.utilities.LPPlatform;
+import functionaljavaa.parameter.Parameter;
+import functionaljavaa.testingscripts.LPTestingOutFormat;
 import java.sql.Array;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -63,6 +63,9 @@ public class Rdbms {
     
     public static final String BUNDLE_FILE_NAME_CONFIG="parameter.config.app-config";
         public static final String BUNDLE_PARAMETER_DBURL="dburl";
+        public static final String BUNDLE_PARAMETER_DBMANAGER="dbManager";
+             public static final String BUNDLE_PARAMETER_DBMANAGER_VALUE_TOMCAT="TOMCAT";
+             public static final String BUNDLE_PARAMETER_DBMANAGER_VALUE_GLASSFISH="GLASSFISH";
         public static final String BUNDLE_PARAMETER_DBDRIVER="dbDriver";
         public static final String BUNDLE_PARAMETER_DBTIMEOUT="dbtimeout";
         public static final String BUNDLE_PARAMETER_DATASOURCE="datasource";
@@ -86,29 +89,33 @@ public class Rdbms {
     }
 
     public Boolean startRdbms(String us, String pw){
-        return startRdbmsTomcat(LPTestingOutFormat.TESTING_USER, LPTestingOutFormat.TESTING_PW);
-        //return startRdbmsTomcat(us, pw);
+        ResourceBundle prop = ResourceBundle.getBundle(Parameter.BUNDLE_TAG_PARAMETER_CONFIG_CONF);
+        String dbDriver = prop.getString(BUNDLE_PARAMETER_DBMANAGER);
+        switch (dbDriver.toUpperCase()){
+            case BUNDLE_PARAMETER_DBMANAGER_VALUE_TOMCAT:
+                return startRdbmsTomcat(LPTestingOutFormat.TESTING_USER, LPTestingOutFormat.TESTING_PW);                
+            case BUNDLE_PARAMETER_DBMANAGER_VALUE_GLASSFISH:
+                return startRdbmsGlassfish(LPTestingOutFormat.TESTING_USER, LPTestingOutFormat.TESTING_PW);
+            default:
+                return false;
+        }
     }    
     
     public Boolean startRdbmsTomcat(String user, String pass) {        
             ResourceBundle prop = ResourceBundle.getBundle(Parameter.BUNDLE_TAG_PARAMETER_CONFIG_CONF);
             String url = prop.getString(BUNDLE_PARAMETER_DBURL);
-//            String dbDriver = prop.getString(BUNDLE_PARAMETER_DBDRIVER);
             Integer conTimeOut = Integer.valueOf(prop.getString(BUNDLE_PARAMETER_DBTIMEOUT));            
-//            String datasrc = prop.getString(BUNDLE_PARAMETER_DATASOURCE);            
             try{
-//                Context ctx = new InitialContext();
                 Properties dbProps = new Properties();
                 dbProps.setProperty("user", user);
                 dbProps.setProperty("password", pass);
                 dbProps.setProperty("Ssl", "false");
+                dbProps.setProperty("ConnectTimeout", conTimeOut.toString());                
                 //dbProps.setProperty("ssl", "true");
-                dbProps.setProperty("ConnectTimeout", conTimeOut.toString());
                 //dbProps.setProperty("ConnectTimeout", "conTimeOut");
                 
                 Connection getConnection = DriverManager.getConnection(url, dbProps);          
                 setConnection(getConnection);
-                //Connection setConnection = DriverManager.getConnection(url, user, pass);          
                 setTimeout(conTimeOut);
                 if(getConnection()!=null){
                   setIsStarted(Boolean.TRUE);                                                      
@@ -131,12 +138,10 @@ public class Rdbms {
     public Boolean startRdbmsGlassfish(String user, String pass) {        
         
         try {        
-            //Rdbms rdbms = new Rdbms();
             ResourceBundle prop = ResourceBundle.getBundle(Parameter.BUNDLE_TAG_PARAMETER_CONFIG_CONF);
             String datasrc = prop.getString(BUNDLE_PARAMETER_DATASOURCE);
             Integer to = Integer.valueOf(prop.getString(BUNDLE_PARAMETER_DBTIMEOUT));
             
-            //rdbms.timeout = to;
             setTimeout(to);
 
             Context ctx = new InitialContext();
@@ -145,26 +150,25 @@ public class Rdbms {
             ds.setLoginTimeout(Rdbms.timeout);
             setConnection(ds.getConnection(user, pass));
 
-    //              String url = prop.getString(BUNDLE_PARAMETER_DBURL);
-    //              Properties props = new Properties();
-    //              
-    //                props.setProperty("user",user);
-    //                props.setProperty("password",pass);
-    //                props.setProperty("ssl","true");
-    //                Connection conn = DriverManager.getConnection(url, props);
+            String url = prop.getString(BUNDLE_PARAMETER_DBURL);
+            Properties props = new Properties();
+                  
+            props.setProperty("user",user);
+            props.setProperty("password",pass);
+            props.setProperty("ssl","true");
+            DriverManager.getConnection(url, props);
 
-              if(getConnection()!=null){
-                setIsStarted(Boolean.TRUE);                                                      
-                return Boolean.TRUE;
-              }else{
-                setIsStarted(Boolean.FALSE);
-                return Boolean.FALSE;
-              } 
+            if(getConnection()!=null){
+              setIsStarted(Boolean.TRUE);                                                      
+              return Boolean.TRUE;
+            }else{
+              setIsStarted(Boolean.FALSE);
+              return Boolean.FALSE;
+            } 
         } catch (NamingException|SQLException ex) {
             Logger.getLogger(Rdbms.class.getName()).log(Level.SEVERE, null, ex);
             return Boolean.FALSE;
         }
-    //return getIsStarted();
     }
    
     public static void setTransactionId(String schemaName){
@@ -294,45 +298,7 @@ public class Rdbms {
                 keyFieldNames, keyFieldValues, keyFieldNames,  null, null,  null, null);          
         String query= hmQuery.keySet().iterator().next();   
         Object[] keyFieldValueNew = hmQuery.get(query);
-//        String query = sql.buildSqlStatement(SQLSELECT, schemaName, tableName,
-//                keyFieldNames, keyFieldValues, keyFieldNames,  null, null,  null, null);             
         try{
-/*            
-            Object[] keyFieldValuesSplitted = new Object[0];
-            for (int i=0; i< keyFieldValues.length; i++){                    
-                //Boolean containsInClause = false;
-                String separator = "";
-                String fn = keyFieldNames[i];
-                if (fn.toUpperCase().contains(" IN")){ 
-                    Integer posicINClause = fn.toUpperCase().indexOf("IN");
-                    separator = fn;
-                    separator = separator.substring(posicINClause+2, posicINClause+3);
-                    separator = separator.trim();
-                    separator = separator.replace(" IN", "");  
-                    if (separator.length()==0){ separator="\\|";} 
-                 //containsInClause = true;
-                }
-                //String currFieldValue = keyFieldValues[i].toString();                
-                if(keyFieldValues[i] instanceof String){                    
-                    Object[] fieldsIN = keyFieldValues[i].toString().split(separator);
-                    int fINlen=fieldsIN.length;
-                    LPPlatform labPlat = new LPPlatform();
-                    
-                    //Object[] decrypted = labPlat.decryptString("fS￵ￃﾺﾀ?p￦￠￝ﾅ\\ﾭﾡ￡");
-                    //"fS￵ￃﾺﾀ?p￦￠￝ﾅ\ﾭﾡ￡"
-                            
-                    for (int ii=0; ii<fINlen; ii++){
-                        String fldToEncrypt = fieldsIN[ii].toString();
-                        Object[] fEnc = labPlat.encryptString(fldToEncrypt);
-                        fieldsIN[ii] = fEnc[1];                        
-                    }
-                    keyFieldValuesSplitted = LPArray.addValueToArray1D(keyFieldValuesSplitted, fieldsIN);
-                }else{
-                    keyFieldValuesSplitted = LPArray.addValueToArray1D(keyFieldValuesSplitted, keyFieldValues[i]);
-                }
-            }            
-            ResultSet res = rdbm.prepRdQuery(query, keyFieldValuesSplitted);
-*/            
             ResultSet res = Rdbms.prepRdQuery(query, keyFieldValueNew);
             if (res==null){
                 rdbms.errorCode = ERROR_TRAPPING_RDBMS_DT_SQL_EXCEPTION;
@@ -389,12 +355,8 @@ public class Rdbms {
            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, schemaName);          
            LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, rdbms.errorCode, errorDetailVariables);                         
            return null;
-           //return LPArray.array1dTo2d(diagnosesError, diagnosesError.length);
         }
         SqlStatement sql = new SqlStatement(); 
-//        String query = sql.buildSqlStatement(SQLSELECT, schemaName, tableName,
-//                whereFieldNames, whereFieldValues,
-//                fieldsToRetrieve,  null, null, fieldsSortBy, null);        
         HashMap<String, Object[]> hmQuery = sql.buildSqlStatement(SQLSELECT, schemaName, tableName,
                 whereFieldNames, whereFieldValues,
                 fieldsToRetrieve,  null, null, fieldsSortBy, null);       
@@ -402,17 +364,7 @@ public class Rdbms {
         Object[] keyFieldValueNew = hmQuery.get(query);        
             try{
      ResultSet res = null;
-                query = "select array_to_json(array_agg(row_to_json(t))) from (" + query +") t";
-                
-/*                if (fieldsSortBy!=null){
-                    query=query+" Order By ";
-                    for (String fn: fieldsSortBy){
-                        query=query+" "+fn+" , ";
-                    }
-                    query=query.substring(0, query.length()-2);
-                } 
-*/                
-                //query = "select row_to_json(t) from (" + query +") t";
+            query = "select array_to_json(array_agg(row_to_json(t))) from (" + query +") t";
             res = Rdbms.prepRdQuery(query, keyFieldValueNew);
             if (res==null){
                 rdbms.errorCode = ERROR_TRAPPING_RDBMS_DT_SQL_EXCEPTION;
@@ -424,38 +376,13 @@ public class Rdbms {
             res.last();
             if (res.getRow()>0){
                 return res.getString(1);
-            
-/*                if (1==1){                       
-                          return LabPLANETJson.convertToJSON(res);}
-                
-             Integer totalLines = res.getRow();
-             res.first();
-             Integer icurrLine = 0;   
-             
-             Object[][] diagnoses2 = new Object[totalLines][fieldsToRetrieve.length];
-             while(icurrLine<=totalLines-1) {
-                //fieldValues = LPArray.encryptTableFieldArray(schemaName, tableName, fieldNames, fieldValues);                 
-                for (Integer icurrCol=0;icurrCol<fieldsToRetrieve.length;icurrCol++){
-                    Object currValue = res.getObject(icurrCol+1);
-                    diagnoses2[icurrLine][icurrCol] =  currValue;
-                }        
-                res.next();
-                icurrLine++;
-             }         
-             //diagnoses2 = LPArray.decryptTableFieldArray(schemaName, tableName, fieldsToRetrieve, (Object[][]) diagnoses2); 
-//                diagnoses2 = LPArray.decryptTableFieldArray(schemaName, tableName, fieldsToRetrieve, diagnoses2);
-                return null;
-                //return diagnoses2;
-*/            
-            }else{
-                
+            }else{                
                 rdbms.errorCode = ERROR_TRAPPING_RDBMS_RECORD_NOT_FOUND;
                 errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, tableName);
                 errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, Arrays.toString(whereFieldValues) );
                 errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, schemaName);
                 LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, rdbms.errorCode, errorDetailVariables);                         
                 return null;
-                //return LPArray.array1dTo2d(diagnosesError, diagnosesError.length);
             }
         }catch (SQLException er) {
             String ermessage=er.getLocalizedMessage()+er.getCause();
@@ -465,7 +392,6 @@ public class Rdbms {
             errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, query);
             LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, rdbms.errorCode, errorDetailVariables);                         
             return null;
-            //return LPArray.array1dTo2d(diagnosesError, diagnosesError.length);
         }                    
     }
     
@@ -524,7 +450,6 @@ public class Rdbms {
              
              Object[][] diagnoses2 = new Object[totalLines][fieldsToRetrieve.length];
              while(icurrLine<=totalLines-1) {
-                //fieldValues = LPArray.encryptTableFieldArray(schemaName, tableName, fieldNames, fieldValues);                 
                 for (Integer icurrCol=0;icurrCol<fieldsToRetrieve.length;icurrCol++){
                     Object currValue = res.getObject(icurrCol+1);
                     diagnoses2[icurrLine][icurrCol] =  currValue;
@@ -532,8 +457,6 @@ public class Rdbms {
                 res.next();
                 icurrLine++;
              }         
-             //diagnoses2 = LPArray.decryptTableFieldArray(schemaName, tableName, fieldsToRetrieve, (Object[][]) diagnoses2); 
-//                diagnoses2 = LPArray.decryptTableFieldArray(schemaName, tableName, fieldsToRetrieve, diagnoses2);
                 return diagnoses2;
             }else{
                 rdbms.errorCode = ERROR_TRAPPING_RDBMS_RECORD_NOT_FOUND;
@@ -578,7 +501,7 @@ public class Rdbms {
         Integer i=1;
         for (String tbl: tableName){
             if (i>1){query.append(" , ");}
-            query.append(" ").append(schemaName + "." + tbl);
+            query.append(" ").append(schemaName).append(".").append(tbl);
             i++;
         }    
         query.append("   where ");
@@ -740,7 +663,6 @@ public class Rdbms {
                 null, null, null, fieldNames, fieldValues,
                 null, null);              
         String query= hmQuery.keySet().iterator().next();   
-        //Object[] keyFieldValueNew = hmQuery.get(query);
         fieldValues = LPArray.encryptTableFieldArray(schemaName, tableName, fieldNames, fieldValues);
         String[] insertRecordDiagnosis = Rdbms.prepUpQueryK(query, fieldValues, 1);
         fieldValues = LPArray.decryptTableFieldArray(schemaName, tableName, fieldNames, (Object[]) fieldValues);
@@ -778,8 +700,6 @@ public class Rdbms {
            return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, rdbms.errorCode, errorDetailVariables);                         
         }
         SqlStatement sql = new SqlStatement();       
-//        for (Object fn: whereFieldValues){
-//            updateFieldValues = LPArray.addValueToArray1D(updateFieldValues, fn);}
 
         updateFieldValues = LPArray.encryptTableFieldArray(schemaName, tableName, updateFieldNames, (Object[]) updateFieldValues); 
         HashMap<String, Object[]> hmQuery = sql.buildSqlStatement("UPDATE", schemaName, tableName,
@@ -842,12 +762,6 @@ public class Rdbms {
     }
   
 
-/*    public static Integer prepUpQuery(String consultaconinterrogaciones, Object [] valoresinterrogaciones) {
-        Integer reg;    
-        reg = prepUpQuery(consultaconinterrogaciones, valoresinterrogaciones);
-        return reg;        
-    }
-*/    
     private static Integer prepUpQuery(String consultaconinterrogaciones, Object [] valoresinterrogaciones) {
         try{
             PreparedStatement prep=getConnection().prepareStatement(consultaconinterrogaciones);            
@@ -859,7 +773,7 @@ public class Rdbms {
         }catch (SQLException ex){
             Logger.getLogger(Rdbms.class.getName()).log(Level.SEVERE, null, ex);
             return -999;
-        }//finally{            prep.close();        }
+        }
     }
     
     private static String[] prepUpQueryK(String consultaconinterrogaciones, Object [] valoresinterrogaciones, Integer indexposition) {
@@ -868,23 +782,20 @@ public class Rdbms {
             PreparedStatement prep=getConnection().prepareStatement(consultaconinterrogaciones, Statement.RETURN_GENERATED_KEYS);            
             setTimeout(rdbms.getTimeout());
             buildPreparedStatement(valoresinterrogaciones, prep);         
-//            PreparedStatement prep=getConnection().prepareStatement(consultaconinterrogaciones);            
             prep.executeUpdate();        
             ResultSet rs = prep.getGeneratedKeys();
-        // When the table has no numeric field as single query then no key is generated so nothing to return
-        //if (prep.NO_GENERATED_KEYS==2){return 0;}
             if (rs.next()) {
               int newId = rs.getInt(indexposition);
               if (newId==0){
-                  return new String[]{LPPlatform.LAB_TRUE, TBL_KEY_NOT_FIRST_TABLEFLD}; //"PRIMARY KEY NOT FIRST FIELD IN TABLE";
+                  return new String[]{LPPlatform.LAB_TRUE, TBL_KEY_NOT_FIRST_TABLEFLD}; 
               }else{
                   return new String[]{LPPlatform.LAB_TRUE, String.valueOf(newId)};              
               }
             }
             return new String[]{LPPlatform.LAB_TRUE, pkValue};
         }catch (SQLException er){
-            return new String[]{LPPlatform.LAB_FALSE, er.getMessage()}; //"TABLE WITH NO KEY";
-        }//finally{rs.close();}
+            return new String[]{LPPlatform.LAB_FALSE, er.getMessage()}; 
+        }
 
     }
     
@@ -1024,7 +935,6 @@ public class Rdbms {
                            }                   
                            break;
                        case "null":
-                           //prepsta.setNull(indexval, fieldtypes[numi]);
                            prepsta.setNull(indexval, Types.VARCHAR);
                            break; 
                        case "class json.Na"://to skip fields
@@ -1057,7 +967,6 @@ public class Rdbms {
      */
     public static Date getCurrentDate(){        
         //By now this method returns the same value than the getLocalDate one.
-        //Date de = new java.sql.Date(System.currentTimeMillis());        
         return getLocalDate();}    
 
     public Connection createTransaction(){

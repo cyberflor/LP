@@ -5,11 +5,11 @@
  */
 package com.labplanet.servicios.app;
 
-import LabPLANET.utilities.LPArray;
-import LabPLANET.utilities.LPFrontEnd;
-import LabPLANET.utilities.LPHttp;
-import LabPLANET.utilities.LPPlatform;
-import com.labplanet.servicios.ModuleEnvMonit.envMonAPI;
+import lbplanet.utilities.LPArray;
+import lbplanet.utilities.LPFrontEnd;
+import lbplanet.utilities.LPHttp;
+import lbplanet.utilities.LPPlatform;
+import com.labplanet.servicios.moduleenvmonit.EnvMonAPI;
 import databases.Rdbms;
 import databases.Token;
 import java.io.IOException;
@@ -51,19 +51,19 @@ public class UserProfileAPI extends HttpServlet {
                          LPPlatform.API_ERRORTRAPING_MANDATORY_PARAMS_MISSING, new Object[]{areMandatoryParamsInResponse[1].toString()}, language);              
                  return;          
              }               
-            String actionName = request.getParameter(globalAPIsParams.REQUEST_PARAM_ACTION_NAME);
-            String finalToken = request.getParameter(globalAPIsParams.REQUEST_PARAM_FINAL_TOKEN);            
+            String actionName = request.getParameter(GlobalAPIsParams.REQUEST_PARAM_ACTION_NAME);
+            String finalToken = request.getParameter(GlobalAPIsParams.REQUEST_PARAM_FINAL_TOKEN);            
                            
             Token token = new Token(finalToken);
             String[] mandatoryParams = null;
            Object[] procActionRequiresUserConfirmation = LPPlatform.procActionRequiresUserConfirmation(LPPlatform.SCHEMA_APP, actionName);
            if (LPPlatform.LAB_TRUE.equalsIgnoreCase(procActionRequiresUserConfirmation[0].toString())){     
-               mandatoryParams = LPArray.addValueToArray1D(mandatoryParams, globalAPIsParams.REQUEST_PARAM_USER_TO_CHECK);    
-               mandatoryParams = LPArray.addValueToArray1D(mandatoryParams, globalAPIsParams.REQUEST_PARAM_PASSWORD_TO_CHECK);    
+               mandatoryParams = LPArray.addValueToArray1D(mandatoryParams, GlobalAPIsParams.REQUEST_PARAM_USER_TO_CHECK);    
+               mandatoryParams = LPArray.addValueToArray1D(mandatoryParams, GlobalAPIsParams.REQUEST_PARAM_PASSWORD_TO_CHECK);    
            }
            Object[] procActionRequiresEsignConfirmation = LPPlatform.procActionRequiresEsignConfirmation(LPPlatform.SCHEMA_APP, actionName);
            if (LPPlatform.LAB_TRUE.equalsIgnoreCase(procActionRequiresEsignConfirmation[0].toString())){                                                      
-               mandatoryParams = LPArray.addValueToArray1D(mandatoryParams, globalAPIsParams.REQUEST_PARAM_ESIGN_TO_CHECK);    
+               mandatoryParams = LPArray.addValueToArray1D(mandatoryParams, GlobalAPIsParams.REQUEST_PARAM_ESIGN_TO_CHECK);    
            }        
            if (mandatoryParams!=null){
                areMandatoryParamsInResponse = LPHttp.areMandatoryParamsInApiRequest(request, mandatoryParams);
@@ -90,7 +90,7 @@ public class UserProfileAPI extends HttpServlet {
             con.rollback();
             con.setAutoCommit(true);    
         } catch (SQLException ex) {
-            Logger.getLogger(envMonAPI.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(EnvMonAPI.class.getName()).log(Level.SEVERE, null, ex);
         }        
            
             Object[] userActionDiagnostic = new Object[]{LPPlatform.LAB_FALSE};
@@ -131,13 +131,14 @@ public class UserProfileAPI extends HttpServlet {
      *
      * @param request servlet request
      * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        processRequest(request, response);
+    protected void doGet(HttpServletRequest request, HttpServletResponse response){
+        try {
+            processRequest(request, response);
+        } catch (ServletException | IOException ex) {
+            Logger.getLogger(UserProfileAPI.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -145,13 +146,14 @@ public class UserProfileAPI extends HttpServlet {
      *
      * @param request servlet request
      * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        processRequest(request, response);
+    protected void doPost(HttpServletRequest request, HttpServletResponse response){
+        try {
+            processRequest(request, response);
+        } catch (ServletException | IOException ex) {
+            Logger.getLogger(UserProfileAPI.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**

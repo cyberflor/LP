@@ -130,8 +130,6 @@ public class sopUserAPIfrontend extends HttpServlet {
                 }    
                 columnNames.add(columns);
                 mySopsList.put("columns_names", columnNames);
-                //mySopsListArr.add(mySopsList);
-                //mySopsList.clear();
                 mySopsList.put("my_sops", mySops);
                 mySopsListArr.add(mySopsList);
                 LPFrontEnd.servletReturnSuccess(request, response, mySopsListArr);
@@ -158,8 +156,6 @@ public class sopUserAPIfrontend extends HttpServlet {
                 for (String currProc: allUserProcedurePrefix) {                   
                     
                     Object[][] userProcSops = userSop.getNotCompletedUserSOP(token.getPersonName(), currProc, fieldsToRetrieve);
-                    //userSops = userSop.getUserProfileFieldValues(rdbm, 
-                    //        new String[]{"user_id"}, new Object[]{internalUserID}, fieldsToRetrieve, allUserProcedurePrefix);
                     if (userProcSops.length>0){
                         if (LPPlatform.LAB_FALSE.equalsIgnoreCase(Arrays.toString(userProcSops[0]))){
                             Object[] errMsg = LPFrontEnd.responseError(userProcSops, language, null);
@@ -170,7 +166,6 @@ public class sopUserAPIfrontend extends HttpServlet {
                         mySops = new JSONArray(); 
                         mySopsList = new JSONObject();
 
-                        //for (Object curProcSop: userProcSops){
                         for (Object[] userProcSop : userProcSops) {                                                
                             JSONObject sop = new JSONObject();
                             for (int yProc = 0; yProc<userProcSops[0].length; yProc++) {
@@ -207,9 +202,6 @@ public class sopUserAPIfrontend extends HttpServlet {
                 for (String currProc: allUserProcedurePrefix) {                   
                     Object[][] procSops = Rdbms.getRecordFieldsByFilter(currProc+"-config", "sop_meta_data", 
                             new String[]{"sop_id is not null"}, null, fieldsToRetrieve);
-                    //Object[][] procSops = userSop.getNotCompletedUserSOP(rdbm, internalUserID, currProc, fieldsToRetrieve);
-                    //userSops = userSop.getUserProfileFieldValues(rdbm, 
-                    //        new String[]{"user_id"}, new Object[]{internalUserID}, fieldsToRetrieve, allUserProcedurePrefix);
                     if (LPPlatform.LAB_FALSE.equalsIgnoreCase(Arrays.toString(procSops[0]))){
                         Object[] errMsg = LPFrontEnd.responseError(procSops, language, null);
                         response.sendError((int) errMsg[0], (String) errMsg[1]);    
@@ -220,7 +212,6 @@ public class sopUserAPIfrontend extends HttpServlet {
                     mySopsList = new JSONObject();
                     if ( (procSops.length>0) &&
                          (!LPPlatform.LAB_FALSE.equalsIgnoreCase(procSops[0][0].toString())) ){
-                            //for (Object curProcSop: userProcSops){
                             for (Object[] procSop : procSops) {                                                
                                 JSONObject sop = new JSONObject();
                                 for (int yProc = 0; yProc<procSops[0].length; yProc++) {
@@ -255,8 +246,6 @@ public class sopUserAPIfrontend extends HttpServlet {
                             numPendingSOPs=numPendingSOPs+userProcSops.length;}                                                    
                 }
                    JSONArray sopOptions = new JSONArray(); 
-                    
-                    //JSONObject sopElement = new JSONObject();
                     
                     JSONObject sopOption = new JSONObject();
                     sopOption.put(JSON_TAG_NAME, "AllMySOPs");

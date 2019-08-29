@@ -95,7 +95,6 @@ public class _TestingConfigSamplingPlanStructure extends HttpServlet {
             
             for (Integer i=0;i<configSamplingPlanTestingArray.length;i++){
 out.println(Arrays.toString(configSamplingPlanTestingArray));                
-                //if (configSamplingPlanTestingArray[i][2]==null && configSamplingPlanTestingArray[i][3]==null){
                 out.println("<tr>");
                 String[] fieldName=null;    
                 Object[] fieldValue=null;

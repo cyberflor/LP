@@ -10,6 +10,7 @@ import LabPLANET.utilities.LPNulls;
 import LabPLANET.utilities.LPPlatform;
 import databases.DataDataIntegrity;
 import databases.Rdbms;
+import functionalJava.analysis.UserMethod;
 import functionalJava.audit.SampleAudit;
 import functionalJava.materialSpec.DataSpec;
 import functionalJava.parameter.Parameter;
@@ -39,7 +40,7 @@ public class DataSampleAnalysisResult {
     public static final String CONFIG_SAMPLEANALYSISRESULT_STATUSREVIEWED = "sampleAnalysisResult_statusReviewed";
     public static final String CONFIG_SAMPLEANALYSISRESULT_STATUSCANCELED = "sampleAnalysisResult_statusCanceled";
 
-    public DataSampleAnalysisResult(){
+    public DataSampleAnalysisResult(){this.errorCode="";
     }    
     /**
      *
@@ -111,7 +112,7 @@ public class DataSampleAnalysisResult {
                         diagnoses[2] = "Code Line " + (elements[1].getLineNumber());
                         diagnoses[3] = "FALSE";
                         diagnoses[4] = "RESULT ALREADY CANCELED";
-                        diagnoses[5] = "The result " + resultId.toString() + " has status " + currStatus + " then cannot be canceled in schema " + schemaDataName;
+                        diagnoses[5] = msgStatusAlreadyCanceled("result", resultId, currStatus,schemaDataName);
                     }
                 }
                 if ((cancelScope.equalsIgnoreCase(DataSample.FIELDNAME_SAMPLE_ID)) && (!LPArray.valueInArray(samplesToCancel, sampleId))) {
@@ -138,7 +139,7 @@ public class DataSampleAnalysisResult {
                         smpAudit.sampleAuditAdd(schemaPrefix, actionName, DataSampleAnalysis.TABLENAME_DATA_SAMPLE_ANALYSIS, currTest, sampleId, currTest, null, fieldsForAudit, userName, userRole);
                     }
                 } else {
-                    diagnoses[5] = "The test " + currTest.toString() + " has status " + currStatus + " then cannot be canceled in schema " + schemaDataName;
+                    diagnoses[5] = msgStatusAlreadyCanceled("result", resultId, currStatus,schemaDataName);
                 }
             }
         }
@@ -156,7 +157,7 @@ public class DataSampleAnalysisResult {
                     smpAudit.sampleAuditAdd(schemaPrefix, actionName, DataSample.TABLENAME_DATA_SAMPLE, currSample, currSample, null, null, fieldsForAudit, userName, userRole);
                 }
             } else {
-                diagnoses[5] = "The sample " + LPNulls.replaceNull(currSample) + " has status " + currStatus + " then cannot be canceled in schema " + schemaDataName;
+                diagnoses[5] = msgStatusAlreadyCanceled("sample", currSample, currStatus,schemaDataName);
             }
         }
         return diagnoses;
@@ -310,27 +311,10 @@ public class DataSampleAnalysisResult {
             if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())) {
                 DataSampleAnalysis.sampleAnalysisEvaluateStatus(schemaPrefix, userName, sampleId, testId, auditActionName, userRole);
             }
-            String[] whereFields = new String[]{"user_id", DataSample.FIELDNAME_ANALYSIS, DataSampleAnalysis.FIELDNAME_SAMPLE_ANALYSIS_METHOD_NAME, DataSampleAnalysis.FIELDNAME_SAMPLE_ANALYSIS_METHOD_VERSION};
-            Object[] whereFieldsValue = new Object[]{userName, analysis, methodName, methodVersion};
-            String[] updFields = new String[]{"last_analysis_on", "last_sample", "last_sample_analysis"};
-            Object[] updFieldsValue = new Object[]{Rdbms.getLocalDate(), sampleId, testId};
-            Object[][] userMethodInfo;
-            userMethodInfo = Rdbms.getRecordFieldsByFilter(schemaDataName, "user_method", whereFields, whereFieldsValue, new String[]{"user_method_id", "user_id", DataSample.FIELDNAME_ANALYSIS, DataSampleAnalysis.FIELDNAME_SAMPLE_ANALYSIS_METHOD_NAME, DataSampleAnalysis.FIELDNAME_SAMPLE_ANALYSIS_METHOD_VERSION});
-            if (!(LPPlatform.LAB_FALSE.equalsIgnoreCase(userMethodInfo[0][0].toString()))) {
-                diagnoses = Rdbms.updateRecordFieldsByFilter(schemaDataName, "user_method", updFields, updFieldsValue, whereFields, whereFieldsValue);
-                if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())) {
-                    updFields = LPArray.addValueToArray1D(updFields, whereFields);
-                    updFieldsValue = LPArray.addValueToArray1D(updFieldsValue, whereFieldsValue);
-                    String[] fieldsForAudit = LPArray.joinTwo1DArraysInOneOf1DString(updFields, updFieldsValue, ":");
-                    auditActionName = "UPDATE LAST ANALYSIS USER METHOD";
-                    SampleAudit smpAudit = new SampleAudit();
-                    smpAudit.sampleAuditAdd(schemaPrefix, auditActionName, "user_method", testId, sampleId, testId, null, fieldsForAudit, userName, userRole);
-                }
-            }
+            diagnoses=UserMethod.newUserMethodEntry(schemaPrefix, userName, userRole, analysis, methodName, methodVersion, sampleId, testId);
             return diagnoses;
         }
-        Object[][] specLimits = Rdbms.getRecordFieldsByFilter(schemaConfigName, "spec_limits", new String[]{DataSample.FIELDNAME_CODE, "config_version", DataSample.FIELDNAME_VARIATION_NAME, DataSample.FIELDNAME_ANALYSIS, DataSampleAnalysis.FIELDNAME_SAMPLE_ANALYSIS_METHOD_NAME, DataSampleAnalysis.FIELDNAME_SAMPLE_ANALYSIS_METHOD_VERSION, "parameter"}, new Object[]{sampleSpecCode, sampleSpecCodeVersion, sampleSpecVariationName, analysis, methodName, methodVersion, paramName}, new String[]{"limit_id", "rule_type", "rule_variables", "limit_id", FIELDNAME_DATA_SAMPLE_ANALYSIS_RESULT_UOM, FIELDNAME_DATA_SAMPLE_ANALYSIS_RESULT_UOM_CONVERSION_MODE});
-        //    if (LPPlatform.LAB_FALSE.equalsIgnoreCase(specLimits[0][0].toString())){
+        Object[][] specLimits = Rdbms.getRecordFieldsByFilter(schemaConfigName, "spec_limits", new String[]{DataSample.FIELDNAME_CODE, DataSample.FIELDNAME_CODE_VERSION, DataSample.FIELDNAME_VARIATION_NAME, DataSample.FIELDNAME_ANALYSIS, DataSampleAnalysis.FIELDNAME_SAMPLE_ANALYSIS_METHOD_NAME, DataSampleAnalysis.FIELDNAME_SAMPLE_ANALYSIS_METHOD_VERSION, "parameter"}, new Object[]{sampleSpecCode, sampleSpecCodeVersion, sampleSpecVariationName, analysis, methodName, methodVersion, paramName}, new String[]{"limit_id", "rule_type", "rule_variables", "limit_id", FIELDNAME_DATA_SAMPLE_ANALYSIS_RESULT_UOM, FIELDNAME_DATA_SAMPLE_ANALYSIS_RESULT_UOM_CONVERSION_MODE});
         if ((LPPlatform.LAB_FALSE.equalsIgnoreCase(specLimits[0][0].toString())) && (!"Rdbms_NoRecordsFound".equalsIgnoreCase(specLimits[0][4].toString()))) {
             return LPArray.array2dTo1d(specLimits);
         }
@@ -355,26 +339,6 @@ public class DataSampleAnalysisResult {
             if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())) {
                 DataSampleAnalysis.sampleAnalysisEvaluateStatus(schemaPrefix, userName, sampleId, testId, auditActionName, userRole);
             }
-            /*        String[] whereFields = new String[]{"user_id", FIELDNAME_ANALYSIS, FIELDNAME_SAMPLE_ANALYSIS_METHOD_NAME, FIELDNAME_SAMPLE_ANALYSIS_METHOD_VERSION};
-            Object[] whereFieldsValue = new Object[]{userName, analysis, methodName, methodVersion};
-            String[] updFields = new String[]{"last_analysis_on", "last_sample", "last_sample_analysis"};
-            Object[] updFieldsValue = new Object[]{Rdbms.getLocalDate(), sampleId, testId};
-            Object[][] userMethodInfo;
-            userMethodInfo = Rdbms.getRecordFieldsByFilter(schemaDataName, "user_analysis_method",
-            whereFields,
-            whereFieldsValue,
-            new String[]{"user_analysis_method_id", "user_id", FIELDNAME_ANALYSIS, FIELDNAME_SAMPLE_ANALYSIS_METHOD_NAME, FIELDNAME_SAMPLE_ANALYSIS_METHOD_VERSION});
-            if (!(LPPlatform.LAB_FALSE.equalsIgnoreCase(userMethodInfo[0][0].toString())) ){
-            diagnoses = Rdbms.updateRecordFieldsByFilter(schemaDataName, "user_analysis_method",
-            updFields, updFieldsValue, whereFields, whereFieldsValue);
-            if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){                updFields = LPArray.addValueToArray1D(updFields, whereFields);
-            updFieldsValue = LPArray.addValueToArray1D(updFieldsValue, whereFieldsValue);
-            String[] fieldsForAudit = LPArray.joinTwo1DArraysInOneOf1DString(updFields, updFieldsValue, ":");
-            auditActionName = "UPDATE LAST ANALYSIS USER METHOD";
-            SampleAudit smpAudit = new SampleAudit();
-            smpAudit.sampleAuditAdd(schemaPrefix, auditActionName, "user_analysis_method", testId, sampleId, testId, null, fieldsForAudit, userName, userRole);
-            }
-            } */
             return diagnoses;
         }
         Integer limitId = (Integer) specLimits[0][0];
@@ -421,11 +385,6 @@ public class DataSampleAnalysisResult {
                 resSpecEvaluation = resChkSpec.resultCheck((String) resultValue, specRuleType, specValues, specSeparator, specListName);
                 if (LPPlatform.LAB_FALSE.equalsIgnoreCase(resSpecEvaluation[0].toString())) {
                     return resSpecEvaluation;
-                    //errorCode = "DataSample_SampleAnalysisResult_QualitativeSpecNotRecognized";
-                    // errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, resultId.toString());
-                    // errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, ruleVariables);
-                    // errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, schemaDataName);
-                    // return labPlat.trapErrorMessage(LPPlatform.LAB_FALSE, classVersion, errorCode, errorDetailVariables);
                 }
                 fieldsName = LPArray.addValueToArray1D(fieldsName, DataSample.FIELDNAME_SPEC_EVAL);
                 fieldsValue = LPArray.addValueToArray1D(fieldsValue, resSpecEvaluation[resSpecEvaluation.length - 1]);
@@ -505,15 +464,9 @@ public class DataSampleAnalysisResult {
                     } else {
                         resSpecEvaluation = resChkSpec.resultCheckFloat((Float) resultValue, minSpec, maxSpec, minStrict, maxStrict);
                     }
-                    //                resSpecEvaluation = resChkSpec.resultCheckFloat((Float) resultValue, (Float) minSpec, (Float) maxSpec, (Boolean) minStrict, (Boolean) maxStrict);
                 }
                 if (LPPlatform.LAB_FALSE.equalsIgnoreCase(resSpecEvaluation[0].toString())) {
                     return resSpecEvaluation;
-                    //errorCode = "DataSample_SampleAnalysisResult_QuantitativeSpecNotRecognized";
-                    //errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, resultId.toString());
-                    //errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, ruleVariables);
-                    //errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, schemaDataName);
-                    //return labPlat.trapErrorMessage(LPPlatform.LAB_FALSE, classVersion, errorCode, errorDetailVariables);
                 }
                 String specEval = (String) resSpecEvaluation[resSpecEvaluation.length - 1];
                 String specEvalDetail = (String) resSpecEvaluation[resSpecEvaluation.length - 2];
@@ -538,24 +491,8 @@ public class DataSampleAnalysisResult {
                 }
                 if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())) {
                     DataSampleAnalysis.sampleAnalysisEvaluateStatus(schemaPrefix, userName, sampleId, testId, auditActionName, userRole);
-                }
-                String[] whereFields = new String[]{"user_id", DataSample.FIELDNAME_ANALYSIS, DataSampleAnalysis.FIELDNAME_SAMPLE_ANALYSIS_METHOD_NAME, DataSampleAnalysis.FIELDNAME_SAMPLE_ANALYSIS_METHOD_VERSION};
-                Object[] whereFieldsValue = new Object[]{userName, analysis, methodName, methodVersion};
-                String[] updFields = new String[]{"last_analysis_on", "last_sample", "last_sample_analysis"};
-                Object[] updFieldsValue = new Object[]{Rdbms.getLocalDate(), sampleId, testId};
-                Object[][] userMethodInfo;
-                userMethodInfo = Rdbms.getRecordFieldsByFilter(schemaDataName, "user_analysis_method", whereFields, whereFieldsValue, new String[]{"user_analysis_method_id", "user_id", DataSample.FIELDNAME_ANALYSIS, DataSampleAnalysis.FIELDNAME_SAMPLE_ANALYSIS_METHOD_NAME, DataSampleAnalysis.FIELDNAME_SAMPLE_ANALYSIS_METHOD_VERSION});
-                if (!(LPPlatform.LAB_FALSE.equalsIgnoreCase(userMethodInfo[0][0].toString()))) {
-                    Object diagnoses2 = Rdbms.updateRecordFieldsByFilter(schemaDataName, "user_analysis_method", updFields, updFieldsValue, whereFields, whereFieldsValue);
-                    if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())) {
-                        updFields = LPArray.addValueToArray1D(updFields, whereFields);
-                        updFieldsValue = LPArray.addValueToArray1D(updFieldsValue, whereFieldsValue);
-                        String[] fieldsForAudit = LPArray.joinTwo1DArraysInOneOf1DString(updFields, updFieldsValue, ":");
-                        auditActionName = auditActionName + ":" + "UPDATE USER METHOD RECORD";
-                        SampleAudit smpAudit = new SampleAudit();
-                        smpAudit.sampleAuditAdd(schemaPrefix, auditActionName, "user_analysis_method", testId, sampleId, testId, null, fieldsForAudit, userName, userRole);
-                    }
-                }
+                }                
+                UserMethod.newUserMethodEntry(schemaPrefix, userName, userRole, analysis, methodName, methodVersion, sampleId, testId);
                 return diagnoses;
             default:
                 dataSample.errorCode = "DataSample_SampleAnalysisResult_SpecRuleNotImplemented";
@@ -708,7 +645,7 @@ public class DataSampleAnalysisResult {
                     smpAudit.sampleAuditAdd(schemaPrefix, "UNCANCEL_RESULT", DataSampleAnalysis.TABLENAME_DATA_SAMPLE_ANALYSIS, currTest, sampleId, currTest, null, fieldsForAudit, userName, userRole);
                 }
             } else {
-                diagnoses[5] = "The test " + LPNulls.replaceNull(currTest) + " has status " + currStatus + " then cannot be canceled in schema " + schemaDataName;
+                diagnoses[5] = msgStatusAlreadyCanceled("sample analysis", currTest, currStatus,schemaDataName);
             }
         }
         for (Integer iSmpToUnCancel = 0; iSmpToUnCancel < samplesToUnCancel.length; iSmpToUnCancel++) {
@@ -726,7 +663,7 @@ public class DataSampleAnalysisResult {
                     smpAudit.sampleAuditAdd(schemaPrefix, "UNCANCEL_RESULT", DataSample.TABLENAME_DATA_SAMPLE, currSample, currSample, null, null, fieldsForAudit, userName, userRole);
                 }
             } else {
-                diagnoses[5] = "The sample " + LPNulls.replaceNull(currSample) + " has status " + currStatus + " then cannot be canceled in schema " + schemaDataName;
+                diagnoses[5] = msgStatusAlreadyCanceled("sample", currSample, currStatus,schemaDataName);
             }
         }
         diagnoses[5] = Arrays.toString(diagPerResult);
@@ -856,6 +793,15 @@ public class DataSampleAnalysisResult {
             }
         }
         return diagnoses;
+    }
+    
+    private String msgStatusAlreadyCanceled(String objectLevel, Integer resultId, String currStatus, String schemaName){
+        if (objectLevel==null)objectLevel="NO objectLevel PASSED";
+        if (currStatus==null)currStatus="NO currStatus PASSED";
+        if (schemaName==null)schemaName="NO schemaName PASSED";
+        String resultIdStr="";
+        if (resultId==null){resultIdStr="NO resultId PASSED";}else{resultIdStr=resultId.toString();}
+        return "The "+ objectLevel+ " " + resultIdStr + " has status " + currStatus + " then cannot be canceled in schema " + schemaName;
     }
     
 }

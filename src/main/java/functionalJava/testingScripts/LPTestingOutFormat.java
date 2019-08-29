@@ -26,9 +26,9 @@ import javax.servlet.http.HttpServletResponse;
 public class LPTestingOutFormat {
     private LPTestingOutFormat(){    throw new IllegalStateException("Utility class");}    
     
-    public static final String TESTING_FILES_PATH_OVH = "http://51.75.202.142:8888/testingRepository/"; //\\\\FRANCLOUD\\fran\\LabPlanet\\testingRepository\\"; // "\\testingRepository\\";
-    public static final String TESTING_FILES_PATH_NAS = "\\\\FRANCLOUD\\fran\\LabPlanet\\testingRepository\\"; // "\\testingRepository\\";
-    public static final String TESTING_FILES_PATH = "C:\\Chemos\\"; // "\\testingRepository\\";
+    public static final String TESTING_FILES_PATH_OVH = "http://51.75.202.142:8888/testingRepository/"; 
+    public static final String TESTING_FILES_PATH_NAS = "\\\\FRANCLOUD\\fran\\LabPlanet\\testingRepository\\"; 
+    public static final String TESTING_FILES_PATH = "C:\\Chemos\\"; 
     public static final String TESTING_FILES_FIELD_SEPARATOR=";";
     public static final String TESTING_USER="labplanet";
     public static final String TESTING_PW="avecesllegaelmomento";
@@ -274,7 +274,6 @@ public class LPTestingOutFormat {
         if (value.toString().length()==0){return false;}
         try{
             return Boolean.valueOf(value.toString());
-            //return Boolean.getBoolean(value.toString());        
         }catch(Exception e){return false;}                    
     }
     public static String csvExtractFieldValueString(Object value){

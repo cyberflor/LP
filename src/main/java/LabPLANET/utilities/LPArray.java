@@ -654,12 +654,10 @@ public class  LPArray {
             String currValueA ="";
             String currValueB ="";        
             for (Integer iarrLength = 0;iarrLength<arrLength;iarrLength++){            
-                if (arrayOne.length < iarrLength) {currValueA ="";}
-                if (arrayOne[iarrLength]==null){currValueA ="";}
+                if (iarrLength>=arrayOne.length){currValueA ="";}
                 else{currValueA = arrayOne[iarrLength].toString();}
             
-                if (arrayTwo.length < iarrLength) {currValueB ="";}
-                if (arrayTwo[iarrLength]==null){currValueB ="";}
+                if (iarrLength>=arrayTwo.length){currValueB ="";}
                 else{currValueB = arrayTwo[iarrLength].toString();}
             
                 currValueA = LPNulls.replaceNull(currValueA); currValueB = LPNulls.replaceNull(currValueB);

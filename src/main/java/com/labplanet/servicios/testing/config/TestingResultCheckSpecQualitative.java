@@ -5,19 +5,19 @@
  */
 package com.labplanet.servicios.testing.config;
 
-import LabPLANET.utilities.LPPlatform;
-import LabPLANET.utilities.LPArray;
-import LabPLANET.utilities.LPFrontEnd;
-import functionalJava.materialSpec.DataSpec;
+import lbplanet.utilities.LPPlatform;
+import lbplanet.utilities.LPArray;
+import lbplanet.utilities.LPFrontEnd;
+import functionaljavaa.materialspec.DataSpec;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import functionalJava.testingScripts.LPTestingOutFormat;
-import functionalJava.testingScripts.TestingAssert;
-import functionalJava.testingScripts.TestingAssertSummary;
+import functionaljavaa.testingscripts.LPTestingOutFormat;
+import functionaljavaa.testingscripts.TestingAssert;
+import functionaljavaa.testingscripts.TestingAssertSummary;
 import java.util.Arrays;
 import java.util.HashMap;
 

@@ -93,7 +93,6 @@ public class UserSop {
     private Object[] userSopCertifiedBySopInternalLogic( String schemaPrefixName, String userInfoId, String sopIdFieldName, String sopIdFieldValue ) {
                         
         String schemaConfigName = LPPlatform.buildSchemaName(schemaPrefixName, LPPlatform.SCHEMA_CONFIG);
-//        String actionEnabledUserSopCertification = Parameter.getParameterBundle(LPPlatform.SCHEMA_CONFIG, "actionEnabledUserSopCertification"); 
         
         UserProfile usProf = new UserProfile();
         Object[] userSchemas = (Object[]) usProf.getAllUserProcedurePrefix(userInfoId);
@@ -209,7 +208,6 @@ public class UserSop {
         String tableName = "user_and_meta_data_sop_vw"; 
         
         if (fieldsToReturn.length<=0){
-//            Object[] diagnoses = LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, "Rdbms_NotFilterSpecified", new Object[]{tableName, schemaPrefix});
             String[][] getUserProfileNEW = new String[1][2];
             getUserProfileNEW[0][0]=DIAGNOSES_ERROR_CODE;
             getUserProfileNEW[0][1]="No fields specified for fieldsToReturn";

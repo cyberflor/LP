@@ -53,7 +53,6 @@ public class TestingConfig_specQualitative_ruleFormat extends HttpServlet {
         try (PrintWriter out = response.getWriter()) {
             String[][] headerInfo = LPArray.convertCSVinArray(csvPathName, "=");
             HashMap<String, Object> csvHeaderTags = LPTestingOutFormat.getCSVHeader(headerInfo);
-            //HashMap<String, Object> csvHeaderTags = LPTestingOutFormat.getCSVHeader(csvFileContent);
             if (csvHeaderTags.containsKey(LPPlatform.LAB_FALSE)){
                 fileContentBuilder.append("There are missing tags in the file header: ").append(csvHeaderTags.get(LPPlatform.LAB_FALSE));
                 out.println(fileContentBuilder.toString()); 
@@ -62,7 +61,6 @@ public class TestingConfig_specQualitative_ruleFormat extends HttpServlet {
             
             Integer numEvaluationArguments = Integer.valueOf(csvHeaderTags.get(LPTestingOutFormat.FILEHEADER_NUM_EVALUATION_ARGUMENTS).toString());   
             Integer numHeaderLines = Integer.valueOf(csvHeaderTags.get(LPTestingOutFormat.FILEHEADER_NUM_HEADER_LINES_TAG_NAME).toString());   
-            //numEvaluationArguments=numEvaluationArguments+1;
             
             String table1Header = csvHeaderTags.get(LPTestingOutFormat.FILEHEADER_TABLE_NAME_TAG_NAME+"1").toString();               
             StringBuilder fileContentTable1Builder = new StringBuilder();

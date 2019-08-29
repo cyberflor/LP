@@ -6,7 +6,7 @@
     </servlet>
     <servlet>
         <servlet-name>DBActions</servlet-name>
-        <servlet-class>com.labplanet.servicios.testing.Platform.DBActions</servlet-class>
+        <servlet-class>com.labplanet.servicios.testing.platform.DBActions</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>specQualitative</servlet-name>
@@ -14,7 +14,7 @@
     </servlet>
     <servlet>
         <servlet-name>TestingConfigSamplingPlanStructure</servlet-name>
-        <servlet-class>com.labplanet.servicios.testing.config._TestingConfigSamplingPlanStructure</servlet-class>
+        <servlet-class>com.labplanet.servicios.testing.config.TestingConfigSamplingPlanStructure</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>TestingResultCheckSpecQualitative</servlet-name>
@@ -42,36 +42,36 @@
         <servlet-class>com.labplanet.servicios.frontend.logSample</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>sampleAPI</servlet-name>
-        <servlet-class>com.labplanet.servicios.ModuleSample.sampleAPI</servlet-class>
+        <servlet-name>SampleAPI</servlet-name>
+        <servlet-class>com.labplanet.servicios.modulesample.SampleAPI</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>authenticationAPI</servlet-name>
-        <servlet-class>com.labplanet.servicios.app.authenticationAPI</servlet-class>
+        <servlet-name>AuthenticationAPI</servlet-name>
+        <servlet-class>com.labplanet.servicios.app.AuthenticationAPI</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>userInfoAPI</servlet-name>
         <servlet-class>frontEnd.api._userInfoAPI</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>appHeaderAPI</servlet-name>
-        <servlet-class>com.labplanet.servicios.app.appHeaderAPI</servlet-class>
+        <servlet-name>AppHeaderAPI</servlet-name>
+        <servlet-class>com.labplanet.servicios.app.AppHeaderAPI</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>sampleAPIfrontend</servlet-name>
-        <servlet-class>com.labplanet.servicios.ModuleSample.sampleAPIfrontend</servlet-class>
+        <servlet-name>SampleAPIfrontend</servlet-name>
+        <servlet-class>com.labplanet.servicios.modulesample.SampleAPIfrontend</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>AppProcedureList</servlet-name>
         <servlet-class>com.labplanet.servicios.app.AppProcedureListAPI</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>sopUser</servlet-name>
-        <servlet-class>com.labplanet.servicios.app.sopUserAPI</servlet-class>
+        <servlet-name>SopUser</servlet-name>
+        <servlet-class>com.labplanet.servicios.app.SopUserAPI</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>sopUserAPIfrontend</servlet-name>
-        <servlet-class>com.labplanet.servicios.app.sopUserAPIfrontend</servlet-class>
+        <servlet-name>SopUserAPIfrontend</servlet-name>
+        <servlet-class>com.labplanet.servicios.app.SopUserAPIfrontend</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>TstDataBatchArr</servlet-name>
@@ -83,98 +83,86 @@
     </servlet>
     <servlet>
         <servlet-name>BatchAPI</servlet-name>
-        <servlet-class>com.labplanet.servicios.ModuleBatch.batchAPI</servlet-class>
+        <servlet-class>com.labplanet.servicios.modulebatch.BatchAPI</servlet-class>
     </servlet>
     <!--// testing for the Platform. End  
     
 // testing for the Config. Begin -->
     <servlet>
-        <servlet-name>TestingConfig_specQuantitative_ruleFormat</servlet-name>
-        <servlet-class>com.labplanet.servicios.testing.config.noDB.TestingConfig_specQuantitative_ruleFormat</servlet-class>
+        <servlet-name>TestingConfigSpecQuantitativeRuleFormat</servlet-name>
+        <servlet-class>com.labplanet.servicios.testing.config.nodb.TestingConfigSpecQuantitativeRuleFormat</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>TestingConfig_specQualitative_ruleFormat</servlet-name>
-        <servlet-class>com.labplanet.servicios.testing.config.noDB.TestingConfig_specQualitative_ruleFormat</servlet-class>
+        <servlet-name>TestingConfigSpecQualitativeRuleFormat</servlet-name>
+        <servlet-class>com.labplanet.servicios.testing.config.nodb.TestingConfigSpecQualitativeRuleFormat</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>ProcedureDeployment</servlet-name>
-        <servlet-class>com.labplanet.servicios.testing.Platform.ProcedureDeployment</servlet-class>
+        <servlet-class>com.labplanet.servicios.testing.platform.ProcedureDeployment</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>TstDataEnvMonit</servlet-name>
         <servlet-class>com.labplanet.servicios.testing.module.envmonit.TstDataEnvMonit</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>envMonAPI</servlet-name>
-        <servlet-class>com.labplanet.servicios.ModuleEnvMonit.envMonAPI</servlet-class>
+        <servlet-name>EnvMonAPI</servlet-name>
+        <servlet-class>com.labplanet.servicios.moduleenvmonit.EnvMonAPI</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>envMonAPIfrontend</servlet-name>
-        <servlet-class>com.labplanet.servicios.ModuleEnvMonit.envMonAPIfrontend</servlet-class>
+        <servlet-name>EnvMonAPIfrontend</servlet-name>
+        <servlet-class>com.labplanet.servicios.moduleenvmonit.EnvMonAPIfrontend</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>envMonitSampleAPIfrontend</servlet-name>
-        <servlet-class>com.labplanet.servicios.ModuleEnvMonit.envMonitSampleAPIfrontend</servlet-class>
+        <servlet-name>EnvMonitSampleAPIfrontend</servlet-name>
+        <servlet-class>com.labplanet.servicios.moduleenvmonit.EnvMonitSampleAPIfrontend</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>testingServer</servlet-name>
-        <servlet-class>com.labplanet.servicios.app.testingServer</servlet-class>
+        <servlet-name>TestingServer</servlet-name>
+        <servlet-class>com.labplanet.servicios.app.TestingServer</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>responseError</servlet-name>
+        <servlet-name>ResponseError</servlet-name>
         <servlet-class>com.labplanet.servicios.responseError</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>responseTheError</servlet-name>
-        <servlet-class>com.labplanet.servicios.responseTheError</servlet-class>
+        <servlet-name>ResponseTheError</servlet-name>
+        <servlet-class>com.labplanet.servicios.ResponseTheError</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>responseSuccess</servlet-name>
-        <servlet-class>com.labplanet.servicios.responseSuccess</servlet-class>
+        <servlet-name>ResponseSuccess</servlet-name>
+        <servlet-class>com.labplanet.servicios.ResponseSuccess</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>authenticationAPIParams</servlet-name>
-        <servlet-class>com.labplanet.servicios.app.authenticationAPIParams</servlet-class>
+        <servlet-name>AuthenticationAPIParams</servlet-name>
+        <servlet-class>com.labplanet.servicios.app.AuthenticationAPIParams</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>globalAPIsParams</servlet-name>
-        <servlet-class>com.labplanet.servicios.app.globalAPIsParams</servlet-class>
+        <servlet-name>GlobalAPIsParams</servlet-name>
+        <servlet-class>com.labplanet.servicios.app.GlobalAPIsParams</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>sampleAPIParams</servlet-name>
-        <servlet-class>com.labplanet.servicios.ModuleSample.sampleAPIParams</servlet-class>
+        <servlet-name>SampleAPIParams</servlet-name>
+        <servlet-class>com.labplanet.servicios.modulesample.SampleAPIParams</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>procedureDefinitionToInstance</servlet-name>
-        <servlet-class>com.labplanet.servicios.Requirements.procedureDefinitionToInstance</servlet-class>
+        <servlet-name>ProcedureDefinitionToInstance</servlet-name>
+        <servlet-class>com.labplanet.servicios.requirements.ProcedureDefinitionToInstance</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>UserProfileAPI</servlet-name>
         <servlet-class>com.labplanet.servicios.app.UserProfileAPI</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>dbTestingQuantitativeLimitAndResult</servlet-name>
-        <servlet-class>com.labplanet.servicios.testing.config.DB.TestingQuantitativeLimitAndResult</servlet-class>
+        <servlet-name>DbTestingQuantitativeLimitAndResult</servlet-name>
+        <servlet-class>com.labplanet.servicios.testing.config.db.TestingQuantitativeLimitAndResult</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>DBActions</servlet-name>
         <url-pattern>/testing/platform/DBActions</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>TestingResultCheckSpecQualitative</servlet-name>
-        <url-pattern>/testing/config/resultCheckSpecQualitative</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>TestingResultCheckSpecQuantitative</servlet-name>
-        <url-pattern>/testing/config/resultCheckSpecQuantitative</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
         <servlet-name>TestingConfigSop</servlet-name>
         <url-pattern>/testing/config/Sop</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>TestingConfigSamplingPlanStructure</servlet-name>
-        <url-pattern>/testing/config/samplingPlanStructure</url-pattern>
     </servlet-mapping>
     <!--/ testing for the Config. End    
 // testing for the Data. Begin -->
@@ -192,28 +180,12 @@
         <url-pattern>/testing/config/UOMFamilyTable</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>authenticationAPI</servlet-name>
-        <url-pattern>/frontEnd/authenticationAPI</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
         <servlet-name>userInfoAPI</servlet-name>
         <url-pattern>/userInfoAPI</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>appHeaderAPI</servlet-name>
-        <url-pattern>/frontEnd/appHeaderAPI</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>sampleAPIfrontend</servlet-name>
-        <url-pattern>/frontEnd/sampleAPIfrontEnd</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
         <servlet-name>AppProcedureList</servlet-name>
         <url-pattern>/fronEnd/AppProcedureList</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>sopUserAPIfrontend</servlet-name>
-        <url-pattern>/frontEnd/sopUserAPIfrontend</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>TstDataBatchArr</servlet-name>
@@ -224,14 +196,6 @@
         <url-pattern>/Testing/DB/TstDataBatchArrSequence</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>TestingConfig_specQuantitative_ruleFormat</servlet-name>
-        <url-pattern>/testing/config/noDB/TestingConfig_specQuantitative_ruleFormat</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>TestingConfig_specQualitative_ruleFormat</servlet-name>
-        <url-pattern>/testing/config/noDB/TestingConfig_specQualitative_ruleFormat</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
         <servlet-name>ProcedureDeployment</servlet-name>
         <url-pattern>/testing/platform/ProcedureDeployment</url-pattern>
     </servlet-mapping>
@@ -240,68 +204,104 @@
         <url-pattern>/Testing/DB/TstDataEnvMonit</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>envMonAPI</servlet-name>
-        <url-pattern>/moduleEnvMon/envMonAPI</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>envMonAPIfrontend</servlet-name>
-        <url-pattern>/frontEnd/envMonAPIfrontend</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>envMonitSampleAPIfrontend</servlet-name>
-        <url-pattern>/frontEnd/envMonitSampleAPIfrontend</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>testingServer</servlet-name>
-        <url-pattern>/app/testingServer</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>responseError</servlet-name>
-        <url-pattern>/responseError</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>responseTheError</servlet-name>
-        <url-pattern>/responseTheError</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>responseSuccess</servlet-name>
-        <url-pattern>/responseSuccess</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>authenticationAPIParams</servlet-name>
-        <url-pattern>/authenticationAPIParams</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>globalAPIsParams</servlet-name>
-        <url-pattern>/globalAPIsParams</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>sampleAPIParams</servlet-name>
-        <url-pattern>/sampleAPIParams</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>procedureDefinitionToInstance</servlet-name>
-        <url-pattern>/procedureDefinitionToInstance</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>sopUser</servlet-name>
-        <url-pattern>/app/sopUserAPI</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
         <servlet-name>BatchAPI</servlet-name>
         <url-pattern>/moduleBatch/BatchAPI</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>sampleAPI</servlet-name>
-        <url-pattern>/moduleSample/sampleAPI</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>UserProfileAPI</servlet-name>
         <url-pattern>/app/UserProfileAPI</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>dbTestingQuantitativeLimitAndResult</servlet-name>
-        <url-pattern>/testing/config/db/quantitativeLimitAndResult</url-pattern>
+        <servlet-name>TestingConfigSpecQualitativeRuleFormat</servlet-name>
+        <url-pattern>/testing/config/noDB/TestingConfigSpecQualitativeRuleFormat</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>TestingConfigSpecQuantitativeRuleFormat</servlet-name>
+        <url-pattern>/testing/config/noDB/TestingConfigSpecQuantitativeRuleFormat</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>EnvMonAPI</servlet-name>
+        <url-pattern>/moduleEnvMon/EnvMonAPI</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>EnvMonitSampleAPIfrontend</servlet-name>
+        <url-pattern>/frontEnd/EnvMonitSampleAPIfrontend</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>EnvMonAPIfrontend</servlet-name>
+        <url-pattern>/frontEnd/EnvMonAPIfrontend</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>SampleAPIParams</servlet-name>
+        <url-pattern>/SampleAPIParams</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>SampleAPIfrontend</servlet-name>
+        <url-pattern>/frontEnd/SampleAPIfrontEnd</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AppHeaderAPI</servlet-name>
+        <url-pattern>/frontEnd/AppHeaderAPI</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>SampleAPI</servlet-name>
+        <url-pattern>/moduleSample/SampleAPI</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AuthenticationAPI</servlet-name>
+        <url-pattern>/frontEnd/AuthenticationAPI</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AuthenticationAPIParams</servlet-name>
+        <url-pattern>/AuthenticationAPIParams</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>GlobalAPIsParams</servlet-name>
+        <url-pattern>/GlobalAPIsParams</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>SopUserAPIfrontend</servlet-name>
+        <url-pattern>/frontEnd/SopUserAPIfrontend</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>SopUser</servlet-name>
+        <url-pattern>/app/SopUserAPI</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>TestingServer</servlet-name>
+        <url-pattern>/app/TestingServer</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ProcedureDefinitionToInstance</servlet-name>
+        <url-pattern>/ProcedureDefinitionToInstance</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DbTestingQuantitativeLimitAndResult</servlet-name>
+        <url-pattern>/testing/config/db/QuantitativeLimitAndResult</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>TestingConfigSamplingPlanStructure</servlet-name>
+        <url-pattern>/testing/config/SamplingPlanStructure</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>TestingResultCheckSpecQualitative</servlet-name>
+        <url-pattern>/testing/config/ResultCheckSpecQualitative</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>TestingResultCheckSpecQuantitative</servlet-name>
+        <url-pattern>/testing/config/ResultCheckSpecQuantitative</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ResponseTheError</servlet-name>
+        <url-pattern>/ResponseTheError</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ResponseSuccess</servlet-name>
+        <url-pattern>/ResponseSuccess</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ResponseError</servlet-name>
+        <url-pattern>/responseError</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

@@ -5,8 +5,8 @@
  */
 package databases;
 
-import LabPLANET.utilities.LPPlatform;
-import LabPLANET.utilities.LPArray;
+import lbplanet.utilities.LPPlatform;
+import lbplanet.utilities.LPArray;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -15,11 +15,8 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import java.sql.Date;
-//import com.fasterxml.jackson.core.JsonProcessingException;
-//import static com.sun.xml.internal.ws.spi.db.BindingContextFactory.LOGGER;
 import java.util.HashMap;
 import java.util.Map;
-//import org.apache.commons.net.util.Base64;
 /**
  *
  * @author Administrator
@@ -45,8 +42,7 @@ public final class Token {
     private String eSign="";
     private String appSessionId="";
     private Date appSessionStartedDate= null;
-    
-    //public Token(){}
+        
     public Token(String tokenString){
         String[] tokenParams = tokenParamsList();
         String[] tokenParamsValues = getTokenParamValue(tokenString, tokenParams);
@@ -115,7 +111,6 @@ public final class Token {
      */
     public String[] getTokenParamValue(String token, String[] paramName){
         String[] infoFromToken = new String[0];
-        String[] tokenParams = tokenParamsList();
         
         for (String pn: paramName){
             String paramValue = getTokenParamValue(token, pn);
@@ -136,20 +131,7 @@ public final class Token {
      * @return
      */
     public String  createToken(String userDBId, String userDBPassword, String userId, String userRole, String appSessionId, String appSessionStartedDate, String eSign){        
-        Algorithm algorithm = Algorithm.HMAC256(KEY); /*long tiempo = System.currentTimeMillis();
-        String vwt = Jwts.builder()
-        .signWith(SignatureAlgorithm.HS256, KEY)
-        .setSubject(userId)
-        .setHeaderParams(myParams)
-        //.setHeaderParam("", )
-        //.setHeaderParam("", )
-        //.setHeaderParam("", )
-        .setIssuer(ISSUER)
-        .setIssuedAt(new Date(tiempo))
-        .setExpiration(new Date(tiempo+900000))
-        .claim("email", "mymail@gmail.com")
-        .compact();
-        return vwt;*/
+        Algorithm algorithm = Algorithm.HMAC256(KEY); 
         Map <String, Object> myParams = new HashMap<>();
         myParams.put(TOKEN_PARAM_USERDB, userDBId);
         myParams.put(TOKEN_PARAM_USERPW, userDBPassword);
@@ -167,22 +149,6 @@ public final class Token {
        } catch (JWTCreationException exception){
             return "ERROR: You need to enable Algorithm.HMAC256";        
         }
-        
-        
-        /*long tiempo = System.currentTimeMillis();
-        String vwt = Jwts.builder()
-        .signWith(SignatureAlgorithm.HS256, KEY)
-        .setSubject(userId)
-        .setHeaderParams(myParams)
-        //.setHeaderParam("", )
-        //.setHeaderParam("", )
-        //.setHeaderParam("", )
-        .setIssuer(ISSUER)
-        .setIssuedAt(new Date(tiempo))
-        .setExpiration(new Date(tiempo+900000))
-        .claim("email", "mymail@gmail.com")
-        .compact();
-        return vwt;*/
     }    
         
     public String getTokenParamValue(String token, String paramName){

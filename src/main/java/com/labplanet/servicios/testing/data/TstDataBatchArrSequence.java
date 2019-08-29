@@ -5,11 +5,11 @@
  */
 package com.labplanet.servicios.testing.data;
 
-import functionalJava.testingScripts.LPTestingOutFormat;
-import LabPLANET.utilities.LPArray;
-import LabPLANET.utilities.LPFrontEnd;
+import functionaljavaa.testingscripts.LPTestingOutFormat;
+import lbplanet.utilities.LPArray;
+import lbplanet.utilities.LPFrontEnd;
 import databases.Rdbms;
-import functionalJava.batch.BatchArray;
+import functionaljavaa.batch.BatchArray;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
@@ -53,7 +53,7 @@ public class TstDataBatchArrSequence extends HttpServlet {
 //            String schemaName = "oil-pl1-data"; 
 //            String tableName = "batch_java";
             
-            BatchArray myBatchArray[] = new BatchArray[1];
+            BatchArray[][] myBatchArray= new BatchArray[1][1];
             
             String[] fieldName = new String[6];
             Object[] fieldValue = new Object[6];
@@ -70,7 +70,7 @@ public class TstDataBatchArrSequence extends HttpServlet {
 //            dbObj = new DBTransac(rdbm, schemaName, currentUser, currentUSerRole, "Delete",tableName, null, null, keyFieldName, keyFieldValue);           
 //            dbObj.DBAction(rdbm);
             
-            myBatchArray[0] = new BatchArray("oil-pl1", "tmpA", 1, batchName, currentUser,30, 5);                        
+            myBatchArray[0][0] = new BatchArray("oil-pl1", "tmpA", 1, batchName, currentUser,30, 5);                        
 
             fieldName[0] = "name";
             fieldValue[0] = batchName;
@@ -85,7 +85,7 @@ public class TstDataBatchArrSequence extends HttpServlet {
             fieldName[5] = "array_total_positions";
             fieldValue[5] = 4;
                                 
-            Object[][] batchContent = myBatchArray[0].getBatchContent();
+            Object[][] batchContent = myBatchArray[0][0].getBatchContent();
             Object[] batchContent1d = LPArray.array2dTo1d(batchContent);
             
             fieldName[5] = "array_content";
@@ -94,7 +94,7 @@ public class TstDataBatchArrSequence extends HttpServlet {
  //           dbObj = new DBTransac(rdbm, schemaName, currentUser, currentUSerRole, "Insert",tableName, fieldName, fieldValue, keyFieldName, keyFieldValue);
             
  //           dbObj.DBAction(rdbm);
-            for (BatchArray mb: myBatchArray)
+            for (BatchArray mb: myBatchArray[0])
             {
                 fieldName = new String[1];
                 fieldValue = new Object[1];
@@ -110,7 +110,7 @@ public class TstDataBatchArrSequence extends HttpServlet {
 
 //                out.println("Saving in database: " + mb.getBatchName() + " "+ myBatchArray[0].dbCreateBatchArray(rdbm, schemaName) + "<br>");            
 
-                myBatchArray[0].batchAssignOperator("OperA");
+                myBatchArray[0][0].batchAssignOperator("OperA");
 //                out.println("Saving in database the update operator: " + mb.getBatchOperator() + " "+ myBatchArray[0].dbUpdateBatchArray(rdbm, schemaName,mb.getBatchName(),"operator", mb.getBatchOperator()) + "<br>");            
 
                 mb.batchCommentAdd("hello", mb.getBatchOperator());
@@ -146,7 +146,7 @@ public class TstDataBatchArrSequence extends HttpServlet {
                 out.println("The Sample 4 was found in " + mb.searchStringContent("Sample 4").size() + " positions." + "<br>");
                 
                 mb.searchStringContent("Sample 4").forEach((Object al) -> {
-                    System.out.println("    " + al + "<br>");
+                    out.println("    " + al + "<br>");
                 });
                 
                 out.println("The Sample 1 was found in " + mb.searchStringContent("Sample 1").size() + " positions." + "<br>");
@@ -155,10 +155,10 @@ public class TstDataBatchArrSequence extends HttpServlet {
                 
                 out.println("The Sample 4 was found in " + mb.searchStringContent("Sample 4").size() + " positions." + "<br>");
                 
-                mb.searchStringContent("Sample 4").forEach((al) -> {
+                mb.searchStringContent("Sample 4").forEach(al -> {
                     out.println("    " + al + "<br>");
                 });
-                batchContent = myBatchArray[0].getBatchContent();
+                batchContent = myBatchArray[0][0].getBatchContent();
                 
                 batchContent1d = LPArray.array2dTo1d(batchContent);
 //                Object[][] batchContent2d = LPArray.array1dTo2d(batchContent1d, mb.numCols);
@@ -170,21 +170,21 @@ public class TstDataBatchArrSequence extends HttpServlet {
 //                dbObj = new DBTransac(rdbm, schemaName, currentUser, currentUSerRole, "Update",tableName, fieldName, fieldValue, keyFieldName, keyFieldValue);                                                   
 //                dbObj.DBAction(rdbm);
                 
-                myBatchArray[0].setColumnsName(null);
-                Object[] columnName = myBatchArray[0].getColumnsName();
+                myBatchArray[0][0].setColumnsName(null);
+                Object[] columnName = myBatchArray[0][0].getColumnsName();
                 fieldName[1] = "array_columns_name";
                 fieldValue[1] = columnName;                
 //                dbObj = new DBTransac(rdbm, schemaName, currentUser, currentUSerRole, "Update",tableName, fieldName, fieldValue, keyFieldName, keyFieldValue);                                                                  
 //                dbObj.DBAction(rdbm);
 
-                myBatchArray[0].setLinesName(null);
-                Object[] lineName = myBatchArray[0].getLinesName();
+                myBatchArray[0][0].setLinesName(null);
+                Object[] lineName = myBatchArray[0][0].getLinesName();
                 fieldName[2] = "array_lines_name";
                 fieldValue[2] = lineName;                
                 fieldName[3] = "array_total_objects";
-                fieldValue[3] = myBatchArray[0].getNumTotalObjects();                
+                fieldValue[3] = myBatchArray[0][0].getNumTotalObjects();                
                 fieldName[4] = "array_total_positions";
-                fieldValue[4] = myBatchArray[0].getNumTotalObjects();                
+                fieldValue[4] = myBatchArray[0][0].getNumTotalObjects();                
 //                dbObj = new DBTransac(rdbm, schemaName, currentUser, currentUSerRole, "Update",tableName, fieldName, fieldValue, keyFieldName, keyFieldValue);                                                                  
 //                dbObj.DBAction(rdbm);                                
             }

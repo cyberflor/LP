@@ -17,7 +17,7 @@ import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 import java.io.UnsupportedEncodingException;
 public class QR_Code {
-    public static void main(String[] args) {
+    public static String main(String[] args) {
         try {
             String qrCodeData = "www.chillyfacts.com";
             String filePath = "D:\\QRCODE\\chillyfacts.png";
@@ -29,9 +29,9 @@ public class QR_Code {
                 BarcodeFormat.QR_CODE, 200, 200, hintMap);
             //MatrixToImageWriter.writeToFile(matrix, filePath.substring(filePath
             //    .lastIndexOf('.') + 1), new File(filePath));
-            System.out.println("QR Code image created successfully!");
+            return "QR Code image created successfully!";
         } catch (WriterException | UnsupportedEncodingException e) {
-            System.err.println(e);
+            return e.getMessage();
         }
     }
 }

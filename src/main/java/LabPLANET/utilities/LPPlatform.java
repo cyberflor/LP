@@ -75,6 +75,7 @@ public class LPPlatform {
     private static final String JSON_TAG_ERROR_MSG_CLASS_ERROR_CODE_TEXT = "errorCodeText";
     private static final String JSON_TAG_ERROR_MSG_CLASS_ERROR_DETAIL = "errorDetail";
     
+    public static final String BUSINESS_RULES_VALUE_ENABLED="ENABLE";    
     /**
      *
      * @param schemaPrefix

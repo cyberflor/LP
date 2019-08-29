@@ -70,8 +70,6 @@ public class DataSample {
         public static final String FIELDNAME_VOLUME_FOR_ALIQ="volume_for_aliq";
         public static final String FIELDNAME_VOLUME_FOR_ALIQ_UOM="volume_for_aliq_uom";
 
-        
-    
     
     public static final String DIAGNOSES_SUCCESS = "SUCCESS";
     
@@ -94,6 +92,7 @@ public class DataSample {
      * @param grouperName
      */
     public DataSample(){
+        this.classVersion="0.1";
     }
     
 
@@ -164,7 +163,6 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
         String schemaConfigName = LPPlatform.buildSchemaName(schemaPrefix, LPPlatform.SCHEMA_CONFIG); 
         
         String sampleLevel = tableName;
-//        if (this.getSampleGrouper()!=null){sampleLevel=this.getSampleGrouper()+"_"+sampleLevel;}
 
         mandatoryFields = labIntChecker.getTableMandatoryFields(schemaDataName, sampleLevel, actionName);
         
@@ -172,7 +170,6 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
 
         sampleFieldName = LPArray.addValueToArray1D(sampleFieldName, FIELDNAME_STATUS);
         sampleFieldValue = LPArray.addValueToArray1D(sampleFieldValue, sampleStatusFirst);
-        // mandatoryFields = getSampleMandatoryFields();
         Object[] fieldNameValueArrayChecker = LPParadigm.fieldNameValueArrayChecker(sampleFieldName, sampleFieldValue);
         if (!LPPlatform.LAB_TRUE.equalsIgnoreCase(fieldNameValueArrayChecker[0].toString())){return fieldNameValueArrayChecker;}        
         // spec is not mandatory but when any of the fields involved is added to the parameters 
@@ -207,8 +204,6 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
            return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);    
         }               
         
-        //schemaConfigName = "em-demo-a-config";
-        //Object[][] diagnosis = Rdbms.getRecordFieldsByFilter(schemaConfigName, tableName, new String[]{FIELDNAME_CODE,FIELDNAME_CODE_VERSION}, new Object[]{sampleTemplate, sampleTemplateVersion}, new String[]{FIELDNAME_CODE,FIELDNAME_CODE_VERSION});
         Object[] diagnosis = Rdbms.existsRecord(schemaConfigName, tableName, new String[]{FIELDNAME_CODE,FIELDNAME_CODE_VERSION}, new Object[]{sampleTemplate, sampleTemplateVersion});
         if (LPPlatform.LAB_FALSE.equalsIgnoreCase(diagnosis[0].toString())){
            errorCode = "DataSample_MissingConfigCode";
@@ -218,8 +213,6 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
            errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, diagnosis[5]);
            return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);    
         }
-        //String[] specialFields = getSpecialFields();
-        //String[] specialFieldsFunction = getSpecialFieldsFunction();
         String[] specialFields = labIntChecker.getStructureSpecialFields(schemaDataName, sampleLevel+"_"+"sampleStructure", actionName);
         String[] specialFieldsFunction = labIntChecker.getStructureSpecialFieldsFunction(schemaDataName, sampleLevel+"_"+"sampleStructure", actionName);
         Integer specialFieldIndex = -1;
@@ -344,7 +337,6 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
         sampleFieldName[iField] = FIELDNAME_DATA_RECEIVED_BY;                         sampleFieldValue[iField] = userName;
         iField++;
         sampleFieldName[iField] = FIELDNAME_DATA_RECEIVED_ON;                         sampleFieldValue[iField] = (new Date(System.currentTimeMillis()));
-        iField++;
 
         Object[] diagnoses = Rdbms.updateRecordFieldsByFilter(schemaDataName, tableName, sampleFieldName, sampleFieldValue, 
                                                 new String[] {FIELDNAME_SAMPLE_ID}, new Object[]{sampleId});
@@ -378,7 +370,6 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
 
         sampleFieldName[iField] = FIELDNAME_DATA_SAMPLING_DATE;    
         sampleFieldValue[iField] = newDate;
-        iField++;
 
         Object[] diagnoses = Rdbms.updateRecordFieldsByFilter(schemaDataName, tableName, sampleFieldName, sampleFieldValue, new String[] {FIELDNAME_SAMPLE_ID}, new Object[]{sampleId});
         if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){
@@ -411,13 +402,8 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
 
         String auditActionName = "SAMPLE_RECEPTION_COMMENT_ADD";
 
-        String[] sampleFieldName = new String[1];
-        Object[] sampleFieldValue = new Object[1];
-        Integer iField = 0;
-
-        sampleFieldName[iField] = FIELDNAME_DATA_SAMPLING_COMMENT;    
-        sampleFieldValue[iField] = comment;
-        iField++;
+        String[] sampleFieldName = new String[]{FIELDNAME_DATA_SAMPLING_COMMENT};
+        Object[] sampleFieldValue = new Object[]{comment};
 
         Object[] diagnoses = Rdbms.updateRecordFieldsByFilter(schemaDataName, tableName, sampleFieldName, sampleFieldValue, new String[] {FIELDNAME_SAMPLE_ID}, new Object[]{sampleId});
         if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){        
@@ -449,13 +435,8 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
 
         String auditActionName = "SAMPLE_RECEPTION_COMMENT_REMOVE";
 
-        String[] sampleFieldName = new String[1];
-        Object[] sampleFieldValue = new Object[1];
-        Integer iField = 0;
-
-        sampleFieldName[iField] = FIELDNAME_DATA_SAMPLING_COMMENT;    
-        sampleFieldValue[iField] = "";
-        iField++;
+        String[] sampleFieldName = new String[]{FIELDNAME_DATA_SAMPLING_COMMENT};
+        Object[] sampleFieldValue = new Object[]{""};
 
         Object[] diagnoses = Rdbms.updateRecordFieldsByFilter(schemaDataName, tableName, sampleFieldName, sampleFieldValue, new String[] {FIELDNAME_SAMPLE_ID}, new Object[]{sampleId});
         if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){
@@ -486,17 +467,8 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
 
         String auditActionName = "SAMPLE_SET_INCUBATION_START";
 
-        String[] sampleFieldName = new String[2];
-        Object[] sampleFieldValue = new Object[2];
-        Integer iField = 0;
-
-        sampleFieldName[iField] = FIELDNAME_DATA_INCUBATION_START;    
-        sampleFieldValue[iField] = (new Date(System.currentTimeMillis()));
-        iField++;
-
-        sampleFieldName[iField] = FIELDNAME_DATA_INCUBATION_PASSED;    
-        sampleFieldValue[iField] = false;
-        iField++;
+        String[] sampleFieldName = new String[]{FIELDNAME_DATA_INCUBATION_START, FIELDNAME_DATA_INCUBATION_PASSED};
+        Object[] sampleFieldValue = new Object[]{new Date(System.currentTimeMillis()), false};
 
         Object[] diagnoses = Rdbms.updateRecordFieldsByFilter(schemaDataName, tableName, sampleFieldName, sampleFieldValue, new String[] {FIELDNAME_SAMPLE_ID}, new Object[]{sampleId});
         if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){
@@ -536,17 +508,8 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
             errorDetailVariables = LPArray.addValueToArray1D(errorDetailVariables, schemaDataName);
             return LPPlatform.trapErrorMessage(LPPlatform.LAB_FALSE, errorCode, errorDetailVariables);
         }
-        String[] sampleFieldName = new String[2];
-        Object[] sampleFieldValue = new Object[2];
-        Integer iField = 0;
-
-        sampleFieldName[iField] = FIELDNAME_DATA_INCUBATION_END;    
-        sampleFieldValue[iField] = (new Date(System.currentTimeMillis()));
-        iField++;
-
-        sampleFieldName[iField] = FIELDNAME_DATA_INCUBATION_PASSED;    
-        sampleFieldValue[iField] = true;
-        iField++;
+        String[] sampleFieldName = new String[]{FIELDNAME_DATA_INCUBATION_END, FIELDNAME_DATA_INCUBATION_PASSED};
+        Object[] sampleFieldValue = new Object[]{(new Date(System.currentTimeMillis())), true};
 
         Object[] diagnoses = Rdbms.updateRecordFieldsByFilter(schemaDataName, tableName, sampleFieldName, sampleFieldValue, new String[] {FIELDNAME_SAMPLE_ID}, new Object[]{sampleId});
         if (LPPlatform.LAB_TRUE.equalsIgnoreCase(diagnoses[0].toString())){
@@ -753,82 +716,6 @@ Object[] logSample( String schemaPrefix, String sampleTemplate, Integer sampleTe
         }
         
     }
-
-/*
-private Map getDefaultValuesTemplate(String schema, String tsample, String template) throws SQLException {
-    
-    String q = "SELECT column_name,\n" +
-    "\n" +
-    "(SELECT CASE\n" +
-    "          WHEN isc.column_default IS NOT NULL THEN isc.column_default\n" +
-    "          WHEN tsd.value IS NOT NULL THEN tsd.value\n" +
-    "          ELSE null\n" +
-    "       END) \n" +
-    "\n" +
-    "fielDefault\n" +
-    "FROM information_schema.columns isc\n" +
-    "left join template.sample ts on (isc.table_schema=ts.schema)\n" +
-    "left join template.sample_default tsd on (isc.column_name = tsd.field)\n" +
-    "WHERE isc.table_name = '"+tsample+"' and isc.table_schema='"+schema+"' and ts.sample_name = '"+template+"'\n" +
-    "ORDER BY ordinal_position;";
-    
-    Map<String, String> myMap = new HashMap<>();
-        
-    try{
-    CachedRowSetImpl res = rdbms.prepRdQuery(q, null);
-    
-        while (res.next()) {
-            String col_name = res.getString("column_name");
-            String col_value = res.getString("fielDefault");
-            myMap.put(col_name, col_value);                                  
-        }
-    
-    }catch(SQLException ex){
-        
-    }
-    
-    return  myMap;
-    
-    }
-*/    
-/*
-private Map getDefaultValuesTemplate(String schema, String tsample, String template) throws SQLException {
-    
-    String q = "SELECT column_name,\n" +
-    "\n" +
-    "(SELECT CASE\n" +
-    "          WHEN isc.column_default IS NOT NULL THEN isc.column_default\n" +
-    "          WHEN tsd.value IS NOT NULL THEN tsd.value\n" +
-    "          ELSE null\n" +
-    "       END) \n" +
-    "\n" +
-    "fielDefault\n" +
-    "FROM information_schema.columns isc\n" +
-    "left join template.sample ts on (isc.table_schema=ts.schema)\n" +
-    "left join template.sample_default tsd on (isc.column_name = tsd.field)\n" +
-    "WHERE isc.table_name = '"+tsample+"' and isc.table_schema='"+schema+"' and ts.sample_name = '"+template+"'\n" +
-    "ORDER BY ordinal_position;";
-    
-    Map<String, String> myMap = new HashMap<>();
-        
-    try{
-    CachedRowSetImpl res = rdbms.prepRdQuery(q, null);
-    
-        while (res.next()) {
-            String col_name = res.getString("column_name");
-            String col_value = res.getString("fielDefault");
-            myMap.put(col_name, col_value);
-        }
-    
-    }catch(SQLException ex){
-        
-    }
-    
-    return  myMap;
-    
-    }
-*/    
-
     /**
      *
      * @param parameters
@@ -838,7 +725,7 @@ private Map getDefaultValuesTemplate(String schema, String tsample, String templ
      * @return
      */
     
-    public String specialFieldCheckSampleStatus( String[] parameters, String schemaPrefix, String template, Integer templateVersion){ //, String schemaPrefix, String analysisList){                        
+    public String specialFieldCheckSampleStatus( String[] parameters, String schemaPrefix, String template, Integer templateVersion){                      
 
         String myDiagnoses = "";        
         String schemaConfigName = LPPlatform.SCHEMA_CONFIG;
@@ -938,7 +825,6 @@ private Map getDefaultValuesTemplate(String schema, String tsample, String templ
     public void autoSampleAliquoting( String schemaPrefix, Integer sampleId, String userName, String userRole, String[] sampleFieldName, Object[] sampleFieldValue, String eventName, Integer appSessionId, Integer transactionId){
         LPParadigm.fieldNameValueArrayChecker(sampleFieldName, sampleFieldValue);
 // This code is commented because the method, at least by now, return void instead of anything else        
-//        if (!LPPlatform.LAB_TRUE.equalsIgnoreCase(fieldNameValueArrayChecker[0].toString())){}                
     }
        
 public Object[] logSampleAliquot( String schemaPrefix, Integer sampleId, String[] smpAliqFieldName, Object[] smpAliqFieldValue, String userName, String userRole, Integer appSessionId) {    
@@ -959,7 +845,7 @@ public Object[] logSampleAliquot( String schemaPrefix, Integer sampleId, String[
     String aliqVolumeuom = "";
     
     String actionEnabledSampleAliquotVolumeRequired = Parameter.getParameterBundle(schemaPrefix.replace("\"", "")+"-data", "sampleAliquot_volumeRequired");   
-    if (actionEnabledSampleAliquotVolumeRequired.toUpperCase().contains("ENABLE")){
+    if (actionEnabledSampleAliquotVolumeRequired.toUpperCase().contains(LPPlatform.BUSINESS_RULES_VALUE_ENABLED)){
         String[] mandatorySampleFields = new String[]{FIELDNAME_VOLUME_FOR_ALIQ, FIELDNAME_VOLUME_FOR_ALIQ_UOM};
         String[] mandatorySampleAliqFields = new String[]{"volume", "volume_uom"};
         Object[][] sampleInfo = Rdbms.getRecordFieldsByFilter(schemaDataName, parentTableName, new String[] {FIELDNAME_SAMPLE_ID}, new Object[]{sampleId}, mandatorySampleFields);
@@ -1044,7 +930,7 @@ public Object[] logSampleSubAliquot( String schemaPrefix, Integer aliquotId, Str
     String[] mandatoryAliquotFields = new String[]{FIELDNAME_SAMPLE_ID};
     String actionEnabledSampleSubAliquotVolumeRequired = Parameter.getParameterBundle(schemaPrefix.replace("\"", "")+"-data", "sampleSubAliquot_volumeRequired");             
 
-    if (actionEnabledSampleSubAliquotVolumeRequired.toUpperCase().contains("ENABLE")){
+    if (actionEnabledSampleSubAliquotVolumeRequired.toUpperCase().contains(LPPlatform.BUSINESS_RULES_VALUE_ENABLED)){
         mandatoryAliquotFields = LPArray.addValueToArray1D(mandatoryAliquotFields, FIELDNAME_VOLUME_FOR_ALIQ);
         mandatoryAliquotFields = LPArray.addValueToArray1D(mandatoryAliquotFields, FIELDNAME_VOLUME_FOR_ALIQ_UOM);
         
@@ -1092,7 +978,7 @@ public Object[] logSampleSubAliquot( String schemaPrefix, Integer aliquotId, Str
                 sampleId, null, null, 
                 LPArray.joinTwo1DArraysInOneOf1DString(smpVolFldName, smpVolFldValue, ":"), userName, userRole, appSessionId);        
     }
-    if (!actionEnabledSampleSubAliquotVolumeRequired.toUpperCase().contains("ENABLE")){
+    if (!actionEnabledSampleSubAliquotVolumeRequired.toUpperCase().contains(LPPlatform.BUSINESS_RULES_VALUE_ENABLED)){
         Object[][] aliquotInfo = Rdbms.getRecordFieldsByFilter(schemaDataName, parentTableName, new String[] {FIELDNAME_ALIQUOTID}, new Object[]{aliquotId}, mandatoryAliquotFields);
         sampleId = (Integer) aliquotInfo[0][0];
     }
@@ -1163,6 +1049,7 @@ public Object[] logSampleSubAliquot( String schemaPrefix, Integer aliquotId, Str
             String schemaData = LPPlatform.buildSchemaName(schemaPrefix, LPPlatform.SCHEMA_DATA);
             String schemaDataAudit = LPPlatform.buildSchemaName(schemaPrefix, LPPlatform.SCHEMA_DATA_AUDIT);
             String sqlSelect=" select ";
+            String sqlFrom=" from ";
             String sqlOrderBy=" order by ";
             String qry = "";
             qry = qry  + "select row_to_json(sQry)from "
@@ -1172,13 +1059,13 @@ public Object[] logSampleSubAliquot( String schemaPrefix, Integer aliquotId, Str
                     +"( "+sqlSelect+" COALESCE(array_to_json(array_agg(row_to_json(sarQry))),'[]') from "
                     +"( "+sqlSelect+" "+sarFieldToRetrieve+" from "+schemaData+".sample_analysis_result sar where sar.test_id=sa.test_id "
                     +sqlOrderBy+sarFieldToSort+"     ) sarQry    ) as sample_analysis_result "
-                    +"from "+schemaData+".sample_analysis sa where sa.sample_id=s.sample_id "
+                    +sqlFrom+schemaData+".sample_analysis sa where sa.sample_id=s.sample_id "
                     +sqlOrderBy+sampleAnalysisFieldToSort+"      ) saQry    ) as sample_analysis,"
                     + "( "+sqlSelect+" COALESCE(array_to_json(array_agg(row_to_json(sauditQry))),'[]') from  "
                     +"( "+sqlSelect+" "+sampleAuditFieldToRetrieve
-                    +"from "+schemaDataAudit+".sample saudit where saudit.sample_id=s.sample_id "
+                    +sqlFrom+schemaDataAudit+".sample saudit where saudit.sample_id=s.sample_id "
                     +sqlOrderBy+sampleAuditResultFieldToSort+"      ) sauditQry    ) as sample_audit "
-                    +"from "+schemaData+".sample s where s.sample_id in ("+ "?"+" ) ) sQry   ";
+                    +sqlFrom+schemaData+".sample s where s.sample_id in ("+ "?"+" ) ) sQry   ";
             
             CachedRowSetImpl prepRdQuery = Rdbms.prepRdQuery(qry, new Object[]{sampleId});
             

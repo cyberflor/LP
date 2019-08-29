@@ -31,18 +31,16 @@ public class LPJson {
         JSONObject jObj = new JSONObject();    
         if (header.length==0){return jObj;}
         for (int iField=0; iField<header.length; iField++){     
-            //if (!"sampling_date".equalsIgnoreCase(header[iField])){                            
-                if (row[iField]==null){
-                    jObj.put(header[iField], "");
+            if (row[iField]==null){
+                jObj.put(header[iField], "");
+            }else{
+                String clase = row[iField].getClass().toString();
+                if (clase.toUpperCase().equalsIgnoreCase("class java.sql.Date")){
+                    jObj.put(header[iField], row[iField].toString());
                 }else{
-                    String clase = row[iField].getClass().toString();
-                    if (clase.toUpperCase().equalsIgnoreCase("class java.sql.Date")){
-                        jObj.put(header[iField], row[iField].toString());
-                    }else{
-                        jObj.put(header[iField], row[iField]);
-                    }
+                    jObj.put(header[iField], row[iField]);
                 }
-            //}
+            }
         }                    
         return jObj;
     }

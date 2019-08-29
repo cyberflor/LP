@@ -20,6 +20,10 @@ import functionalJava.sampleStructure.DataSample;
  */
 public class DataProgram extends DataSample{
 
+
+    
+    public static final String TABLENAME_DATA_PROGRAM= "program";    
+        public static final String FIELDNAME_ALIQUOTID = "aliquot_id";    
     /**
      *
      * @param grouperName
@@ -28,6 +32,34 @@ public class DataProgram extends DataSample{
         super();
     }
 
+    public enum SchemaDataTableProgram{
+        TABLE_NAME("program", "CREATE TABLE app.app_session (#FLDS) WITH (" +
+                "    OIDS = FALSE" +
+                ")" +
+                "TABLESPACE pg_default;" +
+                "" +
+                "ALTER TABLE app.app_session" +
+                "    OWNER to labplanet;")
+        , FIELD_SESSION_ID("session_id", "integer NOT NULL DEFAULT nextval('app.app_session_session_id_seq1'::regclass)")
+        , FIELD_DATA_STARTED("data_started", "date")
+        , FIELD_PERSON("person", "character varying COLLATE pg_catalog.\"default\"")
+        , FIELD_ROLE_NAME("role_name", "character varying COLLATE pg_catalog.\"default\"");
+        
+        private SchemaDataTableProgram(String dbObjName, String dbObjType){
+            this.dbObjName=dbObjName;
+            this.dbObjType=dbObjType;
+        }
+
+        public String getName(){
+            return this.dbObjName;
+        }
+        private String[] getDbFieldDefinition(){
+            return new String[]{this.dbObjName, this.dbObjType};
+        }
+        private final String dbObjName;             
+        private final String dbObjType;             
+        
+    }
     /**
      *
      * @param schemaPrefix
